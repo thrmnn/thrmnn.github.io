@@ -1,0 +1,2602 @@
+<!doctype html>
+<!-- This site was created with Hugo Blox. https://hugoblox.com -->
+<!-- Last Published: December 8, 2025 --><html lang="en-us" dir="ltr"
+      data-wc-theme-default="system">
+  
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="generator" content="Hugo Blox Builder 0.3.1" />
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Théo Hermann" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Comparing feature-based and GAN-based methods for learning from demonstrations, the key to success lies less in the method itself and more in the structure and suitability of the motion representation for the task." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="http://localhost:1313/post/lfd/" />
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="/css/themes/blue.min.css" />
+  
+
+  
+  
+    
+    <link href="/dist/wc.min.css" rel="stylesheet" />
+  
+
+  
+  
+  
+
+  
+
+  <script>
+     
+    window.hbb = {
+       defaultTheme: document.documentElement.dataset.wcThemeDefault,
+       setDarkTheme: () => {
+        document.documentElement.classList.add("dark");
+        document.documentElement.style.colorScheme = "dark";
+      },
+       setLightTheme: () => {
+        document.documentElement.classList.remove("dark");
+        document.documentElement.style.colorScheme = "light";
+      }
+    }
+
+    console.debug(`Default Hugo Blox Builder theme is ${window.hbb.defaultTheme}`);
+
+    if ("wc-color-theme" in localStorage) {
+      localStorage.getItem("wc-color-theme") === "dark" ? window.hbb.setDarkTheme() : window.hbb.setLightTheme();
+    } else {
+      window.hbb.defaultTheme === "dark" ? window.hbb.setDarkTheme() : window.hbb.setLightTheme();
+      if (window.hbb.defaultTheme === "system") {
+        window.matchMedia("(prefers-color-scheme: dark)").matches ? window.hbb.setDarkTheme() : window.hbb.setLightTheme();
+      }
+    }
+  </script>
+
+  <script>
+    
+    document.addEventListener('DOMContentLoaded', function () {
+      
+      let checkboxes = document.querySelectorAll('li input[type=\'checkbox\'][disabled]');
+      checkboxes.forEach(e => {
+        e.parentElement.parentElement.classList.add('task-list');
+      });
+
+      
+      const liNodes = document.querySelectorAll('.task-list li');
+      liNodes.forEach(nodes => {
+        let textNodes = Array.from(nodes.childNodes).filter(node => node.nodeType === 3 && node.textContent.trim().length > 1);
+        if (textNodes.length > 0) {
+          const span = document.createElement('label');
+          textNodes[0].after(span);  
+          span.appendChild(nodes.querySelector('input[type=\'checkbox\']'));
+          span.appendChild(textNodes[0]);
+        }
+      });
+    });
+  </script>
+
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+  <link rel="icon" type="image/png" href="/media/icon_hu_c96d1fc1e5b9053c.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hu_794f4537411319a8.png" />
+
+  <link rel="canonical" href="http://localhost:1313/post/lfd/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  
+  <meta property="og:site_name" content="Théo Hermann" />
+  <meta property="og:url" content="http://localhost:1313/post/lfd/" />
+  <meta property="og:title" content="Feature-Based vs. GAN-Based Imitation: When and Why | Théo Hermann" />
+  <meta property="og:description" content="Comparing feature-based and GAN-based methods for learning from demonstrations, the key to success lies less in the method itself and more in the structure and suitability of the motion representation for the task." /><meta property="og:image" content="http://localhost:1313/post/lfd/featured.png" />
+    <meta property="twitter:image" content="http://localhost:1313/post/lfd/featured.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2025-07-08T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2025-07-08T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  <title>Feature-Based vs. GAN-Based Imitation: When and Why | Théo Hermann</title>
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <style>
+    @font-face {
+      font-family: 'Inter var';
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+      src: url(/dist/font/Inter.var.woff2) format(woff2);
+    }
+  </style>
+
+  
+
+  
+  
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+      
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        
+      
+    
+      
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        
+      
+    
+      
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        
+      
+    
+      
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        
+      
+    
+      
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        
+      
+    
+      
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        
+      
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+      
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        
+      
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+      
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        
+      
+    
+      
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        
+      
+    
+      
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        
+      
+    
+      
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        
+      
+    
+  
+  
+  
+  
+  
+    
+      
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        
+      
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/dist/pagefind/pagefind-ui.be766eb419317a14ec769d216e9779bfe8f3737c80e780f4ba0dafb57a41a482.css" integrity="sha256-vnZutBkxehTsdp0hbpd5v&#43;jzc3yA54D0ug2vtXpBpII=" />
+
+
+<script src="/dist/pagefind/pagefind-ui.87693d7c6f2b3b347ce359d0ede762c033419f0a32b22ce508c335a81d841f1b.js" integrity="sha256-h2k9fG8rOzR841nQ7ediwDNBnwoysizlCMM1qB2EHxs="></script>
+
+
+<script>window.hbb.pagefind = {"baseUrl":"/"};</script>
+
+<style>
+  html.dark {
+    --pagefind-ui-primary: #eeeeee;
+    --pagefind-ui-text: #eeeeee;
+    --pagefind-ui-background: #152028;
+    --pagefind-ui-border: #152028;
+    --pagefind-ui-tag: #152028;
+  }
+</style>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    new PagefindUI({
+      element: "#search",
+      showSubResults: true,
+      baseUrl: window.hbb.pagefind.baseUrl,
+      bundlePath: window.hbb.pagefind.baseUrl + "pagefind/",
+    });
+  });
+  document.addEventListener('DOMContentLoaded', () => {
+    let element = document.getElementById('search');
+    let trigger = document.getElementById('search_toggle');
+
+    if (trigger) {
+      trigger.addEventListener('click', () => {
+        element.classList.toggle('hidden');
+        element.querySelector("input").value = ""
+        element.querySelector("input").focus()
+
+        if (!element.classList.contains('hidden')) {
+          let clear_trigger = document.querySelector('.pagefind-ui__search-clear');
+
+          if (clear_trigger && !clear_trigger.hasAttribute('listenerOnClick')) {
+            clear_trigger.setAttribute('listenerOnClick', 'true');
+
+            clear_trigger.addEventListener('click', () => {
+              element.classList.toggle('hidden');
+            });
+          }
+        }
+
+      });
+    }
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link type="text/css" rel="stylesheet" href="/dist/lib/katex/katex.min.505d5f829022bb7b4f24dfee0aa1141cd7bba67afe411d1240335f820960b5c3.css" integrity="sha256-UF1fgpAiu3tPJN/uCqEUHNe7pnr&#43;QR0SQDNfgglgtcM=" />
+  
+  
+  <script defer src="/dist/lib/katex/katex.min.dc84b296ec3e884de093158f760fd9d45b6c7abe58b5381557f4e138f46a58ae.js" integrity="sha256-3ISyluw&#43;iE3gkxWPdg/Z1Ftser5YtTgVV/ThOPRqWK4="></script>
+  
+  
+  
+  
+  <script defer src="/js/katex-renderer.6579ec9683211cfb952064aedf3a3baea5eeb17a061775b32b70917474637c80.js" integrity="sha256-ZXnsloMhHPuVIGSu3zo7rqXusXoGF3WzK3CRdHRjfIA="></script>
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  <script
+    defer
+    src="/js/hugo-blox-en.min.js"
+    integrity=""
+  ></script>
+
+  
+  
+
+
+
+
+
+
+
+
+  
+    
+      
+      <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+      
+    
+  
+
+
+
+
+</head>
+
+  <body class="dark:bg-hb-dark dark:text-white page-wrapper" id="top">
+    <div id="page-bg"></div>
+    <div class="page-header sticky top-0 z-30">
+      
+      
+      
+        
+        
+        
+          <header id="site-header" class="header">
+  <nav class="navbar px-3 flex justify-left">
+    <div class="order-0 h-100">
+      
+      <a class="navbar-brand" href="/" title="Théo Hermann">
+        Théo Hermann
+      </a>
+    </div>
+    
+    <input id="nav-toggle" type="checkbox" class="hidden" />
+    <label
+      for="nav-toggle"
+      class="order-3 cursor-pointer flex items-center lg:hidden text-dark dark:text-white lg:order-1">
+      <svg id="show-button" class="h-6 fill-current block" viewBox="0 0 20 20">
+        <title>Open Menu</title>
+        <path d="M0 3h20v2H0V3z m0 6h20v2H0V9z m0 6h20v2H0V0z"></path>
+      </svg>
+      <svg id="hide-button" class="h-6 fill-current hidden" viewBox="0 0 20 20">
+        <title>Close Menu</title>
+        <polygon
+          points="11 9 22 9 22 11 11 11 11 22 9 22 9 11 -2 11 -2 9 9 9 9 -2 11 -2"
+          transform="rotate(45 10 10)"></polygon>
+      </svg>
+    </label>
+    
+
+    
+    
+    <ul
+      id="nav-menu"
+      class="navbar-nav order-3 hidden lg:flex w-full pb-6 lg:order-1 lg:w-auto lg:space-x-2 lg:pb-0 xl:space-x-8 justify-left
+      ">
+      
+      
+      
+      
+      
+      
+      <li class="nav-item">
+        <a
+          class="nav-link "
+          
+          href="/#about"
+        >Bio</a
+        >
+      </li>
+      
+      
+      
+      
+      
+      
+      <li class="nav-item">
+        <a
+          class="nav-link "
+          
+          href="/#news"
+        >News</a
+        >
+      </li>
+      
+      
+      
+      
+      
+      
+      <li class="nav-item">
+        <a
+          class="nav-link "
+          
+          href="/#publications"
+        >Publications</a
+        >
+      </li>
+      
+      
+      
+      
+      
+      
+      <li class="nav-item">
+        <a
+          class="nav-link "
+          
+          href="/#experience"
+        >Experience</a
+        >
+      </li>
+      
+      
+      
+      
+      
+      
+      <li class="nav-item">
+        <a
+          class="nav-link "
+          
+          href="/#posts"
+        >Posts</a
+        >
+      </li>
+      
+      
+      
+      
+      
+      
+      <li class="nav-item">
+        <a
+          class="nav-link "
+          
+          href="/#talks"
+        >Talks</a
+        >
+      </li>
+      
+      
+      
+      
+      
+      
+      <li class="nav-item">
+        <a
+          class="nav-link "
+          
+          href="/#platforms"
+        >Platforms</a
+        >
+      </li>
+      
+      
+      
+      
+      
+      
+      <li class="nav-item">
+        <a
+          class="nav-link "
+          
+          href="/uploads/resume.pdf"
+        >Resumé</a
+        >
+      </li>
+      
+      
+      
+      
+      
+      
+      <li class="nav-item">
+        <a
+          class="nav-link "
+          
+          href="/#contact"
+        >Contact</a
+        >
+      </li>
+      
+      
+      
+    </ul>
+
+    <div class="order-1 ml-auto flex items-center md:order-2 lg:ml-0">
+
+      
+      
+      
+      <button
+        aria-label="search"
+        class="text-black hover:text-primary  inline-block px-3 text-xl dark:text-white"
+        id="search_toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512" fill="currentColor"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+      </button>
+      
+
+      
+      
+      <div class="px-3 text-black hover:text-primary-700 dark:text-white dark:hover:text-primary-300
+            [&.active]:font-bold [&.active]:text-black/90 dark:[&.active]:text-white">
+        <button class="theme-toggle mt-1" accesskey="t" title="appearance">
+          <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               stroke-linejoin="round" class="dark:hidden">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               stroke-linejoin="round" class=" dark:block [&:not(dark)]:hidden">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+      
+
+      
+      
+
+      
+      
+    </div>
+  </nav>
+</header>
+
+
+<div id="search" class="hidden p-3"></div>
+
+
+        
+      
+    </div>
+    <div class="page-body  my-10">
+      
+
+
+
+
+
+<div class="mx-auto flex max-w-screen-xl">
+  
+
+
+
+<aside class="hb-sidebar-container max-lg:[transform:translate3d(0,-100%,0)] lg:hidden xl:block">
+  
+  <div class="px-4 pt-4 lg:hidden">
+    
+    
+  </div>
+  <div class="hb-scrollbar lg:h-[calc(100vh-var(--navbar-height))]">
+    <ul class="flex flex-col gap-1 lg:hidden">
+      
+      
+        <li class=""><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/publication/"
+    
+  >Publications
+        <span data-hb-sidebar-toggle>
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-[18px] min-w-[18px] rounded-sm p-0.5 hover:bg-gray-800/5 dark:hover:bg-gray-100/5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" class="origin-center transition-transform rtl:-rotate-180"></path></svg>
+        </span>
+    </a><div class="ltr:pr-0 overflow-hidden">
+        <ul class="hb-sidebar-list"><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/publication/corl2025-4/"
+    
+  >Constrained Style Learning from Imperfect Demonstrations under Task Optimality
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/publication/corl2025-3/"
+    
+  >Motion Priors Reimagined: Adapting Flat-Terrain Skills for Complex Quadruped Mobility
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/publication/neurips2025/"
+    
+  >Robotic World Model: A Neural Network Simulator for Robust Policy Optimization in Robotics
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/publication/corl2025-1/"
+    
+  >Offline Robotic World Model: Learning Robotic Policies without a Physics Simulator
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/publication/corl2025-2/"
+    
+  >Toward Task Generalization via Memory Augmentation in Meta-Reinforcement Learning
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/publication/icra2025/"
+    
+  >DFM: Deep Fourier Mimic for Expressive Dance Motion Learning
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/publication/arxiv-1/"
+    
+  >Learning More With Less: Sample Efficient Dynamics Learning and Model-Based RL for Loco-Manipulation
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/publication/icra2024/"
+    
+  >Learning Diverse Skills for Local Navigation under Multi-constraint Optimality
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/publication/iclr2024/"
+    
+  >FLD: Fourier Latent Dynamics for Structured Motion Representation and Learning
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/publication/icra2023/"
+    
+  >Versatile Skill Control via Self-supervised Adversarial Imitation of Unlabeled Mixed Motions
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/publication/corl2022/"
+    
+  >Learning Agile Skills via Adversarial Imitation of Rough Partial Demonstrations
+    </a>
+              
+            </li></ul>
+      </div></li>
+        <li class="open"><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/post/"
+    
+  >Blog
+        <span data-hb-sidebar-toggle>
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-[18px] min-w-[18px] rounded-sm p-0.5 hover:bg-gray-800/5 dark:hover:bg-gray-100/5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" class="origin-center transition-transform rtl:-rotate-180"></path></svg>
+        </span>
+    </a><div class="ltr:pr-0 overflow-hidden">
+        <ul class="hb-sidebar-list"><li class="flex flex-col open"><a
+    class="hb-sidebar-custom-link
+      sidebar-active-item bg-primary-100 font-semibold text-primary-800 dark:bg-primary-300 dark:text-primary-900"
+    href="/post/lfd/"
+    
+  >Feature-Based vs. GAN-Based Imitation: When and Why
+    </a>
+  
+    <ul class="hb-sidebar-mobile-toc"><li>
+              <a
+                href="#disclaimer"
+                class="hb-docs-link"
+              >Disclaimer</a>
+            </li>
+          <li>
+              <a
+                href="#motivation-and-scope"
+                class="hb-docs-link"
+              >Motivation and Scope</a>
+            </li>
+          <li>
+              <a
+                href="#physics-based-control-states-and-actions"
+                class="hb-docs-link"
+              >Physics-Based Control, States and Actions</a>
+            </li>
+          <li>
+              <a
+                href="#rethinking-learning-from-demonstrations"
+                class="hb-docs-link"
+              >Rethinking Learning from Demonstrations</a>
+            </li>
+          <li>
+              <a
+                href="#feature-based-imitation-origins-and-limitations"
+                class="hb-docs-link"
+              >Feature-Based Imitation: Origins and Limitations</a>
+            </li>
+          <li>
+              <a
+                href="#implicit-rewards-for-motion-diversity-gan-based-imitation"
+                class="hb-docs-link"
+              >Implicit Rewards for Motion Diversity: GAN-Based Imitation</a>
+            </li>
+          <li>
+              <a
+                href="#feature-based-imitation-with-structured-representations"
+                class="hb-docs-link"
+              >Feature-Based Imitation with Structured Representations</a>
+            </li>
+          <li>
+              <a
+                href="#summary-strengths-limitations-and-emerging-directions"
+                class="hb-docs-link"
+              >Summary: Strengths, Limitations, and Emerging Directions</a>
+            </li>
+          <li>
+              <a
+                href="#on-metrics-and-misconceptions"
+                class="hb-docs-link"
+              >On Metrics and Misconceptions</a>
+            </li>
+          <li>
+              <a
+                href="#debunking-common-beliefs"
+                class="hb-docs-link"
+              >Debunking Common Beliefs</a>
+            </li>
+          <li>
+              <a
+                href="#final-remarks"
+                class="hb-docs-link"
+              >Final Remarks</a>
+            </li>
+          <li>
+              <a
+                href="#citation"
+                class="hb-docs-link"
+              >Citation</a>
+            </li>
+          </ul>
+  
+              
+            </li></ul>
+      </div></li>
+        <li class=""><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/event/"
+    
+  >Recent &amp; Upcoming Talks
+        <span data-hb-sidebar-toggle>
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-[18px] min-w-[18px] rounded-sm p-0.5 hover:bg-gray-800/5 dark:hover:bg-gray-100/5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" class="origin-center transition-transform rtl:-rotate-180"></path></svg>
+        </span>
+    </a><div class="ltr:pr-0 overflow-hidden">
+        <ul class="hb-sidebar-list"><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/event/jsk/"
+    
+  >Developmental Legged Intelligence: from Imitation to Generation
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/event/sony/"
+    
+  >Developmental Legged Intelligence: from Imitation to Generation
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/event/tri/"
+    
+  >FLD: Fourier Latent Dynamics for Structured Motion Representation and Learning
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/event/sra/"
+    
+  >Journal Club on Pose Estimation and Action Recognition
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/event/ri/"
+    
+  >Leveraging Spatial-Temporal Structures in Self-supervised Motion Representation and Learning
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/event/ai4ce/"
+    
+  >Developmental Legged Intelligence: from Imitation to Generation
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/event/las/"
+    
+  >Learning from Limited Demonstrations: Lessons We have Learned
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/event/brl/"
+    
+  >Reducing Human Efforts in Reinforcement Learning for Legged Skill Development
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/event/mim/"
+    
+  >Reducing Human Efforts for Expert Acquisition in Imitation Learning
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/event/rsl/"
+    
+  >Learning Agile Skills via Adversarial Imitation of Rough Partial Demonstrations
+    </a>
+              
+            </li></ul>
+      </div></li>
+        <li class=""><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/platform/"
+    
+  >Robotic Platforms
+        <span data-hb-sidebar-toggle>
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-[18px] min-w-[18px] rounded-sm p-0.5 hover:bg-gray-800/5 dark:hover:bg-gray-100/5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" class="origin-center transition-transform rtl:-rotate-180"></path></svg>
+        </span>
+    </a><div class="ltr:pr-0 overflow-hidden">
+        <ul class="hb-sidebar-list"><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/platform/anymal_on_wheels/"
+    
+  >ANYmal on Wheels
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/platform/unitree_b2-w/"
+    
+  >Unitree B2-W
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/platform/aibo/"
+    
+  >Sony aibo
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/platform/mit_humanoid/"
+    
+  >MIT Humanoid
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/platform/mini_cheetah/"
+    
+  >Mini Cheetah
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/platform/supermegabot/"
+    
+  >SuperMegaBot
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/platform/solo/"
+    
+  >Solo
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/platform/spot/"
+    
+  >Spot
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/platform/alma/"
+    
+  >ALMA
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/platform/anymal/"
+    
+  >ANYmal
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/platform/agnathax/"
+    
+  >AgnathaX
+    </a>
+              
+            </li></ul>
+      </div></li>
+        <li class=""><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/projects/"
+    
+  >Projects
+    </a></li>
+        <li class=""><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/project/"
+    
+  >Projects
+        <span data-hb-sidebar-toggle>
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-[18px] min-w-[18px] rounded-sm p-0.5 hover:bg-gray-800/5 dark:hover:bg-gray-100/5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" class="origin-center transition-transform rtl:-rotate-180"></path></svg>
+        </span>
+    </a><div class="ltr:pr-0 overflow-hidden">
+        <ul class="hb-sidebar-list"><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/project/pandas/"
+    
+  >Pandas
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/project/pytorch/"
+    
+  >PyTorch
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/project/scikit/"
+    
+  >scikit-learn
+    </a>
+              
+            </li></ul>
+      </div></li>
+        <li class=""><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/experience/"
+    
+  >Experience
+    </a></li>
+        <li class=""><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/teaching/"
+    
+  >Teaching
+        <span data-hb-sidebar-toggle>
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-[18px] min-w-[18px] rounded-sm p-0.5 hover:bg-gray-800/5 dark:hover:bg-gray-100/5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" class="origin-center transition-transform rtl:-rotate-180"></path></svg>
+        </span>
+    </a><div class="ltr:pr-0 overflow-hidden">
+        <ul class="hb-sidebar-list"><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/teaching/js/"
+    
+  >Learn JavaScript
+    </a>
+              
+            </li><li class="flex flex-col "><a
+    class="hb-sidebar-custom-link
+      text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-gray-50"
+    href="/teaching/python/"
+    
+  >Learn Python
+    </a>
+              
+            </li></ul>
+      </div></li>
+    </ul>
+
+    <div class="max-xl:hidden h-0 w-64 shrink-0"></div></div>
+
+</aside>
+  
+
+<nav class="hb-toc order-last hidden w-64 shrink-0 xl:block print:hidden px-4" aria-label="table of contents">
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div class="hb-scrollbar text-sm [hyphens:auto] sticky top-16 overflow-y-auto pr-4 pt-6 max-h-[calc(100vh-var(--navbar-height)-env(safe-area-inset-bottom))] -mr-4 rtl:-ml-4"><p class="mb-4 font-semibold tracking-tight">On this page</p><ul>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="font-semibold inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#disclaimer">Disclaimer</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="font-semibold inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#motivation-and-scope">Motivation and Scope</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="font-semibold inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#physics-based-control-states-and-actions">Physics-Based Control, States and Actions</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="font-semibold inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#rethinking-learning-from-demonstrations">Rethinking Learning from Demonstrations</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="font-semibold inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#feature-based-imitation-origins-and-limitations">Feature-Based Imitation: Origins and Limitations</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="font-semibold inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#implicit-rewards-for-motion-diversity-gan-based-imitation">Implicit Rewards for Motion Diversity: GAN-Based Imitation</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="font-semibold inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#feature-based-imitation-with-structured-representations">Feature-Based Imitation with Structured Representations</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="font-semibold inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#summary-strengths-limitations-and-emerging-directions">Summary: Strengths, Limitations, and Emerging Directions</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="pl-4 rtl:pr-4 inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#gan-based-methods">GAN-Based Methods</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="pl-4 rtl:pr-4 inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#feature-based-methods">Feature-Based Methods</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="font-semibold inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#on-metrics-and-misconceptions">On Metrics and Misconceptions</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="font-semibold inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#debunking-common-beliefs">Debunking Common Beliefs</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="font-semibold inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#final-remarks">Final Remarks</a>
+      </li>
+      <li class="my-2 scroll-my-6 scroll-py-6">
+        <a class="font-semibold inline-block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 w-full break-words" href="#citation">Citation</a>
+      </li></ul>
+
+  
+  
+    
+    
+  
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+  </nav>
+
+
+  <article class="w-full break-words flex min-h-[calc(100vh-var(--navbar-height))] min-w-0 justify-center pb-8 pr-[calc(env(safe-area-inset-right)-1.5rem)]">
+    <main class="w-full min-w-0 max-w-6xl px-6 pt-4 md:px-12">
+
+      
+
+      <h1 class="mt-2 text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Feature-Based vs. GAN-Based Imitation: When and Why</h1>
+
+      <div class="mt-4 mb-16">
+      <div class="text-gray-500 dark:text-gray-300 text-sm flex items-center flex-wrap gap-y-2"><span class="mr-1">Jul 8, 2025</span><span class="mx-1">·</span>
+        
+          
+          
+          <div class="group inline-flex items-center text-current gap-x-1.5 mx-1">
+            
+            
+            <img src="/author/theo-hermann/avatar_hu_72d1bc0a9266c71d.webp" alt="Théo Hermann" class="inline-block h-4 w-4 rounded-full border border-current" loading="lazy" />
+            
+            <div >Théo Hermann</div>
+          </div>
+          
+        
+
+        
+        <span class="mx-1">·</span>
+        <span class="mx-1">
+          23 min read
+        </span>
+        
+        </div>
+
+        <div class="mt-3">
+          
+
+
+
+
+<div class="">
+  
+  
+
+
+
+
+
+
+
+
+  
+    
+  
+
+
+
+<a class="hb-attachment-link hb-attachment-large" href="https://arxiv.org/abs/2507.05906" target="_blank" rel="noopener">
+  <svg style="height: 1em" class='inline-block' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9"/></svg>
+  PDF
+</a>
+
+
+
+<a class="hb-attachment-link hb-attachment-large" href="/post/lfd/cite.bib" target="_blank" data-filename="/post/lfd/cite.bib">
+  <svg style="height: 1em" class='inline-block' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"/></svg>
+  Cite
+</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+        </div>
+      </div>
+
+
+
+      
+      
+      
+      
+      
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <div class="article-header article-container featured-image-wrapper mt-4 mb-16" style="max-width: 720px; max-height: 480px;">
+        <div style="position: relative">
+          <img src="/post/lfd/featured_hu_c8c1517f55453531.webp" width="720" height="480" alt="" class="featured-image">
+          <span class="article-header-caption">Learning from demonstrations: Feature-based vs. GAN-based methods</span>
+        </div>
+      </div>
+      
+
+      
+      
+        <div class="max-w-prose grid grid-cols-1 md:grid-cols-[200px_auto] gap-4 my-6">
+
+        
+          <div class="font-bold text-2xl">Abstract</div>
+          <div>This survey provides a comparative analysis of feature-based and GAN-based approaches to learning from demonstrations, with a focus on the structure of reward functions and their implications for policy learning. Feature-based methods offer dense, interpretable rewards that excel at high-fidelity motion imitation, yet often require sophisticated representations of references and struggle with generalization in unstructured settings. GAN-based methods, in contrast, use implicit, distributional supervision that enables scalability and adaptation flexibility, but are prone to training instability and coarse reward signals. Recent advancements in both paradigms converge on the importance of structured motion representations, which enable smoother transitions, controllable synthesis, and improved task integration. We argue that the dichotomy between feature-based and GAN-based methods is increasingly nuanced: rather than one paradigm dominating the other, the choice should be guided by task-specific priorities such as fidelity, diversity, interpretability, and adaptability. This work outlines the algorithmic trade-offs and design considerations that underlie method selection, offering a framework for principled decision-making in learning from demonstrations.</div>
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+      </div>
+      
+
+      <div class="prose prose-slate lg:prose-xl dark:prose-invert">
+        <div class="flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900">
+<span class="pr-3 pt-1 text-primary-600 dark:text-primary-300">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300">This survey was proofread by <a href="https://frank-zy-dou.github.io/" target="_blank" rel="noopener">Zhiyang Dou</a>, <a href="https://tairanhe.com/" target="_blank" rel="noopener">Tairan He</a>, <a href="https://chengxuxin.github.io/" target="_blank" rel="noopener">Xuxin Cheng</a>, <a href="https://www.zhengyiluo.com/" target="_blank" rel="noopener">Zhengyi Luo</a>, and <a href="http://chen.tessler.tilda.ws/" target="_blank" rel="noopener">Chen Tessler</a>.
+Their expertise in the field and constructive suggestions were instrumental in shaping the final form of this work.</span>
+</div>
+<h2 id="disclaimer">Disclaimer</h2>
+<p>The terminology surrounding the use of offline reference data in reinforcement learning (RL) varies widely across the literature.
+Terms such as <em>imitation learning</em>, <em>learning from demonstrations</em>, and <em>demonstration learning</em> are often used interchangeably, despite referring to subtly different methodologies or assumptions.</p>
+<p>In this survey, we adopt the term <strong>learning from demonstrations</strong> to specifically denote a class of methods that utilize <em>state-based</em>, <em>offline reference data</em> to derive a <strong>reward signal</strong>.
+This reward signal quantifies the similarity between the behavior of a learning agent and that of the reference trajectories, and it is used to guide policy optimization.</p>
+<div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900">
+<span class="pr-3 pt-1 text-red-400">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300">This definition intentionally excludes methods based on <strong>behavior cloning</strong> that require <strong>action annotations</strong>, such as those used in recent large-scale manipulation datasets (e.g., <a href="https://arxiv.org/pdf/2503.14734" target="_blank" rel="noopener">Gr00t N1</a>, <a href="https://journals.sagepub.com/doi/pdf/10.1177/02783649241273668" target="_blank" rel="noopener">diffusion policy</a>, <a href="https://arxiv.org/pdf/2503.20020" target="_blank" rel="noopener">Gemini Robotics</a>).
+These approaches assume access to expert action labels and thus follow a different paradigm than the class of methods discussed here, which operate solely on state observations and rely on RL to generate control.</span>
+</div>
+<h2 id="motivation-and-scope">Motivation and Scope</h2>
+<p>While learning from demonstrations has become a widely adopted strategy in both robotics and character animation, the field lacks consistent guidance on <strong>when to prefer particular classes of methods</strong>, such as feature-based versus GAN-based approaches.
+Practitioners often adopt one method over another based on precedent or anecdotal success, without a systematic analysis of the algorithmic factors that underlie their performance.
+As a result, conclusions drawn from empirical success may conflate algorithmic merit with incidental choices in reward design, data selection, or architecture.</p>
+<p>The objective of this article is to <strong>provide a principled comparison between feature-based and GAN-based imitation methods</strong>, focusing on their fundamental assumptions, inductive biases, and operational regimes.
+The exposition proceeds in two stages.
+First, we review the problem setting from the perspective of physics-based control and reinforcement learning, including the formulation of reward functions based on reference trajectories.
+Second, we examine the historical development and current landscape of imitation methods, organized around the type of reward structure they use, explicit, feature-based formulations versus implicit, adversarially learned metrics.</p>
+<p>Our goal is not to advocate for one approach over the other in general, but to clarify the conditions under which each is more suitable.
+By articulating the trade-offs involved—including scalability, stability, generalization, and representation learning, we aim to provide a conceptual framework that supports more informed method selection in future work.</p>
+<h2 id="physics-based-control-states-and-actions">Physics-Based Control, States and Actions</h2>
+<p>In both character animation and robotics, <strong>physics-based control</strong> refers to a paradigm in which an agent&rsquo;s behavior is governed by the underlying physical dynamics of the system, either simulated or real.
+Rather than prescribing trajectories explicitly, such as joint angles or end-effector poses, this approach formulates control as a process of goal-directed optimization, where a policy generates <strong>control signals</strong> (e.g., torques or muscle activations) to maximize an objective function under physical constraints.
+This stands in contrast to <strong>kinematics-based</strong> or <strong>keyframe-based</strong> methods, which often disregard dynamics and focus on geometrically feasible but potentially physically implausible motions.
+Physics-based control ensures that resulting behaviors are not only kinematically valid but also <strong>dynamically consistent</strong>, energy-conservative, and responsive to interaction forces, making it particularly suited for tasks involving locomotion, balance, and physical interaction in uncertain or dynamic environments.</p>
+<div class="flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900">
+<span class="pr-3 pt-1 text-primary-600 dark:text-primary-300">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300">The canonical formalism for this control paradigm is the <strong>Markov Decision Process (MDP)</strong>, defined by a tuple $\left (\mathcal{S}, \mathcal{A}, T, R, \gamma \right )$, where $\mathcal{S}$ and $\mathcal{A}$ denote the state and action spaces, respectively.
+The transition kernel $T: \mathcal{S} \times \mathcal{A} \to \mathcal{S}$ captures the environment dynamics $p \left (s_{t+1} \mid s_t, a_t \right )$, while the reward function $R: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to \mathbb{R}$ maps transitions to scalar rewards.
+The agent seeks to learn a policy $\pi_\theta: \mathcal{S} \to \mathcal{A}$ that maximizes the expected discounted return $\mathbb{E}_{\pi_\theta} \left[\sum_{t \geq 0} \gamma^t r_t\right]$, where $r_t$ is the reward at time $t$ and $\gamma \in \left [0, 1 \right ]$ is the discount factor.</span>
+</div>
+<p>In this context, the state $s \in \mathcal{S}$ typically encodes the agent&rsquo;s physical configuration and dynamics, such as joint positions, joint velocities, root orientation, and may include exteroceptive inputs like terrain geometry or object pose.
+The action $a \in \mathcal{A}$ corresponds to the control input applied to the system, most commonly joint torques in torque-controlled settings, or target positions in PD-controlled systems.
+In biomechanical models, actions may also represent muscle activations.
+By integrating these elements within a physics simulator or physical system, physics-based control enables emergent behaviors that are compatible with real-world dynamics, allowing policies to discover strategies that are not only effective but also physically feasible.</p>
+<h2 id="rethinking-learning-from-demonstrations">Rethinking Learning from Demonstrations</h2>
+<p>In the context of learning from demonstrations, reward functions are typically derived from <strong>reference data</strong>, rather than being manually engineered to reflect task success or motion quality.
+This setup leverages recorded trajectories, often collected from motion capture, teleoperation, or other expert sources, to define a notion of behavioral similarity.
+The policy is then optimized to minimize this discrepancy, encouraging it to reproduce motions that are consistent with those in the demonstration dataset.</p>
+<p>Critically, the reward derived from demonstrations may serve either as a <strong>pure imitation objective</strong>, where the policy is expected to replicate the demonstrated behavior as closely as possible, or as a <strong>regularizing component</strong> that biases learning while allowing task-specific objectives to dominate.
+This dual role makes demonstration-based rewards particularly valuable in high-dimensional control problems where exploration is difficult and task-based rewards are sparse or poorly shaped.
+As such, learning from demonstrations transforms the design of the reward function from a manual engineering problem into one of defining or learning an appropriate similarity metric between agent and expert behavior, either explicitly, through features, or implicitly, through discriminators or encoders.</p>
+<div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900">
+<span class="pr-3 pt-1 text-red-400">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300">While reference trajectories are often valued for their visual realism or naturalness, this perspective underemphasizes their <strong>algorithmic utility</strong>: reference data serves as a critical mechanism for improving <strong>learning efficiency</strong> in high-dimensional control problems.
+Rather than functioning merely as a constraint or prior, demonstrations provide <strong>structured guidance</strong> that biases policy exploration toward plausible and meaningful behaviors.</span>
+</div>
+<p>This role becomes especially important as the complexity of the environment and agent increases.
+In lower-dimensional settings, <a href="https://proceedings.mlr.press/v164/rudin22a/rudin22a.pdf" target="_blank" rel="noopener">carefully engineered reward functions or manually designed curricula</a> have proven sufficient to elicit sophisticated behaviors through reinforcement learning alone.
+However, such strategies do not scale effectively to systems with high-dimensional state-action spaces, where naïve exploration is inefficient and reward shaping becomes brittle or intractable.
+Under these conditions, demonstration data offers a <strong>practical alternative to reward or environment shaping</strong>, acting as an inductive bias that accelerates the discovery of viable behaviors.
+In this light, reference motions are not ancillary constraints but <strong>primary learning signals</strong>, particularly in regimes where task-based supervision is sparse or difficult to specify.
+This reframing justifies the use of demonstrations not only for imitation but as a foundation for scalable and data-efficient policy learning.</p>
+<h2 id="feature-based-imitation-origins-and-limitations">Feature-Based Imitation: Origins and Limitations</h2>
+<p>Feature-based imitation approaches can be traced back to <a href="https://dl.acm.org/doi/pdf/10.1145/3197517.3201311" target="_blank" rel="noopener">DeepMimic</a>, which established a now-standard formulation for constructing reward signals based on explicit motion matching.
+In this framework, the policy is aligned with a reference trajectory by introducing a <strong>phase variable</strong>, which serves as a learned proxy for temporal progress through the motion.
+The reward is computed by evaluating feature-wise distances—such as joint positions, velocities, orientations, and end-effector positions—between the policy-generated trajectory and the reference, synchronized via the phase.</p>
+<p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  id="figure-deepmimic-style-feature-based-methods-the-policy-receives-dense-per-frame-rewards-by-comparing-hand-crafted-featuressuch-as-joint-positions-and-end-effector-posesbetween-its-current-state-and-a-time-aligned-reference-state-a-phase-variable-synchronizes-policy-and-demonstration-trajectories-enabling-accurate-motion-reproduction-but-limiting-generalization-across-diverse-behaviors-due-to-the-lack-of-structured-motion-representation">
+  <div class="flex justify-center	">
+    <div class="w-100" ><img alt="deepmimic" srcset="
+               /post/lfd/deepmimic_hu_c850e70b7d2c64e4.webp 400w,
+               /post/lfd/deepmimic_hu_a8639584191203c4.webp 760w,
+               /post/lfd/deepmimic_hu_20228fbcb35505e4.webp 1200w"
+               src="/post/lfd/deepmimic_hu_c850e70b7d2c64e4.webp"
+               width="760"
+               height="223"
+               loading="lazy" data-zoomable /></div>
+  </div><figcaption>
+      DeepMimic-style feature-based methods. The policy receives dense, per-frame rewards by comparing hand-crafted features—such as joint positions and end-effector poses—between its current state and a time-aligned reference state. A phase variable synchronizes policy and demonstration trajectories, enabling accurate motion reproduction but limiting generalization across diverse behaviors due to the lack of structured motion representation.
+    </figcaption></figure>
+</p>
+<p>Owing to their dense and explicit reward structure, these methods are highly effective at reproducing <strong>fine-grained motion details</strong>.
+However, their scalability to diverse motion datasets is limited.
+While DeepMimic introduces a one-hot motion identifier to enable multi-clip training, this encoding does not model <strong>semantic or structural relationships</strong> between different motions.
+As a result, the policy treats each motion clip as an isolated objective, which precludes generalization and often leads to discontinuities at transition points.</p>
+<div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900">
+<span class="pr-3 pt-1 text-red-400">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300">Although the phase variable handles temporal alignment within a given clip, there is no analogous mechanism for enforcing <strong>spatial or semantic coherence</strong> across clips.
+Transitions between motions are implemented via hard switching on motion identifiers, which can result in abrupt behavioral changes and visually unnatural trajectories.</span>
+</div>
+<p>What is missing in this setup is a <strong>structured representation space</strong> over motions—one that captures both temporal progression and the underlying topology of behavioral variation.
+Such representations enable not only smoother transitions between behaviors but also facilitate interpolation, compositionality, and improved generalization to motions not seen during training.
+Policies trained over these structured motion spaces are better equipped to synthesize new behaviors while preserving physical plausibility and stylistic fidelity.</p>
+<h2 id="implicit-rewards-for-motion-diversity-gan-based-imitation">Implicit Rewards for Motion Diversity: GAN-Based Imitation</h2>
+<p>To address the limitations of feature-based approaches in handling diverse motion data, <a href="https://dl.acm.org/doi/pdf/10.1145/3450626.3459670" target="_blank" rel="noopener">Adversarial Motion Priors (AMP)</a> introduced the use of adversarial training, building on earlier frameworks such as <a href="https://proceedings.neurips.cc/paper_files/paper/2016/file/cc7e2b878868cbae992d1fb743995d8f-Paper.pdf" target="_blank" rel="noopener">GAIL</a>, where expert action labels are assumed.</p>
+<div class="flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900">
+<span class="pr-3 pt-1 text-primary-600 dark:text-primary-300">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300">In the AMP setting, a <strong>discriminator</strong> is trained to distinguish between state transitions generated by the policy and those sampled from a dataset of reference trajectories.
+As the policy improves, its transitions become increasingly indistinguishable from the expert data, thereby reducing the discriminator&rsquo;s ability to classify them correctly.
+The discriminator’s output serves as a reward signal, guiding the policy toward behavioral fidelity.</span>
+</div>
+<p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  id="figure-gan-based-methods-via-adversarial-rewards-a-discriminator-learns-to-distinguish-short-transition-snippets-from-policy-generated-and-demonstration-data-providing-an-implicit-reward-signal-that-guides-the-policy-toward-expert-like-behavior-by-operating-on-short-windows-without-explicit-time-alignment-this-approach-scales-to-diverse-motion-datasets-and-captures-distributional-similarity-enabling-smoother-transitions-across-unstructured-behaviors">
+  <div class="flex justify-center	">
+    <div class="w-100" ><img alt="gan-based" srcset="
+               /post/lfd/gan-based_hu_c23047f0c8261200.webp 400w,
+               /post/lfd/gan-based_hu_633ec0f0e3d29bb1.webp 760w,
+               /post/lfd/gan-based_hu_93b0378cff5b67d1.webp 1200w"
+               src="/post/lfd/gan-based_hu_c23047f0c8261200.webp"
+               width="760"
+               height="225"
+               loading="lazy" data-zoomable /></div>
+  </div><figcaption>
+      GAN-based methods via adversarial rewards. A discriminator learns to distinguish short transition snippets from policy-generated and demonstration data, providing an implicit reward signal that guides the policy toward expert-like behavior. By operating on short windows without explicit time alignment, this approach scales to diverse motion datasets and captures distributional similarity, enabling smoother transitions across unstructured behaviors.
+    </figcaption></figure>
+</p>
+<p>From an optimization standpoint, GAN-based methods treat the policy as a <strong>generator</strong> in a two-player minimax game.
+These methods scale naturally to large and diverse motion datasets, as they operate on short, fixed-length <strong>transition windows</strong>, typically spanning two to eight frames, rather than full trajectories.
+This removes the need for phase-based or time-indexed alignment, making them particularly effective in unstructured datasets.
+Additionally, the discriminator implicitly defines a <strong>similarity metric</strong> over motion fragments, allowing transitions that are behaviorally similar to receive comparable rewards even when not temporally aligned.
+As a result, policies trained under adversarial objectives tend to exhibit smoother transitions across behaviors compared to methods relying on discrete motion identifiers and hard switching.
+Because the reward is defined over <strong>distributional similarity</strong>, rather than matching a specific trajectory, AMP and related techniques are well-suited for stylization tasks or for serving as general motion priors that can be composed with task-specific objectives.</p>
+<p>Despite their empirical success across domains, including character animation (e.g., <a href="https://dl.acm.org/doi/pdf/10.1145/3588432.3591525" target="_blank" rel="noopener">InterPhys</a>, <a href="https://openaccess.thecvf.com/content/CVPR2023/papers/Rempe_Trace_and_Pace_Controllable_Pedestrian_Animation_via_Guided_Trajectory_Diffusion_CVPR_2023_paper.pdf" target="_blank" rel="noopener">PACER</a>) and <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9981973" target="_blank" rel="noopener">robotics</a>, adversarial imitation introduces fundamental challenges that impact training reliability and policy expressiveness.</p>
+<div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900">
+<span class="pr-3 pt-1 text-red-400">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300"><p><strong>Discriminator Saturation</strong></p>
+<p>A key challenge in adversarial setups is that the discriminator can rapidly become overconfident, especially early in training when the policy generates trajectories that diverge significantly from the reference distribution.
+In this regime, the discriminator easily classifies all transitions correctly, producing near-zero gradients and leaving the policy without informative reward signals.
+This phenomenon is particularly problematic in high-dimensional or difficult environments, such as rough terrain locomotion or manipulation tasks, where meaningful exploration is essential but sparse.</p>
+</span>
+</div>
+<p>Solutions such as Wasserstein-based objectives (e.g., <a href="https://proceedings.mlr.press/v205/li23b/li23b.pdf" target="_blank" rel="noopener">WASABI</a>, <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10610449" target="_blank" rel="noopener">HumanMimic</a>) aim to retain useful gradients and therefore reward signals even in the face of a strong discriminator.</p>
+<div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900">
+<span class="pr-3 pt-1 text-red-400">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300"><p><strong>Mode Collapse</strong></p>
+<p>Another failure mode is the collapse of behavioral diversity: the policy may converge to producing only a narrow subset of trajectories that reliably fool the discriminator, ignoring the wider variation present in the demonstrations.
+While the discriminator implicitly encourages local smoothness in the reward landscape, AMP lacks a structured motion representation that would enable global diversity or controllable behavior synthesis.
+Consequently, the resulting policies often underutilize the full range of skills present in the data.</p>
+</span>
+</div>
+<p>To counteract this limitation, a variety of techniques introduce latent representations to provide structured control over motion variation.
+Unsupervised approaches like <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10160421" target="_blank" rel="noopener">CASSI</a>, <a href="https://dl.acm.org/doi/pdf/10.1145/3528223.3530110" target="_blank" rel="noopener">ASE</a>, and <a href="https://dl.acm.org/doi/pdf/10.1145/3588432.3591541" target="_blank" rel="noopener">CALM</a> learn continuous embeddings over motion space, optimizing mutual information between latent codes and observed behaviors to preserve diversity.
+These embeddings are then used to condition the policy, enabling the generation of distinct behaviors from different regions of the latent space.
+Other approaches rely on category-level supervision to guide the learning process.
+For example, <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10160751" target="_blank" rel="noopener">Multi-AMP</a>, <a href="https://dl.acm.org/doi/pdf/10.1145/3610548.3618205" target="_blank" rel="noopener">CASE</a>, and <a href="https://arxiv.org/pdf/2407.00187" target="_blank" rel="noopener">SMPLOlympics</a> use motion class annotations to condition both the discriminator and the policy, thereby restricting collapse to occur only within class-specific subregions.
+In contrast, <a href="https://arxiv.org/pdf/2504.11054" target="_blank" rel="noopener">FB-CPR</a> adopts a representation-based solution, learning forward-backward encodings to structure the discriminator’s feedback.
+Several other extensions train individual motion primitives progressively (e.g., <a href="https://openaccess.thecvf.com/content/ICCV2023/papers/Luo_Perpetual_Humanoid_Control_for_Real-time_Simulated_Avatars_ICCV_2023_paper.pdf" target="_blank" rel="noopener">PHC</a>, <a href="https://arxiv.org/pdf/2310.04582" target="_blank" rel="noopener">PHC+</a>).
+A conditioned skill composer is utilized to recover the motion diversity.
+Others introduce representation distillation with variational bottlenecks, as in <a href="https://arxiv.org/pdf/2310.04582" target="_blank" rel="noopener">PULSE</a>, to form compressed yet expressive motion embeddings for controllable generation.</p>
+<p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  id="figure-latent-conditioned-gan-based-methods-the-policy-and-discriminator-are-jointly-conditioned-on-learned-motion-embeddings-which-are-derived-from-demonstration-data-through-unsupervised-or-supervised-representation-learning-these-latent-variables-structure-the-imitation-space-promoting-behavioral-diversity-stabilizing-training-and-enabling-controllable-skill-generation-beyond-what-implicit-adversarial-objectives-can-achieve-alone">
+  <div class="flex justify-center	">
+    <div class="w-100" ><img alt="gan-based_conditioned" srcset="
+               /post/lfd/gan-based_conditioned_hu_fce974440fa94b07.webp 400w,
+               /post/lfd/gan-based_conditioned_hu_86c3dd83035b4a6d.webp 760w,
+               /post/lfd/gan-based_conditioned_hu_6f41e3089ffe69e.webp 1200w"
+               src="/post/lfd/gan-based_conditioned_hu_fce974440fa94b07.webp"
+               width="760"
+               height="266"
+               loading="lazy" data-zoomable /></div>
+  </div><figcaption>
+      Latent-conditioned GAN-based methods. The policy and discriminator are jointly conditioned on learned motion embeddings, which are derived from demonstration data through unsupervised or supervised representation learning. These latent variables structure the imitation space, promoting behavioral diversity, stabilizing training, and enabling controllable skill generation beyond what implicit adversarial objectives can achieve alone.
+    </figcaption></figure>
+</p>
+<p>Together, these developments highlight both the flexibility and complexity of adversarial imitation learning.
+While GAN-based methods naturally scale to large and diverse datasets, they benefit substantially from the addition of structured motion representations, whether learned, annotated, or composed, to stabilize training and recover controllable, diverse behavior.</p>
+<h2 id="feature-based-imitation-with-structured-representations">Feature-Based Imitation with Structured Representations</h2>
+<p>While adversarial imitation methods offer flexibility and scalability with diverse reference data, they impose significant practical burdens.
+Ensuring training stability, managing discriminator saturation, and preventing mode collapse often require extensive architectural tuning.
+These limitations have motivated a return to feature-based methods, now enhanced with structured motion representations, as a more interpretable and controllable alternative to adversarial training.
+The core insight behind this renewed direction is the importance of a well-structured motion representation space for enabling smooth transitions and generalization across behaviors.</p>
+<div class="flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900">
+<span class="pr-3 pt-1 text-primary-600 dark:text-primary-300">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300">While GAN-based methods rely on the discriminator to <strong>implicitly induce</strong> such a representation, often requiring additional mechanisms to extract, control, or condition on it, feature-based approaches allow for the <strong>explicit construction</strong> of motion embeddings that are either precomputed or learned in parallel with policy training.</span>
+</div>
+<p>This explicitness simplifies conditioning and reward design, often reducing the reward to weighted feature differences relative to a reference state.</p>
+<p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  id="figure-feature-based-methods-with-structured-motion-representations-the-policy-receives-per-frame-rewards-based-on-feature-differences-with-reference-states-and-is-conditioned-on-compact-motion-embeddings-derived-from-demonstration-data-this-design-preserves-the-interpretability-of-hand-crafted-objectives-while-enabling-smoother-transitions-and-broader-generalization-across-behaviors-through-learned-motion-structure">
+  <div class="flex justify-center	">
+    <div class="w-100" ><img alt="feature-based" srcset="
+               /post/lfd/feature-based_hu_1b92b244460335eb.webp 400w,
+               /post/lfd/feature-based_hu_b809c86c17d7b37b.webp 760w,
+               /post/lfd/feature-based_hu_f85d2c3a3a290969.webp 1200w"
+               src="/post/lfd/feature-based_hu_1b92b244460335eb.webp"
+               width="760"
+               height="264"
+               loading="lazy" data-zoomable /></div>
+  </div><figcaption>
+      Feature-based methods with structured motion representations. The policy receives per-frame rewards based on feature differences with reference states and is conditioned on compact motion embeddings derived from demonstration data. This design preserves the interpretability of hand-crafted objectives while enabling smoother transitions and broader generalization across behaviors through learned motion structure.
+    </figcaption></figure>
+</p>
+<p>As a result, a new class of imitation approaches has emerged that maintains the explicit reward structure of traditional feature-based methods, but augments it with <strong>representation learning</strong> to scale across tasks and motions.
+In many cases, reference frames, or compact summaries thereof, are injected directly into the policy, providing frame-level tracking targets that guide behavior.</p>
+<div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900">
+<span class="pr-3 pt-1 text-red-400">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300"><p><strong>Sophisticated Motion Representation</strong></p>
+<p>A central challenge for this class of methods is the construction of motion representations that support smooth transitions and structural generalization. Compact, low-dimensional embeddings promote semantic understanding of inter-motion relationships and improve sample efficiency.</p>
+</span>
+</div>
+<p>To this end, some methods inject reference features or full motion states directly into the policy (e.g., <a href="https://arxiv.org/pdf/2312.04393" target="_blank" rel="noopener">PhysHOI</a>, <a href="https://arxiv.org/pdf/2402.16796" target="_blank" rel="noopener">ExBody</a>, <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10801984" target="_blank" rel="noopener">H2O</a>, <a href="https://arxiv.org/pdf/2406.10454" target="_blank" rel="noopener">HumanPlus</a>, <a href="https://dl.acm.org/doi/pdf/10.1145/3687951" target="_blank" rel="noopener">MaskedMimic</a>, <a href="https://arxiv.org/pdf/2412.13196?" target="_blank" rel="noopener">ExBody2</a>, <a href="https://arxiv.org/pdf/2406.08858" target="_blank" rel="noopener">OmniH2O</a>, <a href="https://arxiv.org/pdf/2505.03738" target="_blank" rel="noopener">AMO</a>, <a href="https://arxiv.org/pdf/2505.02833" target="_blank" rel="noopener">TWIST</a>, <a href="https://arxiv.org/pdf/2506.14770" target="_blank" rel="noopener">GMT</a>), preserving spatial coherence in the motion space.
+Others pursue more abstract embeddings through self-supervised or policy-conditioned learning.
+For instance, <a href="https://dl.acm.org/doi/pdf/10.1145/3550454.3555434" target="_blank" rel="noopener">ControlVAE</a>, <a href="https://dl.acm.org/doi/pdf/10.1145/3528223.3530067" target="_blank" rel="noopener">PhysicsVAE</a>, and <a href="https://dl.acm.org/doi/pdf/10.1145/3618397" target="_blank" rel="noopener">NCP</a> build representations via policy interaction, while <a href="https://dl.acm.org/doi/abs/10.1111/cgf.15175" target="_blank" rel="noopener">VMP</a> and <a href="https://dl.acm.org/doi/full/10.1145/3680528.3687626" target="_blank" rel="noopener">RobotMDM</a> construct temporally and spatially coherent embeddings using self-supervision.
+Frequency-domain methods such as <a href="https://dl.acm.org/doi/abs/10.1145/3528223.3530178" target="_blank" rel="noopener">PAE</a>, <a href="https://arxiv.org/pdf/2402.13820" target="_blank" rel="noopener">FLD</a>, and <a href="https://arxiv.org/pdf/2502.10980" target="_blank" rel="noopener">DFM</a> impose motion-inductive biases that capture the periodic and hierarchical structure of motion.
+These techniques collectively extend the DeepMimic paradigm by generalizing phase alignment and structural similarity beyond heuristics.</p>
+<div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900">
+<span class="pr-3 pt-1 text-red-400">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300"><p><strong>Inflexible Imitation Adaptation</strong></p>
+<p>A limitation of these representation-driven feature-based methods is that they often rely on explicit tracking of full trajectories, enforced by dense per-step rewards.
+This design makes it difficult to adapt or deviate from the reference when auxiliary tasks require flexibility, as is common in goal-directed or interaction-heavy settings.</p>
+</span>
+</div>
+<p>To address this, some approaches introduce mechanisms to adaptively relax imitation constraints.
+For example, <a href="https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/700491/1/output.pdf" target="_blank" rel="noopener">MCP</a> introduces a fallback mechanism that adjusts phase progression when key task objectives are not met.
+<a href="https://arxiv.org/pdf/2407.11562" target="_blank" rel="noopener">RobotKeyframing</a> proposes a transformer-based attention model that encodes arbitrary sets of keyframes with flexible temporal spacing.
+<a href="https://arxiv.org/pdf/2507.09371v1" target="_blank" rel="noopener">ConsMimic</a> proceeds with imitation of features only when the optimality constraints of the task are satisfied.
+Other works incorporate high-level planning components to dictate intermediate reference states, such as diffusion-based models in <a href="https://arxiv.org/pdf/2505.04002" target="_blank" rel="noopener">PARC</a> and <a href="https://arxiv.org/pdf/2505.18780" target="_blank" rel="noopener">HMI</a>, or planners that directly modulate the learned motion representations (e.g., <a href="https://www.nature.com/articles/s42256-024-00861-3.pdf" target="_blank" rel="noopener">VQ-PMC</a>, <a href="https://arxiv.org/pdf/2505.16084" target="_blank" rel="noopener">Motion Priors Reimagined</a>).</p>
+<p>Together, these developments illustrate the interpretability and stability of feature-based imitation when paired with structured motion representations.
+However, despite avoiding the instability of adversarial training, these methods remain constrained by their reliance on explicit tracking and overengineered representations, which can hinder adaptation in tasks requiring flexible deviation from demonstrations.</p>
+<h2 id="summary-strengths-limitations-and-emerging-directions">Summary: Strengths, Limitations, and Emerging Directions</h2>
+<p>Learning from demonstrations has evolved into two primary methodological paradigms: <strong>feature-based methods</strong>, which use explicit, hand-crafted reward formulations, and <strong>GAN-based methods</strong>, which employ discriminators to implicitly shape behavior.
+Each offers distinct advantages and faces unique challenges, especially as the field shifts toward learning from large, diverse, and unstructured motion datasets.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>GAN-Based Methods</strong></th>
+          <th><strong>Feature-Based Methods</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="https://dl.acm.org/doi/pdf/10.1145/3450626.3459670" target="_blank" rel="noopener">AMP</a>, <a href="https://dl.acm.org/doi/pdf/10.1145/3588432.3591525" target="_blank" rel="noopener">InterPhys</a></td>
+          <td><a href="https://dl.acm.org/doi/pdf/10.1145/3197517.3201311" target="_blank" rel="noopener">DeepMimic</a>, <a href="https://arxiv.org/pdf/2312.04393" target="_blank" rel="noopener">PhysHOI</a>, <a href="https://arxiv.org/pdf/2402.16796" target="_blank" rel="noopener">ExBody</a></td>
+      </tr>
+      <tr>
+          <td><a href="https://openaccess.thecvf.com/content/CVPR2023/papers/Rempe_Trace_and_Pace_Controllable_Pedestrian_Animation_via_Guided_Trajectory_Diffusion_CVPR_2023_paper.pdf" target="_blank" rel="noopener">PACER</a>, <a href="https://proceedings.mlr.press/v205/li23b/li23b.pdf" target="_blank" rel="noopener">WASABI</a>, <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10610449" target="_blank" rel="noopener">HumanMimic</a></td>
+          <td><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10801984" target="_blank" rel="noopener">H2O</a>, <a href="https://arxiv.org/pdf/2406.10454" target="_blank" rel="noopener">HumanPlus</a>, <a href="https://dl.acm.org/doi/pdf/10.1145/3687951" target="_blank" rel="noopener">MaskedMimic</a></td>
+      </tr>
+      <tr>
+          <td><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10160421" target="_blank" rel="noopener">CASSI</a>, <a href="https://dl.acm.org/doi/pdf/10.1145/3528223.3530110" target="_blank" rel="noopener">ASE</a>, <a href="https://dl.acm.org/doi/pdf/10.1145/3588432.3591541" target="_blank" rel="noopener">CALM</a></td>
+          <td><a href="https://arxiv.org/pdf/2412.13196?" target="_blank" rel="noopener">ExBody2</a>, <a href="https://arxiv.org/pdf/2406.08858" target="_blank" rel="noopener">OmniH2O</a>, <a href="https://arxiv.org/pdf/2505.03738" target="_blank" rel="noopener">AMO</a></td>
+      </tr>
+      <tr>
+          <td><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10160751" target="_blank" rel="noopener">Multi-AMP</a>, <a href="https://dl.acm.org/doi/pdf/10.1145/3610548.3618205" target="_blank" rel="noopener">CASE</a></td>
+          <td><a href="https://arxiv.org/pdf/2505.02833" target="_blank" rel="noopener">TWIST</a>, <a href="https://arxiv.org/pdf/2506.14770" target="_blank" rel="noopener">GMT</a>, <a href="https://dl.acm.org/doi/pdf/10.1145/3550454.3555434" target="_blank" rel="noopener">ControlVAE</a></td>
+      </tr>
+      <tr>
+          <td><a href="https://arxiv.org/pdf/2407.00187" target="_blank" rel="noopener">SMPLOlympics</a>, <a href="https://arxiv.org/pdf/2504.11054" target="_blank" rel="noopener">FB-CPR</a>, <a href="https://openaccess.thecvf.com/content/ICCV2023/papers/Luo_Perpetual_Humanoid_Control_for_Real-time_Simulated_Avatars_ICCV_2023_paper.pdf" target="_blank" rel="noopener">PHC</a></td>
+          <td><a href="https://dl.acm.org/doi/pdf/10.1145/3528223.3530067" target="_blank" rel="noopener">PhysicsVAE</a>, <a href="https://dl.acm.org/doi/pdf/10.1145/3618397" target="_blank" rel="noopener">NCP</a>, <a href="https://dl.acm.org/doi/abs/10.1111/cgf.15175" target="_blank" rel="noopener">VMP</a></td>
+      </tr>
+      <tr>
+          <td><a href="https://arxiv.org/pdf/2310.04582" target="_blank" rel="noopener">PHC+</a>, <a href="https://arxiv.org/pdf/2310.04582" target="_blank" rel="noopener">PULSE</a></td>
+          <td><a href="https://dl.acm.org/doi/full/10.1145/3680528.3687626" target="_blank" rel="noopener">RobotMDM</a>, <a href="https://dl.acm.org/doi/abs/10.1145/3528223.3530178" target="_blank" rel="noopener">PAE</a>, <a href="https://arxiv.org/pdf/2402.13820" target="_blank" rel="noopener">FLD</a></td>
+      </tr>
+      <tr>
+          <td></td>
+          <td><a href="https://arxiv.org/pdf/2502.10980" target="_blank" rel="noopener">DFM</a>, <a href="https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/700491/1/output.pdf" target="_blank" rel="noopener">MCP</a>, <a href="https://arxiv.org/pdf/2507.09371v1" target="_blank" rel="noopener">ConsMimic</a></td>
+      </tr>
+      <tr>
+          <td></td>
+          <td><a href="https://arxiv.org/pdf/2407.11562" target="_blank" rel="noopener">RobotKeyframing</a>, <a href="https://arxiv.org/pdf/2505.04002" target="_blank" rel="noopener">PARC</a>, <a href="https://arxiv.org/pdf/2505.18780" target="_blank" rel="noopener">HMI</a></td>
+      </tr>
+      <tr>
+          <td></td>
+          <td><a href="https://www.nature.com/articles/s42256-024-00861-3.pdf" target="_blank" rel="noopener">VQ-PMC</a>, <a href="https://arxiv.org/pdf/2505.16084" target="_blank" rel="noopener">Motion Priors Reimagined</a></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="gan-based-methods">GAN-Based Methods</h3>
+<p>GAN-based approaches, such as AMP and its derivatives, use a discriminator to assign reward signals based on the realism of short transition snippets.
+This formulation dispenses with time-aligned supervision, allowing policies to imitate motion in a distributional sense rather than reproducing specific trajectories.
+As a result, these methods scale naturally to unstructured or unlabeled data, enabling smoother transitions between behaviors and generalization beyond the demonstrated clips.</p>
+<p>Recent advances mitigate some of the core challenges of GAN-based imitation, namely, <strong>discriminator saturation</strong> and <strong>mode collapse</strong>, by introducing latent structure.
+Techniques learn motion embeddings that condition both policy and discriminator, thereby stabilizing training and supporting controllable behavior generation.
+These latent-conditioned GANs can also model semantic structure in motion space, facilitating interpolation and compositionality.</p>
+<p>Despite these benefits, GAN-based methods remain prone to <strong>training instability</strong>, require careful discriminator design, and often offer coarser control over motion details.
+Their implicit reward structure can obscure performance tuning and requires auxiliary mechanisms for precise task alignment.</p>
+<h3 id="feature-based-methods">Feature-Based Methods</h3>
+<p>In contrast, feature-based imitation methods like DeepMimic start with dense, per-frame reward functions derived from specific motion features.
+This yields strong supervision for motion matching, making them highly effective for replicating fine-grained details in demonstrated behavior.
+However, traditional approaches are limited by their <strong>dependence on hard-coded alignment</strong> and <strong>lack of structured motion representation</strong>, which restricts scalability and generalization.</p>
+<p>Recent developments address these limitations by integrating learned motion representations into the reward and policy structure.
+These efforts construct latent motion embeddings to structure behavior across clips, enabling smoother transitions and support for more diverse or compositional motions.
+This new generation of feature-based methods retains interpretability and strong reward signals while gaining some of the flexibility previously unique to GAN-based setups.</p>
+<p>Nevertheless, feature-based systems still face challenges in <strong>adapting to auxiliary tasks or goals</strong> that require deviation from the reference trajectory.
+Their strong reliance on explicit tracking and dense supervision can make them brittle in dynamic or multi-objective settings, where flexibility is crucial.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Criterion</strong></th>
+          <th><strong>GAN-Based Methods</strong></th>
+          <th><strong>Feature-Based Methods</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Reward signal</strong></td>
+          <td>implicit, coarse</td>
+          <td>explicit, dense</td>
+      </tr>
+      <tr>
+          <td><strong>Scalability</strong></td>
+          <td>high (unstructured data)</td>
+          <td>moderate (depends on representation)</td>
+      </tr>
+      <tr>
+          <td><strong>Generalization</strong></td>
+          <td>strong with latent conditioning</td>
+          <td>strong with good embeddings</td>
+      </tr>
+      <tr>
+          <td><strong>Training stability</strong></td>
+          <td>challenging (saturation, collapse)</td>
+          <td>stable but sensitive to inductive bias</td>
+      </tr>
+      <tr>
+          <td><strong>Interpretability</strong></td>
+          <td>low to moderate</td>
+          <td>high</td>
+      </tr>
+      <tr>
+          <td><strong>Control</strong></td>
+          <td>indirect (via discriminator or latent)</td>
+          <td>direct (via features or embeddings)</td>
+      </tr>
+      <tr>
+          <td><strong>Task integration</strong></td>
+          <td>flexible</td>
+          <td>precise but less adaptable</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="on-metrics-and-misconceptions">On Metrics and Misconceptions</h2>
+<div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900">
+<span class="pr-3 pt-1 text-red-400">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300">In evaluating learning from demonstration algorithms, it is common practice to reference metrics such as <em>motion naturalness</em>, <em>energy efficiency</em>, or <em>cost of transport</em>.
+While these properties are intuitively appealing, they can be misleading indicators of algorithmic performance.
+Crucially, such metrics are not inherent to the learning algorithm itself but are instead highly dependent on the quality and structure of the reference data.
+For instance, if a policy trained via a particular algorithm exhibits smoother or more energy-efficient behavior, this outcome often reflects characteristics of the underlying demonstrations rather than advantages intrinsic to the algorithmic formulation.
+Consequently, attributing these observed properties to the learning method risks conflating algorithmic capability with dataset bias.</span>
+</div>
+<p>Moreover, these high-level metrics offer limited diagnostic value when comparing algorithm classes.
+They do not capture fundamental differences in reward design, training stability, scalability, or generalization capacity.
+A GAN-based approach may yield visually smoother transitions due to its distributional objectives, but this benefit must be weighed against the challenges of motion diversity and tracking accuracy.
+Conversely, a feature-based method may produce high-fidelity imitation in terms of kinematic features but struggle with generalization due to its reliance on well-structured representations.
+To conduct a rigorous and meaningful comparison between methods, evaluation should focus on the properties most directly influenced by algorithmic design.
+These include reward signal quality, training stability, generalization to novel motions or environments, and adaptability to auxiliary tasks.
+By focusing on such factors, researchers and practitioners can better understand the operational trade-offs between feature-based and GAN-based approaches, avoiding overgeneralized claims and grounding comparisons in algorithmic substance rather than incidental outcome metrics.</p>
+<h2 id="debunking-common-beliefs">Debunking Common Beliefs</h2>
+<p>Despite a growing body of research, misconceptions remain prevalent in discussions of GAN-based versus feature-based learning from demonstrations.
+Below, we revisit some common claims, clarify their limitations, and situate them within a more rigorous analytical framework.</p>
+<blockquote>
+<p><strong>GAN-based methods automatically develop a distance metric between reference and policy motions.</strong></p>
+</blockquote>
+<p>This is partially true.
+GAN-based methods implicitly learn a similarity function via the discriminator.
+However, this function may be ill-defined in early training, leading to discriminator saturation, where the discriminator assigns uniformly high distances regardless of policy improvement.
+Moreover, the discriminator may conflate resemblance to a single exemplar with similarity to the overall distribution, resulting in mode collapse.
+Thus, while a learned metric exists, its utility and stability depend heavily on discriminator design and representation quality.</p>
+<blockquote>
+<p><strong>GAN-based methods do not require hand-crafted features.</strong></p>
+</blockquote>
+<p>No.
+This assertion overlooks a key implementation detail: the discriminator operates on selected features of the agent state.
+Choosing these features is analogous to defining reward components in feature-based methods.
+Insufficient features can prevent the discriminator from detecting meaningful discrepancies, while overly complex inputs can lead to rapid overfitting and saturation.
+This trade-off is particularly critical in tasks involving partially observed context (e.g., terrain or object interactions), where feature selection significantly impacts training stability and convergence.</p>
+<blockquote>
+<p><strong>GAN-based methods avoid hand-tuned reward weights for different features.</strong></p>
+</blockquote>
+<p>Not quite.
+While adversarial methods circumvent explicit manual weighting of reward components, they are still sensitive to feature scaling and normalization.
+Input magnitudes shape the discriminator’s sensitivity and therefore act as an implicit weighting scheme.
+Poorly calibrated inputs can bias the reward signal, undermining the interpretability and reliability of the learned policy.</p>
+<blockquote>
+<p><strong>GAN-based methods yield smoother transitions between motions.</strong></p>
+</blockquote>
+<p>This holds true only relative to early feature-based methods that lacked structured representations and relied on hard switching between clips.
+Modern feature-based methods that leverage structured motion embeddings can produce smooth, semantically meaningful transitions.
+Interpolation in learned latent spaces supports temporally and spatially coherent motion generation, rivaling or exceeding GAN-based transitions when appropriate representation learning is applied.</p>
+<blockquote>
+<p><strong>Only GAN-based methods can be combined with task rewards.</strong></p>
+</blockquote>
+<p>No.
+Both GAN-based and feature-based methods can incorporate task objectives.
+Feature-based methods provide dense, frame-aligned imitation rewards, making them effective when the task aligns closely with the reference motion, but less flexible when deviation is required.
+In contrast, GAN-based methods offer distribution-level supervision, enabling greater adaptability to auxiliary goals.
+This flexibility, however, comes at the cost of lower fidelity to the reference and a risk of mode collapse.</p>
+<blockquote>
+<p><strong>GAN-based methods deal better with unstructured or noisy reference motions.</strong></p>
+</blockquote>
+<p>This is an oversimplification.
+GAN-based methods can exhibit robustness to small inconsistencies in demonstrations due to their distributional supervision.
+However, this robustness often comes at the cost of discarding fine motion details.
+Feature-based approaches, especially those employing probabilistic or variational models, can also handle noise effectively through regularization and representation smoothing.</p>
+<blockquote>
+<p><strong>GAN-based methods scale better.</strong></p>
+</blockquote>
+<p>Not necessarily.
+Scalability is more a function of motion representation quality than of paradigm.
+Both GAN-based and feature-based methods can scale with large datasets if equipped with appropriate latent encodings.
+The difference lies in when and how these representations are learned—feature-based methods often rely on supervised or self-supervised embeddings, while GAN-based methods may induce representations via adversarial feedback.
+Neither approach guarantees scalability without careful design.</p>
+<blockquote>
+<p><strong>GAN-based methods transfer better to real-world deployment.</strong></p>
+</blockquote>
+<p>No.
+There is no intrinsic connection between the choice of imitation algorithm and sim-to-real transfer efficacy.
+Transferability is determined primarily by external strategies such as domain randomization, system identification, and regularization.
+While GAN-based approaches may respond more flexibly to auxiliary rewards, they are also more sensitive to regularization, which can create the false impression that certain regularizers are more effective in these methods.</p>
+<blockquote>
+<p><strong>Feature-based methods generalize better to unseen motion inputs.</strong></p>
+</blockquote>
+<p>Generalization depends less on the reward structure and more on the quality and organization of the motion representation space.
+Both GAN-based and feature-based methods can generalize effectively when equipped with well-structured embeddings.
+Failure modes arise not from the paradigm itself but from inadequate inductive biases, insufficient diversity in training data, or poor temporal modeling.</p>
+<blockquote>
+<p><strong>Feature-based methods are easier to implement.</strong></p>
+</blockquote>
+<p>Not necessarily.
+Designing robust feature-based systems involves selecting appropriate reward features, constructing phase functions or embeddings, and managing temporal alignment.
+These tasks can be as complex as designing a discriminator, particularly when the goal is to scale across tasks or environments.
+Moreover, effective latent representations often require pretraining and careful architectural choices to avoid collapse or disentanglement failure.</p>
+<h2 id="final-remarks">Final Remarks</h2>
+<p>This survey has examined two major paradigms in learning from demonstrations: feature-based and GAN-based methods, through the lens of reward structure, scalability, generalization, and representation.
+The core distinction lies not merely in architectural components but in their respective philosophies of supervision: explicit, hand-crafted rewards versus implicit, adversarially learned objectives.</p>
+<p><strong>Feature-based methods</strong> offer dense, interpretable rewards that strongly anchor the policy to reference trajectories, making them well-suited for tasks requiring high-fidelity reproduction of demonstrated motions.
+However, they often struggle with generalization, particularly in multi-clip or unstructured settings, due to the need for manually specified features and aligned references.</p>
+<p><strong>GAN-based methods</strong>, in contrast, provide more flexible and data-driven reward structures through discriminative objectives.
+This enables them to scale naturally to diverse datasets and to support smoother transitions and behavior interpolation.
+Yet, they often encounter challenges related to training stability, reward sparsity, and loss of fine-grained motion detail.</p>
+<p>It is important to recognize that <strong>many problems commonly attributed to one paradigm reappear in different forms in the other</strong>.
+For instance, mode collapse in GANs mirrors the brittleness of poor motion representations in feature-based methods.
+Similarly, while feature-based methods offer strong guidance for motion tracking, they may fail to generalize or adapt when rigid reward definitions are misaligned with auxiliary tasks or dynamic environments.</p>
+<div class="flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900">
+<span class="pr-3 pt-1 text-primary-600 dark:text-primary-300">
+  <svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z"/></svg>
+</span>
+  <span class="dark:text-neutral-300">Rather than presenting these two paradigms as mutually exclusive, recent trends point toward a <strong>convergent perspective</strong>, one that emphasizes the centrality of structured motion representations.
+Whether derived from self-supervised learning, latent encodings, or manually designed summaries, these representations serve as a bridge between the strengths of each approach: the interpretability and controllability of explicit rewards and the scalability and adaptability of adversarial training.</span>
+</div>
+<p>Ultimately, the decision between using a feature-based or GAN-based approach is not a question of universal superiority.
+Instead, it should be guided by the <strong>specific constraints and priorities of the application</strong>: fidelity versus diversity, interpretability versus flexibility, or training simplicity versus large-scale generalization.
+Understanding these trade-offs and their relationship to reward structure and motion representation is essential for designing robust, scalable, and expressive imitation learning systems.</p>
+<h2 id="citation">Citation</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@article{li2025learning,
+</span></span><span class="line"><span class="cl">  title={Learning from Demonstrations: Feature-Based and GAN-Based Approaches},
+</span></span><span class="line"><span class="cl">  author={Li, Chenhao and Hutter, Marco and Krause, Andreas},
+</span></span><span class="line"><span class="cl">  journal={arXiv preprint arXiv:2507.05906},
+</span></span><span class="line"><span class="cl">  year={2025}
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></div>
+      </div>
+
+      
+  <time class="mt-12 mb-8 block text-xs text-gray-500 ltr:text-right rtl:text-left dark:text-gray-400" datetime="2025-07-08T00:00:00.000Z">
+    <span>Last updated on</span>
+    Jul 8, 2025</time>
+
+      <div class="container mx-auto prose prose-slate lg:prose-xl dark:prose-invert mt-5">
+        
+        <div class="max-w-prose print:hidden">
+  
+  
+
+  
+
+
+  
+<section class="flex flex-row flex-wrap justify-center pt-4 text-xl">
+  
+
+  
+  
+  
+  
+  
+  
+  <a
+    target="_blank" rel="noopener"
+    class="m-1 rounded-md bg-neutral-300 p-1.5 text-neutral-700 hover:bg-primary-500 hover:text-neutral-300 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-400 dark:hover:text-neutral-800"
+    href="https://twitter.com/intent/tweet?url=http%3A%2F%2Flocalhost%3A1313%2Fpost%2Flfd%2F&amp;text=Feature-Based&#43;vs.&#43;GAN-Based&#43;Imitation%3A&#43;When&#43;and&#43;Why"
+    title="X"
+    aria-label="X"
+    id="share-link-x"
+  >
+    <svg style="height: 1em;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>
+  </a>
+  
+
+  
+  
+  
+  
+  
+  
+  <a
+    target="_blank" rel="noopener"
+    class="m-1 rounded-md bg-neutral-300 p-1.5 text-neutral-700 hover:bg-primary-500 hover:text-neutral-300 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-400 dark:hover:text-neutral-800"
+    href="https://www.facebook.com/sharer.php?u=http%3A%2F%2Flocalhost%3A1313%2Fpost%2Flfd%2F&amp;t=Feature-Based&#43;vs.&#43;GAN-Based&#43;Imitation%3A&#43;When&#43;and&#43;Why"
+    title="Facebook"
+    aria-label="Facebook"
+    id="share-link-facebook"
+  >
+    <svg style="height: 1em;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
+  </a>
+  
+
+  
+  
+  
+  
+  
+  
+    
+  
+  <a
+    target="_blank" rel="noopener"
+    class="m-1 rounded-md bg-neutral-300 p-1.5 text-neutral-700 hover:bg-primary-500 hover:text-neutral-300 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-400 dark:hover:text-neutral-800"
+    href="mailto:?subject=Feature-Based%20vs.%20GAN-Based%20Imitation%3A%20When%20and%20Why&amp;body=http%3A%2F%2Flocalhost%3A1313%2Fpost%2Flfd%2F"
+    title="Email"
+    aria-label="Email"
+    id="share-link-email"
+  >
+    <svg style="height: 1em;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M16.5 12a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0Zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 1 0-2.636 6.364M16.5 12V8.25"/></svg>
+  </a>
+  
+
+  
+  
+  
+  
+  
+  
+  <a
+    target="_blank" rel="noopener"
+    class="m-1 rounded-md bg-neutral-300 p-1.5 text-neutral-700 hover:bg-primary-500 hover:text-neutral-300 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-400 dark:hover:text-neutral-800"
+    href="https://www.linkedin.com/shareArticle?url=http%3A%2F%2Flocalhost%3A1313%2Fpost%2Flfd%2F&amp;title=Feature-Based&#43;vs.&#43;GAN-Based&#43;Imitation%3A&#43;When&#43;and&#43;Why"
+    title="LinkedIn"
+    aria-label="LinkedIn"
+    id="share-link-linkedin"
+  >
+    <svg style="height: 1em;" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+  </a>
+  
+
+  
+  
+  
+  
+  
+  
+  <a
+    target="_blank" rel="noopener"
+    class="m-1 rounded-md bg-neutral-300 p-1.5 text-neutral-700 hover:bg-primary-500 hover:text-neutral-300 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-400 dark:hover:text-neutral-800"
+    href="whatsapp://send?text=Feature-Based&#43;vs.&#43;GAN-Based&#43;Imitation%3A&#43;When&#43;and&#43;Why%20http%3A%2F%2Flocalhost%3A1313%2Fpost%2Flfd%2F"
+    title="WhatsApp"
+    aria-label="WhatsApp"
+    id="share-link-whatsapp"
+  >
+    <svg style="height: 1em;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor"><path d="m187.58 144.84-32-16a8 8 0 0 0-8 .5l-14.69 9.8a40.55 40.55 0 0 1-16-16l9.8-14.69a8 8 0 0 0 .5-8l-16-32A8 8 0 0 0 104 64a40 40 0 0 0-40 40 88.1 88.1 0 0 0 88 88 40 40 0 0 0 40-40 8 8 0 0 0-4.42-7.16ZM152 176a72.08 72.08 0 0 1-72-72 24 24 0 0 1 19.29-23.54l11.48 23L101 118a8 8 0 0 0-.73 7.51 56.47 56.47 0 0 0 30.15 30.15A8 8 0 0 0 138 155l14.61-9.74 23 11.48A24 24 0 0 1 152 176ZM128 24a104 104 0 0 0-91.82 152.88l-11.35 34.05a16 16 0 0 0 20.24 20.24l34.05-11.35A104 104 0 1 0 128 24Zm0 192a87.87 87.87 0 0 1-44.06-11.81 8 8 0 0 0-6.54-.67L40 216l12.47-37.4a8 8 0 0 0-.66-6.54A88 88 0 1 1 128 216Z"/></svg>
+  </a>
+  
+</section>
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+    
+
+
+
+  
+  
+  
+    
+  
+  
+  
+
+<div class="flex pt-12 pb-4">
+  
+  
+  <img
+    class="mr-4 h-24 w-24 rounded-full"
+    width="96"
+    height="96"
+    alt="Théo Hermann"
+  src="/author/theo-hermann/avatar_hu_726d703e7d73af69.png"
+  loading="lazy"
+  />
+  
+  <div class="place-self-center">
+    <div class="text-[0.6rem] uppercase leading-3 text-neutral-500 dark:text-neutral-400">
+      Authors
+    </div>
+    <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
+      <a href="http://localhost:1313/" class="no-underline">
+      Théo Hermann
+      </a>
+    </div>
+
+    
+    <div class="text-sm font-bold text-neutral-700 dark:text-neutral-300">
+    LiDar and Computational Fluid Dynamics in Favelas
+    </div>
+    
+
+
+    
+
+    <div class="text-2xl sm:text-lg pt-1">
+
+      
+<div class="flex flex-wrap text-neutral-500 dark:text-neutral-300">
+  
+    
+    
+    
+    
+    <a
+      class="pr-2 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+      style="will-change:transform;"
+      href="mailto:thermann@mit.edu"
+      
+      aria-label="At-Symbol"
+    ><svg style="height: 1em;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M16.5 12a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0Zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 1 0-2.636 6.364M16.5 12V8.25"/></svg></a>
+  
+    
+    
+    
+    
+      
+    
+    <a
+      class="pr-2 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+      style="will-change:transform;"
+      href="https://github.com/theoh-io"
+      target="_blank" rel="noopener" rel="me noopener noreferrer"
+      aria-label="Brands/Github"
+    ><svg style="height: 1em;" fill="currentColor" viewBox="3 3 18 18"><path d="M12 3C7.0275 3 3 7.12937 3 12.2276C3 16.3109 5.57625 19.7597 9.15374 20.9824C9.60374 21.0631 9.77249 20.7863 9.77249 20.5441C9.77249 20.3249 9.76125 19.5982 9.76125 18.8254C7.5 19.2522 6.915 18.2602 6.735 17.7412C6.63375 17.4759 6.19499 16.6569 5.8125 16.4378C5.4975 16.2647 5.0475 15.838 5.80124 15.8264C6.51 15.8149 7.01625 16.4954 7.18499 16.7723C7.99499 18.1679 9.28875 17.7758 9.80625 17.5335C9.885 16.9337 10.1212 16.53 10.38 16.2993C8.3775 16.0687 6.285 15.2728 6.285 11.7432C6.285 10.7397 6.63375 9.9092 7.20749 9.26326C7.1175 9.03257 6.8025 8.08674 7.2975 6.81794C7.2975 6.81794 8.05125 6.57571 9.77249 7.76377C10.4925 7.55615 11.2575 7.45234 12.0225 7.45234C12.7875 7.45234 13.5525 7.55615 14.2725 7.76377C15.9937 6.56418 16.7475 6.81794 16.7475 6.81794C17.2424 8.08674 16.9275 9.03257 16.8375 9.26326C17.4113 9.9092 17.76 10.7281 17.76 11.7432C17.76 15.2843 15.6563 16.0687 13.6537 16.2993C13.98 16.5877 14.2613 17.1414 14.2613 18.0065C14.2613 19.2407 14.25 20.2326 14.25 20.5441C14.25 20.7863 14.4188 21.0746 14.8688 20.9824C16.6554 20.364 18.2079 19.1866 19.3078 17.6162C20.4077 16.0457 20.9995 14.1611 21 12.2276C21 7.12937 16.9725 3 12 3Z"></path></svg></a>
+  
+    
+    
+    
+    
+      
+    
+    <a
+      class="pr-2 transition-transform hover:scale-125 hover:text-primary-700 dark:hover:text-primary-400"
+      style="will-change:transform;"
+      href="/uploads/resume.pdf"
+      
+      aria-label="Academicons/Cv"
+    ><svg style="height: 1em;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M249.18 328.324c-9.788 15.384-19.179 30.434-40.222 45.055c-11.256 7.89-37.164 23.306-73.99 23.306C64.709 396.685 8 345.605 8 255.801c0-78.486 53.345-140.486 128.466-140.486c30.434 0 57.474 10.521 77.387 26.304c18.414 14.65 27.038 29.304 34.563 42.456l-52.58 26.273c-3.762-8.626-8.29-17.649-19.913-27.406c-12.784-10.155-25.54-13.152-36.46-13.152c-42.821 0-65.364 39.825-65.364 84.145c0 58.238 29.7 87.143 65.364 87.143c34.563 0 48.48-24.042 57.474-39.426l52.243 26.673zm184.194-204.75H504l-92.037 265.22h-67.597l-90.904-265.22h70.625l54.843 188.6z"/></svg></a>
+  
+</div>
+
+
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+
+
+
+
+  
+  
+
+
+  
+
+
+  
+
+
+
+</div>
+
+      </div>
+
+    </main>
+  </article>
+</div>
+
+    </div>
+    <div class="page-footer">
+      <footer class="container mx-auto flex flex-col justify-items-center text-sm leading-6 mt-24 mb-4 text-slate-700 dark:text-slate-200">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+
+  
+  
+    
+  
+  
+    
+  
+
+  
+
+  
+  <p class="powered-by text-center">
+    © 2025 Me. This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0" rel="noopener noreferrer" target="_blank">CC BY NC ND 4.0</a>
+  </p>
+  
+
+  <p class="powered-by footer-license-icons">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0" rel="noopener noreferrer" target="_blank" aria-label="Creative Commons">
+      <i class="fab fa-creative-commons fa-2x" aria-hidden="true"></i>
+      <i class="fab fa-creative-commons-by fa-2x" aria-hidden="true"></i>
+      
+        <i class="fab fa-creative-commons-nc fa-2x" aria-hidden="true"></i>
+      
+      
+        <i class="fab fa-creative-commons-nd fa-2x" aria-hidden="true"></i>
+      
+    </a>
+  </p>
+
+
+
+
+
+  <p class="powered-by text-center">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://hugoblox.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Hugo Blox Builder</a> — the free, <a href="https://github.com/HugoBlox/hugo-blox-builder" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+
+</footer>
+
+    </div>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

@@ -49,9 +49,9 @@ jobs:
         continue-on-error: true
 
       # Step 5: Download Hugo module dependencies
-      # This ensures all module imports are resolved before building
+      # Use pinned versions from go.mod (without -u to prevent auto-upgrades)
       - name: Download Hugo modules
-        run: hugo mod get -u
+        run: hugo mod get
         env:
           # Use GOPROXY for better caching and reliability
           GOPROXY: direct

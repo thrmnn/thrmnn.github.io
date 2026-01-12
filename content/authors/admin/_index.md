@@ -41,9 +41,9 @@ profiles:
     url: uploads/resume.pdf
 
 interests:
-  - Autonomous Robots *(e.g., "Reinforcement Learning")*
-  - LiDar 3D Modeling *(e.g., "Developmental Robotics")*
-  - Multimodal Fusion *(e.g., "Legged Intelligence")*
+  - Autonomous Robots
+  - LiDar 3D Modeling
+  - Multimodal Fusion
 
 education:
   - area: PhD in Artificial Intelligence
@@ -82,12 +82,12 @@ education:
     #   - lorem ipsum dolor sit amet, consectetur adipiscing elit
     #   - lorem ipsum dolor sit amet, consectetur adipiscing elit
 work:
-  - position: Founding Researcher Rio Lab *(e.g., "Doctoral Fellow")
-    company_name: MIT Senseable City Lab *(e.g., "ETH AI Center")
-    company_url: 'https://senseablerio.mit.edu/ *(full URL)'
-    date_start: 2025-01-01 *(YYYY-MM-DD)
+  - position: Founding Researcher Rio Lab
+    company_name: MIT Senseable City Lab
+    company_url: 'https://senseablerio.mit.edu/'
+    date_start: 2025-01-01
     summary: |
-      LiDar-informed 3D modeling for public health research in favelas *(brief description of your work)
+      LiDar-informed 3D modeling for public health research in favelas
 
 # Skills
 # Add your own SVG icons to `assets/media/icons/`

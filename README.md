@@ -14,8 +14,8 @@ Personal academic website built with [Hugo Blox Builder](https://hugoblox.com/),
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/theoh-io/theoh-io.github.io.git
-   cd theoh-io.github.io
+   git clone https://github.com/thrmnn/thrmnn.github.io.git
+   cd thrmnn.github.io
    ```
 
 2. Install Hugo (if not already installed):
@@ -125,7 +125,7 @@ If you prefer to update files manually, the key files are:
 
 ## Deployment
 
-This site is configured for GitHub Pages. The repository name `theoh-io.github.io` means it will automatically deploy to `https://theoh-io.github.io`.
+This site is configured for GitHub Pages. The repository name `thrmnn.github.io` means it will automatically deploy to `https://thrmnn.github.io`.
 
 ### Automatic Deployment
 
@@ -144,6 +144,7 @@ This site is configured for GitHub Pages. The repository name `theoh-io.github.i
 - **`PERSONAL_INFO.md`** - Centralized personal information template
 - **`ROADMAP.md`** - Step-by-step checklist for website publication
 - **`SYNC_SCRIPT_README.md`** - Detailed sync script documentation
+- **`NEWS_GUIDE.md`** - Guide for adding and managing news content
 
 ## Resources
 

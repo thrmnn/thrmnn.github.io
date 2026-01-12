@@ -4,13 +4,13 @@
 
 ### Identity & Configuration
 - ✅ **Name updated**: All instances of "Chenhao Li" → "Théo Hermann"
-- ✅ **Base URL updated**: Changed to `https://theoh-io.github.io/`
+- ✅ **Base URL updated**: Changed to `https://thrmnn.github.io/`
 - ✅ **Site description updated**: "Théo Hermann - Research at MIT Senseable City Rio"
 - ✅ **Navbar logo**: Updated to "Théo Hermann"
 
 ### Contact & Social Media
 - ✅ **Email updated**: `thermann@mit.edu`
-- ✅ **GitHub updated**: `https://github.com/theoh-io`
+- ✅ **GitHub updated**: `https://github.com/thrmnn`
 - ✅ **Google Analytics**: Removed template ID (`G-M5DNVKG5CM`)
 - ✅ **Twitter handle**: Cleared placeholder
 
@@ -18,6 +18,7 @@
 - ✅ **Hero section**: Title and background image updated
 - ✅ **Author profile**: Name, role, organizations, email, GitHub updated
 - ✅ **Resume file**: Removed `chen_resume.pdf` (template file)
+- ✅ **Template publications**: All template publication directories removed
 
 ### Files Cleaned
 - ✅ `config/_default/hugo.yaml` - Site title and baseURL
@@ -36,11 +37,11 @@ The following still contain template/example content, which you mentioned you'll
 - ⚠️ **Biography**: Still has placeholder text
 
 ### Publications (`content/publication/*/`)
-- ⚠️ All publications still list "Li, Chenhao" as author
-- ⚠️ These are template publications - you'll replace with your own
+- ✅ **All template publications removed** - Publication directories have been deleted
+- ℹ️ **Note**: You don't have publications yet, so the publication section is empty (this is fine)
 
 ### Other Content Sections
-- ⚠️ **News section** (`content/_index.md`): Contains template news entries
+- ⚠️ **News section** (`content/_index.md`): Contains template news entries with publication links that need to be removed
 - ⚠️ **Events/Talks** (`content/event/*`): Template event entries
 - ⚠️ **Platforms** (`content/platform/*`): Template platform entries
 - ⚠️ **Teaching** (`content/teaching/*`): Template teaching content
@@ -62,20 +63,21 @@ Checked for and found no:
 
 3. **Commented sections** - Some commented-out sections in `content/_index.md` mention Hugo Blox Builder, but these are disabled and won't appear on the site.
 
-4. **Publications** - The BibTeX files contain "Li, Chenhao" but these are in your publication content, which you'll update separately.
+4. **Publications** - All template publications have been removed. The news section still contains links to these removed publications that should be cleaned up.
 
 ## ✅ Ready for Your Content Updates
 
-All identifying information has been removed from the configuration and visible identity sections. The remaining template content is in:
-- Content sections (publications, news, events, etc.) - to be updated with your information
+All identifying information has been removed from the configuration and visible identity sections. All template publications have been removed. The remaining template content is in:
+- News section (contains publication links that need to be removed) - to be updated with your information
+- Events, platforms, teaching sections - to be updated or removed
 - Author profile details (education, work, interests) - to be filled from PERSONAL_INFO.md
 
 ## Next Steps
 
 1. Fill out complete information in `PERSONAL_INFO.md`
 2. Run `python3 sync_personal_info.py` to update author profile
-3. Replace publications with your own
-4. Update news, events, and other content sections
+3. **Remove publication links from news section** in `content/_index.md`
+4. Update news, events, and other content sections with your actual information
 5. Add your biography text
 
 ---

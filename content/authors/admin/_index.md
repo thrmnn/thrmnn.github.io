@@ -36,7 +36,7 @@ profiles:
     url: 'mailto:thermann@mit.edu'
     label: E-mail Me
   - icon: brands/github
-    url: https://github.com/theoh-io
+    url: https://github.com/thrmnn
   - icon: academicons/cv
     url: uploads/resume.pdf
 

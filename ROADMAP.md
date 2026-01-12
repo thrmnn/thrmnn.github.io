@@ -17,6 +17,7 @@ This document outlines all steps needed before publishing your personal academic
 - [x] Update contact information (email, GitHub)
 - [x] Remove template tracking IDs (Google Analytics)
 - [x] Remove template files (chen_resume.pdf)
+- [x] **Remove all template publications** - All template publication directories have been deleted
 
 ---
 
@@ -43,113 +44,94 @@ hugo server  # Test locally
 
 ---
 
-## 🎯 PRIORITY 2: Replace Template Publications with Your Own
+## 📰 PRIORITY 2: Update News Section
 
-**Status:** Template publications still present (contain "Li, Chenhao")
+**Status:** Contains template news entries with publication links that need to be removed
 
-### 2.1 Review Publication Structure
-- [ ] Understand how publications are organized in `content/publication/`
-- [ ] Review one example publication to see the format
-- [ ] Check BibTeX citation format in `cite.bib` files
-
-### 2.2 Add Your Publications
-- [ ] Remove template publications (or keep as examples if helpful)
-- [ ] Create new publication entries for your actual papers
-- [ ] Add PDF files to publication folders
-- [ ] Update BibTeX citations with your name as author
-- [ ] Add publication images/figures if available
-
-**Why This is Priority 2:** Publications are a core part of an academic website and visitors expect to see your research.
-
----
-
-## 📰 PRIORITY 3: Update News Section
-
-**Status:** Contains template news entries
-
-### 3.1 Homepage News Section
+### 2.1 Homepage News Section
 - [ ] Review news section in `content/_index.md`
-- [ ] Remove or adapt template news entries
-- [ ] Add your own recent news, achievements, paper acceptances
+- [ ] **Remove all publication links** from news entries (e.g., `/publication/corl2025-3`, `/publication/icra2025`, etc.)
+- [ ] Remove or adapt template news entries to reflect your actual activities
+- [ ] Add your own recent news, achievements, and updates
 - [ ] Format dates correctly (YYYY-MM-DD or YYYY format)
 
-**Why This is Priority 3:** Shows visitors what you've been doing recently and keeps the site current.
+**Why This is Priority 2:** Shows visitors what you've been doing recently and keeps the site current. Note: The news section currently contains many template entries with publication links that should be removed or replaced with your actual news.
 
 ---
 
-## 🎤 PRIORITY 4: Update Events & Talks
+## 🎤 PRIORITY 3: Update Events & Talks
 
 **Status:** Template event entries present
 
-### 4.1 Events/Talks Section
+### 3.1 Events/Talks Section
 - [ ] Review events in `content/event/`
 - [ ] Remove template events or adapt for your talks
 - [ ] Add your actual conference presentations, workshops, invited talks
 - [ ] Update event details (date, location, title, description)
+- [ ] Or remove this section entirely if not applicable
 
-**Why This is Priority 4:** Important for showcasing your conference participation and speaking engagements.
+**Why This is Priority 3:** Important for showcasing your conference participation and speaking engagements (if applicable).
 
 ---
 
-## 🤖 PRIORITY 5: Update Robotic Platforms Section (If Applicable)
+## 🤖 PRIORITY 4: Update Robotic Platforms Section (If Applicable)
 
 **Status:** Template platform entries present
 
-### 5.1 Platforms You've Worked With
+### 4.1 Platforms You've Worked With
 - [ ] Review platforms in `content/platform/`
 - [ ] Remove platforms you haven't worked with
 - [ ] Update descriptions for platforms you have used
 - [ ] Add images/videos if available
 - [ ] Or remove this section entirely if not relevant
 
-**Why This is Priority 5:** Less critical unless platforms are central to your research presentation.
+**Why This is Priority 4:** Less critical unless platforms are central to your research presentation.
 
 ---
 
-## 📚 PRIORITY 6: Update or Remove Teaching Section
+## 📚 PRIORITY 5: Update or Remove Teaching Section
 
 **Status:** Contains template teaching examples
 
-### 6.1 Teaching Materials
+### 5.1 Teaching Materials
 - [ ] Review `content/teaching/` entries
 - [ ] Either:
   - Replace with your actual teaching materials, OR
   - Remove the section if not applicable
 - [ ] Update course descriptions and content
 
-**Why This is Priority 6:** Only needed if teaching is part of your professional profile.
+**Why This is Priority 5:** Only needed if teaching is part of your professional profile.
 
 ---
 
-## 🖼️ PRIORITY 7: Media Assets & Visual Content
+## 🖼️ PRIORITY 6: Media Assets & Visual Content
 
-### 7.1 Images & Media
+### 6.1 Images & Media
 - [x] Hero background image updated to `hero_picture.jpg`
 - [ ] **Add/update profile photo** (`content/authors/admin/avatar.png`)
 - [ ] Review all images in `assets/media/`
-- [ ] Add publication figures and images
 - [ ] Add project screenshots/demos if available
 - [ ] Optimize image sizes for web performance
 
-### 7.2 Documents
+### 6.2 Documents
 - [x] CV/resume file: `static/uploads/resume.pdf` exists
 - [ ] **Verify resume PDF is your actual CV** (not template)
 - [ ] Add any other documents (certificates, etc.) if needed
 
-**Why This is Priority 7:** Visual content enhances the site but can be added incrementally.
+**Why This is Priority 6:** Visual content enhances the site but can be added incrementally.
 
 ---
 
-## 🔧 PRIORITY 8: Technical Configuration & Testing
+## 🔧 PRIORITY 7: Technical Configuration & Testing
 
-### 8.1 GitHub Repository
-- [x] Repository name: `theoh-io.github.io` ✓
+### 7.1 GitHub Repository
+- [x] Repository name: `thrmnn.github.io` ✓
 - [x] Base URL configured ✓
 - [ ] Configure GitHub Pages settings (if not auto-deploying)
 - [ ] Set up custom domain (optional, if you have one)
 - [ ] Verify repository is public (if using GitHub Pages)
 
-### 8.2 Local Testing
+### 7.2 Local Testing
 - [ ] Test local build: `hugo server`
 - [ ] Verify all links work correctly
 - [ ] Check responsive design on mobile devices
@@ -157,38 +139,38 @@ hugo server  # Test locally
 - [ ] Verify dark/light theme switching works
 - [ ] Test all interactive elements
 
-### 8.3 Deployment
+### 7.3 Deployment
 - [ ] Set up CI/CD (GitHub Actions or Netlify) if not automatic
 - [ ] Verify deployment works
 - [ ] Test live site after deployment
 - [ ] Configure custom domain (if using)
 
-**Why This is Priority 8:** Technical setup can happen in parallel with content updates, but needs to be done before launch.
+**Why This is Priority 7:** Technical setup can happen in parallel with content updates, but needs to be done before launch.
 
 ---
 
-## 📊 PRIORITY 9: SEO & Analytics (Optional but Recommended)
+## 📊 PRIORITY 8: SEO & Analytics (Optional but Recommended)
 
-### 9.1 Analytics Setup
+### 8.1 Analytics Setup
 - [ ] Set up Google Analytics account (if desired)
 - [ ] Add your Google Analytics ID to `config/_default/params.yaml`
 - [ ] Set up Google Search Console
 - [ ] Configure other analytics tools if needed
 
-### 9.2 SEO Optimization
+### 8.2 SEO Optimization
 - [x] SEO description updated ✓
 - [ ] Review meta keywords if needed
 - [ ] Verify Open Graph tags work
 - [ ] Test with SEO tools (Google PageSpeed, etc.)
 - [ ] Submit sitemap to search engines
 
-**Why This is Priority 9:** Can be done after launch, but helpful for visibility.
+**Why This is Priority 8:** Can be done after launch, but helpful for visibility.
 
 ---
 
-## ✅ PRIORITY 10: Final Review & Launch
+## ✅ PRIORITY 9: Final Review & Launch
 
-### 10.1 Content Quality Check
+### 9.1 Content Quality Check
 - [ ] Proofread all text content
 - [ ] Check grammar and spelling
 - [ ] Verify all dates are correct
@@ -196,29 +178,29 @@ hugo server  # Test locally
 - [ ] Review "About Me" section for accuracy
 - [ ] Verify all contact information is correct
 
-### 10.2 Navigation & Links
+### 9.2 Navigation & Links
 - [ ] Test all internal links
 - [ ] Verify external links work
 - [ ] Check footer information
 - [ ] Review menu structure
+- [ ] **Remove any broken publication links** from news/content sections
 
-### 10.3 Legal & Attribution
+### 9.3 Legal & Attribution
 - [x] LICENSE.md reviewed (MIT license for template) ✓
 - [ ] Check attribution for any borrowed content/images
 - [ ] Verify copyright notices
 
-### 10.4 Pre-Launch Checklist
+### 9.4 Pre-Launch Checklist
 - [ ] All placeholder content removed
 - [ ] All personal information updated
 - [ ] All social links working
 - [ ] CV/resume accessible and current
-- [ ] Publications properly formatted
-- [ ] No broken links
+- [ ] No broken links (especially publication links)
 - [ ] Images optimized and loading correctly
 - [ ] Site loads quickly
 - [ ] Mobile responsive design verified
 
-### 10.5 Launch
+### 9.5 Launch
 - [ ] Final content review
 - [ ] Deploy to production
 - [ ] Verify live site works correctly
@@ -234,7 +216,7 @@ hugo server  # Test locally
 
 1. **Fill out PERSONAL_INFO.md completely** - especially:
    - Education history with dates
-   - Work experience
+   - Work experience with dates
    - Research interests
    - Biography text
 
@@ -244,17 +226,16 @@ hugo server  # Test locally
    hugo server
    ```
 
-3. **Start adding your publications** - replace template publications with your own
+3. **Clean up news section** - Remove all publication links and template news entries from `content/_index.md`
 
-**After that, work through priorities 3-10 as time permits.**
+**After that, work through priorities 2-9 as time permits.**
 
 ---
 
 ## Maintenance Tasks (Post-Launch)
 
 ### Ongoing Updates
-- [ ] Update publications as new ones are accepted
-- [ ] Add new events/talks
+- [ ] Add new events/talks (if applicable)
 - [ ] Update news section regularly
 - [ ] Keep CV/resume current
 - [ ] Update work experience and education as needed

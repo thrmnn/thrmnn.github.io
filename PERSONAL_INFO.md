@@ -29,8 +29,8 @@ Update this document first, then use it to update the relevant configuration fil
 **Social Media:**
 - Twitter/X Handle: *(e.g., "@yourhandle")*
 - Twitter/X URL: *(full URL)*
-- GitHub Username: theoh-io *(e.g., "theoh-io")*
-- GitHub URL: https://github.com/theoh-io *(full URL)*
+- GitHub Username: thrmnn *(e.g., "thrmnn")*
+- GitHub URL: https://github.com/thrmnn *(full URL)*
 - LinkedIn URL: *(full URL)*
 - YouTube Channel URL: *(if applicable)*
 - Google Scholar Profile URL: *(full URL)*
@@ -141,7 +141,7 @@ My research interests focus on Robotics, especially autonomy.
 
 ### Site Settings
 - **Site Title:** Théo Hermann
-- **Base URL:** https://theoh-io.github.io/ *(e.g., "https://theoh-io.github.io/" or your custom domain)*
+- **Base URL:** https://thrmnn.github.io/ *(e.g., "https://thrmnn.github.io/" or your custom domain)*
 - **Site Description:** Théo Hermann - Research at MIT Senseable City Rio *(e.g., "Théo Hermann - Doctoral Fellow at ETH AI Center")*
 
 ### Homepage Hero Section

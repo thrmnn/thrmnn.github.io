@@ -2,11 +2,24 @@
 ## HUGO MODULES
 ## Install or uninstall themes and plugins here.
 ## Docs: https://gohugo.io/hugo-modules/
+##
+## Version Pinning Strategy:
+## - Each module is pinned to a specific version to prevent unexpected breaking changes
+## - When updating versions, test thoroughly and update both this file and go.mod
+## - To update modules: hugo mod get -u
+## - To update specific module: hugo mod get -u github.com/path/to/module@version
 ############################
 
 imports:
+  # Hugo Blox Plugin for Netlify - enables Netlify integration features
+  # Pinned version: v1.1.2-0.20231209203044-d31adfedd40b (from 2023-12-09)
   - path: github.com/HugoBlox/hugo-blox-builder/modules/blox-plugin-netlify
+    version: v1.1.2-0.20231209203044-d31adfedd40b
+
+  # Hugo Blox Tailwind CSS module - provides CSS framework and styling
+  # Pinned version: v0.3.1 (stable release)
   - path: github.com/HugoBlox/hugo-blox-builder/modules/blox-tailwind
+    version: v0.3.1
 
 # Install any Hugo Blox within the `hugo-blox/blox/` folder
 mounts:

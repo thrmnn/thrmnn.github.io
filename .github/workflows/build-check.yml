@@ -1,0 +1,104 @@
+name: Hugo Build Check
+
+# Trigger on every push and pull request to validate the build
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+# Set permissions for the GitHub Actions runner
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build:
+    name: Build and Validate Hugo Site
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history to allow Hugo to properly compute timestamps
+          fetch-depth: 0
+
+      # Step 2: Setup Hugo with the specific version
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.136.5'
+          extended: true  # Use extended version for SCSS support
+
+      # Step 3: Verify Hugo installation
+      - name: Verify Hugo version
+        run: hugo version
+
+      # Step 4: Download Hugo module dependencies
+      # This ensures all module imports are resolved before building
+      - name: Download Hugo modules
+        run: hugo mod get -u
+
+      # Step 5: Run Hugo build in strict mode
+      # --logLevel=warn catches potential issues; --minify optimizes output
+      - name: Build Hugo site
+        run: hugo --logLevel=warn --minify
+        env:
+          HUGO_ENVIRONMENT: production
+
+      # Step 6: Validate the public directory was created
+      - name: Verify build output
+        run: |
+          if [ ! -d "public" ]; then
+            echo "❌ Build failed: public directory not created"
+            exit 1
+          fi
+          if [ -z "$(find public -type f -name '*.html')" ]; then
+            echo "❌ Build failed: no HTML files generated"
+            exit 1
+          fi
+          echo "✅ Build output validated successfully"
+          echo "Generated $(find public -type f | wc -l) files"
+
+      # Step 7: Comment on PR with build status (for pull requests only)
+      - name: Comment build result on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Hugo build check passed!** The site builds successfully with Hugo 0.136.5.'
+            })
+
+      # Step 8: Handle build failures with PR comment
+      - name: Comment build failure on PR
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ **Hugo build check failed!** Please review the build logs for errors.'
+            })
+
+      # Step 9: Show build summary in GitHub Actions logs
+      - name: Build Summary
+        if: success()
+        run: |
+          echo "🎉 Hugo build completed successfully!"
+          echo "📊 Build Statistics:"
+          echo "  - Total files in public: $(find public -type f | wc -l)"
+          echo "  - HTML pages: $(find public -type f -name '*.html' | wc -l)"
+          echo "  - CSS files: $(find public -type f -name '*.css' | wc -l)"
+          echo "  - JavaScript files: $(find public -type f -name '*.js' | wc -l)"

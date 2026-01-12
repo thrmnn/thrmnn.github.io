@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+
+##############################################################################
+# Pre-commit Hook: Sync Personal Info
+#
+# This hook automatically runs the sync_personal_info.py script whenever
+# PERSONAL_INFO.md is staged for commit. This ensures that configuration
+# files stay synchronized with your personal information.
+#
+# Location: .githooks/pre-commit (checked into version control)
+#
+# Setup Instructions:
+# 1. Make this file executable: chmod +x .githooks/pre-commit
+# 2. Configure git to use this hooks directory:
+#    git config core.hooksPath .githooks
+# 3. Or create a symlink in .git/hooks:
+#    ln -sf ../../.githooks/pre-commit .git/hooks/pre-commit
+#
+##############################################################################
+
+set -e  # Exit immediately if any command fails
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Get the repository root directory
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# Define file paths
+PERSONAL_INFO_FILE="${REPO_ROOT}/PERSONAL_INFO.md"
+SYNC_SCRIPT="${REPO_ROOT}/sync_personal_info.py"
+
+##############################################################################
+# Helper Functions
+##############################################################################
+
+# Print colored output
+log_info() {
+    echo -e "${BLUE}ℹ${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}✓${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}⚠${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}✗${NC} $1"
+}
+
+##############################################################################
+# Main Hook Logic
+##############################################################################
+
+# Check if PERSONAL_INFO.md is staged for commit
+if git diff --cached --name-only | grep -q "^PERSONAL_INFO.md$"; then
+    log_info "Detected PERSONAL_INFO.md in staged files"
+
+    # Verify that the sync script exists
+    if [ ! -f "${SYNC_SCRIPT}" ]; then
+        log_error "sync_personal_info.py not found at ${SYNC_SCRIPT}"
+        log_error "Cannot sync personal information"
+        exit 1
+    fi
+
+    # Verify that Python is available
+    if ! command -v python3 &> /dev/null; then
+        log_error "Python 3 is not installed or not in PATH"
+        log_error "Cannot run sync_personal_info.py"
+        exit 1
+    fi
+
+    log_info "Running sync_personal_info.py..."
+
+    # Run the sync script
+    # Capture output and exit code to handle errors gracefully
+    SYNC_OUTPUT=$(python3 "${SYNC_SCRIPT}" 2>&1) || {
+        SYNC_EXIT_CODE=$?
+        log_error "Sync script failed with exit code ${SYNC_EXIT_CODE}"
+        echo ""
+        echo "Script output:"
+        echo "${SYNC_OUTPUT}"
+        echo ""
+        log_error "Commit aborted. Fix the issues above and try again."
+        exit ${SYNC_EXIT_CODE}
+    }
+
+    # Print sync script output
+    echo "${SYNC_OUTPUT}"
+
+    # Check if any config files were modified by the sync script
+    MODIFIED_FILES=$(git status --short "${REPO_ROOT}/config" "${REPO_ROOT}/content" 2>/dev/null | grep "^ M" | wc -l)
+
+    if [ "${MODIFIED_FILES}" -gt 0 ]; then
+        log_info "Modified files detected from sync:"
+        git status --short "${REPO_ROOT}/config" "${REPO_ROOT}/content" | grep "^ M"
+
+        # Stage the modified files automatically
+        log_info "Auto-staging synchronized files..."
+        git add "${REPO_ROOT}/config" "${REPO_ROOT}/content" 2>/dev/null || true
+        log_success "Updated files staged for commit"
+    else
+        log_info "No changes made by sync script"
+    fi
+
+    log_success "Personal info sync completed successfully"
+    echo ""
+
+else
+    # PERSONAL_INFO.md is not staged, so skip the sync
+    log_info "PERSONAL_INFO.md not in staged files, skipping sync"
+fi
+
+##############################################################################
+# Additional Checks
+##############################################################################
+
+# Optional: Validate that required files exist in staged changes
+# Uncomment these checks if you want additional validation
+
+# if git diff --cached --name-only | grep -q "\.md$\|\.yaml$"; then
+#     log_info "Markdown or YAML files detected in commit"
+#     # Add additional validation here if needed
+# fi
+
+exit 0

@@ -1,50 +1,31 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Blog | Théo Hermann</title>
-    <link>http://localhost:1313/post/</link>
-      <atom:link href="http://localhost:1313/post/index.xml" rel="self" type="application/rss+xml" />
-    <description>Blog</description>
-    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Tue, 08 Jul 2025 00:00:00 +0000</lastBuildDate>
-    <image>
-      <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
-      <title>Blog</title>
-      <link>http://localhost:1313/post/</link>
-    </image>
-    
-    <item>
-      <title>Feature-Based vs. GAN-Based Imitation: When and Why</title>
-      <link>http://localhost:1313/post/lfd/</link>
-      <pubDate>Tue, 08 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/lfd/</guid>
-      <description>&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-primary-600 dark:text-primary-300&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z&#34;/&gt;&lt;/svg&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blog | Théo Hermann</title><link>https://thrmnn.github.io/post/</link><atom:link href="https://thrmnn.github.io/post/index.xml" rel="self" type="application/rss+xml"/><description>Blog</description><generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Tue, 08 Jul 2025 00:00:00 +0000</lastBuildDate><image><url>https://thrmnn.github.io/media/icon_hu_aefaff9bda353d53.png</url><title>Blog</title><link>https://thrmnn.github.io/post/</link></image><item><title>Feature-Based vs. GAN-Based Imitation: When and Why</title><link>https://thrmnn.github.io/post/lfd/</link><pubDate>Tue, 08 Jul 2025 00:00:00 +0000</pubDate><guid>https://thrmnn.github.io/post/lfd/</guid><description>&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900"&gt;
+&lt;span class="pr-3 pt-1 text-primary-600 dark:text-primary-300"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;This survey was proofread by 
-, 
-, 
-, 
-, and 
+&lt;span class="dark:text-neutral-300"&gt;This survey was proofread by
+,
+,
+,
+, and
 .
 Their expertise in the field and constructive suggestions were instrumental in shaping the final form of this work.&lt;/span&gt;
 &lt;/div&gt;
-&lt;h2 id=&#34;disclaimer&#34;&gt;Disclaimer&lt;/h2&gt;
+&lt;h2 id="disclaimer"&gt;Disclaimer&lt;/h2&gt;
 &lt;p&gt;The terminology surrounding the use of offline reference data in reinforcement learning (RL) varies widely across the literature.
 Terms such as &lt;em&gt;imitation learning&lt;/em&gt;, &lt;em&gt;learning from demonstrations&lt;/em&gt;, and &lt;em&gt;demonstration learning&lt;/em&gt; are often used interchangeably, despite referring to subtly different methodologies or assumptions.&lt;/p&gt;
 &lt;p&gt;In this survey, we adopt the term &lt;strong&gt;learning from demonstrations&lt;/strong&gt; to specifically denote a class of methods that utilize &lt;em&gt;state-based&lt;/em&gt;, &lt;em&gt;offline reference data&lt;/em&gt; to derive a &lt;strong&gt;reward signal&lt;/strong&gt;.
 This reward signal quantifies the similarity between the behavior of a learning agent and that of the reference trajectories, and it is used to guide policy optimization.&lt;/p&gt;
-&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-red-400&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z&#34;/&gt;&lt;/svg&gt;
+&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900"&gt;
+&lt;span class="pr-3 pt-1 text-red-400"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;This definition intentionally excludes methods based on &lt;strong&gt;behavior cloning&lt;/strong&gt; that require &lt;strong&gt;action annotations&lt;/strong&gt;, such as those used in recent large-scale manipulation datasets (e.g., 
-, 
-, 
+&lt;span class="dark:text-neutral-300"&gt;This definition intentionally excludes methods based on &lt;strong&gt;behavior cloning&lt;/strong&gt; that require &lt;strong&gt;action annotations&lt;/strong&gt;, such as those used in recent large-scale manipulation datasets (e.g.,
+,
+,
 ).
 These approaches assume access to expert action labels and thus follow a different paradigm than the class of methods discussed here, which operate solely on state observations and rely on RL to generate control.&lt;/span&gt;
 &lt;/div&gt;
-&lt;h2 id=&#34;motivation-and-scope&#34;&gt;Motivation and Scope&lt;/h2&gt;
+&lt;h2 id="motivation-and-scope"&gt;Motivation and Scope&lt;/h2&gt;
 &lt;p&gt;While learning from demonstrations has become a widely adopted strategy in both robotics and character animation, the field lacks consistent guidance on &lt;strong&gt;when to prefer particular classes of methods&lt;/strong&gt;, such as feature-based versus GAN-based approaches.
 Practitioners often adopt one method over another based on precedent or anecdotal success, without a systematic analysis of the algorithmic factors that underlie their performance.
 As a result, conclusions drawn from empirical success may conflate algorithmic merit with incidental choices in reward design, data selection, or architecture.&lt;/p&gt;
@@ -54,16 +35,16 @@ First, we review the problem setting from the perspective of physics-based contr
 Second, we examine the historical development and current landscape of imitation methods, organized around the type of reward structure they use, explicit, feature-based formulations versus implicit, adversarially learned metrics.&lt;/p&gt;
 &lt;p&gt;Our goal is not to advocate for one approach over the other in general, but to clarify the conditions under which each is more suitable.
 By articulating the trade-offs involved—including scalability, stability, generalization, and representation learning, we aim to provide a conceptual framework that supports more informed method selection in future work.&lt;/p&gt;
-&lt;h2 id=&#34;physics-based-control-states-and-actions&#34;&gt;Physics-Based Control, States and Actions&lt;/h2&gt;
+&lt;h2 id="physics-based-control-states-and-actions"&gt;Physics-Based Control, States and Actions&lt;/h2&gt;
 &lt;p&gt;In both character animation and robotics, &lt;strong&gt;physics-based control&lt;/strong&gt; refers to a paradigm in which an agent&amp;rsquo;s behavior is governed by the underlying physical dynamics of the system, either simulated or real.
 Rather than prescribing trajectories explicitly, such as joint angles or end-effector poses, this approach formulates control as a process of goal-directed optimization, where a policy generates &lt;strong&gt;control signals&lt;/strong&gt; (e.g., torques or muscle activations) to maximize an objective function under physical constraints.
 This stands in contrast to &lt;strong&gt;kinematics-based&lt;/strong&gt; or &lt;strong&gt;keyframe-based&lt;/strong&gt; methods, which often disregard dynamics and focus on geometrically feasible but potentially physically implausible motions.
 Physics-based control ensures that resulting behaviors are not only kinematically valid but also &lt;strong&gt;dynamically consistent&lt;/strong&gt;, energy-conservative, and responsive to interaction forces, making it particularly suited for tasks involving locomotion, balance, and physical interaction in uncertain or dynamic environments.&lt;/p&gt;
-&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-primary-600 dark:text-primary-300&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z&#34;/&gt;&lt;/svg&gt;
+&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900"&gt;
+&lt;span class="pr-3 pt-1 text-primary-600 dark:text-primary-300"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;The canonical formalism for this control paradigm is the &lt;strong&gt;Markov Decision Process (MDP)&lt;/strong&gt;, defined by a tuple $\left (\mathcal{S}, \mathcal{A}, T, R, \gamma \right )$, where $\mathcal{S}$ and $\mathcal{A}$ denote the state and action spaces, respectively.
+&lt;span class="dark:text-neutral-300"&gt;The canonical formalism for this control paradigm is the &lt;strong&gt;Markov Decision Process (MDP)&lt;/strong&gt;, defined by a tuple $\left (\mathcal{S}, \mathcal{A}, T, R, \gamma \right )$, where $\mathcal{S}$ and $\mathcal{A}$ denote the state and action spaces, respectively.
 The transition kernel $T: \mathcal{S} \times \mathcal{A} \to \mathcal{S}$ captures the environment dynamics $p \left (s_{t+1} \mid s_t, a_t \right )$, while the reward function $R: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to \mathbb{R}$ maps transitions to scalar rewards.
 The agent seeks to learn a policy $\pi_\theta: \mathcal{S} \to \mathcal{A}$ that maximizes the expected discounted return $\mathbb{E}_{\pi_\theta} \left[\sum_{t \geq 0} \gamma^t r_t\right]$, where $r_t$ is the reward at time $t$ and $\gamma \in \left [0, 1 \right ]$ is the discount factor.&lt;/span&gt;
 &lt;/div&gt;
@@ -71,117 +52,87 @@ The agent seeks to learn a policy $\pi_\theta: \mathcal{S} \to \mathcal{A}$ that
 The action $a \in \mathcal{A}$ corresponds to the control input applied to the system, most commonly joint torques in torque-controlled settings, or target positions in PD-controlled systems.
 In biomechanical models, actions may also represent muscle activations.
 By integrating these elements within a physics simulator or physical system, physics-based control enables emergent behaviors that are compatible with real-world dynamics, allowing policies to discover strategies that are not only effective but also physically feasible.&lt;/p&gt;
-&lt;h2 id=&#34;rethinking-learning-from-demonstrations&#34;&gt;Rethinking Learning from Demonstrations&lt;/h2&gt;
+&lt;h2 id="rethinking-learning-from-demonstrations"&gt;Rethinking Learning from Demonstrations&lt;/h2&gt;
 &lt;p&gt;In the context of learning from demonstrations, reward functions are typically derived from &lt;strong&gt;reference data&lt;/strong&gt;, rather than being manually engineered to reflect task success or motion quality.
 This setup leverages recorded trajectories, often collected from motion capture, teleoperation, or other expert sources, to define a notion of behavioral similarity.
 The policy is then optimized to minimize this discrepancy, encouraging it to reproduce motions that are consistent with those in the demonstration dataset.&lt;/p&gt;
 &lt;p&gt;Critically, the reward derived from demonstrations may serve either as a &lt;strong&gt;pure imitation objective&lt;/strong&gt;, where the policy is expected to replicate the demonstrated behavior as closely as possible, or as a &lt;strong&gt;regularizing component&lt;/strong&gt; that biases learning while allowing task-specific objectives to dominate.
 This dual role makes demonstration-based rewards particularly valuable in high-dimensional control problems where exploration is difficult and task-based rewards are sparse or poorly shaped.
 As such, learning from demonstrations transforms the design of the reward function from a manual engineering problem into one of defining or learning an appropriate similarity metric between agent and expert behavior, either explicitly, through features, or implicitly, through discriminators or encoders.&lt;/p&gt;
-&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-red-400&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z&#34;/&gt;&lt;/svg&gt;
+&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900"&gt;
+&lt;span class="pr-3 pt-1 text-red-400"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;While reference trajectories are often valued for their visual realism or naturalness, this perspective underemphasizes their &lt;strong&gt;algorithmic utility&lt;/strong&gt;: reference data serves as a critical mechanism for improving &lt;strong&gt;learning efficiency&lt;/strong&gt; in high-dimensional control problems.
+&lt;span class="dark:text-neutral-300"&gt;While reference trajectories are often valued for their visual realism or naturalness, this perspective underemphasizes their &lt;strong&gt;algorithmic utility&lt;/strong&gt;: reference data serves as a critical mechanism for improving &lt;strong&gt;learning efficiency&lt;/strong&gt; in high-dimensional control problems.
 Rather than functioning merely as a constraint or prior, demonstrations provide &lt;strong&gt;structured guidance&lt;/strong&gt; that biases policy exploration toward plausible and meaningful behaviors.&lt;/span&gt;
 &lt;/div&gt;
 &lt;p&gt;This role becomes especially important as the complexity of the environment and agent increases.
-In lower-dimensional settings, 
- have proven sufficient to elicit sophisticated behaviors through reinforcement learning alone.
+In lower-dimensional settings,
+have proven sufficient to elicit sophisticated behaviors through reinforcement learning alone.
 However, such strategies do not scale effectively to systems with high-dimensional state-action spaces, where naïve exploration is inefficient and reward shaping becomes brittle or intractable.
 Under these conditions, demonstration data offers a &lt;strong&gt;practical alternative to reward or environment shaping&lt;/strong&gt;, acting as an inductive bias that accelerates the discovery of viable behaviors.
 In this light, reference motions are not ancillary constraints but &lt;strong&gt;primary learning signals&lt;/strong&gt;, particularly in regimes where task-based supervision is sparse or difficult to specify.
 This reframing justifies the use of demonstrations not only for imitation but as a foundation for scalable and data-efficient policy learning.&lt;/p&gt;
-&lt;h2 id=&#34;feature-based-imitation-origins-and-limitations&#34;&gt;Feature-Based Imitation: Origins and Limitations&lt;/h2&gt;
-&lt;p&gt;Feature-based imitation approaches can be traced back to 
+&lt;h2 id="feature-based-imitation-origins-and-limitations"&gt;Feature-Based Imitation: Origins and Limitations&lt;/h2&gt;
+&lt;p&gt;Feature-based imitation approaches can be traced back to
 , which established a now-standard formulation for constructing reward signals based on explicit motion matching.
 In this framework, the policy is aligned with a reference trajectory by introducing a &lt;strong&gt;phase variable&lt;/strong&gt;, which serves as a learned proxy for temporal progress through the motion.
 The reward is computed by evaluating feature-wise distances—such as joint positions, velocities, orientations, and end-effector positions—between the policy-generated trajectory and the reference, synchronized via the phase.&lt;/p&gt;
 &lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  id=&#34;figure-deepmimic-style-feature-based-methods-the-policy-receives-dense-per-frame-rewards-by-comparing-hand-crafted-featuressuch-as-joint-positions-and-end-effector-posesbetween-its-current-state-and-a-time-aligned-reference-state-a-phase-variable-synchronizes-policy-and-demonstration-trajectories-enabling-accurate-motion-reproduction-but-limiting-generalization-across-diverse-behaviors-due-to-the-lack-of-structured-motion-representation&#34;&gt;
-  &lt;div class=&#34;flex justify-center	&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;deepmimic&#34; srcset=&#34;
-               /post/lfd/deepmimic_hu_c850e70b7d2c64e4.webp 400w,
-               /post/lfd/deepmimic_hu_a8639584191203c4.webp 760w,
-               /post/lfd/deepmimic_hu_20228fbcb35505e4.webp 1200w&#34;
-               src=&#34;http://localhost:1313/post/lfd/deepmimic_hu_c850e70b7d2c64e4.webp&#34;
-               width=&#34;760&#34;
-               height=&#34;223&#34;
-               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;figcaption&gt;
-      DeepMimic-style feature-based methods. The policy receives dense, per-frame rewards by comparing hand-crafted features—such as joint positions and end-effector poses—between its current state and a time-aligned reference state. A phase variable synchronizes policy and demonstration trajectories, enabling accurate motion reproduction but limiting generalization across diverse behaviors due to the lack of structured motion representation.
-    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;figure id="figure-deepmimic-style-feature-based-methods-the-policy-receives-dense-per-frame-rewards-by-comparing-hand-crafted-featuressuch-as-joint-positions-and-end-effector-posesbetween-its-current-state-and-a-time-aligned-reference-state-a-phase-variable-synchronizes-policy-and-demonstration-trajectories-enabling-accurate-motion-reproduction-but-limiting-generalization-across-diverse-behaviors-due-to-the-lack-of-structured-motion-representation"&gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-100" &gt;&lt;img alt="deepmimic" srcset="
+/post/lfd/deepmimic_hu_c850e70b7d2c64e4.webp 400w,
+/post/lfd/deepmimic_hu_a8639584191203c4.webp 760w,
+/post/lfd/deepmimic_hu_20228fbcb35505e4.webp 1200w"
+src="https://thrmnn.github.io/post/lfd/deepmimic_hu_c850e70b7d2c64e4.webp"
+width="760"
+height="223"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;figcaption&gt;
+DeepMimic-style feature-based methods. The policy receives dense, per-frame rewards by comparing hand-crafted features—such as joint positions and end-effector poses—between its current state and a time-aligned reference state. A phase variable synchronizes policy and demonstration trajectories, enabling accurate motion reproduction but limiting generalization across diverse behaviors due to the lack of structured motion representation.
+&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;Owing to their dense and explicit reward structure, these methods are highly effective at reproducing &lt;strong&gt;fine-grained motion details&lt;/strong&gt;.
 However, their scalability to diverse motion datasets is limited.
 While DeepMimic introduces a one-hot motion identifier to enable multi-clip training, this encoding does not model &lt;strong&gt;semantic or structural relationships&lt;/strong&gt; between different motions.
 As a result, the policy treats each motion clip as an isolated objective, which precludes generalization and often leads to discontinuities at transition points.&lt;/p&gt;
-&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-red-400&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z&#34;/&gt;&lt;/svg&gt;
+&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900"&gt;
+&lt;span class="pr-3 pt-1 text-red-400"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;Although the phase variable handles temporal alignment within a given clip, there is no analogous mechanism for enforcing &lt;strong&gt;spatial or semantic coherence&lt;/strong&gt; across clips.
+&lt;span class="dark:text-neutral-300"&gt;Although the phase variable handles temporal alignment within a given clip, there is no analogous mechanism for enforcing &lt;strong&gt;spatial or semantic coherence&lt;/strong&gt; across clips.
 Transitions between motions are implemented via hard switching on motion identifiers, which can result in abrupt behavioral changes and visually unnatural trajectories.&lt;/span&gt;
 &lt;/div&gt;
 &lt;p&gt;What is missing in this setup is a &lt;strong&gt;structured representation space&lt;/strong&gt; over motions—one that captures both temporal progression and the underlying topology of behavioral variation.
 Such representations enable not only smoother transitions between behaviors but also facilitate interpolation, compositionality, and improved generalization to motions not seen during training.
 Policies trained over these structured motion spaces are better equipped to synthesize new behaviors while preserving physical plausibility and stylistic fidelity.&lt;/p&gt;
-&lt;h2 id=&#34;implicit-rewards-for-motion-diversity-gan-based-imitation&#34;&gt;Implicit Rewards for Motion Diversity: GAN-Based Imitation&lt;/h2&gt;
-&lt;p&gt;To address the limitations of feature-based approaches in handling diverse motion data, 
- introduced the use of adversarial training, building on earlier frameworks such as 
+&lt;h2 id="implicit-rewards-for-motion-diversity-gan-based-imitation"&gt;Implicit Rewards for Motion Diversity: GAN-Based Imitation&lt;/h2&gt;
+&lt;p&gt;To address the limitations of feature-based approaches in handling diverse motion data,
+introduced the use of adversarial training, building on earlier frameworks such as
 , where expert action labels are assumed.&lt;/p&gt;
-&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-primary-600 dark:text-primary-300&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z&#34;/&gt;&lt;/svg&gt;
+&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900"&gt;
+&lt;span class="pr-3 pt-1 text-primary-600 dark:text-primary-300"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;In the AMP setting, a &lt;strong&gt;discriminator&lt;/strong&gt; is trained to distinguish between state transitions generated by the policy and those sampled from a dataset of reference trajectories.
+&lt;span class="dark:text-neutral-300"&gt;In the AMP setting, a &lt;strong&gt;discriminator&lt;/strong&gt; is trained to distinguish between state transitions generated by the policy and those sampled from a dataset of reference trajectories.
 As the policy improves, its transitions become increasingly indistinguishable from the expert data, thereby reducing the discriminator&amp;rsquo;s ability to classify them correctly.
 The discriminator’s output serves as a reward signal, guiding the policy toward behavioral fidelity.&lt;/span&gt;
 &lt;/div&gt;
 &lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  id=&#34;figure-gan-based-methods-via-adversarial-rewards-a-discriminator-learns-to-distinguish-short-transition-snippets-from-policy-generated-and-demonstration-data-providing-an-implicit-reward-signal-that-guides-the-policy-toward-expert-like-behavior-by-operating-on-short-windows-without-explicit-time-alignment-this-approach-scales-to-diverse-motion-datasets-and-captures-distributional-similarity-enabling-smoother-transitions-across-unstructured-behaviors&#34;&gt;
-  &lt;div class=&#34;flex justify-center	&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;gan-based&#34; srcset=&#34;
-               /post/lfd/gan-based_hu_c23047f0c8261200.webp 400w,
-               /post/lfd/gan-based_hu_633ec0f0e3d29bb1.webp 760w,
-               /post/lfd/gan-based_hu_93b0378cff5b67d1.webp 1200w&#34;
-               src=&#34;http://localhost:1313/post/lfd/gan-based_hu_c23047f0c8261200.webp&#34;
-               width=&#34;760&#34;
-               height=&#34;225&#34;
-               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;figcaption&gt;
-      GAN-based methods via adversarial rewards. A discriminator learns to distinguish short transition snippets from policy-generated and demonstration data, providing an implicit reward signal that guides the policy toward expert-like behavior. By operating on short windows without explicit time alignment, this approach scales to diverse motion datasets and captures distributional similarity, enabling smoother transitions across unstructured behaviors.
-    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;figure id="figure-gan-based-methods-via-adversarial-rewards-a-discriminator-learns-to-distinguish-short-transition-snippets-from-policy-generated-and-demonstration-data-providing-an-implicit-reward-signal-that-guides-the-policy-toward-expert-like-behavior-by-operating-on-short-windows-without-explicit-time-alignment-this-approach-scales-to-diverse-motion-datasets-and-captures-distributional-similarity-enabling-smoother-transitions-across-unstructured-behaviors"&gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-100" &gt;&lt;img alt="gan-based" srcset="
+/post/lfd/gan-based_hu_c23047f0c8261200.webp 400w,
+/post/lfd/gan-based_hu_633ec0f0e3d29bb1.webp 760w,
+/post/lfd/gan-based_hu_93b0378cff5b67d1.webp 1200w"
+src="https://thrmnn.github.io/post/lfd/gan-based_hu_c23047f0c8261200.webp"
+width="760"
+height="225"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;figcaption&gt;
+GAN-based methods via adversarial rewards. A discriminator learns to distinguish short transition snippets from policy-generated and demonstration data, providing an implicit reward signal that guides the policy toward expert-like behavior. By operating on short windows without explicit time alignment, this approach scales to diverse motion datasets and captures distributional similarity, enabling smoother transitions across unstructured behaviors.
+&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;From an optimization standpoint, GAN-based methods treat the policy as a &lt;strong&gt;generator&lt;/strong&gt; in a two-player minimax game.
 These methods scale naturally to large and diverse motion datasets, as they operate on short, fixed-length &lt;strong&gt;transition windows&lt;/strong&gt;, typically spanning two to eight frames, rather than full trajectories.
@@ -189,273 +140,241 @@ This removes the need for phase-based or time-indexed alignment, making them par
 Additionally, the discriminator implicitly defines a &lt;strong&gt;similarity metric&lt;/strong&gt; over motion fragments, allowing transitions that are behaviorally similar to receive comparable rewards even when not temporally aligned.
 As a result, policies trained under adversarial objectives tend to exhibit smoother transitions across behaviors compared to methods relying on discrete motion identifiers and hard switching.
 Because the reward is defined over &lt;strong&gt;distributional similarity&lt;/strong&gt;, rather than matching a specific trajectory, AMP and related techniques are well-suited for stylization tasks or for serving as general motion priors that can be composed with task-specific objectives.&lt;/p&gt;
-&lt;p&gt;Despite their empirical success across domains, including character animation (e.g., 
-, 
-) and 
+&lt;p&gt;Despite their empirical success across domains, including character animation (e.g.,
+,
+) and
 , adversarial imitation introduces fundamental challenges that impact training reliability and policy expressiveness.&lt;/p&gt;
-&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-red-400&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z&#34;/&gt;&lt;/svg&gt;
+&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900"&gt;
+&lt;span class="pr-3 pt-1 text-red-400"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;&lt;p&gt;&lt;strong&gt;Discriminator Saturation&lt;/strong&gt;&lt;/p&gt;
+&lt;span class="dark:text-neutral-300"&gt;&lt;p&gt;&lt;strong&gt;Discriminator Saturation&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;A key challenge in adversarial setups is that the discriminator can rapidly become overconfident, especially early in training when the policy generates trajectories that diverge significantly from the reference distribution.
 In this regime, the discriminator easily classifies all transitions correctly, producing near-zero gradients and leaving the policy without informative reward signals.
 This phenomenon is particularly problematic in high-dimensional or difficult environments, such as rough terrain locomotion or manipulation tasks, where meaningful exploration is essential but sparse.&lt;/p&gt;
 &lt;/span&gt;
 &lt;/div&gt;
-&lt;p&gt;Solutions such as Wasserstein-based objectives (e.g., 
-, 
+&lt;p&gt;Solutions such as Wasserstein-based objectives (e.g.,
+,
 ) aim to retain useful gradients and therefore reward signals even in the face of a strong discriminator.&lt;/p&gt;
-&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-red-400&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z&#34;/&gt;&lt;/svg&gt;
+&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900"&gt;
+&lt;span class="pr-3 pt-1 text-red-400"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;&lt;p&gt;&lt;strong&gt;Mode Collapse&lt;/strong&gt;&lt;/p&gt;
+&lt;span class="dark:text-neutral-300"&gt;&lt;p&gt;&lt;strong&gt;Mode Collapse&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Another failure mode is the collapse of behavioral diversity: the policy may converge to producing only a narrow subset of trajectories that reliably fool the discriminator, ignoring the wider variation present in the demonstrations.
 While the discriminator implicitly encourages local smoothness in the reward landscape, AMP lacks a structured motion representation that would enable global diversity or controllable behavior synthesis.
 Consequently, the resulting policies often underutilize the full range of skills present in the data.&lt;/p&gt;
 &lt;/span&gt;
 &lt;/div&gt;
 &lt;p&gt;To counteract this limitation, a variety of techniques introduce latent representations to provide structured control over motion variation.
-Unsupervised approaches like 
-, 
-, and 
- learn continuous embeddings over motion space, optimizing mutual information between latent codes and observed behaviors to preserve diversity.
+Unsupervised approaches like
+,
+, and
+learn continuous embeddings over motion space, optimizing mutual information between latent codes and observed behaviors to preserve diversity.
 These embeddings are then used to condition the policy, enabling the generation of distinct behaviors from different regions of the latent space.
 Other approaches rely on category-level supervision to guide the learning process.
-For example, 
-, 
-, and 
- use motion class annotations to condition both the discriminator and the policy, thereby restricting collapse to occur only within class-specific subregions.
-In contrast, 
- adopts a representation-based solution, learning forward-backward encodings to structure the discriminator’s feedback.
-Several other extensions train individual motion primitives progressively (e.g., 
-, 
+For example,
+,
+, and
+use motion class annotations to condition both the discriminator and the policy, thereby restricting collapse to occur only within class-specific subregions.
+In contrast,
+adopts a representation-based solution, learning forward-backward encodings to structure the discriminator’s feedback.
+Several other extensions train individual motion primitives progressively (e.g.,
+,
 ).
 A conditioned skill composer is utilized to recover the motion diversity.
-Others introduce representation distillation with variational bottlenecks, as in 
+Others introduce representation distillation with variational bottlenecks, as in
 , to form compressed yet expressive motion embeddings for controllable generation.&lt;/p&gt;
 &lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  id=&#34;figure-latent-conditioned-gan-based-methods-the-policy-and-discriminator-are-jointly-conditioned-on-learned-motion-embeddings-which-are-derived-from-demonstration-data-through-unsupervised-or-supervised-representation-learning-these-latent-variables-structure-the-imitation-space-promoting-behavioral-diversity-stabilizing-training-and-enabling-controllable-skill-generation-beyond-what-implicit-adversarial-objectives-can-achieve-alone&#34;&gt;
-  &lt;div class=&#34;flex justify-center	&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;gan-based_conditioned&#34; srcset=&#34;
-               /post/lfd/gan-based_conditioned_hu_fce974440fa94b07.webp 400w,
-               /post/lfd/gan-based_conditioned_hu_86c3dd83035b4a6d.webp 760w,
-               /post/lfd/gan-based_conditioned_hu_6f41e3089ffe69e.webp 1200w&#34;
-               src=&#34;http://localhost:1313/post/lfd/gan-based_conditioned_hu_fce974440fa94b07.webp&#34;
-               width=&#34;760&#34;
-               height=&#34;266&#34;
-               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;figcaption&gt;
-      Latent-conditioned GAN-based methods. The policy and discriminator are jointly conditioned on learned motion embeddings, which are derived from demonstration data through unsupervised or supervised representation learning. These latent variables structure the imitation space, promoting behavioral diversity, stabilizing training, and enabling controllable skill generation beyond what implicit adversarial objectives can achieve alone.
-    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;figure id="figure-latent-conditioned-gan-based-methods-the-policy-and-discriminator-are-jointly-conditioned-on-learned-motion-embeddings-which-are-derived-from-demonstration-data-through-unsupervised-or-supervised-representation-learning-these-latent-variables-structure-the-imitation-space-promoting-behavioral-diversity-stabilizing-training-and-enabling-controllable-skill-generation-beyond-what-implicit-adversarial-objectives-can-achieve-alone"&gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-100" &gt;&lt;img alt="gan-based_conditioned" srcset="
+/post/lfd/gan-based_conditioned_hu_fce974440fa94b07.webp 400w,
+/post/lfd/gan-based_conditioned_hu_86c3dd83035b4a6d.webp 760w,
+/post/lfd/gan-based_conditioned_hu_6f41e3089ffe69e.webp 1200w"
+src="https://thrmnn.github.io/post/lfd/gan-based_conditioned_hu_fce974440fa94b07.webp"
+width="760"
+height="266"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;figcaption&gt;
+Latent-conditioned GAN-based methods. The policy and discriminator are jointly conditioned on learned motion embeddings, which are derived from demonstration data through unsupervised or supervised representation learning. These latent variables structure the imitation space, promoting behavioral diversity, stabilizing training, and enabling controllable skill generation beyond what implicit adversarial objectives can achieve alone.
+&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;Together, these developments highlight both the flexibility and complexity of adversarial imitation learning.
 While GAN-based methods naturally scale to large and diverse datasets, they benefit substantially from the addition of structured motion representations, whether learned, annotated, or composed, to stabilize training and recover controllable, diverse behavior.&lt;/p&gt;
-&lt;h2 id=&#34;feature-based-imitation-with-structured-representations&#34;&gt;Feature-Based Imitation with Structured Representations&lt;/h2&gt;
+&lt;h2 id="feature-based-imitation-with-structured-representations"&gt;Feature-Based Imitation with Structured Representations&lt;/h2&gt;
 &lt;p&gt;While adversarial imitation methods offer flexibility and scalability with diverse reference data, they impose significant practical burdens.
 Ensuring training stability, managing discriminator saturation, and preventing mode collapse often require extensive architectural tuning.
 These limitations have motivated a return to feature-based methods, now enhanced with structured motion representations, as a more interpretable and controllable alternative to adversarial training.
 The core insight behind this renewed direction is the importance of a well-structured motion representation space for enabling smooth transitions and generalization across behaviors.&lt;/p&gt;
-&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-primary-600 dark:text-primary-300&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z&#34;/&gt;&lt;/svg&gt;
+&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900"&gt;
+&lt;span class="pr-3 pt-1 text-primary-600 dark:text-primary-300"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;While GAN-based methods rely on the discriminator to &lt;strong&gt;implicitly induce&lt;/strong&gt; such a representation, often requiring additional mechanisms to extract, control, or condition on it, feature-based approaches allow for the &lt;strong&gt;explicit construction&lt;/strong&gt; of motion embeddings that are either precomputed or learned in parallel with policy training.&lt;/span&gt;
+&lt;span class="dark:text-neutral-300"&gt;While GAN-based methods rely on the discriminator to &lt;strong&gt;implicitly induce&lt;/strong&gt; such a representation, often requiring additional mechanisms to extract, control, or condition on it, feature-based approaches allow for the &lt;strong&gt;explicit construction&lt;/strong&gt; of motion embeddings that are either precomputed or learned in parallel with policy training.&lt;/span&gt;
 &lt;/div&gt;
 &lt;p&gt;This explicitness simplifies conditioning and reward design, often reducing the reward to weighted feature differences relative to a reference state.&lt;/p&gt;
 &lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  id=&#34;figure-feature-based-methods-with-structured-motion-representations-the-policy-receives-per-frame-rewards-based-on-feature-differences-with-reference-states-and-is-conditioned-on-compact-motion-embeddings-derived-from-demonstration-data-this-design-preserves-the-interpretability-of-hand-crafted-objectives-while-enabling-smoother-transitions-and-broader-generalization-across-behaviors-through-learned-motion-structure&#34;&gt;
-  &lt;div class=&#34;flex justify-center	&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;feature-based&#34; srcset=&#34;
-               /post/lfd/feature-based_hu_1b92b244460335eb.webp 400w,
-               /post/lfd/feature-based_hu_b809c86c17d7b37b.webp 760w,
-               /post/lfd/feature-based_hu_f85d2c3a3a290969.webp 1200w&#34;
-               src=&#34;http://localhost:1313/post/lfd/feature-based_hu_1b92b244460335eb.webp&#34;
-               width=&#34;760&#34;
-               height=&#34;264&#34;
-               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;figcaption&gt;
-      Feature-based methods with structured motion representations. The policy receives per-frame rewards based on feature differences with reference states and is conditioned on compact motion embeddings derived from demonstration data. This design preserves the interpretability of hand-crafted objectives while enabling smoother transitions and broader generalization across behaviors through learned motion structure.
-    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;figure id="figure-feature-based-methods-with-structured-motion-representations-the-policy-receives-per-frame-rewards-based-on-feature-differences-with-reference-states-and-is-conditioned-on-compact-motion-embeddings-derived-from-demonstration-data-this-design-preserves-the-interpretability-of-hand-crafted-objectives-while-enabling-smoother-transitions-and-broader-generalization-across-behaviors-through-learned-motion-structure"&gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-100" &gt;&lt;img alt="feature-based" srcset="
+/post/lfd/feature-based_hu_1b92b244460335eb.webp 400w,
+/post/lfd/feature-based_hu_b809c86c17d7b37b.webp 760w,
+/post/lfd/feature-based_hu_f85d2c3a3a290969.webp 1200w"
+src="https://thrmnn.github.io/post/lfd/feature-based_hu_1b92b244460335eb.webp"
+width="760"
+height="264"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;figcaption&gt;
+Feature-based methods with structured motion representations. The policy receives per-frame rewards based on feature differences with reference states and is conditioned on compact motion embeddings derived from demonstration data. This design preserves the interpretability of hand-crafted objectives while enabling smoother transitions and broader generalization across behaviors through learned motion structure.
+&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;As a result, a new class of imitation approaches has emerged that maintains the explicit reward structure of traditional feature-based methods, but augments it with &lt;strong&gt;representation learning&lt;/strong&gt; to scale across tasks and motions.
 In many cases, reference frames, or compact summaries thereof, are injected directly into the policy, providing frame-level tracking targets that guide behavior.&lt;/p&gt;
-&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-red-400&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z&#34;/&gt;&lt;/svg&gt;
+&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900"&gt;
+&lt;span class="pr-3 pt-1 text-red-400"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;&lt;p&gt;&lt;strong&gt;Sophisticated Motion Representation&lt;/strong&gt;&lt;/p&gt;
+&lt;span class="dark:text-neutral-300"&gt;&lt;p&gt;&lt;strong&gt;Sophisticated Motion Representation&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;A central challenge for this class of methods is the construction of motion representations that support smooth transitions and structural generalization. Compact, low-dimensional embeddings promote semantic understanding of inter-motion relationships and improve sample efficiency.&lt;/p&gt;
 &lt;/span&gt;
 &lt;/div&gt;
-&lt;p&gt;To this end, some methods inject reference features or full motion states directly into the policy (e.g., 
-, 
-, 
-, 
-, 
-, 
-, 
-, 
-, 
-, 
+&lt;p&gt;To this end, some methods inject reference features or full motion states directly into the policy (e.g.,
+,
+,
+,
+,
+,
+,
+,
+,
+,
 ), preserving spatial coherence in the motion space.
 Others pursue more abstract embeddings through self-supervised or policy-conditioned learning.
-For instance, 
-, 
-, and 
- build representations via policy interaction, while 
- and 
- construct temporally and spatially coherent embeddings using self-supervision.
-Frequency-domain methods such as 
-, 
-, and 
- impose motion-inductive biases that capture the periodic and hierarchical structure of motion.
+For instance,
+,
+, and
+build representations via policy interaction, while
+and
+construct temporally and spatially coherent embeddings using self-supervision.
+Frequency-domain methods such as
+,
+, and
+impose motion-inductive biases that capture the periodic and hierarchical structure of motion.
 These techniques collectively extend the DeepMimic paradigm by generalizing phase alignment and structural similarity beyond heuristics.&lt;/p&gt;
-&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-red-400&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z&#34;/&gt;&lt;/svg&gt;
+&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900"&gt;
+&lt;span class="pr-3 pt-1 text-red-400"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;&lt;p&gt;&lt;strong&gt;Inflexible Imitation Adaptation&lt;/strong&gt;&lt;/p&gt;
+&lt;span class="dark:text-neutral-300"&gt;&lt;p&gt;&lt;strong&gt;Inflexible Imitation Adaptation&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;A limitation of these representation-driven feature-based methods is that they often rely on explicit tracking of full trajectories, enforced by dense per-step rewards.
 This design makes it difficult to adapt or deviate from the reference when auxiliary tasks require flexibility, as is common in goal-directed or interaction-heavy settings.&lt;/p&gt;
 &lt;/span&gt;
 &lt;/div&gt;
 &lt;p&gt;To address this, some approaches introduce mechanisms to adaptively relax imitation constraints.
-For example, 
- introduces a fallback mechanism that adjusts phase progression when key task objectives are not met.
-
- proposes a transformer-based attention model that encodes arbitrary sets of keyframes with flexible temporal spacing.
-
- proceeds with imitation of features only when the optimality constraints of the task are satisfied.
-Other works incorporate high-level planning components to dictate intermediate reference states, such as diffusion-based models in 
- and 
-, or planners that directly modulate the learned motion representations (e.g., 
-, 
+For example,
+introduces a fallback mechanism that adjusts phase progression when key task objectives are not met.
+proposes a transformer-based attention model that encodes arbitrary sets of keyframes with flexible temporal spacing.
+proceeds with imitation of features only when the optimality constraints of the task are satisfied.
+Other works incorporate high-level planning components to dictate intermediate reference states, such as diffusion-based models in
+and
+, or planners that directly modulate the learned motion representations (e.g.,
+,
 ).&lt;/p&gt;
 &lt;p&gt;Together, these developments illustrate the interpretability and stability of feature-based imitation when paired with structured motion representations.
 However, despite avoiding the instability of adversarial training, these methods remain constrained by their reliance on explicit tracking and overengineered representations, which can hinder adaptation in tasks requiring flexible deviation from demonstrations.&lt;/p&gt;
-&lt;h2 id=&#34;summary-strengths-limitations-and-emerging-directions&#34;&gt;Summary: Strengths, Limitations, and Emerging Directions&lt;/h2&gt;
+&lt;h2 id="summary-strengths-limitations-and-emerging-directions"&gt;Summary: Strengths, Limitations, and Emerging Directions&lt;/h2&gt;
 &lt;p&gt;Learning from demonstrations has evolved into two primary methodological paradigms: &lt;strong&gt;feature-based methods&lt;/strong&gt;, which use explicit, hand-crafted reward formulations, and &lt;strong&gt;GAN-based methods&lt;/strong&gt;, which employ discriminators to implicitly shape behavior.
 Each offers distinct advantages and faces unique challenges, especially as the field shifts toward learning from large, diverse, and unstructured motion datasets.&lt;/p&gt;
 &lt;table&gt;
-  &lt;thead&gt;
-      &lt;tr&gt;
-          &lt;th&gt;&lt;strong&gt;GAN-Based Methods&lt;/strong&gt;&lt;/th&gt;
-          &lt;th&gt;&lt;strong&gt;Feature-Based Methods&lt;/strong&gt;&lt;/th&gt;
-      &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-      &lt;tr&gt;
-          &lt;td&gt;
-, 
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;strong&gt;GAN-Based Methods&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;Feature-Based Methods&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+,
 &lt;/td&gt;
-          &lt;td&gt;
-, 
-, 
+&lt;td&gt;
+,
+,
 &lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;
-, 
-, 
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+,
+,
 &lt;/td&gt;
-          &lt;td&gt;
-, 
-, 
+&lt;td&gt;
+,
+,
 &lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;
-, 
-, 
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+,
+,
 &lt;/td&gt;
-          &lt;td&gt;
-, 
-, 
+&lt;td&gt;
+,
+,
 &lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;
-, 
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+,
 &lt;/td&gt;
-          &lt;td&gt;
-, 
-, 
+&lt;td&gt;
+,
+,
 &lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;
-, 
-, 
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+,
+,
 &lt;/td&gt;
-          &lt;td&gt;
-, 
-, 
+&lt;td&gt;
+,
+,
 &lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;
-, 
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+,
 &lt;/td&gt;
-          &lt;td&gt;
-, 
-, 
+&lt;td&gt;
+,
+,
 &lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;&lt;/td&gt;
-          &lt;td&gt;
-, 
-, 
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;
+,
+,
 &lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;&lt;/td&gt;
-          &lt;td&gt;
-, 
-, 
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;
+,
+,
 &lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;&lt;/td&gt;
-          &lt;td&gt;
-, 
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;
+,
 &lt;/td&gt;
-      &lt;/tr&gt;
-  &lt;/tbody&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h3 id=&#34;gan-based-methods&#34;&gt;GAN-Based Methods&lt;/h3&gt;
+&lt;h3 id="gan-based-methods"&gt;GAN-Based Methods&lt;/h3&gt;
 &lt;p&gt;GAN-based approaches, such as AMP and its derivatives, use a discriminator to assign reward signals based on the realism of short transition snippets.
 This formulation dispenses with time-aligned supervision, allowing policies to imitate motion in a distributional sense rather than reproducing specific trajectories.
 As a result, these methods scale naturally to unstructured or unlabeled data, enabling smoother transitions between behaviors and generalization beyond the demonstrated clips.&lt;/p&gt;
@@ -464,7 +383,7 @@ Techniques learn motion embeddings that condition both policy and discriminator,
 These latent-conditioned GANs can also model semantic structure in motion space, facilitating interpolation and compositionality.&lt;/p&gt;
 &lt;p&gt;Despite these benefits, GAN-based methods remain prone to &lt;strong&gt;training instability&lt;/strong&gt;, require careful discriminator design, and often offer coarser control over motion details.
 Their implicit reward structure can obscure performance tuning and requires auxiliary mechanisms for precise task alignment.&lt;/p&gt;
-&lt;h3 id=&#34;feature-based-methods&#34;&gt;Feature-Based Methods&lt;/h3&gt;
+&lt;h3 id="feature-based-methods"&gt;Feature-Based Methods&lt;/h3&gt;
 &lt;p&gt;In contrast, feature-based imitation methods like DeepMimic start with dense, per-frame reward functions derived from specific motion features.
 This yields strong supervision for motion matching, making them highly effective for replicating fine-grained details in demonstrated behavior.
 However, traditional approaches are limited by their &lt;strong&gt;dependence on hard-coded alignment&lt;/strong&gt; and &lt;strong&gt;lack of structured motion representation&lt;/strong&gt;, which restricts scalability and generalization.&lt;/p&gt;
@@ -474,57 +393,57 @@ This new generation of feature-based methods retains interpretability and strong
 &lt;p&gt;Nevertheless, feature-based systems still face challenges in &lt;strong&gt;adapting to auxiliary tasks or goals&lt;/strong&gt; that require deviation from the reference trajectory.
 Their strong reliance on explicit tracking and dense supervision can make them brittle in dynamic or multi-objective settings, where flexibility is crucial.&lt;/p&gt;
 &lt;table&gt;
-  &lt;thead&gt;
-      &lt;tr&gt;
-          &lt;th&gt;&lt;strong&gt;Criterion&lt;/strong&gt;&lt;/th&gt;
-          &lt;th&gt;&lt;strong&gt;GAN-Based Methods&lt;/strong&gt;&lt;/th&gt;
-          &lt;th&gt;&lt;strong&gt;Feature-Based Methods&lt;/strong&gt;&lt;/th&gt;
-      &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-      &lt;tr&gt;
-          &lt;td&gt;&lt;strong&gt;Reward signal&lt;/strong&gt;&lt;/td&gt;
-          &lt;td&gt;implicit, coarse&lt;/td&gt;
-          &lt;td&gt;explicit, dense&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;&lt;strong&gt;Scalability&lt;/strong&gt;&lt;/td&gt;
-          &lt;td&gt;high (unstructured data)&lt;/td&gt;
-          &lt;td&gt;moderate (depends on representation)&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;&lt;strong&gt;Generalization&lt;/strong&gt;&lt;/td&gt;
-          &lt;td&gt;strong with latent conditioning&lt;/td&gt;
-          &lt;td&gt;strong with good embeddings&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;&lt;strong&gt;Training stability&lt;/strong&gt;&lt;/td&gt;
-          &lt;td&gt;challenging (saturation, collapse)&lt;/td&gt;
-          &lt;td&gt;stable but sensitive to inductive bias&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;&lt;strong&gt;Interpretability&lt;/strong&gt;&lt;/td&gt;
-          &lt;td&gt;low to moderate&lt;/td&gt;
-          &lt;td&gt;high&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;&lt;strong&gt;Control&lt;/strong&gt;&lt;/td&gt;
-          &lt;td&gt;indirect (via discriminator or latent)&lt;/td&gt;
-          &lt;td&gt;direct (via features or embeddings)&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;&lt;strong&gt;Task integration&lt;/strong&gt;&lt;/td&gt;
-          &lt;td&gt;flexible&lt;/td&gt;
-          &lt;td&gt;precise but less adaptable&lt;/td&gt;
-      &lt;/tr&gt;
-  &lt;/tbody&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;strong&gt;Criterion&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;GAN-Based Methods&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;Feature-Based Methods&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Reward signal&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;implicit, coarse&lt;/td&gt;
+&lt;td&gt;explicit, dense&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Scalability&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;high (unstructured data)&lt;/td&gt;
+&lt;td&gt;moderate (depends on representation)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Generalization&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;strong with latent conditioning&lt;/td&gt;
+&lt;td&gt;strong with good embeddings&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Training stability&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;challenging (saturation, collapse)&lt;/td&gt;
+&lt;td&gt;stable but sensitive to inductive bias&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Interpretability&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;low to moderate&lt;/td&gt;
+&lt;td&gt;high&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Control&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;indirect (via discriminator or latent)&lt;/td&gt;
+&lt;td&gt;direct (via features or embeddings)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Task integration&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;flexible&lt;/td&gt;
+&lt;td&gt;precise but less adaptable&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h2 id=&#34;on-metrics-and-misconceptions&#34;&gt;On Metrics and Misconceptions&lt;/h2&gt;
-&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-red-400&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z&#34;/&gt;&lt;/svg&gt;
+&lt;h2 id="on-metrics-and-misconceptions"&gt;On Metrics and Misconceptions&lt;/h2&gt;
+&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-yellow-100 dark:bg-yellow-900"&gt;
+&lt;span class="pr-3 pt-1 text-red-400"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0zM12 15.75h.007v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;In evaluating learning from demonstration algorithms, it is common practice to reference metrics such as &lt;em&gt;motion naturalness&lt;/em&gt;, &lt;em&gt;energy efficiency&lt;/em&gt;, or &lt;em&gt;cost of transport&lt;/em&gt;.
+&lt;span class="dark:text-neutral-300"&gt;In evaluating learning from demonstration algorithms, it is common practice to reference metrics such as &lt;em&gt;motion naturalness&lt;/em&gt;, &lt;em&gt;energy efficiency&lt;/em&gt;, or &lt;em&gt;cost of transport&lt;/em&gt;.
 While these properties are intuitively appealing, they can be misleading indicators of algorithmic performance.
 Crucially, such metrics are not inherent to the learning algorithm itself but are instead highly dependent on the quality and structure of the reference data.
 For instance, if a policy trained via a particular algorithm exhibits smoother or more energy-efficient behavior, this outcome often reflects characteristics of the underlying demonstrations rather than advantages intrinsic to the algorithmic formulation.
@@ -537,7 +456,7 @@ Conversely, a feature-based method may produce high-fidelity imitation in terms 
 To conduct a rigorous and meaningful comparison between methods, evaluation should focus on the properties most directly influenced by algorithmic design.
 These include reward signal quality, training stability, generalization to novel motions or environments, and adaptability to auxiliary tasks.
 By focusing on such factors, researchers and practitioners can better understand the operational trade-offs between feature-based and GAN-based approaches, avoiding overgeneralized claims and grounding comparisons in algorithmic substance rather than incidental outcome metrics.&lt;/p&gt;
-&lt;h2 id=&#34;debunking-common-beliefs&#34;&gt;Debunking Common Beliefs&lt;/h2&gt;
+&lt;h2 id="debunking-common-beliefs"&gt;Debunking Common Beliefs&lt;/h2&gt;
 &lt;p&gt;Despite a growing body of research, misconceptions remain prevalent in discussions of GAN-based versus feature-based learning from demonstrations.
 Below, we revisit some common claims, clarify their limitations, and situate them within a more rigorous analytical framework.&lt;/p&gt;
 &lt;blockquote&gt;
@@ -612,7 +531,7 @@ Failure modes arise not from the paradigm itself but from inadequate inductive b
 Designing robust feature-based systems involves selecting appropriate reward features, constructing phase functions or embeddings, and managing temporal alignment.
 These tasks can be as complex as designing a discriminator, particularly when the goal is to scale across tasks or environments.
 Moreover, effective latent representations often require pretraining and careful architectural choices to avoid collapse or disentanglement failure.&lt;/p&gt;
-&lt;h2 id=&#34;final-remarks&#34;&gt;Final Remarks&lt;/h2&gt;
+&lt;h2 id="final-remarks"&gt;Final Remarks&lt;/h2&gt;
 &lt;p&gt;This survey has examined two major paradigms in learning from demonstrations: feature-based and GAN-based methods, through the lens of reward structure, scalability, generalization, and representation.
 The core distinction lies not merely in architectural components but in their respective philosophies of supervision: explicit, hand-crafted rewards versus implicit, adversarially learned objectives.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Feature-based methods&lt;/strong&gt; offer dense, interpretable rewards that strongly anchor the policy to reference trajectories, making them well-suited for tasks requiring high-fidelity reproduction of demonstrated motions.
@@ -623,25 +542,21 @@ Yet, they often encounter challenges related to training stability, reward spars
 &lt;p&gt;It is important to recognize that &lt;strong&gt;many problems commonly attributed to one paradigm reappear in different forms in the other&lt;/strong&gt;.
 For instance, mode collapse in GANs mirrors the brittleness of poor motion representations in feature-based methods.
 Similarly, while feature-based methods offer strong guidance for motion tracking, they may fail to generalize or adapt when rigid reward definitions are misaligned with auxiliary tasks or dynamic environments.&lt;/p&gt;
-&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900&#34;&gt;
-&lt;span class=&#34;pr-3 pt-1 text-primary-600 dark:text-primary-300&#34;&gt;
-  &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z&#34;/&gt;&lt;/svg&gt;
+&lt;div class="flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900"&gt;
+&lt;span class="pr-3 pt-1 text-primary-600 dark:text-primary-300"&gt;
+&lt;svg height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z"/&gt;&lt;/svg&gt;
 &lt;/span&gt;
-  &lt;span class=&#34;dark:text-neutral-300&#34;&gt;Rather than presenting these two paradigms as mutually exclusive, recent trends point toward a &lt;strong&gt;convergent perspective&lt;/strong&gt;, one that emphasizes the centrality of structured motion representations.
+&lt;span class="dark:text-neutral-300"&gt;Rather than presenting these two paradigms as mutually exclusive, recent trends point toward a &lt;strong&gt;convergent perspective&lt;/strong&gt;, one that emphasizes the centrality of structured motion representations.
 Whether derived from self-supervised learning, latent encodings, or manually designed summaries, these representations serve as a bridge between the strengths of each approach: the interpretability and controllability of explicit rewards and the scalability and adaptability of adversarial training.&lt;/span&gt;
 &lt;/div&gt;
 &lt;p&gt;Ultimately, the decision between using a feature-based or GAN-based approach is not a question of universal superiority.
 Instead, it should be guided by the &lt;strong&gt;specific constraints and priorities of the application&lt;/strong&gt;: fidelity versus diversity, interpretability versus flexibility, or training simplicity versus large-scale generalization.
 Understanding these trade-offs and their relationship to reward structure and motion representation is essential for designing robust, scalable, and expressive imitation learning systems.&lt;/p&gt;
-&lt;h2 id=&#34;citation&#34;&gt;Citation&lt;/h2&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;@article{li2025learning,
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  title={Learning from Demonstrations: Feature-Based and GAN-Based Approaches},
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  author={Li, Chenhao and Hutter, Marco and Krause, Andreas},
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  journal={arXiv preprint arXiv:2507.05906},
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  year={2025}
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-    </item>
-    
-  </channel>
-</rss>
+&lt;h2 id="citation"&gt;Citation&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;@article{li2025learning,
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; title={Learning from Demonstrations: Feature-Based and GAN-Based Approaches},
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; author={Li, Chenhao and Hutter, Marco and Krause, Andreas},
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; journal={arXiv preprint arXiv:2507.05906},
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; year={2025}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item></channel></rss>

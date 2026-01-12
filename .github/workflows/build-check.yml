@@ -33,7 +33,7 @@ jobs:
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
-          hugo-version: '0.136.5'
+          hugo-version: 'latest'
           extended: true  # Use extended version for SCSS support
 
       # Step 3: Verify Hugo installation
@@ -89,7 +89,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '✅ **Hugo build check passed!** The site builds successfully with Hugo 0.136.5.'
+              body: '✅ **Hugo build check passed!** The site builds successfully.'
             })
 
       # Step 9: Handle build failures with PR comment

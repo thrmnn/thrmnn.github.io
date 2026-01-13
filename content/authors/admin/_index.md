@@ -40,7 +40,7 @@ profiles:
   - icon: brands/linkedin
     url: https://www.linkedin.com/in/theohermann-epfl/
   - icon: brands/youtube
-    url: 
+    url: - Google Scholar Profile URL: https://scholar.google.com/citations?user=SYHaPDAAAAAJ&hl=en
   - icon: academicons/google-scholar
     url: https://scholar.google.com/citations?user=SYHaPDAAAAAJ&hl=en
   - icon: academicons/cv
@@ -52,47 +52,30 @@ interests:
   - Multimodal Fusion
 
 education:
-  - area: PhD in Artificial Intelligence
-    institution: ETH AI Center
-    date_start: 2023-11-01
-    date_end: ''
-    summary: |
-      [ETH AI Center Doctoral Fellowship](https://ai.ethz.ch/education/phd-and-postdoc-programs/phd-fellowships.html) winner.
-    # button:
-    #   text: 'Read Thesis'
-    #   url: 'https://example.com'
-  - area: MSc in Robotics, Systems and Control
-    institution: ETH Zurich
-    date_start: 2020-09-01
+  - area: Master's degree (M.Sc), Robotics
+    institution: Ecole polytechnique fédérale de Lausanne (EPFL)
+    date_start: 2021-09-01
     date_end: 2023-07-31
     summary: |
-      GPA: 5.98/6.0
-      
-      [ETH Medal](https://ethz.ch/en/the-eth-zurich/education/awards/eth-medal/outstanding-master-theses.html) winner.
-
-    #   Courses included:
-    #   - lorem ipsum dolor sit amet, consectetur adipiscing elit
-    #   - lorem ipsum dolor sit amet, consectetur adipiscing elit
-    #   - lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - area: BSc in Mechanical Engineering
-    institution: Tongji University
-    date_start: 2015-09-01
-    date_end: 2020-06-30
+      Mobile Robotics, Aerial Robotics, Industrial Robotics for Manipulation, Legged Robots, Model Predictive Control, Adaptive Control, Applied Machine Learning, Deep Learning for Autonomous Vehicles, Deep Learning for Optical Imaging, Computer Vision, Intelligent Agents, Game Theory, Analysis and Modelling of Locomotion, Innovation & Entrepreneurship. Skills: Trajectory Planning, Reinforcement Learning
+  - area: Exchange (Bachelor 3rd year), Embedded systems
+    institution: Kungliga Tekniska högskolan (KTH)
+    date_start: 2020-09-01
+    date_end: 2021-06-30
     summary: |
-      GPA: 4.92/5.0
-
-      National Scholarship Winner, ranking the first in the department for five consecutive years. 
-      
-    #   Courses included:
-    #   - lorem ipsum dolor sit amet, consectetur adipiscing elit
-    #   - lorem ipsum dolor sit amet, consectetur adipiscing elit
-    #   - lorem ipsum dolor sit amet, consectetur adipiscing elit
+      Signal Theory, Embedded Systems, Optical Physics, Control Theory, Hybrid Control Systems, MEMS, Machine Learning, Neuroscience
+  - area: Bachelor's degree (B.Sc), Microengineering
+    institution: Ecole polytechnique fédérale de Lausanne (EPFL)
+    date_start: 2018-09-01
+    date_end: 2021-06-30
+    summary: |
+      Programming, Basics of Robotics, Electronics, Sensors, Mechanical Design, Mechanical Engineering, Logical Systems, Control Systems, Mathematical Optimization, Electromechanical Conversion, Signal Processing, Semiconductor Devices, Statics, Dynamics, Optical Engineering, Geometry, Clean Room Laboratory, General Physics, Physics of Manufacturing, Linear Algebra, Analysis, Numerical Analysis, Probability and Statistics, General Chemistry, Materials Science, Biology
 work:
   - position: Research Fellow
     company_name: MIT Senseable City Lab
     company_url: 'https://senseablerio.mit.edu/'
     date_start: 2025-01-01
-    date_end: 
+    date_end: - **Description/Summary:** LiDar-informed 3D modeling for public health research in favelas
     summary: |
       LiDar-informed 3D modeling for public health research in favelas
 

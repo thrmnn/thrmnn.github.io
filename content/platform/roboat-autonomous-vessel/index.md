@@ -6,16 +6,17 @@ external_link: 'https://roboat.tech/'
 
 image:
   caption: Roboat Autonomous Boat
+  filename: platforms/roboat.jpg
   focal_point: Smart
 
-tags:
-  - Autonomous Vessels
-  - Maritime Robotics
-  - Computer Vision
-  - LiDAR
-  - MLOps
-  - Roboat
-  - MIT
+# tags:
+#   - Autonomous Vessels
+#   - Maritime Robotics
+#   - Computer Vision
+#   - LiDAR
+#   - MLOps
+#   - Roboat
+#   - MIT
 
 url_code: ''
 url_video: ''

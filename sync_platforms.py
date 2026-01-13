@@ -146,16 +146,26 @@ def create_platform_content(platform):
     if platform.get('external_link'):
         front_matter += f"external_link: '{platform['external_link']}'\n"
     
-    if platform.get('image'):
+    if platform.get('image') and platform['image'].strip():
         front_matter += "\nimage:\n"
         front_matter += f"  caption: {platform['title']}\n"
+        # Hugo Blox looks for images in assets/media/ - use relative path from assets/media/
+        # If image is in assets/media/platforms/, use "platforms/filename"
+        image_path = platform['image']
+        if not image_path.startswith('platforms/'):
+            image_path = f"platforms/{image_path}"
+        front_matter += f"  filename: {image_path}\n"
         front_matter += "  focal_point: Smart\n"
-        # Note: Image path will need to be set in Hugo config or use full path
     
+    # Tags commented out to avoid Hugo template errors with article-grid view
+    # if platform.get('tags'):
+    #     front_matter += "\ntags:\n"
+    #     for tag in platform['tags']:
+    #         front_matter += f"  - {tag}\n"
+    front_matter += "\n# tags:\n"
     if platform.get('tags'):
-        front_matter += "\ntags:\n"
         for tag in platform['tags']:
-            front_matter += f"  - {tag}\n"
+            front_matter += f"#   - {tag}\n"
     
     if platform.get('code_url'):
         front_matter += f"\nurl_code: '{platform['code_url']}'\n"
@@ -203,11 +213,26 @@ def main():
         # Ensure platform content directory exists
         PLATFORM_CONTENT_DIR.mkdir(parents=True, exist_ok=True)
         
+        # Get list of slugs that should exist
         created_slugs = []
         for platform in platforms:
             slug = create_platform_content(platform)
             created_slugs.append(slug)
             print(f"✓ Created/updated: {platform['title']} ({slug})")
+        
+        # Remove platforms that are not in PLATFORMS.md
+        print("\n🧹 Cleaning up old platforms not in PLATFORMS.md...")
+        if PLATFORM_CONTENT_DIR.exists():
+            for item in PLATFORM_CONTENT_DIR.iterdir():
+                # Skip _index.md and non-directories
+                if item.name == '_index.md' or not item.is_dir():
+                    continue
+                
+                # If this platform is not in our list, remove it
+                if item.name not in created_slugs:
+                    import shutil
+                    print(f"  🗑️  Removing: {item.name} (not in PLATFORMS.md)")
+                    shutil.rmtree(item)
         
         print(f"\n✅ Sync complete! {len(platforms)} platform(s) processed.")
         print("\n📋 Next steps:")

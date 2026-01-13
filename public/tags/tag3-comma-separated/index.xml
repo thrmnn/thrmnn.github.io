@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tag3 (Comma-Separated) | Théo Hermann</title>
+    <link>http://localhost:1313/tags/tag3-comma-separated/</link>
+      <atom:link href="http://localhost:1313/tags/tag3-comma-separated/index.xml" rel="self" type="application/rss+xml" />
+    <description>Tag3 (Comma-Separated)</description>
+    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language>
+    <image>
+      <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
+      <title>Tag3 (Comma-Separated)</title>
+      <link>http://localhost:1313/tags/tag3-comma-separated/</link>
+    </image>
+    
+    <item>
+      <title>Platform Name</title>
+      <link>http://localhost:1313/platform/platform-name/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/platform/platform-name/</guid>
+      <description>&lt;p&gt;Detailed description of the platform and your work with it&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

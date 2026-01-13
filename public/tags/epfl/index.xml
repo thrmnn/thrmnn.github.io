@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>EPFL | Théo Hermann</title>
+    <link>http://localhost:1313/tags/epfl/</link>
+      <atom:link href="http://localhost:1313/tags/epfl/index.xml" rel="self" type="application/rss+xml" />
+    <description>EPFL</description>
+    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Sat, 01 Sep 2018 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
+      <title>EPFL</title>
+      <link>http://localhost:1313/tags/epfl/</link>
+    </image>
+    
+    <item>
+      <title>Thymio Educational Robot</title>
+      <link>http://localhost:1313/platform/thymio-robot/</link>
+      <pubDate>Sat, 01 Sep 2018 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/platform/thymio-robot/</guid>
+      <description>&lt;p&gt;Worked with the Thymio robot during my Bachelor&amp;rsquo;s and Master&amp;rsquo;s studies at EPFL. Thymio is an educational robot designed for learning robotics and programming.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Hardware Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Proximity sensors (9 IR sensors)&lt;/li&gt;
+&lt;li&gt;Ground sensors&lt;/li&gt;
+&lt;li&gt;Accelerometer&lt;/li&gt;
+&lt;li&gt;Microphone&lt;/li&gt;
+&lt;li&gt;Temperature sensor&lt;/li&gt;
+&lt;li&gt;RGB LEDs for visual feedback&lt;/li&gt;
+&lt;li&gt;Two motors for differential drive&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Software &amp;amp; Programming:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Visual programming interface (VPL)&lt;/li&gt;
+&lt;li&gt;Aseba programming language&lt;/li&gt;
+&lt;li&gt;Block-based programming for beginners&lt;/li&gt;
+&lt;li&gt;Text-based programming for advanced users&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Applications &amp;amp; Projects:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Introduction to robotics concepts&lt;/li&gt;
+&lt;li&gt;Sensor integration and data processing&lt;/li&gt;
+&lt;li&gt;Basic navigation and obstacle avoidance&lt;/li&gt;
+&lt;li&gt;Human-robot interaction experiments&lt;/li&gt;
+&lt;li&gt;Educational robotics projects during coursework&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ROS | Théo Hermann</title>
+    <link>http://localhost:1313/tags/ros/</link>
+      <atom:link href="http://localhost:1313/tags/ros/index.xml" rel="self" type="application/rss+xml" />
+    <description>ROS</description>
+    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Wed, 01 Sep 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
+      <title>ROS</title>
+      <link>http://localhost:1313/tags/ros/</link>
+    </image>
+    
+    <item>
+      <title>F1TENTH Autonomous Racing Car (Simulation)</title>
+      <link>http://localhost:1313/platform/f1tenth-autonomous-racing/</link>
+      <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/platform/f1tenth-autonomous-racing/</guid>
+      <description>&lt;p&gt;Worked with the F1TENTH platform in simulation to develop autonomous racing algorithms. F1TENTH is a 1/10th scale autonomous racing platform designed for research and education.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Platform Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;1/10th scale RC car platform&lt;/li&gt;
+&lt;li&gt;LiDAR for perception&lt;/li&gt;
+&lt;li&gt;High-speed autonomous navigation&lt;/li&gt;
+&lt;li&gt;Real-time control algorithms&lt;/li&gt;
+&lt;li&gt;Simulation environment for safe testing&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Software &amp;amp; Algorithms:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ROS (Robot Operating System)&lt;/li&gt;
+&lt;li&gt;Path planning algorithms&lt;/li&gt;
+&lt;li&gt;Model Predictive Control (MPC)&lt;/li&gt;
+&lt;li&gt;Obstacle avoidance&lt;/li&gt;
+&lt;li&gt;High-speed trajectory optimization&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Applications:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Autonomous racing algorithms&lt;/li&gt;
+&lt;li&gt;High-speed navigation research&lt;/li&gt;
+&lt;li&gt;Real-time control systems&lt;/li&gt;
+&lt;li&gt;Simulation-based development and testing&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

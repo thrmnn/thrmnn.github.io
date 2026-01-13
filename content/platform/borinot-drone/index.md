@@ -6,15 +6,16 @@ external_link: 'https://www.iri.upc.edu/'
 
 image:
   caption: Borinot Aerial Robot
+  filename: platforms/borinot_agile.png
   focal_point: Smart
 
-tags:
-  - Aerial Robotics
-  - Drones
-  - Event Cameras
-  - CSIC-IRII
-  - Computer Vision
-  - Autonomous Flight
+# tags:
+#   - Aerial Robotics
+#   - Drones
+#   - Event Cameras
+#   - CSIC-IRII
+#   - Computer Vision
+#   - Autonomous Flight
 
 url_code: ''
 url_video: ''

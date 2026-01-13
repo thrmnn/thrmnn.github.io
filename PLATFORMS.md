@@ -63,7 +63,7 @@ Edit this file to add/update platforms. Run the sync script to update the websit
     - Educational robotics projects during coursework
   
 - **External Link:** https://www.thymio.org/
-- **Image:** thymio_robot.jpg
+- **Image:** 
 - **Tags:** Educational Robotics, Mobile Robotics, EPFL, Sensor Integration, Programming
 - **Code URL:** 
 - **Video URL:** 
@@ -98,7 +98,7 @@ Edit this file to add/update platforms. Run the sync script to update the websit
     - Simulation-based development and testing
   
 - **External Link:** https://f1tenth.org/
-- **Image:** f1tenth_racing.jpg
+- **Image:** 
 - **Tags:** Autonomous Racing, Simulation, ROS, Path Planning, Model Predictive Control, High-Speed Navigation
 - **Code URL:** 
 - **Video URL:** 
@@ -135,7 +135,7 @@ Edit this file to add/update platforms. Run the sync script to update the websit
     - Aerial robotics research
   
 - **External Link:** https://www.iri.upc.edu/
-- **Image:** borinot_drone.jpg
+- **Image:** borinot_agile.png
 - **Tags:** Aerial Robotics, Drones, Event Cameras, CSIC-IRII, Computer Vision, Autonomous Flight
 - **Code URL:** 
 - **Video URL:** 
@@ -173,7 +173,7 @@ Edit this file to add/update platforms. Run the sync script to update the websit
     - MLOps infrastructure development
   
 - **External Link:** https://roboat.tech/
-- **Image:** roboat_vessel.jpg
+- **Image:** roboat.jpg
 - **Tags:** Autonomous Vessels, Maritime Robotics, Computer Vision, LiDAR, MLOps, Roboat, MIT
 - **Code URL:** 
 - **Video URL:** 

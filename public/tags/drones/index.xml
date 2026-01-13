@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Drones | Théo Hermann</title>
+    <link>http://localhost:1313/tags/drones/</link>
+      <atom:link href="http://localhost:1313/tags/drones/index.xml" rel="self" type="application/rss+xml" />
+    <description>Drones</description>
+    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Sun, 01 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
+      <title>Drones</title>
+      <link>http://localhost:1313/tags/drones/</link>
+    </image>
+    
+    <item>
+      <title>Borinot Aerial Robot</title>
+      <link>http://localhost:1313/platform/borinot-drone/</link>
+      <pubDate>Sun, 01 Oct 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/platform/borinot-drone/</guid>
+      <description>&lt;p&gt;Worked with the Borinot drone platform during my Visiting Research Fellowship at IRI (Institut de Robòtica i Informàtica Industrial, CSIC-UPC) in Barcelona. Borinot is a research-oriented aerial robot platform.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Hardware Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Quadrotor configuration&lt;/li&gt;
+&lt;li&gt;Onboard computing unit&lt;/li&gt;
+&lt;li&gt;Camera systems for vision&lt;/li&gt;
+&lt;li&gt;Event cameras (during my research)&lt;/li&gt;
+&lt;li&gt;IMU and other sensors&lt;/li&gt;
+&lt;li&gt;Flight controller&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Software &amp;amp; Research:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ROS for middleware&lt;/li&gt;
+&lt;li&gt;Event-based vision processing&lt;/li&gt;
+&lt;li&gt;Real-time perception algorithms&lt;/li&gt;
+&lt;li&gt;Autonomous flight control&lt;/li&gt;
+&lt;li&gt;Sensor fusion techniques&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Research Applications:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Event camera integration for drones&lt;/li&gt;
+&lt;li&gt;High-speed perception and navigation&lt;/li&gt;
+&lt;li&gt;Dynamic obstacle avoidance&lt;/li&gt;
+&lt;li&gt;Real-time visual processing&lt;/li&gt;
+&lt;li&gt;Aerial robotics research&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

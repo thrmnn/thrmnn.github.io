@@ -260,7 +260,7 @@ sections:
         folders:
           - platform
     design:
-      view: article-grid
+      view: card
       columns: 2
   - block: markdown
     id: contact

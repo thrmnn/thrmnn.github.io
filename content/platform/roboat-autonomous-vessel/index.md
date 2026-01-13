@@ -17,8 +17,8 @@ tags:
   - Roboat
   - MIT
 
-url_code: '- **Video URL:**'
-url_video: '---'
+url_code: ''
+url_video: ''
 
 url_pdf: ''
 url_slides: ''

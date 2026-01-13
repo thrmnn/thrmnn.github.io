@@ -81,13 +81,29 @@ def parse_platforms(file_path):
         else:
             platform['tags'] = []
         
-        # Extract Code URL
-        code_match = re.search(r'- \*\*Code URL:\*\*\s*(.+?)(?:\n|$)', platform_content)
-        platform['code_url'] = code_match.group(1).strip() if code_match else ''
+        # Extract Code URL (stop at next field marker)
+        code_match = re.search(r'- \*\*Code URL:\*\*\s*(.+?)(?:\n- \*\*|$)', platform_content, re.DOTALL)
+        if code_match:
+            code_url = code_match.group(1).strip()
+            # Clean up - remove if it's just a dash or next field
+            if code_url.startswith('-') or code_url == '':
+                platform['code_url'] = ''
+            else:
+                platform['code_url'] = code_url
+        else:
+            platform['code_url'] = ''
         
-        # Extract Video URL
-        video_match = re.search(r'- \*\*Video URL:\*\*\s*(.+?)(?:\n|$)', platform_content)
-        platform['video_url'] = video_match.group(1).strip() if video_match else ''
+        # Extract Video URL (stop at next field marker or end)
+        video_match = re.search(r'- \*\*Video URL:\*\*\s*(.+?)(?:\n- \*\*|$)', platform_content, re.DOTALL)
+        if video_match:
+            video_url = video_match.group(1).strip()
+            # Clean up - remove if it's just a dash or next field
+            if video_url.startswith('-') or video_url == '':
+                platform['video_url'] = ''
+            else:
+                platform['video_url'] = video_url
+        else:
+            platform['video_url'] = ''
         
         # Only add if we have at least a title
         if platform.get('title'):

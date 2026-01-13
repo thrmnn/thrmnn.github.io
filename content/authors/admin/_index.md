@@ -39,8 +39,6 @@ profiles:
     url: https://github.com/thrmnn
   - icon: brands/linkedin
     url: https://www.linkedin.com/in/theohermann-epfl/
-  - icon: brands/youtube
-    url: - Google Scholar Profile URL: https://scholar.google.com/citations?user=SYHaPDAAAAAJ&hl=en
   - icon: academicons/google-scholar
     url: https://scholar.google.com/citations?user=SYHaPDAAAAAJ&hl=en
   - icon: academicons/cv
@@ -75,7 +73,6 @@ work:
     company_name: MIT Senseable City Lab
     company_url: 'https://senseablerio.mit.edu/'
     date_start: 2025-01-01
-    date_end: 
     summary: |
       LiDar-informed 3D modeling for public health research in favelas
 

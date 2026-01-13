@@ -46,6 +46,10 @@ def parse_personal_info(file_path):
             value = re.sub(r'\s*\([^)]*full URL[^)]*\)\s*$', '', value, flags=re.IGNORECASE)
             # Remove trailing asterisks and clean up
             value = value.strip().rstrip('*').strip()
+            # Check if value starts with a dash followed by a field name (next field was captured)
+            if value.startswith('- ') and ':' in value:
+                # This means we captured the next field, return empty
+                return default
             # If value is just placeholder text or empty, return default
             if not value or value == '*' or value.startswith('*(') or value.startswith('* e.g.') or value == '(to be filled)':
                 return default
@@ -61,14 +65,15 @@ def parse_personal_info(file_path):
     info['tagline'] = extract_value(r'- Tagline:\s*([^*\n]+?)(?:\s*\*|$)', content, '')
     
     # Contact Information - extract only text before asterisk or example
-    info['email'] = extract_value(r'- Primary Email:\s*([^*\n]+?)(?:\s*\*|$)', content, '')
-    info['twitter_handle'] = extract_value(r'- Twitter/X Handle:\s*([^*\n]+?)(?:\s*\*|$)', content, '')
-    info['twitter_url'] = extract_value(r'- Twitter/X URL:\s*([^*\n]+?)(?:\s*\*|$)', content, '')
-    info['github_username'] = extract_value(r'- GitHub Username:\s*([^*\n]+?)(?:\s*\*|$)', content, '')
-    info['github_url'] = extract_value(r'- GitHub URL:\s*([^*\n]+?)(?:\s*\*|$)', content, '')
-    info['linkedin_url'] = extract_value(r'- LinkedIn URL:\s*([^*\n]+?)(?:\s*\*|$)', content, '')
-    info['youtube_url'] = extract_value(r'- YouTube Channel URL:\s*([^*\n]+?)(?:\s*\*|$)', content, '')
-    info['scholar_url'] = extract_value(r'- Google Scholar Profile URL:\s*([^*\n]+?)(?:\s*\*|$)', content, '')
+    # Use more strict pattern that stops at end of line or next field marker
+    info['email'] = extract_value(r'- Primary Email:\s*([^\n*]+?)(?:\s*\*|$|\n)', content, '')
+    info['twitter_handle'] = extract_value(r'- Twitter/X Handle:\s*([^\n*]+?)(?:\s*\*|$|\n)', content, '')
+    info['twitter_url'] = extract_value(r'- Twitter/X URL:\s*([^\n*]+?)(?:\s*\*|$|\n)', content, '')
+    info['github_username'] = extract_value(r'- GitHub Username:\s*([^\n*]+?)(?:\s*\*|$|\n)', content, '')
+    info['github_url'] = extract_value(r'- GitHub URL:\s*([^\n*]+?)(?:\s*\*|$|\n)', content, '')
+    info['linkedin_url'] = extract_value(r'- LinkedIn URL:\s*([^\n*]+?)(?:\s*\*|$|\n)', content, '')
+    info['youtube_url'] = extract_value(r'- YouTube Channel URL:\s*([^\n*]+?)(?:\s*\*|$|\n)', content, '')
+    info['scholar_url'] = extract_value(r'- Google Scholar Profile URL:\s*([^\n*]+?)(?:\s*\*|$|\n)', content, '')
     
     # Current Position (from Professional Information section)
     info['position_title'] = extract_value(r'- \*\*Position Title:\*\*\s*(.+?)(?:\n|$)', content, '')
@@ -509,13 +514,13 @@ def update_homepage(file_path, info):
                 flags=re.MULTILINE
             )
     
-    # Update contact buttons
+    # Update contact buttons - only add if URL is valid
     buttons = []
-    if info['email']:
+    if info.get('email') and info['email'] and '@' in info['email']:
         buttons.append(f"        - text: E-mail\n          icon: at-symbol\n          url: mailto:{info['email']}")
-    if info['twitter_url']:
+    if info.get('twitter_url') and info['twitter_url'] and ('http' in info['twitter_url'] or 'https' in info['twitter_url']):
         buttons.append(f"        - text: Message\n          icon: brands/x\n          url: {info['twitter_url']}")
-    if info['linkedin_url']:
+    if info.get('linkedin_url') and info['linkedin_url'] and ('http' in info['linkedin_url'] or 'https' in info['linkedin_url']):
         buttons.append(f"        - text: Connect\n          icon: brands/linkedin\n          url: {info['linkedin_url']}")
     
     if buttons:

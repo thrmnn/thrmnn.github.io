@@ -75,7 +75,7 @@ work:
     company_name: MIT Senseable City Lab
     company_url: 'https://senseablerio.mit.edu/'
     date_start: 2025-01-01
-    date_end: - **Description/Summary:** LiDar-informed 3D modeling for public health research in favelas
+    date_end: 
     summary: |
       LiDar-informed 3D modeling for public health research in favelas
 

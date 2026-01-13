@@ -250,18 +250,18 @@ sections:
   #   design:
   #     view: article-grid
   #     columns: 2
-  # - block: collection
-  #   id: platforms
-  #   content:
-  #     title: Robotic Platforms
-  #     subtitle: I Learned and Grew up with
-  #     count: 0
-  #     filters:
-  #       folders:
-  #         - platform
-  #   design:
-  #     view: article-grid
-  #     columns: 2
+  - block: collection
+    id: platforms
+    content:
+      title: Robotic Platforms
+      subtitle: Platforms I've Worked With
+      count: 0
+      filters:
+        folders:
+          - platform
+    design:
+      view: article-grid
+      columns: 2
   - block: markdown
     id: contact
     content:

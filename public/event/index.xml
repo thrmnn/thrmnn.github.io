@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Recent &amp; Upcoming Talks | Théo Hermann</title>
-    <link>https://thrmnn.github.io/event/</link>
-      <atom:link href="https://thrmnn.github.io/event/index.xml" rel="self" type="application/rss+xml" />
+    <link>http://localhost:1313/event/</link>
+      <atom:link href="http://localhost:1313/event/index.xml" rel="self" type="application/rss+xml" />
     <description>Recent &amp; Upcoming Talks</description>
     <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Tue, 21 Jan 2025 16:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://thrmnn.github.io/media/icon_hu_aefaff9bda353d53.png</url>
+      <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
       <title>Recent &amp; Upcoming Talks</title>
-      <link>https://thrmnn.github.io/event/</link>
+      <link>http://localhost:1313/event/</link>
     </image>
     
     <item>
       <title>Developmental Legged Intelligence: from Imitation to Generation</title>
-      <link>https://thrmnn.github.io/event/jsk/</link>
+      <link>http://localhost:1313/event/jsk/</link>
       <pubDate>Tue, 21 Jan 2025 16:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/jsk/</guid>
+      <guid>http://localhost:1313/event/jsk/</guid>
       <description>&lt;!-- 
 
 
@@ -45,9 +45,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Developmental Legged Intelligence: from Imitation to Generation</title>
-      <link>https://thrmnn.github.io/event/sony/</link>
+      <link>http://localhost:1313/event/sony/</link>
       <pubDate>Mon, 20 Jan 2025 15:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/sony/</guid>
+      <guid>http://localhost:1313/event/sony/</guid>
       <description>&lt;!-- 
 
 
@@ -76,9 +76,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>FLD: Fourier Latent Dynamics for Structured Motion Representation and Learning</title>
-      <link>https://thrmnn.github.io/event/tri/</link>
+      <link>http://localhost:1313/event/tri/</link>
       <pubDate>Wed, 27 Mar 2024 16:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/tri/</guid>
+      <guid>http://localhost:1313/event/tri/</guid>
       <description>&lt;!-- 
 
 
@@ -107,9 +107,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Journal Club on Pose Estimation and Action Recognition</title>
-      <link>https://thrmnn.github.io/event/sra/</link>
+      <link>http://localhost:1313/event/sra/</link>
       <pubDate>Thu, 21 Mar 2024 15:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/sra/</guid>
+      <guid>http://localhost:1313/event/sra/</guid>
       <description>&lt;!-- 
 
 
@@ -138,9 +138,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Leveraging Spatial-Temporal Structures in Self-supervised Motion Representation and Learning</title>
-      <link>https://thrmnn.github.io/event/ri/</link>
+      <link>http://localhost:1313/event/ri/</link>
       <pubDate>Wed, 20 Mar 2024 16:30:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/ri/</guid>
+      <guid>http://localhost:1313/event/ri/</guid>
       <description>&lt;!-- 
 
 
@@ -169,9 +169,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Developmental Legged Intelligence: from Imitation to Generation</title>
-      <link>https://thrmnn.github.io/event/ai4ce/</link>
+      <link>http://localhost:1313/event/ai4ce/</link>
       <pubDate>Tue, 05 Mar 2024 16:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/ai4ce/</guid>
+      <guid>http://localhost:1313/event/ai4ce/</guid>
       <description>&lt;!-- 
 
 
@@ -200,9 +200,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Learning from Limited Demonstrations: Lessons We have Learned</title>
-      <link>https://thrmnn.github.io/event/las/</link>
+      <link>http://localhost:1313/event/las/</link>
       <pubDate>Wed, 15 Nov 2023 11:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/las/</guid>
+      <guid>http://localhost:1313/event/las/</guid>
       <description>&lt;!-- 
 
 
@@ -231,9 +231,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Reducing Human Efforts in Reinforcement Learning for Legged Skill Development</title>
-      <link>https://thrmnn.github.io/event/brl/</link>
+      <link>http://localhost:1313/event/brl/</link>
       <pubDate>Thu, 12 Jan 2023 16:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/brl/</guid>
+      <guid>http://localhost:1313/event/brl/</guid>
       <description>&lt;!-- 
 
 
@@ -262,9 +262,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Reducing Human Efforts for Expert Acquisition in Imitation Learning</title>
-      <link>https://thrmnn.github.io/event/mim/</link>
+      <link>http://localhost:1313/event/mim/</link>
       <pubDate>Fri, 02 Dec 2022 17:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/mim/</guid>
+      <guid>http://localhost:1313/event/mim/</guid>
       <description>&lt;!-- 
 
 
@@ -293,9 +293,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Learning Agile Skills via Adversarial Imitation of Rough Partial Demonstrations</title>
-      <link>https://thrmnn.github.io/event/rsl/</link>
+      <link>http://localhost:1313/event/rsl/</link>
       <pubDate>Wed, 10 Aug 2022 15:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/rsl/</guid>
+      <guid>http://localhost:1313/event/rsl/</guid>
       <description>&lt;!-- 
 
 

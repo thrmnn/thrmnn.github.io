@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Théo Hermann</title>
-    <link>https://thrmnn.github.io/</link>
-      <atom:link href="https://thrmnn.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <link>http://localhost:1313/</link>
+      <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <description>Théo Hermann</description>
     <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Sat, 08 Mar 2025 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://thrmnn.github.io/media/icon_hu_aefaff9bda353d53.png</url>
+      <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
       <title>Théo Hermann</title>
-      <link>https://thrmnn.github.io/</link>
+      <link>http://localhost:1313/</link>
     </image>
     
     <item>
       <title>Feature-Based vs. GAN-Based Imitation: When and Why</title>
-      <link>https://thrmnn.github.io/post/lfd/</link>
+      <link>http://localhost:1313/post/lfd/</link>
       <pubDate>Tue, 08 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/post/lfd/</guid>
+      <guid>http://localhost:1313/post/lfd/</guid>
       <description>&lt;div class=&#34;flex px-4 py-3 mb-6 rounded-md bg-primary-100 dark:bg-primary-900&#34;&gt;
 &lt;span class=&#34;pr-3 pt-1 text-primary-600 dark:text-primary-300&#34;&gt;
   &lt;svg height=&#34;24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;1.5&#34; d=&#34;m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-9-3.75h.008v.008H12z&#34;/&gt;&lt;/svg&gt;
@@ -119,7 +119,7 @@ The reward is computed by evaluating feature-wise distances—such as joint posi
                /post/lfd/deepmimic_hu_c850e70b7d2c64e4.webp 400w,
                /post/lfd/deepmimic_hu_a8639584191203c4.webp 760w,
                /post/lfd/deepmimic_hu_20228fbcb35505e4.webp 1200w&#34;
-               src=&#34;https://thrmnn.github.io/post/lfd/deepmimic_hu_c850e70b7d2c64e4.webp&#34;
+               src=&#34;http://localhost:1313/post/lfd/deepmimic_hu_c850e70b7d2c64e4.webp&#34;
                width=&#34;760&#34;
                height=&#34;223&#34;
                loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
@@ -175,7 +175,7 @@ The discriminator’s output serves as a reward signal, guiding the policy towar
                /post/lfd/gan-based_hu_c23047f0c8261200.webp 400w,
                /post/lfd/gan-based_hu_633ec0f0e3d29bb1.webp 760w,
                /post/lfd/gan-based_hu_93b0378cff5b67d1.webp 1200w&#34;
-               src=&#34;https://thrmnn.github.io/post/lfd/gan-based_hu_c23047f0c8261200.webp&#34;
+               src=&#34;http://localhost:1313/post/lfd/gan-based_hu_c23047f0c8261200.webp&#34;
                width=&#34;760&#34;
                height=&#34;225&#34;
                loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
@@ -257,7 +257,7 @@ Others introduce representation distillation with variational bottlenecks, as in
                /post/lfd/gan-based_conditioned_hu_fce974440fa94b07.webp 400w,
                /post/lfd/gan-based_conditioned_hu_86c3dd83035b4a6d.webp 760w,
                /post/lfd/gan-based_conditioned_hu_6f41e3089ffe69e.webp 1200w&#34;
-               src=&#34;https://thrmnn.github.io/post/lfd/gan-based_conditioned_hu_fce974440fa94b07.webp&#34;
+               src=&#34;http://localhost:1313/post/lfd/gan-based_conditioned_hu_fce974440fa94b07.webp&#34;
                width=&#34;760&#34;
                height=&#34;266&#34;
                loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
@@ -301,7 +301,7 @@ The core insight behind this renewed direction is the importance of a well-struc
                /post/lfd/feature-based_hu_1b92b244460335eb.webp 400w,
                /post/lfd/feature-based_hu_b809c86c17d7b37b.webp 760w,
                /post/lfd/feature-based_hu_f85d2c3a3a290969.webp 1200w&#34;
-               src=&#34;https://thrmnn.github.io/post/lfd/feature-based_hu_1b92b244460335eb.webp&#34;
+               src=&#34;http://localhost:1313/post/lfd/feature-based_hu_1b92b244460335eb.webp&#34;
                width=&#34;760&#34;
                height=&#34;264&#34;
                loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
@@ -645,9 +645,9 @@ Understanding these trade-offs and their relationship to reward structure and mo
     
     <item>
       <title>Developmental Legged Intelligence: from Imitation to Generation</title>
-      <link>https://thrmnn.github.io/event/jsk/</link>
+      <link>http://localhost:1313/event/jsk/</link>
       <pubDate>Tue, 21 Jan 2025 16:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/jsk/</guid>
+      <guid>http://localhost:1313/event/jsk/</guid>
       <description>&lt;!-- 
 
 
@@ -676,9 +676,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Developmental Legged Intelligence: from Imitation to Generation</title>
-      <link>https://thrmnn.github.io/event/sony/</link>
+      <link>http://localhost:1313/event/sony/</link>
       <pubDate>Mon, 20 Jan 2025 15:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/sony/</guid>
+      <guid>http://localhost:1313/event/sony/</guid>
       <description>&lt;!-- 
 
 
@@ -707,41 +707,41 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>ANYmal on Wheels</title>
-      <link>https://thrmnn.github.io/platform/anymal_on_wheels/</link>
+      <link>http://localhost:1313/platform/anymal_on_wheels/</link>
       <pubDate>Wed, 01 Jan 2025 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/platform/anymal_on_wheels/</guid>
+      <guid>http://localhost:1313/platform/anymal_on_wheels/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Unitree B2-W</title>
-      <link>https://thrmnn.github.io/platform/unitree_b2-w/</link>
+      <link>http://localhost:1313/platform/unitree_b2-w/</link>
       <pubDate>Wed, 01 Jan 2025 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/platform/unitree_b2-w/</guid>
+      <guid>http://localhost:1313/platform/unitree_b2-w/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Sony aibo</title>
-      <link>https://thrmnn.github.io/platform/aibo/</link>
+      <link>http://localhost:1313/platform/aibo/</link>
       <pubDate>Thu, 01 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/platform/aibo/</guid>
+      <guid>http://localhost:1313/platform/aibo/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Projects</title>
-      <link>https://thrmnn.github.io/projects/</link>
+      <link>http://localhost:1313/projects/</link>
       <pubDate>Sun, 19 May 2024 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/projects/</guid>
+      <guid>http://localhost:1313/projects/</guid>
       <description></description>
     </item>
     
     <item>
       <title>FLD: Fourier Latent Dynamics for Structured Motion Representation and Learning</title>
-      <link>https://thrmnn.github.io/event/tri/</link>
+      <link>http://localhost:1313/event/tri/</link>
       <pubDate>Wed, 27 Mar 2024 16:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/tri/</guid>
+      <guid>http://localhost:1313/event/tri/</guid>
       <description>&lt;!-- 
 
 
@@ -770,9 +770,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Journal Club on Pose Estimation and Action Recognition</title>
-      <link>https://thrmnn.github.io/event/sra/</link>
+      <link>http://localhost:1313/event/sra/</link>
       <pubDate>Thu, 21 Mar 2024 15:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/sra/</guid>
+      <guid>http://localhost:1313/event/sra/</guid>
       <description>&lt;!-- 
 
 
@@ -801,9 +801,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Leveraging Spatial-Temporal Structures in Self-supervised Motion Representation and Learning</title>
-      <link>https://thrmnn.github.io/event/ri/</link>
+      <link>http://localhost:1313/event/ri/</link>
       <pubDate>Wed, 20 Mar 2024 16:30:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/ri/</guid>
+      <guid>http://localhost:1313/event/ri/</guid>
       <description>&lt;!-- 
 
 
@@ -832,9 +832,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Developmental Legged Intelligence: from Imitation to Generation</title>
-      <link>https://thrmnn.github.io/event/ai4ce/</link>
+      <link>http://localhost:1313/event/ai4ce/</link>
       <pubDate>Tue, 05 Mar 2024 16:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/ai4ce/</guid>
+      <guid>http://localhost:1313/event/ai4ce/</guid>
       <description>&lt;!-- 
 
 
@@ -863,9 +863,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Learning from Limited Demonstrations: Lessons We have Learned</title>
-      <link>https://thrmnn.github.io/event/las/</link>
+      <link>http://localhost:1313/event/las/</link>
       <pubDate>Wed, 15 Nov 2023 11:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/las/</guid>
+      <guid>http://localhost:1313/event/las/</guid>
       <description>&lt;!-- 
 
 
@@ -894,41 +894,41 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Pandas</title>
-      <link>https://thrmnn.github.io/project/pandas/</link>
+      <link>http://localhost:1313/project/pandas/</link>
       <pubDate>Thu, 26 Oct 2023 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/project/pandas/</guid>
+      <guid>http://localhost:1313/project/pandas/</guid>
       <description>&lt;p&gt;Flexible and powerful data analysis / manipulation library for Python, providing labeled data structures.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>PyTorch</title>
-      <link>https://thrmnn.github.io/project/pytorch/</link>
+      <link>http://localhost:1313/project/pytorch/</link>
       <pubDate>Thu, 26 Oct 2023 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/project/pytorch/</guid>
+      <guid>http://localhost:1313/project/pytorch/</guid>
       <description>&lt;p&gt;PyTorch is a Python package that provides tensor computation (like NumPy) with strong GPU acceleration.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>scikit-learn</title>
-      <link>https://thrmnn.github.io/project/scikit/</link>
+      <link>http://localhost:1313/project/scikit/</link>
       <pubDate>Thu, 26 Oct 2023 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/project/scikit/</guid>
+      <guid>http://localhost:1313/project/scikit/</guid>
       <description>&lt;p&gt;scikit-learn is a Python module for machine learning built on top of SciPy and is distributed under the 3-Clause BSD license.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Experience</title>
-      <link>https://thrmnn.github.io/experience/</link>
+      <link>http://localhost:1313/experience/</link>
       <pubDate>Tue, 24 Oct 2023 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/experience/</guid>
+      <guid>http://localhost:1313/experience/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Learn JavaScript</title>
-      <link>https://thrmnn.github.io/teaching/js/</link>
+      <link>http://localhost:1313/teaching/js/</link>
       <pubDate>Tue, 24 Oct 2023 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/teaching/js/</guid>
+      <guid>http://localhost:1313/teaching/js/</guid>
       <description>&lt;p&gt;
  is designed to give technical content creators a seamless experience. You can focus on the content and the Hugo Blox Builder which this template is built upon handles the rest.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Embed videos, podcasts, code, LaTeX math, and even test students!&lt;/strong&gt;&lt;/p&gt;
@@ -973,7 +973,7 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
 
 
 &lt;audio controls &gt;
-  &lt;source src=&#34;https://thrmnn.github.io/teaching/js/ambient-piano.mp3&#34; type=&#34;audio/mpeg&#34;&gt;
+  &lt;source src=&#34;http://localhost:1313/teaching/js/ambient-piano.mp3&#34; type=&#34;audio/mpeg&#34;&gt;
 &lt;/audio&gt;
 
 &lt;h2 id=&#34;test-students&#34;&gt;Test students&lt;/h2&gt;
@@ -1050,9 +1050,9 @@ data.head()
     
     <item>
       <title>Learn Python</title>
-      <link>https://thrmnn.github.io/teaching/python/</link>
+      <link>http://localhost:1313/teaching/python/</link>
       <pubDate>Tue, 24 Oct 2023 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/teaching/python/</guid>
+      <guid>http://localhost:1313/teaching/python/</guid>
       <description>&lt;p&gt;
  is designed to give technical content creators a seamless experience. You can focus on the content and the Hugo Blox Builder which this template is built upon handles the rest.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Embed videos, podcasts, code, LaTeX math, and even test students!&lt;/strong&gt;&lt;/p&gt;
@@ -1097,7 +1097,7 @@ data.head()
 
 
 &lt;audio controls &gt;
-  &lt;source src=&#34;https://thrmnn.github.io/teaching/python/ambient-piano.mp3&#34; type=&#34;audio/mpeg&#34;&gt;
+  &lt;source src=&#34;http://localhost:1313/teaching/python/ambient-piano.mp3&#34; type=&#34;audio/mpeg&#34;&gt;
 &lt;/audio&gt;
 
 &lt;h2 id=&#34;test-students&#34;&gt;Test students&lt;/h2&gt;
@@ -1174,17 +1174,17 @@ data.head()
     
     <item>
       <title>MIT Humanoid</title>
-      <link>https://thrmnn.github.io/platform/mit_humanoid/</link>
+      <link>http://localhost:1313/platform/mit_humanoid/</link>
       <pubDate>Sat, 01 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/platform/mit_humanoid/</guid>
+      <guid>http://localhost:1313/platform/mit_humanoid/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Reducing Human Efforts in Reinforcement Learning for Legged Skill Development</title>
-      <link>https://thrmnn.github.io/event/brl/</link>
+      <link>http://localhost:1313/event/brl/</link>
       <pubDate>Thu, 12 Jan 2023 16:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/brl/</guid>
+      <guid>http://localhost:1313/event/brl/</guid>
       <description>&lt;!-- 
 
 
@@ -1213,17 +1213,17 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Mini Cheetah</title>
-      <link>https://thrmnn.github.io/platform/mini_cheetah/</link>
+      <link>http://localhost:1313/platform/mini_cheetah/</link>
       <pubDate>Sun, 01 Jan 2023 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/platform/mini_cheetah/</guid>
+      <guid>http://localhost:1313/platform/mini_cheetah/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Reducing Human Efforts for Expert Acquisition in Imitation Learning</title>
-      <link>https://thrmnn.github.io/event/mim/</link>
+      <link>http://localhost:1313/event/mim/</link>
       <pubDate>Fri, 02 Dec 2022 17:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/mim/</guid>
+      <guid>http://localhost:1313/event/mim/</guid>
       <description>&lt;!-- 
 
 
@@ -1252,9 +1252,9 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>Learning Agile Skills via Adversarial Imitation of Rough Partial Demonstrations</title>
-      <link>https://thrmnn.github.io/event/rsl/</link>
+      <link>http://localhost:1313/event/rsl/</link>
       <pubDate>Wed, 10 Aug 2022 15:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/event/rsl/</guid>
+      <guid>http://localhost:1313/event/rsl/</guid>
       <description>&lt;!-- 
 
 
@@ -1283,49 +1283,49 @@ Further event details, including [page elements](https://docs.hugoblox.com/refer
     
     <item>
       <title>SuperMegaBot</title>
-      <link>https://thrmnn.github.io/platform/supermegabot/</link>
+      <link>http://localhost:1313/platform/supermegabot/</link>
       <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/platform/supermegabot/</guid>
+      <guid>http://localhost:1313/platform/supermegabot/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Solo</title>
-      <link>https://thrmnn.github.io/platform/solo/</link>
+      <link>http://localhost:1313/platform/solo/</link>
       <pubDate>Tue, 01 Mar 2022 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/platform/solo/</guid>
+      <guid>http://localhost:1313/platform/solo/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Spot</title>
-      <link>https://thrmnn.github.io/platform/spot/</link>
+      <link>http://localhost:1313/platform/spot/</link>
       <pubDate>Tue, 01 Mar 2022 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/platform/spot/</guid>
+      <guid>http://localhost:1313/platform/spot/</guid>
       <description></description>
     </item>
     
     <item>
       <title>ALMA</title>
-      <link>https://thrmnn.github.io/platform/alma/</link>
+      <link>http://localhost:1313/platform/alma/</link>
       <pubDate>Tue, 01 Feb 2022 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/platform/alma/</guid>
+      <guid>http://localhost:1313/platform/alma/</guid>
       <description></description>
     </item>
     
     <item>
       <title>ANYmal</title>
-      <link>https://thrmnn.github.io/platform/anymal/</link>
+      <link>http://localhost:1313/platform/anymal/</link>
       <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/platform/anymal/</guid>
+      <guid>http://localhost:1313/platform/anymal/</guid>
       <description></description>
     </item>
     
     <item>
       <title>AgnathaX</title>
-      <link>https://thrmnn.github.io/platform/agnathax/</link>
+      <link>http://localhost:1313/platform/agnathax/</link>
       <pubDate>Sun, 01 Sep 2019 00:00:00 +0000</pubDate>
-      <guid>https://thrmnn.github.io/platform/agnathax/</guid>
+      <guid>http://localhost:1313/platform/agnathax/</guid>
       <description></description>
     </item>
     

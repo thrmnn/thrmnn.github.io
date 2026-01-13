@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Publications | Théo Hermann</title>
-    <link>https://thrmnn.github.io/publication/</link>
-      <atom:link href="https://thrmnn.github.io/publication/index.xml" rel="self" type="application/rss+xml" />
+    <link>http://localhost:1313/publication/</link>
+      <atom:link href="http://localhost:1313/publication/index.xml" rel="self" type="application/rss+xml" />
     <description>Publications</description>
     <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language>
     <image>
-      <url>https://thrmnn.github.io/media/icon_hu_aefaff9bda353d53.png</url>
+      <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
       <title>Publications</title>
-      <link>https://thrmnn.github.io/publication/</link>
+      <link>http://localhost:1313/publication/</link>
     </image>
     
   </channel>

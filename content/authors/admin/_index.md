@@ -75,6 +75,41 @@ work:
     date_start: 2025-01-01
     summary: |
       LiDar-informed 3D modeling for public health research in favelas
+  - position: Visiting Research Fellow
+    company_name: IRI - Institut de Robòtica i Informàtica Industrial, CSIC-UPC
+    company_url: 'https://www.iri.upc.edu/'
+    date_start: 2023-10-01
+    date_end: 2024-02-29
+    summary: |
+      Event Cameras et Drones. Barcelona, Catalonia, Spain
+  - position: Computer Vision Software Engineer
+    company_name: Roboat
+    company_url: 'https://roboat.tech/'
+    date_start: 2023-06-01
+    date_end: 2023-10-31
+    summary: |
+      Focus on developing cutting-edge software solutions for autonomous vessels navigation using RGB cameras and LiDAR technology. Specializing in detection, tracking and pose estimation of other boats and obstacles in challenging maritime environments. Creating a robust dataset, leveraging advanced machine learning techniques to train state-of-the-art models, and contributing to the establishment of an efficient MLOps framework. Skills: DVC, Robot Operating System (ROS). Amsterdam, Netherlands
+  - position: Research Assistant
+    company_name: VITA (Visual Intelligence for Transportation), EPFL
+    company_url: 'https://www.epfl.ch/labs/vita/'
+    date_start: 2022-06-01
+    date_end: 2023-06-30
+    summary: |
+      After successfully completing an academic semester project in the framework of my Master's at EPFL I've been offered a lab position as a Research Assistant by Dr. Alexandre Alahi in the Visual Intelligence for Transportation (EPFL) Research Lab. Skills: Computer Vision, Linux. Lausanne, Switzerland
+  - position: Teaching Assistant in General Physics
+    company_name: Ecole polytechnique fédérale de Lausanne (EPFL)
+    company_url: 'https://www.epfl.ch/'
+    date_start: 2022-09-01
+    date_end: 2023-02-28
+    summary: |
+      Assisted in teaching General Physics courses to undergraduate students. Responsibilities included conducting exercise sessions, grading assignments and exams, providing one-on-one tutoring support, and helping students understand fundamental physics concepts including mechanics, thermodynamics, and electromagnetism.
+  - position: Teaching Assistant in Mobile Robotics
+    company_name: Ecole polytechnique fédérale de Lausanne (EPFL)
+    company_url: 'https://www.epfl.ch/'
+    date_start: 2022-09-01
+    date_end: 2023-02-28
+    summary: |
+      Assisted in teaching Mobile Robotics courses to graduate students. Responsibilities included leading practical laboratory sessions, supervising student projects on autonomous mobile robots, providing technical guidance on ROS (Robot Operating System), sensor integration, and navigation algorithms, and evaluating student assignments and project presentations.
 
 # Skills
 # Add your own SVG icons to `assets/media/icons/`

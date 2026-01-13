@@ -86,10 +86,17 @@ def parse_personal_info(file_path):
     info['position_summary'] = extract_value(r'- \*\*Description/Summary:\*\*\s*(.+?)(?:\n|$)', content, '')
     
     # Work Experience entries (from Work Experience section)
-    work_section = re.search(r'## Work Experience(.*?)(?=##|$)', content, re.DOTALL)
+    # Match until next ## that's not part of ### (i.e., ## followed by space)
+    work_section = re.search(r'## Work Experience\n(.*?)(?=\n## [^#]|$)', content, re.DOTALL)
     info['work_experience'] = []
     if work_section:
-        work_blocks = re.split(r'### Work Entry', work_section.group(1))
+        section_text = work_section.group(1)
+        # Split on "### Work Entry" followed by number and optional text in parentheses
+        # Pattern: ### Work Entry 1 (Most Recent) or ### Work Entry 2
+        work_blocks = re.split(r'### Work Entry \d+(?:\s*\([^)]+\))?', section_text)
+        # If that didn't work, try without number
+        if len(work_blocks) == 1:
+            work_blocks = re.split(r'### Work Entry', section_text)
         for block in work_blocks[1:]:  # Skip first empty split
             position_match = re.search(r'- \*\*Position:\*\*\s*(.+?)(?:\n|$)', block)
             position = ''
@@ -450,9 +457,10 @@ def update_author_profile(file_path, info):
             'summary': info.get('position_summary', '')
         })
     
-    # Add work experience entries (reverse to show most recent first)
+    # Add work experience entries (already in reverse chronological order from PERSONAL_INFO.md)
+    # Work Entry 1 is "Most Recent", so don't reverse
     if info.get('work_experience'):
-        work_entries.extend(reversed(info['work_experience']))
+        work_entries.extend(info['work_experience'])
     
     if work_entries:
         work_yaml = "work:\n"

@@ -420,9 +420,16 @@ def update_author_profile(file_path, info):
                 if edu['summary']:
                     edu_yaml += f"    summary: |\n      {edu['summary']}\n"
         
-        edu_pattern = r'education:.*?(?=\n\nwork:|\n# Work|$)'
+        # Match education section - more flexible pattern
+        # Look for education: and match until work: or end of file
+        edu_pattern = r'education:.*?(?=\nwork:|\n# Work|$)'
         if re.search(edu_pattern, content, re.DOTALL):
             content = re.sub(edu_pattern, edu_yaml.rstrip(), content, flags=re.DOTALL)
+        else:
+            # Fallback: try to find education: and replace everything until work:
+            edu_pattern2 = r'(education:).*?(\nwork:)'
+            if re.search(edu_pattern2, content, re.DOTALL):
+                content = re.sub(edu_pattern2, r'\1\n' + edu_yaml.rstrip() + r'\2', content, flags=re.DOTALL)
     
     # Update work experience - combine current position and work entries
     work_entries = []

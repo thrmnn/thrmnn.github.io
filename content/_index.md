@@ -276,6 +276,12 @@ sections:
         - text: E-mail
           icon: at-symbol
           url: mailto:thermann@mit.edu
+        - text: Message
+          icon: brands/x
+          url: - GitHub Username: thrmnn
+        - text: Connect
+          icon: brands/linkedin
+          url: https://www.linkedin.com/in/theohermann-epfl/
     design:
       columns: 2
   # - block: cta-card

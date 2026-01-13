@@ -20,7 +20,7 @@ superuser: true
 highlight_name: true
 
 # Role/position/tagline
-role: LiDar and Computational Fluid Dynamics in Favelas
+role: LiDar and Computational Fluid Dynamics in Favelas for Public Health
 
 # Organizations/Affiliations to display in Biography blox
 organizations:
@@ -37,6 +37,12 @@ profiles:
     label: E-mail Me
   - icon: brands/github
     url: https://github.com/thrmnn
+  - icon: brands/linkedin
+    url: https://www.linkedin.com/in/theohermann-epfl/
+  - icon: brands/youtube
+    url: - Google Scholar Profile URL: https://scholar.google.com/citations?user=SYHaPDAAAAAJ&hl=en
+  - icon: academicons/google-scholar
+    url: https://scholar.google.com/citations?user=SYHaPDAAAAAJ&hl=en
   - icon: academicons/cv
     url: uploads/resume.pdf
 
@@ -82,10 +88,11 @@ education:
     #   - lorem ipsum dolor sit amet, consectetur adipiscing elit
     #   - lorem ipsum dolor sit amet, consectetur adipiscing elit
 work:
-  - position: Founding Researcher Rio Lab
+  - position: Research Fellow
     company_name: MIT Senseable City Lab
     company_url: 'https://senseablerio.mit.edu/'
     date_start: 2025-01-01
+    date_end: - **Description/Summary:** LiDar-informed 3D modeling for public health research in favelas
     summary: |
       LiDar-informed 3D modeling for public health research in favelas
 
@@ -165,11 +172,18 @@ work:
 
 ## About Me
 
-I am currently a Research Fellow at MIT Senseable City Rio, working on LiDar-informed 3D modeling of favelas. 
-My research focuses on Computational Fluid Dynamics and Urban Planning. Previously, I received my MSc in Robotics 
-from EPFL where I worked on Autonomous Mobile Robots.
+I am currently a Research Fellow at MIT Senseable City Lab, working on LiDar-informed 3D modeling of favelas for public health research. 
+My research focuses on Computational Fluid Dynamics and Urban Planning, combining robotics expertise with urban intelligence to address 
+challenges in informal settlements.
 
-During my time as Perception Engineer, I worked on Computer Vision and MLOps at Roboat (MIT Startup). 
-Prior to that, I was engaged in Research at VITA (EPFL).
+Previously, I worked as a Visiting Research Fellow at IRI (CSIC-UPC) in Barcelona, where I conducted research on Event Cameras and Drones. 
+I also served as a Computer Vision Software Engineer at Roboat, an MIT startup, where I developed software solutions for autonomous vessel 
+navigation using RGB cameras and LiDAR technology. My work focused on detection, tracking, and pose estimation in challenging maritime 
+environments, while contributing to the establishment of an efficient MLOps framework.
 
-My research interests focus on Robotics, especially autonomy.
+Prior to that, I was a Research Assistant at VITA (EPFL) under Dr. Alexandre Alahi, working on computer vision applications for transportation. 
+I received my MSc in Robotics from EPFL, where I specialized in Mobile Robotics, Aerial Robotics, and various aspects of autonomous systems 
+including Model Predictive Control, Deep Learning, and Computer Vision.
+
+My research interests focus on autonomous robotics, LiDAR-based 3D modeling, multimodal sensor fusion, and applying robotic technologies 
+to solve real-world challenges in urban environments and public health.

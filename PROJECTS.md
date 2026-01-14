@@ -99,4 +99,48 @@ Edit this file to add/update projects. Run the sync script to update the website
 
 ---
 
+### MPC-RL Hybrid Controller
+- **Title:** MPC-RL Hybrid Controller for Autonomous Systems
+- **Date:** 2024-01-01
+- **Summary:** Development of a hybrid control framework combining Model Predictive Control (MPC) with Reinforcement Learning (RL) for robust autonomous navigation
+- **Description:**
+  This project explores the integration of Model Predictive Control and Reinforcement Learning to create a hybrid controller that leverages the strengths of both approaches. MPC provides safety guarantees and constraint satisfaction, while RL enables adaptive behavior in complex, uncertain environments.
+  
+  **Key Contributions:**
+  - Hybrid control architecture design
+  - Real-time MPC-RL integration
+  - Performance evaluation on autonomous platforms
+  - Robustness analysis under uncertainty
+  
+- **External Link:** 
+- **Image:** mpc_rl_hybrid.jpg
+- **Tags:** Model Predictive Control, Reinforcement Learning, Autonomous Systems, Control Theory, Robotics
+- **Code URL:** 
+- **PDF URL:** 
+- **Video URL:** 
+
+---
+
+### Tree Segmentation and Shade Estimation in Amsterdam
+- **Title:** Tree Segmentation and Shade Estimation for Urban Heat Island Mitigation in Amsterdam
+- **Date:** 2024-06-01
+- **Summary:** Computer vision and LiDAR-based analysis of urban tree coverage and shade patterns to support heat mitigation strategies
+- **Description:**
+  This project uses advanced computer vision techniques and LiDAR data to segment and analyze urban trees in Amsterdam, estimating their shade coverage and potential impact on urban heat island effects. The work supports urban planning decisions for climate adaptation.
+  
+  **Key Contributions:**
+  - Tree segmentation from aerial and ground-based LiDAR
+  - Shade estimation algorithms
+  - Integration with urban planning tools
+  - Analysis of heat mitigation potential
+  
+- **External Link:** 
+- **Image:** tree_segmentation_amsterdam.jpg
+- **Tags:** Computer Vision, LiDAR, Urban Planning, Climate Adaptation, Tree Segmentation, Urban Heat Island
+- **Code URL:** 
+- **PDF URL:** 
+- **Video URL:** 
+
+---
+
 *(Add more projects below using the same format)*

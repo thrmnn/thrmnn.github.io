@@ -6,10 +6,8 @@ event_url: https://www.agu.org/fall-meeting
 
 location: American Geophysical Union Fall Meeting
 address:
-  street: - City: San Francisco
   city: San Francisco
   region: California
-  postcode: '- Country: United States'
   country: United States
 
 date: '2025-11-01T00:00:00Z'

@@ -76,25 +76,62 @@ def parse_events(file_path):
         event['location'] = location_match.group(1).strip() if location_match else ''
         
         # Extract Address (multi-line)
-        address_match = re.search(r'- \*\*Address:\*\*\s*(.+?)(?:\n- \*\*|$)', event_content, re.DOTALL)
-        address_content = address_match.group(1).strip() if address_match else ''
+        # Address section ends at next top-level field marker (- **FieldName:**)
+        address_match = re.search(r'- \*\*Address:\*\*\s*(.+?)(?=\n- \*\*|$)', event_content, re.DOTALL)
+        address_content = address_match.group(1) if address_match else ''
         event['address'] = {}
         if address_content:
-            street_match = re.search(r'- Street:\s*(.+?)(?:\n|$)', address_content)
-            if street_match:
-                event['address']['street'] = street_match.group(1).strip()
-            city_match = re.search(r'- City:\s*(.+?)(?:\n|$)', address_content)
-            if city_match:
-                event['address']['city'] = city_match.group(1).strip()
-            region_match = re.search(r'- Region:\s*(.+?)(?:\n|$)', address_content)
-            if region_match:
-                event['address']['region'] = region_match.group(1).strip()
-            postcode_match = re.search(r'- Postcode:\s*(.+?)(?:\n|$)', address_content)
-            if postcode_match:
-                event['address']['postcode'] = postcode_match.group(1).strip()
-            country_match = re.search(r'- Country:\s*(.+?)(?:\n|$)', address_content)
-            if country_match:
-                event['address']['country'] = country_match.group(1).strip()
+            # Parse each address field line by line
+            # Split by lines and process each address field individually
+            lines = address_content.split('\n')
+            current_field = None
+            current_value = []
+            
+            for line in lines:
+                line = line.strip()
+                # Check if this line starts a new address field
+                if line.startswith('- Street:'):
+                    if current_field and current_value:
+                        event['address'][current_field] = ' '.join(current_value).strip()
+                    current_field = 'street'
+                    value_part = line[9:].strip()  # After "- Street:"
+                    current_value = [value_part] if value_part else []
+                elif line.startswith('- City:'):
+                    if current_field and current_value:
+                        event['address'][current_field] = ' '.join(current_value).strip()
+                    current_field = 'city'
+                    value_part = line[7:].strip()  # After "- City:"
+                    current_value = [value_part] if value_part else []
+                elif line.startswith('- Region:'):
+                    if current_field and current_value:
+                        event['address'][current_field] = ' '.join(current_value).strip()
+                    current_field = 'region'
+                    value_part = line[9:].strip()  # After "- Region:"
+                    current_value = [value_part] if value_part else []
+                elif line.startswith('- Postcode:'):
+                    if current_field and current_value:
+                        event['address'][current_field] = ' '.join(current_value).strip()
+                    current_field = 'postcode'
+                    value_part = line[11:].strip()  # After "- Postcode:"
+                    current_value = [value_part] if value_part else []
+                elif line.startswith('- Country:'):
+                    if current_field and current_value:
+                        event['address'][current_field] = ' '.join(current_value).strip()
+                    current_field = 'country'
+                    value_part = line[10:].strip()  # After "- Country:"
+                    current_value = [value_part] if value_part else []
+                elif current_field and line:
+                    # Continuation of current field value (shouldn't happen with current format, but handle it)
+                    current_value.append(line)
+            
+            # Handle last field
+            if current_field and current_value:
+                val = ' '.join(current_value).strip()
+                if val:
+                    event['address'][current_field] = val
+            
+            # Remove empty values
+            event['address'] = {k: v for k, v in event['address'].items() if v}
         
         # Extract Summary
         summary_match = re.search(r'- \*\*Summary:\*\*\s*(.+?)(?:\n|$)', event_content)

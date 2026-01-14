@@ -6,7 +6,7 @@ external_link: 'https://f1tenth.org/'
 
 image:
   caption: F1TENTH Autonomous Racing Car (Simulation)
-  filename: platforms/- **Tags:** Autonomous Racing, Simulation, ROS, Path Planning, Model Predictive Control, High-Speed Navigation
+  filename: platforms/f1tenth.jpg
   focal_point: Smart
 
 # tags:

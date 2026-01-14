@@ -95,7 +95,7 @@ sections:
             </summary>
             <!-- <blockquote> -->
             <div style="margin-left:6px; padding-left:20px; border-left:1px solid;">
-              <p><strong>November 2025</strong> - Paper accepted at AGU Fall Meeting 2025 on LiDAR-Informed 3D Modeling of Favelas for Public Health Research</p>
+              <p><strong>November 2025</strong> - Poster and abstract accepted at AGU Fall Meeting 2025 on LiDAR-Informed 3D Modeling of Favelas for Public Health Research</p>
             </div>
             <!-- </blockquote> -->
           </details>
@@ -249,6 +249,18 @@ sections:
   #   design:
   #     view: article-grid
   #     columns: 2
+  - block: collection
+    id: projects
+    content:
+      title: Research Projects
+      subtitle: Selected Projects
+      count: 0
+      filters:
+        folders:
+          - project
+    design:
+      view: card
+      columns: 2
   - block: collection
     id: platforms
     content:

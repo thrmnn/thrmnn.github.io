@@ -63,7 +63,7 @@ Edit this file to add/update platforms. Run the sync script to update the websit
     - Educational robotics projects during coursework
   
 - **External Link:** https://www.thymio.org/
-- **Image:** 
+- **Image:** thymio.jpg
 - **Tags:** Educational Robotics, Mobile Robotics, EPFL, Sensor Integration, Programming
 - **Code URL:** 
 - **Video URL:** 
@@ -98,7 +98,7 @@ Edit this file to add/update platforms. Run the sync script to update the websit
     - Simulation-based development and testing
   
 - **External Link:** https://f1tenth.org/
-- **Image:** 
+- **Image:** f1tenth.jpg
 - **Tags:** Autonomous Racing, Simulation, ROS, Path Planning, Model Predictive Control, High-Speed Navigation
 - **Code URL:** 
 - **Video URL:** 

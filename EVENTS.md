@@ -54,9 +54,9 @@ Edit this file to add/update events. Run the sync script to update the website.
   - Region: California
   - Postcode: 
   - Country: United States
-- **Summary:** Paper accepted for presentation at AGU Fall Meeting 2025 on LiDAR-based 3D modeling of informal settlements for public health applications
+- **Summary:** Poster and abstract accepted for presentation at AGU Fall Meeting 2025 on LiDAR-based 3D modeling of informal settlements for public health applications
 - **Abstract:** 
-  Our paper on using LiDAR technology to create detailed 3D models of favelas for public health research has been accepted for presentation at the American Geophysical Union Fall Meeting 2025. The work demonstrates computational methods for modeling informal settlements, enabling better understanding of urban environments and their impact on public health outcomes.
+  Our poster and abstract on using LiDAR technology to create detailed 3D models of favelas for public health research has been accepted for presentation at the American Geophysical Union Fall Meeting 2025. The work demonstrates computational methods for modeling informal settlements, enabling better understanding of urban environments and their impact on public health outcomes.
 - **Tags:** LiDAR, Urban Planning, Public Health, 3D Modeling, Conference, AGU
 - **Slides URL:** 
 - **Video URL:** 

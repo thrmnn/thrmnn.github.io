@@ -6,7 +6,7 @@ external_link: 'https://www.thymio.org/'
 
 image:
   caption: Thymio Educational Robot
-  filename: platforms/- **Tags:** Educational Robotics, Mobile Robotics, EPFL, Sensor Integration, Programming
+  filename: platforms/thymio.jpg
   focal_point: Smart
 
 # tags:

@@ -41,25 +41,23 @@ Edit this file to add/update events. Run the sync script to update the website.
 
 ## Your Events & Talks
 
-*(Add your events below using the template format)*
-
-### Example: Conference Presentation
-- **Title:** LiDAR-Based Urban Modeling for Public Health
-- **Event Type:** Research Presentation
-- **Event URL:** 
-- **Date:** 2025-06-15T14:00:00Z
-- **All Day:** false
-- **Location:** MIT Senseable City Lab
+### AGU Fall Meeting 2025 - Paper Acceptance
+- **Title:** LiDAR-Informed 3D Modeling of Favelas for Public Health Research
+- **Event Type:** Conference
+- **Event URL:** https://www.agu.org/fall-meeting
+- **Date:** 2025-11-01
+- **All Day:** true
+- **Location:** American Geophysical Union Fall Meeting
 - **Address:**
-  - Street: 77 Massachusetts Ave
-  - City: Cambridge
-  - Region: Massachusetts
-  - Postcode: 02139
+  - Street: 
+  - City: San Francisco
+  - Region: California
+  - Postcode: 
   - Country: United States
-- **Summary:** Presentation on LiDAR-informed 3D modeling approaches for favela mapping
+- **Summary:** Paper accepted for presentation at AGU Fall Meeting 2025 on LiDAR-based 3D modeling of informal settlements for public health applications
 - **Abstract:** 
-  This talk presents our work on using LiDAR technology to create detailed 3D models of informal settlements. We discuss computational methods, challenges in data processing, and applications to public health research.
-- **Tags:** LiDAR, Urban Planning, Public Health, 3D Modeling
+  Our paper on using LiDAR technology to create detailed 3D models of favelas for public health research has been accepted for presentation at the American Geophysical Union Fall Meeting 2025. The work demonstrates computational methods for modeling informal settlements, enabling better understanding of urban environments and their impact on public health outcomes.
+- **Tags:** LiDAR, Urban Planning, Public Health, 3D Modeling, Conference, AGU
 - **Slides URL:** 
 - **Video URL:** 
 

@@ -95,8 +95,7 @@ sections:
             </summary>
             <!-- <blockquote> -->
             <div style="margin-left:6px; padding-left:20px; border-left:1px solid;">
-              <p></p>
-              <!-- Add your news entries here -->
+              <p><strong>November 2025</strong> - Paper accepted at AGU Fall Meeting 2025 on LiDAR-Informed 3D Modeling of Favelas for Public Health Research</p>
             </div>
             <!-- </blockquote> -->
           </details>

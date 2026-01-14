@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Conference | Théo Hermann</title>
+    <link>http://localhost:1313/tags/conference/</link>
+      <atom:link href="http://localhost:1313/tags/conference/index.xml" rel="self" type="application/rss+xml" />
+    <description>Conference</description>
+    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Sat, 01 Nov 2025 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
+      <title>Conference</title>
+      <link>http://localhost:1313/tags/conference/</link>
+    </image>
+    
+    <item>
+      <title>LiDAR-Informed 3D Modeling of Favelas for Public Health Research</title>
+      <link>http://localhost:1313/event/agu-fall-meeting-2025-paper-acceptance/</link>
+      <pubDate>Sat, 01 Nov 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/event/agu-fall-meeting-2025-paper-acceptance/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

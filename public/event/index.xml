@@ -5,12 +5,20 @@
     <link>http://localhost:1313/event/</link>
       <atom:link href="http://localhost:1313/event/index.xml" rel="self" type="application/rss+xml" />
     <description>Recent &amp; Upcoming Talks</description>
-    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Tue, 21 Jan 2025 16:00:00 +0000</lastBuildDate>
+    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Sat, 01 Nov 2025 00:00:00 +0000</lastBuildDate>
     <image>
       <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
       <title>Recent &amp; Upcoming Talks</title>
       <link>http://localhost:1313/event/</link>
     </image>
+    
+    <item>
+      <title>LiDAR-Informed 3D Modeling of Favelas for Public Health Research</title>
+      <link>http://localhost:1313/event/agu-fall-meeting-2025-paper-acceptance/</link>
+      <pubDate>Sat, 01 Nov 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/event/agu-fall-meeting-2025-paper-acceptance/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Developmental Legged Intelligence: from Imitation to Generation</title>

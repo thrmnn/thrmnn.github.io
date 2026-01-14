@@ -5,7 +5,7 @@
     <link>http://localhost:1313/tags/model-predictive-control/</link>
       <atom:link href="http://localhost:1313/tags/model-predictive-control/index.xml" rel="self" type="application/rss+xml" />
     <description>Model Predictive Control</description>
-    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Wed, 01 Sep 2021 00:00:00 +0000</lastBuildDate>
+    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Mon, 01 Jan 2024 00:00:00 +0000</lastBuildDate>
     <image>
       <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
       <title>Model Predictive Control</title>
@@ -13,41 +13,18 @@
     </image>
     
     <item>
-      <title>F1TENTH Autonomous Racing Car (Simulation)</title>
-      <link>http://localhost:1313/platform/f1tenth-autonomous-racing/</link>
-      <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/platform/f1tenth-autonomous-racing/</guid>
-      <description>&lt;p&gt;Worked with the F1TENTH platform in simulation to develop autonomous racing algorithms. F1TENTH is a 1/10th scale autonomous racing platform designed for research and education.&lt;/p&gt;
+      <title>MPC-RL Hybrid Controller for Autonomous Systems</title>
+      <link>http://localhost:1313/project/mpc-rl-hybrid-controller/</link>
+      <pubDate>Mon, 01 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/project/mpc-rl-hybrid-controller/</guid>
+      <description>&lt;p&gt;Development of a hybrid control framework combining Model Predictive Control (MPC) with Reinforcement Learning (RL) for robust autonomous navigation&lt;/p&gt;
+&lt;p&gt;This project explores the integration of Model Predictive Control and Reinforcement Learning to create a hybrid controller that leverages the strengths of both approaches. MPC provides safety guarantees and constraint satisfaction, while RL enables adaptive behavior in complex, uncertain environments.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Contributions:&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Platform Features:&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;1/10th scale RC car platform&lt;/li&gt;
-&lt;li&gt;LiDAR for perception&lt;/li&gt;
-&lt;li&gt;High-speed autonomous navigation&lt;/li&gt;
-&lt;li&gt;Real-time control algorithms&lt;/li&gt;
-&lt;li&gt;Simulation environment for safe testing&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Software &amp;amp; Algorithms:&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;ROS (Robot Operating System)&lt;/li&gt;
-&lt;li&gt;Path planning algorithms&lt;/li&gt;
-&lt;li&gt;Model Predictive Control (MPC)&lt;/li&gt;
-&lt;li&gt;Obstacle avoidance&lt;/li&gt;
-&lt;li&gt;High-speed trajectory optimization&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Applications:&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Autonomous racing algorithms&lt;/li&gt;
-&lt;li&gt;High-speed navigation research&lt;/li&gt;
-&lt;li&gt;Real-time control systems&lt;/li&gt;
-&lt;li&gt;Simulation-based development and testing&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
+&lt;li&gt;Hybrid control architecture design&lt;/li&gt;
+&lt;li&gt;Real-time MPC-RL integration&lt;/li&gt;
+&lt;li&gt;Performance evaluation on autonomous platforms&lt;/li&gt;
+&lt;li&gt;Robustness analysis under uncertainty&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>

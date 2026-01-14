@@ -5,7 +5,7 @@
     <link>http://localhost:1313/tags/computer-vision/</link>
       <atom:link href="http://localhost:1313/tags/computer-vision/index.xml" rel="self" type="application/rss+xml" />
     <description>Computer Vision</description>
-    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Sun, 01 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Sat, 01 Jun 2024 00:00:00 +0000</lastBuildDate>
     <image>
       <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
       <title>Computer Vision</title>
@@ -13,86 +13,52 @@
     </image>
     
     <item>
-      <title>Borinot Aerial Robot</title>
-      <link>http://localhost:1313/platform/borinot-drone/</link>
-      <pubDate>Sun, 01 Oct 2023 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/platform/borinot-drone/</guid>
-      <description>&lt;p&gt;Worked with the Borinot drone platform during my Visiting Research Fellowship at IRI (Institut de Robòtica i Informàtica Industrial, CSIC-UPC) in Barcelona. Borinot is a research-oriented aerial robot platform.&lt;/p&gt;
+      <title>Tree Segmentation and Shade Estimation for Urban Heat Island Mitigation in Amsterdam</title>
+      <link>http://localhost:1313/project/tree-segmentation-and-shade-estimation-in-amsterdam/</link>
+      <pubDate>Sat, 01 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/project/tree-segmentation-and-shade-estimation-in-amsterdam/</guid>
+      <description>&lt;p&gt;Computer vision and LiDAR-based analysis of urban tree coverage and shade patterns to support heat mitigation strategies&lt;/p&gt;
+&lt;p&gt;This project uses advanced computer vision techniques and LiDAR data to segment and analyze urban trees in Amsterdam, estimating their shade coverage and potential impact on urban heat island effects. The work supports urban planning decisions for climate adaptation.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Contributions:&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Hardware Features:&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Quadrotor configuration&lt;/li&gt;
-&lt;li&gt;Onboard computing unit&lt;/li&gt;
-&lt;li&gt;Camera systems for vision&lt;/li&gt;
-&lt;li&gt;Event cameras (during my research)&lt;/li&gt;
-&lt;li&gt;IMU and other sensors&lt;/li&gt;
-&lt;li&gt;Flight controller&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Software &amp;amp; Research:&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;ROS for middleware&lt;/li&gt;
-&lt;li&gt;Event-based vision processing&lt;/li&gt;
-&lt;li&gt;Real-time perception algorithms&lt;/li&gt;
-&lt;li&gt;Autonomous flight control&lt;/li&gt;
-&lt;li&gt;Sensor fusion techniques&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Research Applications:&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Event camera integration for drones&lt;/li&gt;
-&lt;li&gt;High-speed perception and navigation&lt;/li&gt;
-&lt;li&gt;Dynamic obstacle avoidance&lt;/li&gt;
-&lt;li&gt;Real-time visual processing&lt;/li&gt;
-&lt;li&gt;Aerial robotics research&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
+&lt;li&gt;Tree segmentation from aerial and ground-based LiDAR&lt;/li&gt;
+&lt;li&gt;Shade estimation algorithms&lt;/li&gt;
+&lt;li&gt;Integration with urban planning tools&lt;/li&gt;
+&lt;li&gt;Analysis of heat mitigation potential&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>
     
     <item>
-      <title>Roboat Autonomous Boat</title>
-      <link>http://localhost:1313/platform/roboat-autonomous-vessel/</link>
+      <title>Event Cameras for Drone Applications</title>
+      <link>http://localhost:1313/project/event-cameras-and-drones/</link>
+      <pubDate>Sun, 01 Oct 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/project/event-cameras-and-drones/</guid>
+      <description>&lt;p&gt;Research on event-based vision for aerial robotics applications&lt;/p&gt;
+&lt;p&gt;Conducted research on Event Cameras and their applications in drone systems during my Visiting Research Fellowship at IRI (CSIC-UPC) in Barcelona.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Focus Areas:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Event-based vision processing&lt;/li&gt;
+&lt;li&gt;Real-time perception for drones&lt;/li&gt;
+&lt;li&gt;Low-latency sensor fusion&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Computer Vision for Autonomous Vessel Navigation</title>
+      <link>http://localhost:1313/project/autonomous-vessel-navigation/</link>
       <pubDate>Thu, 01 Jun 2023 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/platform/roboat-autonomous-vessel/</guid>
-      <description>&lt;p&gt;Worked extensively with the Roboat autonomous vessel platform during my position as Computer Vision Software Engineer at Roboat (MIT startup). Roboat develops autonomous boats for urban waterways.&lt;/p&gt;
+      <guid>http://localhost:1313/project/autonomous-vessel-navigation/</guid>
+      <description>&lt;p&gt;Development of computer vision and LiDAR-based navigation systems for autonomous vessels&lt;/p&gt;
+&lt;p&gt;Worked on developing cutting-edge software solutions for autonomous vessels navigation using RGB cameras and LiDAR technology. Specialized in detection, tracking and pose estimation of other boats and obstacles in challenging maritime environments.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Technologies:&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Platform Features:&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Autonomous vessel for urban waterways&lt;/li&gt;
-&lt;li&gt;RGB cameras for visual perception&lt;/li&gt;
-&lt;li&gt;LiDAR sensors for navigation&lt;/li&gt;
-&lt;li&gt;Onboard computing systems&lt;/li&gt;
-&lt;li&gt;Modular design for various applications&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Software &amp;amp; Technologies:&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
+&lt;li&gt;Computer Vision&lt;/li&gt;
+&lt;li&gt;LiDAR Processing&lt;/li&gt;
+&lt;li&gt;MLOps&lt;/li&gt;
 &lt;li&gt;ROS (Robot Operating System)&lt;/li&gt;
-&lt;li&gt;Computer vision pipelines&lt;/li&gt;
-&lt;li&gt;LiDAR processing and SLAM&lt;/li&gt;
-&lt;li&gt;MLOps framework (DVC)&lt;/li&gt;
-&lt;li&gt;Detection and tracking algorithms&lt;/li&gt;
-&lt;li&gt;Pose estimation systems&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Applications &amp;amp; Work:&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Autonomous vessel navigation&lt;/li&gt;
-&lt;li&gt;Detection and tracking of boats and obstacles&lt;/li&gt;
-&lt;li&gt;Pose estimation in maritime environments&lt;/li&gt;
-&lt;li&gt;Dataset creation and management&lt;/li&gt;
-&lt;li&gt;Machine learning model training&lt;/li&gt;
-&lt;li&gt;MLOps infrastructure development&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
+&lt;li&gt;DVC (Data Version Control)&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>

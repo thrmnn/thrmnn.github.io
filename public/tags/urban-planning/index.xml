@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Urban Planning | Théo Hermann</title>
+    <link>http://localhost:1313/tags/urban-planning/</link>
+      <atom:link href="http://localhost:1313/tags/urban-planning/index.xml" rel="self" type="application/rss+xml" />
+    <description>Urban Planning</description>
+    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Sat, 01 Nov 2025 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>http://localhost:1313/media/icon_hu_aefaff9bda353d53.png</url>
+      <title>Urban Planning</title>
+      <link>http://localhost:1313/tags/urban-planning/</link>
+    </image>
+    
+    <item>
+      <title>LiDAR-Informed 3D Modeling of Favelas for Public Health Research</title>
+      <link>http://localhost:1313/event/agu-fall-meeting-2025-paper-acceptance/</link>
+      <pubDate>Sat, 01 Nov 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/event/agu-fall-meeting-2025-paper-acceptance/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>LiDAR-Informed 3D Modeling of Favelas for Public Health Research</title>
+      <link>http://localhost:1313/project/lidar-informed-3d-modeling-for-public-health/</link>
+      <pubDate>Wed, 01 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/project/lidar-informed-3d-modeling-for-public-health/</guid>
+      <description>&lt;p&gt;Using LiDAR technology to create detailed 3D models of informal settlements for public health research&lt;/p&gt;
+&lt;p&gt;This project focuses on developing computational methods to model favelas using LiDAR data, enabling better understanding of urban environments for public health applications. The work combines robotics expertise with urban intelligence to address challenges in informal settlements.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Contributions:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;LiDAR data processing and 3D reconstruction&lt;/li&gt;
+&lt;li&gt;Computational Fluid Dynamics modeling&lt;/li&gt;
+&lt;li&gt;Integration with urban planning tools&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Tree Segmentation and Shade Estimation for Urban Heat Island Mitigation in Amsterdam</title>
+      <link>http://localhost:1313/project/tree-segmentation-and-shade-estimation-in-amsterdam/</link>
+      <pubDate>Sat, 01 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/project/tree-segmentation-and-shade-estimation-in-amsterdam/</guid>
+      <description>&lt;p&gt;Computer vision and LiDAR-based analysis of urban tree coverage and shade patterns to support heat mitigation strategies&lt;/p&gt;
+&lt;p&gt;This project uses advanced computer vision techniques and LiDAR data to segment and analyze urban trees in Amsterdam, estimating their shade coverage and potential impact on urban heat island effects. The work supports urban planning decisions for climate adaptation.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Contributions:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Tree segmentation from aerial and ground-based LiDAR&lt;/li&gt;
+&lt;li&gt;Shade estimation algorithms&lt;/li&gt;
+&lt;li&gt;Integration with urban planning tools&lt;/li&gt;
+&lt;li&gt;Analysis of heat mitigation potential&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

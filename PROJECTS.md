@@ -1,146 +1,131 @@
-# Projects - Master File
+# Projects Portfolio
 
-**⚠️ IMPORTANT: This is your single source of truth for projects.**
-Edit this file to add/update projects. Run the sync script to update the website.
-
----
-
-## How to Use This File
-
-1. **Add a new project** by creating a new entry below
-2. **Format**: Follow the template structure shown
-3. **Run sync**: After editing, run `python3 sync_projects.py` (or manually copy to `content/project/`)
-4. **Images**: Place images in `assets/media/projects/` and reference them by filename
+**Updated:** 2026-03-16  
+**Source:** Career Experience Base
 
 ---
 
-## Project Entry Template
+## 1. Autonomous Boat Perception System (Roboat)
 
-```markdown
-### Project Name
-- **Title:** Your Project Title
-- **Date:** YYYY-MM-DD
-- **Summary:** One-line description
-- **Description:** Detailed description (markdown supported)
-- **External Link:** https://example.com (optional)
-- **Image:** filename.jpg (place in assets/media/projects/)
-- **Tags:** tag1, tag2, tag3 (comma-separated)
-- **Code URL:** https://github.com/... (optional)
-- **PDF URL:** https://... (optional)
-- **Video URL:** https://... (optional)
-```
+**Organization:** Roboat (MIT Spinoff)  
+**Role:** Perception Engineer (First Engineering Hire)  
+**Duration:** March 2024 - August 2024  
+**Location:** Amsterdam, Netherlands
 
----
+### Challenge
+Built perception system for autonomous boats operating in challenging maritime environments with water glare, weather variations, and small dynamic obstacles (boat wake, reflections).
 
-## Your Projects
+### Solution
+- Architected transition from LiDAR to cost-effective vision-based perception
+- Trained and deployed object detection models (obstacles, different boat types) on Jetson Orin
+- Developed LiDAR point cloud segmentation model filtering dynamic water artifacts
+- Engineered full MLOps pipeline (DVC) enabling rapid iteration with model/dataset versioning
 
-### LiDAR-Informed 3D Modeling for Public Health
-- **Title:** LiDAR-Informed 3D Modeling of Favelas for Public Health Research
-- **Date:** 2025-01-01
-- **Summary:** Using LiDAR technology to create detailed 3D models of informal settlements for public health research
-- **Description:** 
-  This project focuses on developing computational methods to model favelas using LiDAR data, enabling better understanding of urban environments for public health applications. The work combines robotics expertise with urban intelligence to address challenges in informal settlements.
-  
-  **Key Contributions:**
-  - LiDAR data processing and 3D reconstruction
-  - Computational Fluid Dynamics modeling
-  - Integration with urban planning tools
-  
-- **External Link:** 
-- **Image:** lidar_favela.jpg
-- **Tags:** LiDAR, 3D Modeling, Urban Planning, Public Health, Computational Fluid Dynamics
-- **Code URL:** 
-- **PDF URL:** 
-- **Video URL:** 
+### Impact
+- ✅ Achieved <30ms real-time inference on edge hardware
+- ✅ Built production dataset from 100+ hours of real-world maritime data
+- ✅ Integrated with SLAM for robust localization
+- ✅ Enabled startup to deploy cost-effective vision-based system
+
+### Technologies
+Python, PyTorch, Jetson Orin, DVC, LiDAR, SLAM, Computer Vision, MLOps, Object Detection
+
+### Links
+- Company: [Roboat](https://roboat.ai)
+- Status: Production deployment
 
 ---
 
-### Autonomous Vessel Navigation
-- **Title:** Computer Vision for Autonomous Vessel Navigation
-- **Date:** 2023-06-01
-- **Summary:** Development of computer vision and LiDAR-based navigation systems for autonomous vessels
-- **Description:**
-  Worked on developing cutting-edge software solutions for autonomous vessels navigation using RGB cameras and LiDAR technology. Specialized in detection, tracking and pose estimation of other boats and obstacles in challenging maritime environments.
-  
-  **Technologies:**
-  - Computer Vision
-  - LiDAR Processing
-  - MLOps
-  - ROS (Robot Operating System)
-  - DVC (Data Version Control)
-  
-- **External Link:** https://roboat.tech/
-- **Image:** roboat_navigation.jpg
-- **Tags:** Computer Vision, Autonomous Navigation, LiDAR, MLOps, Maritime Robotics
-- **Code URL:** 
-- **PDF URL:** 
-- **Video URL:** 
+## 2. Autonomous Mobile Robot Navigation (Loomo Segway)
+
+**Organization:** VITA Lab, EPFL  
+**Role:** Research Assistant  
+**Duration:** June 2022 - June 2023  
+**Location:** Lausanne, Switzerland
+
+### Challenge
+Develop autonomous navigation system for mobile robots operating in crowded, dynamic environments with real-time perception and trajectory prediction requirements.
+
+### Solution
+- Built full ROS-based autonomy stack integrating detection, tracking, 3D pose estimation, and learned trajectory prediction
+- Deployed multiple ML models for perception with modular framework enabling algorithm comparison
+- Optimized perception and navigation through parallelized ROS node architecture
+- Conducted extensive real-world testing validating perception-prediction-planning pipeline
+
+### Impact
+- ✅ Real-time performance in dynamic scenes with crowds
+- ✅ Modular architecture enabling rapid algorithm iteration
+- ✅ Physical robot validation (not just simulation)
+- ✅ Open-source contribution to ROS community
+
+### Technologies
+ROS/ROS2, Python, C++, Object Detection, Tracking, 3D Pose Estimation, Trajectory Prediction, Mobile Robotics
+
+### Links
+- Lab: [VITA Lab, EPFL](https://www.epfl.ch/labs/vita/)
+- Status: Research project (published)
 
 ---
 
-### Event Cameras and Drones
-- **Title:** Event Cameras for Drone Applications
-- **Date:** 2023-10-01
-- **Summary:** Research on event-based vision for aerial robotics applications
-- **Description:**
-  Conducted research on Event Cameras and their applications in drone systems during my Visiting Research Fellowship at IRI (CSIC-UPC) in Barcelona.
-  
-  **Focus Areas:**
-  - Event-based vision processing
-  - Real-time perception for drones
-  - Low-latency sensor fusion
-  
-- **External Link:** https://www.iri.upc.edu/
-- **Image:** event_camera_drone.jpg
-- **Tags:** Event Cameras, Drones, Aerial Robotics, Computer Vision
-- **Code URL:** 
-- **PDF URL:** 
-- **Video URL:** 
+## 3. Urban Digital Twin for Public Health
+
+**Organization:** MIT Senseable City Lab  
+**Role:** Technical Team Lead & Research Fellow  
+**Duration:** January 2025 - Present  
+**Location:** Rio de Janeiro, Brazil
+
+### Challenge
+Build high-fidelity 3D urban reconstruction pipeline for CFD simulations of airborne disease transmission in favela communities, requiring multi-modal data fusion and physics-ready mesh generation.
+
+### Solution
+- Led 10-person technical team coordinating with city government and community stakeholders
+- Architected 3D reconstruction pipeline fusing terrestrial LiDAR, aerial imagery segmentation, and digital terrain models
+- Built computational geometry workflows processing point clouds and rasters into physics-ready 3D meshes
+- Deployed DIY air quality sensor network for validation
+
+### Impact
+- ✅ Large-scale digital twins enabling public health simulations
+- ✅ Community-engaged research with real-world deployment
+- ✅ Multi-stakeholder coordination (technical, government, community)
+- ✅ Novel application of robotics/3D reconstruction to public health
+
+### Technologies
+LiDAR Processing, 3D Reconstruction, Aerial Imagery Segmentation, Computational Geometry, CFD Integration, IoT Sensors, Team Leadership
+
+### Links
+- Lab: [MIT Senseable City Lab - Rio](https://senseablerio.mit.edu/)
+- Status: Ongoing research-to-deployment
 
 ---
 
-### MPC-RL Hybrid Controller
-- **Title:** MPC-RL Hybrid Controller for Autonomous Systems
-- **Date:** 2024-01-01
-- **Summary:** Development of a hybrid control framework combining Model Predictive Control (MPC) with Reinforcement Learning (RL) for robust autonomous navigation
-- **Description:**
-  This project explores the integration of Model Predictive Control and Reinforcement Learning to create a hybrid controller that leverages the strengths of both approaches. MPC provides safety guarantees and constraint satisfaction, while RL enables adaptive behavior in complex, uncertain environments.
-  
-  **Key Contributions:**
-  - Hybrid control architecture design
-  - Real-time MPC-RL integration
-  - Performance evaluation on autonomous platforms
-  - Robustness analysis under uncertainty
-  
-- **External Link:** 
-- **Image:** mpc_rl_hybrid.jpg
-- **Tags:** Model Predictive Control, Reinforcement Learning, Autonomous Systems, Control Theory, Robotics
-- **Code URL:** 
-- **PDF URL:** 
-- **Video URL:** 
+## Additional Projects
+
+### Hybrid MPC-RL for Autonomous Racing (EPFL BioRob)
+**Type:** Semester Research Project
+
+Combined Model Predictive Control with Reinforcement Learning for F10 racecar in PyBullet simulation. Outperformed standard MPC and enabled advanced behaviors like drifting.
+
+**Technologies:** Python, PyBullet, Optimal Control, Reinforcement Learning
 
 ---
 
-### Tree Segmentation and Shade Estimation in Amsterdam
-- **Title:** Tree Segmentation and Shade Estimation for Urban Heat Island Mitigation in Amsterdam
-- **Date:** 2024-06-01
-- **Summary:** Computer vision and LiDAR-based analysis of urban tree coverage and shade patterns to support heat mitigation strategies
-- **Description:**
-  This project uses advanced computer vision techniques and LiDAR data to segment and analyze urban trees in Amsterdam, estimating their shade coverage and potential impact on urban heat island effects. The work supports urban planning decisions for climate adaptation.
-  
-  **Key Contributions:**
-  - Tree segmentation from aerial and ground-based LiDAR
-  - Shade estimation algorithms
-  - Integration with urban planning tools
-  - Analysis of heat mitigation potential
-  
-- **External Link:** 
-- **Image:** tree_segmentation_amsterdam.jpg
-- **Tags:** Computer Vision, LiDAR, Urban Planning, Climate Adaptation, Tree Segmentation, Urban Heat Island
-- **Code URL:** 
-- **PDF URL:** 
-- **Video URL:** 
+### Event Cameras for High-Speed Drone State Estimation (IRI Barcelona)
+**Type:** Visiting Researcher Project
+
+Developed 6-DOF state estimation model fusing event cameras and visual-inertial odometry for aggressive drone flight using PyTorch. Goal: outperform traditional VIO in rapid maneuver scenarios.
+
+**Technologies:** PyTorch, Event Cameras, VIO, Drone Control, State Estimation
 
 ---
 
-*(Add more projects below using the same format)*
+### Aerial LiDAR Tree Census (Master's Thesis, MIT SCL)
+**Type:** Master's Thesis
+
+Developed automated tree census method using multispectral aerial imagery and LiDAR. Trained Random Forest models to predict Leaf Area Index (LAI) from tree morphology.
+
+**Technologies:** LiDAR, Random Forest, Aerial Imagery, Geospatial Analysis, Environmental Monitoring
+
+---
+
+**Portfolio Status:** Ready for website deployment  
+**Featured Projects:** Top 3 showcasing research, startup, and leadership experience

@@ -1,7 +1,6 @@
-# Personal Information - Centralized Data
+# Personal Information - Updated from Career Base
 
-**⚠️ IMPORTANT: This is your single source of truth for personal information.**
-Update this document first, then use it to update the relevant configuration files.
+**Source:** Career Experience Base (2026-03-16)
 
 ---
 
@@ -9,33 +8,37 @@ Update this document first, then use it to update the relevant configuration fil
 
 **Full Name:**
 - First Name: Théo
+- Middle Name: Alessandro
 - Last Name: Hermann
 - Display Name: Théo Hermann
 
 **Current Status:**
-- Role/Position: Research Fellow
-- Current Affiliation: MIT Senseable City Lab
-- Tagline: LiDar and Computational Fluid Dynamics in Favelas for Public Health
+- Role/Position: Robotics AI Engineer
+- Current Affiliation: MIT Senseable City Lab (Research Fellow)
+- Tagline: Robotics AI Engineer | MIT Research | Perception, Navigation & MLOps for Embodied Intelligence
+- Short Bio: Robotics engineer specializing in autonomous systems, computer vision, and ML deployment. Experience spanning MIT spinoff (first engineering hire), EPFL research, and MIT public health projects.
+
+**Nationality:** French-Brazilian
 
 ---
 
 ## Contact Information
 
 **Email:**
-- Primary Email: thermann@mit.edu 
+- Primary Email: thermann@mit.edu
 - Personal Email: thermann.ai@gmail.com
-- Email Label: "E-mail Me"
+- Email Label: "Email Me"
+
+**Phone:**
+- Phone: +33-649431017
 
 **Social Media:**
-- Twitter/X Handle: 
-- Twitter/X URL: 
-- GitHub Username: thrmnn
-- GitHub URL: https://github.com/thrmnn
+- GitHub Username: theoh-io
+- GitHub URL: https://github.com/theoh-io
 - LinkedIn URL: https://www.linkedin.com/in/theohermann-epfl/
-- YouTube Channel URL: 
 - Google Scholar Profile URL: https://scholar.google.com/citations?user=SYHaPDAAAAAJ&hl=en
-- Personal Website/Blog: 
-- Other Social Networks:
+- Twitter/X: [Add if available]
+- YouTube: [Add if available]
 
 ---
 
@@ -43,176 +46,133 @@ Update this document first, then use it to update the relevant configuration fil
 
 ### Current Position
 - **Position Title:** Research Fellow
-- **Institution/Company:** MIT Senseable City Lab
+- **Institution:** MIT Senseable City Lab
 - **Institution URL:** https://senseablerio.mit.edu/
-- **Start Date:** 2025-01-01
-- **End Date:** 
-- **Description/Summary:** LiDar-informed 3D modeling for public health research in favelas
-- **Supervisor(s):** Dr. Fabio Duarte [https://scholar.google.com/citations?user=oI9m0yYAAAAJ&hl=en], Prof. Carlo Ratti [https://scholar.google.com/citations?user=UF2gBtMAAAAJ&hl=en]
+- **Location:** Rio de Janeiro, Brazil
+- **Start Date:** January 2025
+- **End Date:** Present
+- **Description:** Leading 10-person technical team on LiDAR-informed 3D urban modeling and CFD simulations for airborne disease transmission research in favelas. Architecting multi-modal data fusion pipelines (terrestrial LiDAR, aerial imagery, digital terrain models) to build physics-ready digital twins for public health simulations.
 
-### Organizations/Affiliations
-List all current affiliations to display on your profile:
-- **Organization 1:** Massachussetts Institute of Technology, https://www.mit.edu/
-- **Organization 2:** MIT Senseable City Lab, https://senseable.mit.edu/
+### Previous Positions
+
+**Perception Engineer | Roboat (MIT Spinoff)**
+- **Duration:** March 2024 - August 2024
+- **Location:** Amsterdam, Netherlands
+- **Role:** First engineering hire
+- **Achievements:**
+  - Built end-to-end perception stack from ground up
+  - Architected vision-based perception system achieving <30ms real-time inference on Jetson Orin
+  - Developed full MLOps pipeline (DVC) with model/dataset versioning
+  - Built production dataset from 100+ hours of maritime data
+
+**Research Assistant | VITA Lab, EPFL**
+- **Duration:** June 2022 - June 2023
+- **Location:** Lausanne, Switzerland
+- **Project:** Open-source ROS autonomous navigation for Loomo Segway
+- **Achievements:**
+  - Built full autonomy stack: detection, tracking, 3D pose estimation, trajectory prediction
+  - Real-world validated perception-prediction-planning pipeline
+  - Modular framework for algorithm testing
 
 ---
 
 ## Education
 
-### Education Entry 1 (Most Recent)
-- **Degree/Area:** Master's degree (M.Sc), Robotics
-- **Institution:** Ecole polytechnique fédérale de Lausanne (EPFL)
-- **Start Date:** 2021-09-01
-- **End Date:** 2023-07-31
-- **Summary:** Mobile Robotics, Aerial Robotics, Industrial Robotics for Manipulation, Legged Robots, Model Predictive Control, Adaptive Control, Applied Machine Learning, Deep Learning for Autonomous Vehicles, Deep Learning for Optical Imaging, Computer Vision, Intelligent Agents, Game Theory, Analysis and Modelling of Locomotion, Innovation & Entrepreneurship. Skills: Trajectory Planning, Reinforcement Learning
-- **Thesis/Dissertation Title:** 
-- **Thesis URL:**
+### Master of Science in Robotics
+- **Institution:** Swiss Federal Institute of Technology Lausanne (EPFL)
+- **Degree:** Master of Science (MSc)
+- **Field:** Robotics
+- **Duration:** September 2021 - September 2024
+- **Location:** Lausanne, Switzerland
+- **GPA:** 5.43/6
+- **Thesis:** Urban tree morphology and canopy density estimation from Aerial LiDAR (MIT Senseable City Lab)
+- **Coursework:** Optimal Control, Applied ML and Deep Learning, Mobile/Legged/Industrial Robotics
 
-### Education Entry 2
-- **Degree/Area:** Exchange (Bachelor 3rd year), Embedded systems
-- **Institution:** Kungliga Tekniska högskolan (KTH)
-- **Start Date:** 2020-09-01
-- **End Date:** 2021-06-30
-- **Summary:** Signal Theory, Embedded Systems, Optical Physics, Control Theory, Hybrid Control Systems, MEMS, Machine Learning, Neuroscience
-
-### Education Entry 3
-- **Degree/Area:** Bachelor's degree (B.Sc), Microengineering
-- **Institution:** Ecole polytechnique fédérale de Lausanne (EPFL)
-- **Start Date:** 2018-09-01
-- **End Date:** 2021-06-30
-- **Summary:** Programming, Basics of Robotics, Electronics, Sensors, Mechanical Design, Mechanical Engineering, Logical Systems, Control Systems, Mathematical Optimization, Electromechanical Conversion, Signal Processing, Semiconductor Devices, Statics, Dynamics, Optical Engineering, Geometry, Clean Room Laboratory, General Physics, Physics of Manufacturing, Linear Algebra, Analysis, Numerical Analysis, Probability and Statistics, General Chemistry, Materials Science, Biology
-
-*(Add more entries as needed)*
-
----
-
-## Work Experience
-
-### Work Entry 1 (Most Recent)
-- **Position:** Visiting Research Fellow
-- **Company/Institution:** IRI - Institut de Robòtica i Informàtica Industrial, CSIC-UPC
-- **Company URL:** https://www.iri.upc.edu/
-- **Company Logo:**
-- **Start Date:** 2023-10-01
-- **End Date:** 2024-02-29
-- **Summary:** Event Cameras et Drones. Barcelona, Catalonia, Spain
-
-### Work Entry 2
-- **Position:** Computer Vision Software Engineer
-- **Company/Institution:** Roboat
-- **Company URL:** https://roboat.tech/
-- **Company Logo:**
-- **Start Date:** 2023-06-01
-- **End Date:** 2023-10-31
-- **Summary:** Focus on developing cutting-edge software solutions for autonomous vessels navigation using RGB cameras and LiDAR technology. Specializing in detection, tracking and pose estimation of other boats and obstacles in challenging maritime environments. Creating a robust dataset, leveraging advanced machine learning techniques to train state-of-the-art models, and contributing to the establishment of an efficient MLOps framework. Skills: DVC, Robot Operating System (ROS). Amsterdam, Netherlands
-
-### Work Entry 3
-- **Position:** Research Assistant
-- **Company/Institution:** VITA (Visual Intelligence for Transportation), EPFL
-- **Company URL:** https://www.epfl.ch/labs/vita/
-- **Company Logo:**
-- **Start Date:** 2022-06-01
-- **End Date:** 2023-06-30
-- **Summary:** After successfully completing an academic semester project in the framework of my Master's at EPFL I've been offered a lab position as a Research Assistant by Dr. Alexandre Alahi in the Visual Intelligence for Transportation (EPFL) Research Lab. Skills: Computer Vision, Linux. Lausanne, Switzerland
-
-### Work Entry 4
-- **Position:** Teaching Assistant in General Physics
-- **Company/Institution:** Ecole polytechnique fédérale de Lausanne (EPFL)
-- **Company URL:** https://www.epfl.ch/
-- **Company Logo:**
-- **Start Date:** 2022-09-01
-- **End Date:** 2023-02-28
-- **Summary:** Assisted in teaching General Physics courses to undergraduate students. Responsibilities included conducting exercise sessions, grading assignments and exams, providing one-on-one tutoring support, and helping students understand fundamental physics concepts including mechanics, thermodynamics, and electromagnetism.
-
-### Work Entry 5
-- **Position:** Teaching Assistant in Mobile Robotics
-- **Company/Institution:** Ecole polytechnique fédérale de Lausanne (EPFL)
-- **Company URL:** https://www.epfl.ch/
-- **Company Logo:**
-- **Start Date:** 2022-09-01
-- **End Date:** 2023-02-28
-- **Summary:** Assisted in teaching Mobile Robotics courses to graduate students. Responsibilities included leading practical laboratory sessions, supervising student projects on autonomous mobile robots, providing technical guidance on ROS (Robot Operating System), sensor integration, and navigation algorithms, and evaluating student assignments and project presentations.
+### Bachelor of Science in Microengineering
+- **Institution:** Swiss Federal Institute of Technology Lausanne (EPFL)
+- **Degree:** Bachelor of Science (BSc)
+- **Field:** Microengineering
+- **Duration:** September 2018 - June 2021
+- **Location:** Lausanne, Switzerland
+- **Year Abroad:** KTH Royal Institute of Technology, Stockholm, Sweden (2020-2021)
+- **Coursework:** OOP (C++, Python), Microcontrollers, Electronics, Physics, Linear Algebra
 
 ---
 
 ## Research Interests
 
-List your main research interests/areas:
-1. Autonomous Robots
-2. LiDar 3D Modeling
-3. Multimodal Fusion
+**Primary Areas:**
+- Autonomous Systems & Mobile Robotics
+- Computer Vision & Perception
+- Machine Learning Deployment (MLOps)
+- Sensor Fusion (LiDAR, Vision, IMU)
+- Real-time Systems & Edge Computing
+
+**Application Domains:**
+- Maritime autonomous vehicles
+- Urban mobility & navigation
+- Public health & urban planning
+- Aerial systems & event-based vision
 
 ---
 
-## Biography / About Me
+## Skills
 
-**Short Biography:**
-```
-I am currently a Research Fellow at MIT Senseable City Lab, working on LiDar-informed 3D modeling of favelas for public health research. 
-My research focuses on Computational Fluid Dynamics and Urban Planning, combining robotics expertise with urban intelligence to address 
-challenges in informal settlements.
+### Technical Skills
+**Programming:** Python (Expert), C/C++ (Advanced), Linux/Bash (Advanced)
 
-Previously, I worked as a Visiting Research Fellow at IRI (CSIC-UPC) in Barcelona, where I conducted research on Event Cameras and Drones. 
-I also served as a Computer Vision Software Engineer at Roboat, an MIT startup, where I developed software solutions for autonomous vessel 
-navigation using RGB cameras and LiDAR technology. My work focused on detection, tracking, and pose estimation in challenging maritime 
-environments, while contributing to the establishment of an efficient MLOps framework.
+**Machine Learning:**
+- Frameworks: PyTorch, TensorFlow, Scikit-learn
+- Areas: Object detection, tracking, 3D pose estimation, trajectory prediction
+- Deployment: Jetson Orin, real-time inference optimization
 
-Prior to that, I was a Research Assistant at VITA (EPFL) under Dr. Alexandre Alahi, working on computer vision applications for transportation. 
-I received my MSc in Robotics from EPFL, where I specialized in Mobile Robotics, Aerial Robotics, and various aspects of autonomous systems 
-including Model Predictive Control, Deep Learning, and Computer Vision.
+**Robotics:**
+- ROS/ROS2 (Expert)
+- SLAM, sensor fusion, autonomous navigation
+- LiDAR point cloud processing
+- Mobile robot platforms
 
-My research interests focus on autonomous robotics, LiDAR-based 3D modeling, multimodal sensor fusion, and applying robotic technologies 
-to solve real-world challenges in urban environments and public health.
-```
+**MLOps & Tools:**
+- DVC (Data Version Control)
+- Git, CI/CD
+- Model versioning and deployment pipelines
 
----
+**Data Science:** Pandas, NumPy, Matplotlib
 
-## Website Configuration
-
-### Site Settings
-- **Site Title:** Théo Hermann
-- **Base URL:** https://thrmnn.github.io/
-- **Site Description:** Théo Hermann - Research at MIT Senseable City Lab
-
-### Homepage Hero Section
-- **Hero Title:** From Autonomous Robots to 3D Urban Intelligence
-- **Hero Background Image:** hero_picture.jpg
-
-### Files & Assets
-- **CV/Resume PDF:** `static/uploads/resume.pdf`
-- **Profile Photo:**
+**Hardware:** Jetson Orin, Arduino, ESP32, Raspberry Pi, 3D Printing, Soldering
 
 ---
 
-## Analytics & SEO (Optional)
+## Languages
 
-- **Google Analytics ID:** 
-- **Google Search Console Verification:** 
-- **Other Analytics Tools:**
-
----
-
-## Quick Update Checklist
-
-When updating your information, remember to update:
-
-1. ✅ This document (`PERSONAL_INFO.md`) - **UPDATE FIRST**
-2. `config/_default/hugo.yaml` - Site title and baseURL
-3. `config/_default/params.yaml` - SEO description, navbar, social links
-4. `content/authors/admin/_index.md` - Complete author profile
-5. `content/_index.md` - Homepage contact buttons and hero section
+- **French:** Native/Fluent
+- **Portuguese:** Fluent
+- **English:** Fluent
+- **Spanish:** Advanced
+- **German:** Basic
 
 ---
 
-## Notes
+## Professional Summary
 
-- **Keep this document up to date** - It's your single source of truth
-- **Review quarterly** - Update as your career progresses
-- **Backup before major updates** - Keep a copy of this file
-- **Version control** - Commit changes to Git regularly
+Robotics AI engineer with hands-on experience in autonomous systems, computer vision, and ML deployment. First engineering hire at MIT spinoff where I built production perception systems achieving <30ms real-time inference. Strong background in ROS-based autonomy, sensor fusion, and real-world deployment. Currently leading technical team on large-scale 3D reconstruction for public health applications at MIT. Proven ability to go from research to production, with expertise spanning maritime vehicles, mobile robots, and urban systems.
+
+**Key Strengths:**
+- 0-to-1 builder (startup first hire experience)
+- Real-world deployment focus (not just simulation)
+- Full-stack robotics (hardware to ML deployment)
+- Team leadership & cross-functional coordination
+- Multi-domain expertise (maritime, urban, aerial)
 
 ---
 
-**Last Updated:** 
-**Next Review Date:**
+## SEO & Keywords
 
+**Primary Keywords:** Robotics Engineer, ML Engineer, Computer Vision, Autonomous Systems, Perception, SLAM, ROS, PyTorch, MLOps, LiDAR, Edge Computing
+
+**Target Roles:** Robotics Engineer, ML Engineer, Perception Engineer, Autonomous Systems Engineer, Computer Vision Engineer
+
+---
+
+**Last Updated:** 2026-03-16
+**Data Source:** Career Experience Base

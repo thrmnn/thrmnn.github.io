@@ -20,7 +20,7 @@ superuser: true
 highlight_name: true
 
 # Role/position/tagline
-role: LiDar and Computational Fluid Dynamics in Favelas for Public Health
+role: Robotics AI Engineer | MIT Research | Perception, Navigation & MLOps for Embodied Intelligence
 
 # Organizations/Affiliations to display in Biography blox
 organizations:
@@ -36,7 +36,7 @@ profiles:
     url: 'mailto:thermann@mit.edu'
     label: E-mail Me
   - icon: brands/github
-    url: https://github.com/thrmnn
+    url: https://github.com/theoh-io
   - icon: brands/linkedin
     url: https://www.linkedin.com/in/theohermann-epfl/
   - icon: academicons/google-scholar

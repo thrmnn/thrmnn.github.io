@@ -129,30 +129,17 @@ sections:
         </div>
     design:
       columns: 2
-  # Temporarily disabled due to Hugo version compatibility - will re-enable after updating template or Hugo version
-  # - block: collection
-  #   id: publications
-  #   content:
-  #     title: Featured Publications
-  #     count: 0
-  #     filters:
-  #       folders:
-  #         - publication
-  #       featured_only: true
-  #   design:
-  #     view: citation
-  #     columns: 2
-  # - block: collection
-  #   content:
-  #     title: Recent Publications
-  #     text: ""
-  #     count: 0
-  #     filters:
-  #       folders:
-  #         - publication
-  #       exclude_featured: false
-  #   design:
-  #     view: citation
+  - block: collection
+    id: publications
+    content:
+      title: Publications
+      count: 0
+      filters:
+        folders:
+          - publication
+    design:
+      view: date-title-summary
+      columns: 2
   - block: resume-experience
     id: experience
     content:

@@ -20,7 +20,7 @@ superuser: true
 highlight_name: true
 
 # Role/position/tagline
-role: Robotics AI Engineer | MIT Research | Perception, Navigation & MLOps for Embodied Intelligence
+role: Robotics AI Engineer
 
 # Organizations/Affiliations to display in Biography blox
 organizations:
@@ -114,47 +114,49 @@ work:
     summary: |
       Assisted in teaching Mobile Robotics courses to graduate students. Responsibilities included leading practical laboratory sessions, supervising student projects on autonomous mobile robots, providing technical guidance on ROS (Robot Operating System), sensor integration, and navigation algorithms, and evaluating student assignments and project presentations.
 
-# Skills
-# Add your own SVG icons to `assets/media/icons/`
-# skills:
-#   - name: Technical Skills
-#     items:
-#       - name: Python
-#         description: ''
-#         percent: 80
-#         icon: code-bracket
-#       - name: Data Science
-#         description: ''
-#         percent: 100
-#         icon: chart-bar
-#       - name: SQL
-#         description: ''
-#         percent: 40
-#         icon: circle-stack
-#   - name: Hobbies
-#     color: '#eeac02'
-#     color_border: '#f0bf23'
-#     items:
-#       - name: Hiking
-#         description: ''
-#         percent: 60
-#         icon: person-simple-walk
-#       - name: Cats
-#         description: ''
-#         percent: 100
-#         icon: cat
-#       - name: Photography
-#         description: ''
-#         percent: 80
-#         icon: camera
+skills:
+  - name: Technical Skills
+    items:
+      - name: Python
+        description: 'PyTorch, TensorFlow, Scikit-learn'
+        percent: 95
+        icon: code-bracket
+      - name: ROS / ROS2
+        description: 'Autonomous navigation, sensor integration'
+        percent: 90
+        icon: command-line
+      - name: LiDAR & 3D Vision
+        description: 'Point cloud processing, 3D reconstruction'
+        percent: 90
+        icon: cube
+  - name: Robotics & ML
+    color: '#4285f4'
+    color_border: '#5a9cf4'
+    items:
+      - name: Computer Vision
+        description: 'Detection, tracking, pose estimation'
+        percent: 90
+        icon: eye
+      - name: MLOps
+        description: 'DVC, model versioning, edge deployment'
+        percent: 85
+        icon: server
+      - name: C/C++ & Linux
+        description: 'Embedded systems, real-time'
+        percent: 80
+        icon: cpu-chip
 
-# languages:
-#   - name: English
-#     percent: 100
-#   - name: Chinese
-#     percent: 75
-#   - name: Portuguese
-#     percent: 25
+languages:
+  - name: French
+    percent: 100
+  - name: Portuguese
+    percent: 100
+  - name: English
+    percent: 100
+  - name: Spanish
+    percent: 80
+  - name: German
+    percent: 25
 
 # Awards.
 #   Add/remove as many awards below as you like.

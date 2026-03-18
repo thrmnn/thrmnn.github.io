@@ -20,14 +20,14 @@ superuser: true
 highlight_name: true
 
 # Role/position/tagline
-role: Robotics AI Engineer | MIT Research | Perception, Navigation & MLOps for Embodied Intelligence
+role: Robotics AI Engineer
 
 # Organizations/Affiliations to display in Biography blox
 organizations:
-  - name: Massachussetts Institute of Technology
-    url: https://www.mit.edu/
   - name: MIT Senseable City Lab
     url: https://senseable.mit.edu/
+  - name: Massachusetts Institute of Technology
+    url: https://www.mit.edu/
 
 # Social network links
 # Need to use another icon? Simply download the SVG icon to your `assets/media/icons/` folder.
@@ -45,9 +45,12 @@ profiles:
     url: uploads/resume.pdf
 
 interests:
-  - Autonomous Robots
-  - LiDar 3D Modeling
-  - Multimodal Fusion
+  - Autonomous Systems & Mobile Robotics
+  - Computer Vision & Perception
+  - LiDAR 3D Reconstruction
+  - Sensor Fusion (LiDAR, Vision, IMU)
+  - ML Deployment & Edge Computing
+  - Urban Intelligence & Public Health
 
 education:
   - area: Master's degree (M.Sc), Robotics
@@ -74,28 +77,28 @@ work:
     company_url: 'https://senseablerio.mit.edu/'
     date_start: 2025-01-01
     summary: |
-      LiDar-informed 3D modeling for public health research in favelas
+      Leading 10-person team building high-fidelity digital twins of Rio's favelas from terrestrial LiDAR, aerial imagery, and terrain data. 3D reconstructions feed CFD simulations of airborne disease transmission for public health interventions. Rio de Janeiro, Brazil.
   - position: Visiting Research Fellow
-    company_name: IRI - Institut de Robòtica i Informàtica Industrial, CSIC-UPC
+    company_name: IRI (CSIC-UPC)
     company_url: 'https://www.iri.upc.edu/'
     date_start: 2023-10-01
     date_end: 2024-02-29
     summary: |
-      Event Cameras et Drones. Barcelona, Catalonia, Spain
-  - position: Computer Vision Software Engineer
-    company_name: Roboat
-    company_url: 'https://roboat.tech/'
-    date_start: 2023-06-01
-    date_end: 2023-10-31
+      Developed PyTorch-based fusion model combining event cameras with visual-inertial odometry for 6-DOF drone state estimation during aggressive flight maneuvers. Barcelona, Spain.
+  - position: Perception Engineer (First Engineering Hire)
+    company_name: Roboat (MIT Spinoff)
+    company_url: 'https://roboat.ai'
+    date_start: 2024-03-01
+    date_end: 2024-08-31
     summary: |
-      Focus on developing cutting-edge software solutions for autonomous vessels navigation using RGB cameras and LiDAR technology. Specializing in detection, tracking and pose estimation of other boats and obstacles in challenging maritime environments. Creating a robust dataset, leveraging advanced machine learning techniques to train state-of-the-art models, and contributing to the establishment of an efficient MLOps framework. Skills: DVC, Robot Operating System (ROS). Amsterdam, Netherlands
+      Built end-to-end perception stack for autonomous vessels navigating Amsterdam's canals. Designed vision-based detection and tracking system achieving <30ms real-time inference on Jetson Orin. Engineered full MLOps pipeline (DVC) with model and dataset versioning from 100+ hours of maritime data. Developed LiDAR point cloud segmentation filtering dynamic water artifacts.
   - position: Research Assistant
-    company_name: VITA (Visual Intelligence for Transportation), EPFL
+    company_name: VITA Lab, EPFL
     company_url: 'https://www.epfl.ch/labs/vita/'
     date_start: 2022-06-01
     date_end: 2023-06-30
     summary: |
-      After successfully completing an academic semester project in the framework of my Master's at EPFL I've been offered a lab position as a Research Assistant by Dr. Alexandre Alahi in the Visual Intelligence for Transportation (EPFL) Research Lab. Skills: Computer Vision, Linux. Lausanne, Switzerland
+      Built open-source ROS autonomy stack for mobile robot navigation in crowded environments. Integrated real-time detection, multi-object tracking, 3D pose estimation, and trajectory prediction into a modular pipeline validated on physical robots. Lausanne, Switzerland.
   - position: Teaching Assistant in General Physics
     company_name: Ecole polytechnique fédérale de Lausanne (EPFL)
     company_url: 'https://www.epfl.ch/'
@@ -187,18 +190,10 @@ work:
 
 ## About Me
 
-I am currently a Research Fellow at MIT Senseable City Lab, working on LiDar-informed 3D modeling of favelas for public health research. 
-My research focuses on Computational Fluid Dynamics and Urban Planning, combining robotics expertise with urban intelligence to address 
-challenges in informal settlements.
+I build perception and autonomy systems that work in the real world — not just in simulation.
 
-Previously, I worked as a Visiting Research Fellow at IRI (CSIC-UPC) in Barcelona, where I conducted research on Event Cameras and Drones. 
-I also served as a Computer Vision Software Engineer at Roboat, an MIT startup, where I developed software solutions for autonomous vessel 
-navigation using RGB cameras and LiDAR technology. My work focused on detection, tracking, and pose estimation in challenging maritime 
-environments, while contributing to the establishment of an efficient MLOps framework.
+Currently a Research Fellow at **MIT Senseable City Lab** in Rio de Janeiro, I lead a 10-person team constructing high-fidelity digital twins of favelas from LiDAR, aerial imagery, and terrain data. These 3D reconstructions power CFD simulations of airborne disease transmission, directly informing public health interventions in partnership with Rio's city government.
 
-Prior to that, I was a Research Assistant at VITA (EPFL) under Dr. Alexandre Alahi, working on computer vision applications for transportation. 
-I received my MSc in Robotics from EPFL, where I specialized in Mobile Robotics, Aerial Robotics, and various aspects of autonomous systems 
-including Model Predictive Control, Deep Learning, and Computer Vision.
+Previously, as the **first engineering hire at Roboat** (MIT spinoff), I built the end-to-end vision-based perception stack for autonomous boats navigating Amsterdam's canals — achieving sub-30ms inference on edge hardware. I also researched event-camera fusion for high-speed drone state estimation at **IRI Barcelona** (CSIC-UPC), and developed an open-source ROS autonomy stack for mobile robot navigation at **EPFL VITA Lab**.
 
-My research interests focus on autonomous robotics, LiDAR-based 3D modeling, multimodal sensor fusion, and applying robotic technologies 
-to solve real-world challenges in urban environments and public health.
+I hold an MSc in Robotics from EPFL (GPA 5.43/6) with a thesis on aerial LiDAR tree census completed at MIT. My work spans the full pipeline from sensor hardware to deployed ML, across maritime, aerial, and urban domains.

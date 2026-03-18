@@ -10,15 +10,17 @@ design:
 
 sections:
   - block: hero
-    demo: false # Only display this section in the Hugo Blox Builder demo site
     content:
-      title: <br/><br/>From Autonomous Robots to 3D Urban Intelligence
+      title: |
+        <br/>From Autonomous Robots<br/>to 3D Urban Intelligence
+      text: |
+        Robotics AI Engineer building perception systems that work in the real world — from autonomous boats on Amsterdam's canals to digital twins of Rio's favelas.
     design:
       background:
         image:
           filename: hero_picture.jpg
           filters:
-            brightness: 0.5
+            brightness: 0.4
         text_color_light: true
   - block: resume-biography-3
     id: about
@@ -88,107 +90,41 @@ sections:
     content:
       title: News
       text: |-
-        <div style="height: 600px; width: 1000px; overflow-y: scroll; align-items: center;">
+        <div style="max-height: 500px; overflow-y: auto;">
           <details open>
-            <summary>
-              <strong>2025</strong>
-            </summary>
-            <!-- <blockquote> -->
+            <summary><strong>2025</strong></summary>
             <div style="margin-left:6px; padding-left:20px; border-left:1px solid;">
-              <p><strong>November 2025</strong> - Poster and abstract accepted at AGU Fall Meeting 2025 on LiDAR-Informed 3D Modeling of Favelas for Public Health Research</p>
+              <p><strong>November 2025</strong> — Poster and abstract accepted at <strong>AGU Fall Meeting 2025</strong> on LiDAR-Informed 3D Modeling of Favelas for Public Health Research.</p>
+              <p><strong>January 2025</strong> — Joined <strong>MIT Senseable City Lab</strong> in Rio de Janeiro as Research Fellow, leading a 10-person team on urban digital twins for public health.</p>
             </div>
-            <!-- </blockquote> -->
           </details>
           <details open>
-            <summary>
-              <strong>2024</strong>
-            </summary>
-            <!-- <blockquote> -->
+            <summary><strong>2024</strong></summary>
             <div style="margin-left:6px; padding-left:20px; border-left:1px solid;">
-              <p></p>
+              <p><strong>September 2024</strong> — Defended Master's thesis at EPFL: <em>Urban Tree Morphology and Canopy Density Estimation from Aerial LiDAR</em>, conducted at MIT Senseable City Lab Amsterdam.</p>
+              <p><strong>March 2024</strong> — Joined <strong>Roboat</strong> (MIT spinoff) as first engineering hire. Built end-to-end perception system for autonomous vessels in Amsterdam.</p>
             </div>
-            <!-- </blockquote> -->
           </details>
-          <details open>
-            <summary>
-              <strong>2023</strong>
-            </summary>
-            <!-- <blockquote> -->
-            <div style="margin-left:6px; padding-left:20px; border-left:1px solid;">
-              <p></p>
-            </div>
-            <!-- </blockquote> -->
-          </details>
-          <p></p>
           <details>
-            <summary>
-              <strong>2022</strong>
-            </summary>
-            <!-- <blockquote> -->
+            <summary><strong>2023</strong></summary>
             <div style="margin-left:6px; padding-left:20px; border-left:1px solid;">
-              <p></p>
+              <p><strong>October 2023</strong> — Started visiting research at <strong>IRI (CSIC-UPC)</strong>, Barcelona, on event cameras for high-speed drone state estimation.</p>
+              <p><strong>June 2023</strong> — Completed research assistantship at <strong>EPFL VITA Lab</strong>, building an open-source ROS autonomy stack for mobile robot navigation.</p>
             </div>
-            <!-- </blockquote> -->
           </details>
-          <p></p>
           <details>
-            <summary>
-              <strong>2021</strong>
-            </summary>
-            <!-- <blockquote> -->
+            <summary><strong>2022</strong></summary>
             <div style="margin-left:6px; padding-left:20px; border-left:1px solid;">
-              <p></p>
-              <!-- Add your news entries here -->
+              <p><strong>September 2022</strong> — Started as Teaching Assistant at EPFL for General Physics and Mobile Robotics.</p>
+              <p><strong>June 2022</strong> — Joined <strong>VITA Lab</strong> at EPFL as Research Assistant under Dr. Alexandre Alahi.</p>
             </div>
-            <!-- </blockquote> -->
           </details>
-          <p></p>
           <details>
-            <summary>
-              <strong>2020</strong>
-            </summary>
-            <!-- <blockquote> -->
+            <summary><strong>2021</strong></summary>
             <div style="margin-left:6px; padding-left:20px; border-left:1px solid;">
-              <p></p>
-              <!-- Add your news entries here -->
+              <p><strong>September 2021</strong> — Started <strong>MSc in Robotics</strong> at EPFL.</p>
+              <p><strong>June 2021</strong> — Completed exchange year at <strong>KTH Royal Institute of Technology</strong>, Stockholm.</p>
             </div>
-            <!-- </blockquote> -->
-          </details>
-          <p></p>
-          <details>
-            <summary>
-              <strong>2019</strong>
-            </summary>
-            <!-- <blockquote> -->
-            <div style="margin-left:6px; padding-left:20px; border-left:1px solid;">
-              <p></p>
-              <!-- Add your news entries here -->
-            </div>
-            <!-- </blockquote> -->
-          </details>
-          <p></p>
-          <details>
-            <summary>
-              <strong>2018</strong>
-            </summary>
-            <!-- <blockquote> -->
-            <div style="margin-left:6px; padding-left:20px; border-left:1px solid;">
-              <p></p>
-              <!-- Add your news entries here -->
-            </div>
-            <!-- </blockquote> -->
-          </details>
-          <p></p>
-          <details>
-            <summary>
-              <strong>2016</strong>
-            </summary>
-            <!-- <blockquote> -->
-            <div style="margin-left:6px; padding-left:20px; border-left:1px solid;">
-              <p></p>
-              <!-- Add your news entries here -->
-            </div>
-            <!-- </blockquote> -->
           </details>
         </div>
     design:

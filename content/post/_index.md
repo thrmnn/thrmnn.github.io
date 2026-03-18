@@ -3,7 +3,7 @@ title: Blog
 cms_exclude: true
 
 # View.
-view: compact
+view: date-title-summary
 
 # Optional header image (relative to `static/media/` folder).
 image:

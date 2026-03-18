@@ -4,7 +4,7 @@ cms_exclude: true
 #url: talk
 
 # View
-view: compact
+view: date-title-summary
 
 # Optional cover image (relative to `assets/media/` folder).
 image:

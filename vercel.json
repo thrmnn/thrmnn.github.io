@@ -1,6 +1,9 @@
 {
-  "buildCommand": "bash vercel-build.sh",
+  "framework": "hugo",
+  "buildCommand": "hugo --gc --minify",
   "outputDirectory": "public",
   "devCommand": "hugo server",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD ."
+  "env": {
+    "HUGO_VERSION": "0.136.5"
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "buildCommand": "curl -L -o /tmp/hugo.tar.gz https://github.com/gohugoio/hugo/releases/download/v0.136.5/hugo_extended_0.136.5_linux-amd64.tar.gz && tar -xzf /tmp/hugo.tar.gz -C /tmp && /tmp/hugo --gc --minify",
+  "buildCommand": "bash vercel-build.sh",
   "outputDirectory": "public",
   "devCommand": "hugo server",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD ."

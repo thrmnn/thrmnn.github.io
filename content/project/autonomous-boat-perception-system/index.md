@@ -27,12 +27,6 @@ slides: ''
 
 Real-time perception system for autonomous boats achieving <30ms inference on edge hardware
 
-Built end-to-end perception stack as first engineering hire at Roboat (MIT spinoff). Architected transition from LiDAR to cost-effective vision-based system, deployed on Jetson Orin achieving <30ms real-time inference.
-  
-  **Key Achievements:**
-  - Developed object detection models for obstacles and boat types in challenging maritime conditions
-  - Built LiDAR point cloud segmentation filtering dynamic water artifacts (wake, reflections)
-  - Engineered full MLOps pipeline (DVC) with model/dataset versioning and automated deployment
-  - Created production dataset from 100+ hours of real-world maritime data
-  
-  **Technologies:** Python, PyTorch, Jetson Orin, DVC, LiDAR, SLAM, Computer Vision, Object Detection
+As the first engineering hire at Roboat — a startup spun out of MIT's Senseable City Lab — I built the end-to-end perception system for autonomous vessels navigating the canals of Amsterdam. The core challenge was replacing an expensive LiDAR-only pipeline with a cost-effective, camera-first architecture while maintaining the reliability needed for real-world maritime operations. I designed and deployed a vision-based detection and tracking system running on NVIDIA Jetson Orin edge hardware, achieving sub-30ms inference latency for real-time obstacle avoidance.
+
+The work spanned the full ML lifecycle: curating a production-grade dataset from over 100 hours of on-water recordings, training object detection models robust to glare, reflections, and dynamic water surfaces, and engineering a complete MLOps pipeline with DVC for reproducible model and dataset versioning. I also developed LiDAR point cloud segmentation algorithms that filter out dynamic water artifacts such as wake patterns and specular reflections — a domain-specific challenge rarely encountered in terrestrial autonomy. This project demonstrated my ability to go from zero to a production perception stack under startup constraints, balancing research-grade accuracy with deployment-ready engineering.

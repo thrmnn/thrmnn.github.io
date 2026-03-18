@@ -28,12 +28,6 @@ slides: ''
 
 Large-scale urban reconstruction enabling physics-based public health simulations in favelas
 
-Leading 10-person technical team at MIT Senseable City Lab on LiDAR-informed 3D modeling and CFD simulations for airborne disease transmission research in Rio favelas. Coordinating with city government and community stakeholders from research to deployment.
-  
-  **Key Achievements:**
-  - Architected multi-modal data fusion pipeline: terrestrial LiDAR, aerial imagery, digital terrain models
-  - Built computational geometry workflows generating physics-ready 3D meshes for CFD
-  - Deployed DIY air quality sensor network for ground-truth validation
-  - Community-engaged research with real-world impact
-  
-  **Technologies:** LiDAR Processing, 3D Reconstruction, Aerial Imagery Segmentation, Computational Geometry, CFD Integration, IoT Sensors
+As Research Fellow at MIT Senseable City Lab in Rio de Janeiro, I lead a 10-person technical team building a high-fidelity digital twin of Rio's favelas to model airborne disease transmission. The project fuses data from terrestrial LiDAR scans, aerial multispectral imagery, and digital terrain models into physics-ready 3D meshes of densely built informal settlements — environments where conventional mapping methods fail. These reconstructions feed directly into Computational Fluid Dynamics (CFD) simulations that model ventilation patterns, pollutant dispersion, and pathogen spread at the neighborhood scale, producing actionable insights for urban public health interventions.
+
+Beyond the computational pipeline, the project includes deploying a network of custom-built air quality sensors across target communities for ground-truth validation of the simulations. This work also draws on my earlier research at MIT Senseable City Lab (Amsterdam), where I developed methods for estimating Leaf Area Index (LAI) from aerial LiDAR — quantifying urban tree canopy density and its effect on local ventilation. Together, these components form a comprehensive framework connecting 3D urban geometry, vegetation, and airflow to public health outcomes. The project operates in close coordination with Rio's city government and community stakeholders, ensuring the research translates into real-world impact.

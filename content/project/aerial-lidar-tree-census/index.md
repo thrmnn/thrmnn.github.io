@@ -26,11 +26,6 @@ slides: ''
 
 Automated tree census using LiDAR and multispectral imagery for urban forestry
 
-Master's thesis project at MIT Senseable City Lab (Amsterdam) developing automated tree census method. Combined multispectral aerial imagery with LiDAR data, training Random Forest models to predict Leaf Area Index (LAI) from tree morphology.
-  
-  **Key Contributions:**
-  - Automated tree morphology analysis pipeline
-  - Multi-spectral + LiDAR data fusion
-  - Predictive modeling for urban forestry applications
-  
-  **Technologies:** LiDAR, Random Forest, Aerial Imagery, Geospatial Analysis, Environmental Monitoring
+For my Master's thesis at MIT Senseable City Lab (Amsterdam), I developed an automated method for large-scale urban tree census using aerial LiDAR and multispectral imagery. The core contribution was a pipeline that extracts individual tree morphological features — crown diameter, height, canopy volume — from airborne LiDAR point clouds and fuses them with spectral vegetation indices derived from multispectral aerial imagery. I trained Random Forest models to predict Leaf Area Index (LAI), a key metric for quantifying canopy density and its influence on urban microclimate, air quality, and stormwater management.
+
+This work established the methodological foundation for my current research in Rio de Janeiro, where LAI estimation feeds into CFD simulations of urban ventilation in informal settlements. The pipeline demonstrated that tree morphology extracted from remote sensing data can reliably predict canopy density at city scale, enabling urban planners to assess green infrastructure without costly ground-level surveys.

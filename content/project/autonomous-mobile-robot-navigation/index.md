@@ -26,12 +26,6 @@ slides: ''
 
 Full perception-to-planning pipeline for mobile robots navigating dynamic scenes
 
-Built open-source ROS autonomous navigation system for Loomo Segway robots at EPFL VITA Lab. Integrated real-time object detection, tracking, 3D pose estimation, and learned trajectory prediction into complete autonomy stack.
-  
-  **Key Achievements:**
-  - Developed modular framework enabling rapid algorithm comparison and testing
-  - Achieved real-time performance in crowded environments through parallelized ROS architecture
-  - Validated full perception-prediction-planning pipeline on physical robots (not just simulation)
-  - Open-source contribution to ROS community
-  
-  **Technologies:** ROS/ROS2, Python, C++, Object Detection, Tracking, 3D Pose Estimation, Trajectory Prediction, Mobile Robotics
+At EPFL's VITA Lab, I designed and built a complete open-source autonomy stack enabling Loomo Segway robots to navigate safely through crowded, dynamic environments. The system integrates real-time object detection, multi-object tracking, monocular 3D pose estimation, and learned trajectory prediction into a unified ROS pipeline — covering the full perception-to-planning loop required for socially-aware robot navigation. A key design goal was modularity: each component can be independently swapped or benchmarked, making the framework a practical tool for comparing state-of-the-art algorithms on real hardware.
+
+Unlike many academic navigation projects that remain in simulation, this system was validated end-to-end on physical robots operating among pedestrians. The parallelized ROS/ROS2 architecture ensures real-time performance even with computationally intensive perception modules running simultaneously. The project was released as an open-source contribution to the ROS community, providing a reproducible baseline for mobile robot navigation research. This work deepened my expertise in real-time systems design, sensor-driven planning, and the challenges of bridging the gap between simulation and real-world deployment.

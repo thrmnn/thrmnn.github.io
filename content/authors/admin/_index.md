@@ -20,7 +20,7 @@ superuser: true
 highlight_name: true
 
 # Role/position/tagline
-role: Robotics AI Engineer
+role: Robotics AI Engineer | MIT Research | Perception, Navigation & MLOps for Embodied Intelligence
 
 # Organizations/Affiliations to display in Biography blox
 organizations:

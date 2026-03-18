@@ -1,2 +1,8 @@
 __pycache__/
 *.pyc
+
+# Hugo build output
+public/
+
+# Hugo resource cache
+resources/_gen/

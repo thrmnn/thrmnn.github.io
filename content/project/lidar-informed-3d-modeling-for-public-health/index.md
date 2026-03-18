@@ -1,7 +1,7 @@
 ---
 title: LiDAR-Informed 3D Modeling of Favelas for Public Health Research
 date: '2025-01-01T00:00:00Z'
-external_link: '- **Image:** lidar_favela.jpg'
+external_link: 'https://senseablerio.mit.edu/'
 
 image:
   caption: LiDAR-Informed 3D Modeling of Favelas for Public Health Research

@@ -37,8 +37,7 @@
 - GitHub URL: https://github.com/theoh-io
 - LinkedIn URL: https://www.linkedin.com/in/theohermann-epfl/
 - Google Scholar Profile URL: https://scholar.google.com/citations?user=SYHaPDAAAAAJ&hl=en
-- Twitter/X: [Add if available]
-- YouTube: [Add if available]
+- Website: https://thrmnn.github.io
 
 ---
 
@@ -65,6 +64,15 @@
   - Developed full MLOps pipeline (DVC) with model/dataset versioning
   - Built production dataset from 100+ hours of maritime data
 
+**Visiting Research Fellow | IRI (CSIC-UPC), Barcelona**
+- **Duration:** October 2023 - February 2024
+- **Location:** Barcelona, Spain
+- **Project:** Event cameras for high-speed drone state estimation
+- **Achievements:**
+  - Developed PyTorch-based fusion model combining event cameras with visual-inertial odometry
+  - Targeted 6-DOF state estimation during aggressive flight maneuvers
+  - Novel application of event-based sensors to drone control
+
 **Research Assistant | VITA Lab, EPFL**
 - **Duration:** June 2022 - June 2023
 - **Location:** Lausanne, Switzerland
@@ -73,6 +81,14 @@
   - Built full autonomy stack: detection, tracking, 3D pose estimation, trajectory prediction
   - Real-world validated perception-prediction-planning pipeline
   - Modular framework for algorithm testing
+
+**Teaching Assistant | EPFL**
+- **Duration:** September 2022 - February 2023
+- **Location:** Lausanne, Switzerland
+- **Courses:** General Physics (undergraduate), Mobile Robotics (graduate)
+- **Responsibilities:**
+  - Led laboratory sessions and supervised student projects on autonomous mobile robots
+  - Provided technical guidance on ROS, sensor integration, and navigation algorithms
 
 ---
 
@@ -130,6 +146,7 @@
 - ROS/ROS2 (Expert)
 - SLAM, sensor fusion, autonomous navigation
 - LiDAR point cloud processing
+- Computational geometry, 3D reconstruction, mesh generation
 - Mobile robot platforms
 
 **MLOps & Tools:**
@@ -174,5 +191,5 @@ Robotics AI engineer with hands-on experience in autonomous systems, computer vi
 
 ---
 
-**Last Updated:** 2026-03-16
+**Last Updated:** 2026-03-18
 **Data Source:** Career Experience Base

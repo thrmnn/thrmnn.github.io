@@ -23,7 +23,7 @@ superuser: true
 highlight_name: true
 
 # Role/position/tagline
-role: Robotics AI Engineer | MIT · EPFL
+role: Research Fellow | MIT Senseable City Lab
 
 # Organizations/Affiliations to display in Biography blox
 organizations:
@@ -115,38 +115,6 @@ work:
     date_end: 2023-02-28
     summary: |
       Assisted in teaching Mobile Robotics courses to graduate students. Responsibilities included leading practical laboratory sessions, supervising student projects on autonomous mobile robots, providing technical guidance on ROS (Robot Operating System), sensor integration, and navigation algorithms, and evaluating student assignments and project presentations.
-
-skills:
-  - name: Technical Skills
-    items:
-      - name: Python
-        description: 'PyTorch, TensorFlow, Scikit-learn'
-        percent: 95
-        icon: code-bracket
-      - name: ROS / ROS2
-        description: 'Autonomous navigation, sensor integration'
-        percent: 90
-        icon: command-line
-      - name: LiDAR & 3D Vision
-        description: 'Point cloud processing, 3D reconstruction'
-        percent: 90
-        icon: cube
-  - name: Robotics & ML
-    color: '#4285f4'
-    color_border: '#5a9cf4'
-    items:
-      - name: Computer Vision
-        description: 'Detection, tracking, pose estimation'
-        percent: 90
-        icon: eye
-      - name: MLOps
-        description: 'DVC, model versioning, edge deployment'
-        percent: 85
-        icon: server
-      - name: C/C++ & Linux
-        description: 'Embedded systems, real-time'
-        percent: 80
-        icon: cpu-chip
 
 languages:
   - name: French

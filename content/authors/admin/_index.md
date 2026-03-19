@@ -20,7 +20,7 @@ superuser: true
 highlight_name: true
 
 # Role/position/tagline
-role: Robotics AI Engineer
+role: Robotics AI Engineer | MIT · EPFL
 
 # Organizations/Affiliations to display in Biography blox
 organizations:
@@ -45,12 +45,11 @@ profiles:
     url: uploads/resume.pdf
 
 interests:
-  - Autonomous Systems & Mobile Robotics
-  - Computer Vision & Perception
-  - LiDAR 3D Reconstruction
-  - Sensor Fusion (LiDAR, Vision, IMU)
-  - ML Deployment & Edge Computing
-  - Urban Intelligence & Public Health
+  - Embodied AI & Robot Learning
+  - Computer Vision & 3D Perception
+  - RAG Systems & AI Infrastructure
+  - Urban Intelligence & Geospatial AI
+  - Autonomous Vehicles & Humanoid Robots
 
 education:
   - area: Master's degree (M.Sc), Robotics
@@ -192,10 +191,4 @@ languages:
 
 ## About Me
 
-I build perception and autonomy systems that work in the real world — not just in simulation.
-
-Currently a Research Fellow at **MIT Senseable City Lab** in Rio de Janeiro, I lead a 10-person team constructing high-fidelity digital twins of favelas from LiDAR, aerial imagery, and terrain data. These 3D reconstructions power CFD simulations of airborne disease transmission, directly informing public health interventions in partnership with Rio's city government.
-
-Previously, as the **first engineering hire at Roboat** (MIT spinoff), I built the end-to-end vision-based perception stack for autonomous boats navigating Amsterdam's canals — achieving sub-30ms inference on edge hardware. I also researched event-camera fusion for high-speed drone state estimation at **IRI Barcelona** (CSIC-UPC), and developed an open-source ROS autonomy stack for mobile robot navigation at **EPFL VITA Lab**.
-
-I hold an MSc in Robotics from EPFL (GPA 5.43/6) with a thesis on aerial LiDAR tree census completed at MIT. My work spans the full pipeline from sensor hardware to deployed ML, across maritime, aerial, and urban domains.
+At MIT Senseable City Lab, I build AI systems that bridge research and the physical world — from city-scale LiDAR tree census pipelines to 3D digital twins of Rio's favelas for public health. I ship production systems that work outside the lab: autonomous boat perception at sub-30ms on edge hardware (Roboat, MIT spinoff), RAG pipelines for enterprise knowledge infrastructure, and computer vision deployed across maritime, aerial, and urban domains. I'm looking for senior roles at the frontier of physical AI — humanoid robots, autonomous vehicles, and embodied intelligence.

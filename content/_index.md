@@ -14,7 +14,7 @@ sections:
       title: |
         <br/>From Autonomous Robots<br/>to 3D Urban Intelligence
       text: |
-        Robotics AI Engineer building perception systems that work in the real world — from autonomous boats on Amsterdam's canals to digital twins of Rio's favelas.
+        Building AI systems that work in the physical world — from urban digital twins to private knowledge infrastructure.
     design:
       background:
         image:

@@ -1,20 +1,23 @@
 ---
-title: Urban Tree Morphology and Canopy Density Estimation
+title: "Urban Tree Census at Scale: Aerial LiDAR + ML"
 date: '2024-09-01T00:00:00Z'
 external_link: 'https://senseable.mit.edu/'
+featured: true
 
 image:
-  caption: Urban Tree Morphology and Canopy Density Estimation
+  caption: "Urban Tree Census at Scale: Aerial LiDAR + ML"
   filename: projects/tree_census.jpg
   focal_point: Smart
 
 tags:
   - LiDAR
+  - Machine Learning
+  - XGBoost
   - Random Forest
-  - Aerial Imagery
+  - GeoPandas
+  - Remote Sensing
   - Urban Forestry
-  - Geospatial Analysis
-  - Environmental Science
+  - Python
 
 url_code: ''
 url_pdf: ''
@@ -24,8 +27,26 @@ url_slides: ''
 slides: ''
 ---
 
-Automated tree census using LiDAR and multispectral imagery for urban forestry
+Large-scale aerial LiDAR survey of São Paulo identifying 12,350 trees in favela communities using ML-driven species classification and health assessment.
 
-For my Master's thesis at MIT Senseable City Lab (Amsterdam), I developed an automated method for large-scale urban tree census using aerial LiDAR and multispectral imagery. The core contribution was a pipeline that extracts individual tree morphological features — crown diameter, height, canopy volume — from airborne LiDAR point clouds and fuses them with spectral vegetation indices derived from multispectral aerial imagery. I trained Random Forest models to predict Leaf Area Index (LAI), a key metric for quantifying canopy density and its influence on urban microclimate, air quality, and stormwater management.
+## Overview
 
-This work established the methodological foundation for my current research in Rio de Janeiro, where LAI estimation feeds into CFD simulations of urban ventilation in informal settlements. The pipeline demonstrated that tree morphology extracted from remote sensing data can reliably predict canopy density at city scale, enabling urban planners to assess green infrastructure without costly ground-level surveys.
+For my Master's thesis at MIT Senseable City Lab, I designed and executed a large-scale automated tree census across informal settlements in São Paulo, Brazil. The project identified and characterized **12,350 individual trees** in favela communities — environments where conventional ground-level surveys are impractical due to dense, irregular urban morphology. This is the first large-scale automated tree census of informal settlements, demonstrating that airborne remote sensing combined with machine learning can deliver city-scale ecological assessments in areas traditionally invisible to urban planning data.
+
+## Technical Approach
+
+The ML pipeline extracts individual tree morphological features — crown diameter, height, canopy volume — from airborne LiDAR point clouds and fuses them with spectral vegetation indices derived from multispectral aerial imagery. I trained an ensemble of **XGBoost and Random Forest** classifiers to predict Leaf Area Index (LAI), a key metric for quantifying canopy density and its influence on urban microclimate, air quality, and stormwater management. The geospatial processing stack is built on **GeoPandas** and scikit-learn, handling point clouds with tens of millions of points across the survey area.
+
+Key pipeline stages:
+- **Point cloud segmentation** — isolating individual tree crowns from ground, building, and vegetation returns
+- **Feature extraction** — computing morphological descriptors (height, crown area, volume) per tree
+- **Spectral fusion** — aligning LiDAR-derived geometry with multispectral vegetation indices (NDVI, NDRE)
+- **Species and health classification** — ensemble ML models predicting species class and canopy health status
+
+## Role and Collaboration
+
+I served as **lead researcher**, responsible for the full ML pipeline design, data collection coordination, and analysis. The project is a collaboration between **MIT Senseable City Lab**, **TU Delft**, and local partners in São Paulo.
+
+## Outcome
+
+The paper has been submitted to **Springer Nature**. This work established the methodological foundation for the urban digital twin project in Rio de Janeiro, where LAI estimation feeds into CFD simulations of urban ventilation in informal settlements. The pipeline demonstrated that tree morphology extracted from remote sensing data can reliably predict canopy density at city scale, enabling urban planners to assess green infrastructure without costly ground-level surveys.

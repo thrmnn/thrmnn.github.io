@@ -1,20 +1,24 @@
 ---
-title: Vision-Based Perception for Autonomous Maritime Vehicles
+title: "Perception Stack for Autonomous Canal Boats"
 date: '2024-08-01T00:00:00Z'
 external_link: 'https://roboat.ai'
 
 image:
-  caption: Vision-Based Perception for Autonomous Maritime Vehicles
+  caption: "Perception Stack for Autonomous Canal Boats"
   filename: projects/roboat_perception.jpg
   focal_point: Smart
 
 tags:
   - Computer Vision
+  - PyTorch
+  - YOLO
+  - Jetson Orin
+  - DVC
   - MLOps
-  - Autonomous Navigation
+  - ROS2
   - LiDAR
-  - Edge Computing
   - Object Detection
+  - Edge Computing
   - Maritime Robotics
 
 url_code: ''
@@ -25,8 +29,26 @@ url_slides: ''
 slides: ''
 ---
 
-Real-time perception system for autonomous boats achieving <30ms inference on edge hardware
+End-to-end perception system for autonomous canal boats achieving <30ms inference on edge hardware, deployed on physical vessels in Amsterdam.
 
-As the first engineering hire at Roboat — a startup spun out of MIT's Senseable City Lab — I built the end-to-end perception system for autonomous vessels navigating the canals of Amsterdam. The core challenge was replacing an expensive LiDAR-only pipeline with a cost-effective, camera-first architecture while maintaining the reliability needed for real-world maritime operations. I designed and deployed a vision-based detection and tracking system running on NVIDIA Jetson Orin edge hardware, achieving sub-30ms inference latency for real-time obstacle avoidance.
+## Overview
 
-The work spanned the full ML lifecycle: curating a production-grade dataset from over 100 hours of on-water recordings, training object detection models robust to glare, reflections, and dynamic water surfaces, and engineering a complete MLOps pipeline with DVC for reproducible model and dataset versioning. I also developed LiDAR point cloud segmentation algorithms that filter out dynamic water artifacts such as wake patterns and specular reflections — a domain-specific challenge rarely encountered in terrestrial autonomy. This project demonstrated my ability to go from zero to a production perception stack under startup constraints, balancing research-grade accuracy with deployment-ready engineering.
+As the **first engineering hire (perception)** at Roboat — a startup spun out of MIT's Senseable City Lab — I designed and built the entire perception stack from scratch for autonomous vessels navigating Amsterdam's canals. The core challenge was replacing an expensive LiDAR-only pipeline with a cost-effective, camera-first architecture while maintaining the reliability needed for real-world maritime operations.
+
+## Technical Architecture
+
+I designed and deployed a vision-based detection and tracking system running on **NVIDIA Jetson Orin** edge hardware, achieving **sub-30ms inference latency** for real-time obstacle avoidance. The perception stack fuses stereo camera data with LiDAR point clouds for robust 3D scene understanding on water.
+
+Key system components:
+- **Object detection** — Custom-trained YOLO models robust to glare, reflections, and dynamic water surfaces
+- **Multi-object tracking** — Persistent track management across frames for consistent obstacle identification
+- **LiDAR segmentation** — Filtering algorithms that remove dynamic water artifacts (wake patterns, specular reflections) — a domain-specific challenge rarely encountered in terrestrial autonomy
+- **Sensor fusion** — Camera-LiDAR alignment for 3D bounding box estimation from 2D detections
+
+## MLOps and Data Pipeline
+
+The work spanned the full ML lifecycle. I built a complete **MLOps pipeline with DVC** for reproducible model and dataset versioning, curating a production-grade dataset from **100+ hours of on-water recordings**. The training pipeline handled the unique distribution of maritime data — high class imbalance between common obstacles (bridges, posts) and rare events (swimmers, kayaks), with extreme appearance variation from water reflections and weather conditions.
+
+## Outcome
+
+The system was **deployed on physical vessels** operating autonomously in Amsterdam's canal network. This project demonstrated the ability to go from zero to a production perception stack under startup constraints, balancing research-grade accuracy with deployment-ready engineering. The camera-first architecture reduced sensor costs significantly while matching the safety requirements of urban maritime navigation.

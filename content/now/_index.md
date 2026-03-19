@@ -15,13 +15,13 @@ sections:
 
         ---
 
-        **Research** — Submitting our paper on large-scale urban tree census using aerial LiDAR and machine learning to Springer Nature. This work, done at MIT Senseable City Lab, automates city-scale canopy density estimation from airborne point clouds and multispectral imagery.
+        **Research** — Submitting our LAI paper on large-scale urban tree census using aerial LiDAR and machine learning to Springer Nature — deadline this week. Co-authored with MIT Senseable City Lab and TU Delft, covering 12,350 trees across São Paulo's informal settlements.
 
-        **Building** — Running an AI knowledge infrastructure agency. Building RAG pipelines and private knowledge systems for first clients. Turning research engineering skills into production AI products.
+        **Building** — Running an AI knowledge infrastructure agency. Landing page is live, first clients in outreach. Turning research engineering skills into production AI products — RAG pipelines, private knowledge systems, and automation.
 
-        **Learning** — Following the ETH Zurich Robot Learning course by Oier Mees. Deepening knowledge in embodied AI, robot manipulation, and policy learning.
+        **Learning** — Following the ETH Zurich Robot Learning course by Oier Mees. Recording weekly Loom videos to document progress and build in public.
 
-        **Applying** — Interviewing at frontier robotics companies: Anduril, Figure AI, Waymo. Looking for senior roles at the intersection of perception, autonomy, and physical AI.
+        **Applying** — Targeting frontier physical AI companies: Anduril, Figure AI, Waymo. Looking for senior roles where perception, autonomy, and embodied intelligence meet the real world.
 
         **Training** — Upper/lower split strength training and Brazilian Jiu-Jitsu.
 

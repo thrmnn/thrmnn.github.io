@@ -45,6 +45,10 @@ jobs:
     - name: Setup Pages
       id: pages
       uses: actions/configure-pages@v5
+    - name: Download Hugo modules
+      run: hugo mod get
+      env:
+        HUGO_MODULE_CACHE_DIR: /tmp/hugo_cache_runner/
     - name: Build with Hugo
       env:
         HUGO_ENVIRONMENT: production

@@ -13,6 +13,9 @@ last_name: Hermann
 status:
   icon: ''
 
+# Meta description for SEO
+description: "Robotics AI Engineer at MIT Senseable City Lab. Building AI systems that work in the physical world — from urban digital twins to private knowledge infrastructure."
+
 # Is this the primary user of the site?
 superuser: true
 

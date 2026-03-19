@@ -41,29 +41,19 @@ jobs:
         run: hugo version
 
       # Step 4: Clean Hugo module cache
-      # Removes corrupted cache files that can cause permission issues
+      # Removes corrupted/stale cache files that can cause permission issues
       - name: Clean Hugo modules cache
         run: |
-          hugo mod clean
-          rm -rf ~/.cache/hugo_modules
+          hugo mod clean 2>/dev/null || true
+          rm -rf /tmp/hugo_cache_runner/modules/ /tmp/hugo_modules/ ~/.cache/hugo_modules
         continue-on-error: true
 
-      # Step 5: Download Hugo module dependencies
-      # Use pinned versions from go.mod (without -u to prevent auto-upgrades)
-      - name: Download Hugo modules
-        run: hugo mod get
-        env:
-          # Use GOPROXY for better caching and reliability
-          GOPROXY: direct
-
-      # Step 6: Run Hugo build in strict mode
+      # Step 5: Run Hugo build in strict mode
       # --logLevel=warn catches potential issues; --minify optimizes output
       - name: Build Hugo site
         run: hugo --logLevel=warn --minify
         env:
           HUGO_ENVIRONMENT: production
-          # Disable module caching to avoid permission issues
-          HUGO_MODULE_CACHE_DIR: "/tmp/hugo_modules"
 
       # Step 7: Validate the public directory was created
       - name: Verify build output

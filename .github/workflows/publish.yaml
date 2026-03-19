@@ -46,15 +46,12 @@ jobs:
       id: pages
       uses: actions/configure-pages@v5
     - name: Clean stale module cache
-      run: rm -rf /tmp/hugo_cache_runner/modules/
-    - name: Download Hugo modules
-      run: hugo mod download
-      env:
-        HUGO_CACHEDIR: /tmp/hugo_cache_runner/
+      run: |
+        hugo mod clean 2>/dev/null || true
+        rm -rf /tmp/hugo_cache_runner/modules/
     - name: Build with Hugo
       env:
         HUGO_ENVIRONMENT: production
-        HUGO_CACHEDIR: /tmp/hugo_cache_runner/
       run: |
         echo "Hugo Cache Dir: $(hugo config | grep cachedir)"
         hugo --minify --baseURL "${{ steps.pages.outputs.base_url }}/"

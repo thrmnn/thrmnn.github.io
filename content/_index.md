@@ -15,6 +15,13 @@ sections:
         <br/>From Autonomous Robots<br/>to 3D Urban Intelligence
       text: |
         Building AI systems that work in the physical world — from urban digital twins to private knowledge infrastructure.
+      primary_action:
+        text: View Projects
+        url: /#projects
+        icon: magnifying-glass
+      secondary_action:
+        text: Contact Me →
+        url: /#contact
     design:
       background:
         image:

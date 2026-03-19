@@ -1,42 +1,42 @@
 ---
-title: 'Urban Tree Morphology and Canopy Density Estimation from Aerial LiDAR'
+title: 'Aerial LiDAR Tree Census in Urban Informal Settlements'
 
 authors:
   - admin
+  - Carlo Ratti
 
-date: '2024-09-01T00:00:00Z'
+date: '2026-03-01T00:00:00Z'
 doi: ''
 
-publishDate: '2024-09-01T00:00:00Z'
+publishDate: '2026-03-01T00:00:00Z'
 
-publication_types: ['thesis']
+publication_types: ['article-journal']
 
-publication: "Master's Thesis, EPFL — conducted at MIT Senseable City Lab"
-publication_short: 'MSc Thesis, EPFL'
+publication: 'Springer Nature — Under Review'
+publication_short: 'Springer Nature'
 
 abstract: >-
-  This thesis develops an automated method for large-scale urban tree census using
-  aerial LiDAR and multispectral imagery. The core contribution is a pipeline that
-  extracts individual tree morphological features — crown diameter, height, canopy
-  volume — from airborne LiDAR point clouds and fuses them with spectral vegetation
-  indices derived from multispectral aerial imagery. Random Forest models are trained
-  to predict Leaf Area Index (LAI), a key metric for quantifying canopy density and its
-  influence on urban microclimate, air quality, and stormwater management. The pipeline
-  demonstrates that tree morphology extracted from remote sensing data can reliably
-  predict canopy density at city scale, enabling urban planners to assess green
-  infrastructure without costly ground-level surveys.
+  We present a scalable methodology for automated urban tree census using aerial
+  LiDAR point clouds and machine learning. Applied to São Paulo's informal
+  settlements, our pipeline identifies and classifies 12,350 trees, providing
+  unprecedented coverage of green infrastructure in underserved communities. The
+  approach combines deep learning-based point cloud segmentation with Random Forest
+  classifiers for Leaf Area Index prediction, fusing tree morphological features
+  extracted from airborne LiDAR with spectral vegetation indices derived from
+  multispectral aerial imagery. Results inform urban heat island mitigation and
+  biodiversity planning efforts.
 
 summary: >-
-  MSc thesis developing automated urban tree census from aerial LiDAR and
-  multispectral imagery, with Random Forest models predicting Leaf Area Index
-  for city-scale canopy density estimation.
+  Journal article presenting a scalable aerial LiDAR and ML pipeline for
+  automated tree census in São Paulo's informal settlements, identifying 12,350
+  trees for urban heat island and biodiversity planning.
 
 tags:
   - LiDAR
-  - Remote Sensing
-  - Urban Forestry
+  - Urban AI
   - Machine Learning
-  - Geospatial Analysis
+  - Environmental Science
+  - Remote Sensing
 
 featured: true
 
@@ -45,3 +45,15 @@ url_code: ''
 url_slides: ''
 url_video: ''
 ---
+
+## BibTeX
+
+```bibtex
+@article{hermann2026aerial,
+  title     = {Aerial LiDAR Tree Census in Urban Informal Settlements},
+  author    = {Hermann, Théo and Ratti, Carlo},
+  journal   = {Springer Nature},
+  year      = {2026},
+  note      = {Under Review}
+}
+```

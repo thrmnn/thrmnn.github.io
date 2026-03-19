@@ -3,6 +3,7 @@ title: 'LiDAR-Informed 3D Modeling of Favelas for Public Health Research'
 
 authors:
   - admin
+  - Carlo Ratti
 
 date: '2025-11-01T00:00:00Z'
 doi: ''
@@ -25,8 +26,9 @@ abstract: >-
   producing actionable insights for urban public health interventions.
 
 summary: >-
-  Conference poster on LiDAR-based 3D modeling of informal settlements for
-  airborne disease transmission research, presented at AGU Fall Meeting 2025.
+  Conference paper on LiDAR-based 3D modeling of informal settlements for CFD
+  simulation of ventilation and airborne pathogen spread, presented at AGU Fall
+  Meeting 2025.
 
 tags:
   - LiDAR
@@ -43,3 +45,15 @@ url_code: ''
 url_slides: ''
 url_video: ''
 ---
+
+## BibTeX
+
+```bibtex
+@inproceedings{hermann2025lidar,
+  title     = {LiDAR-Informed 3D Modeling of Favelas for Public Health Research},
+  author    = {Hermann, Théo and Ratti, Carlo},
+  booktitle = {American Geophysical Union (AGU) Fall Meeting},
+  year      = {2025},
+  address   = {San Francisco, CA}
+}
+```

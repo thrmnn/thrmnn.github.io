@@ -27,7 +27,11 @@ publishDate: '2017-01-01T00:00:00Z'
 authors:
   - admin
 
-tags: []
+tags:
+  - Robotics
+  - Pose Estimation
+  - Motion Learning
+  - Action Recognition
 
 # Is this a featured talk? (true/false)
 featured: false

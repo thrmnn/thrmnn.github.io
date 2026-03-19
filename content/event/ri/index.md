@@ -27,7 +27,11 @@ publishDate: '2017-01-01T00:00:00Z'
 authors:
   - admin
 
-tags: []
+tags:
+  - Robotics
+  - Motion Learning
+  - Self-supervised Learning
+  - Legged Locomotion
 
 # Is this a featured talk? (true/false)
 featured: false

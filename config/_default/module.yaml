@@ -21,6 +21,11 @@ imports:
   - path: github.com/HugoBlox/hugo-blox-builder/modules/blox-tailwind
     version: v0.3.1
 
+  # Hugo Blox Analytics module - required by blox-tailwind for analytics partials
+  # Pinned version: v0.3.0
+  - path: github.com/HugoBlox/hugo-blox-builder/modules/blox-analytics
+    version: v0.3.0
+
 # Install any Hugo Blox within the `hugo-blox/blox/` folder
 mounts:
   - source: hugo-blox/blox/community

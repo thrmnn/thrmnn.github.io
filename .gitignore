@@ -6,3 +6,4 @@ public/
 
 # Hugo resource cache
 resources/_gen/
+.vercel

@@ -38,7 +38,7 @@ const displayNumber = number ? String(number).padStart(2, '0') : undefined;
 ---
 
 <a href={href} target="_blank" rel="noopener" class="block group">
-  <div class="project-card relative rounded-2xl overflow-hidden min-h-[320px] sm:aspect-[4/3] sm:min-h-0 border border-border cursor-pointer transition-all duration-500 hover:border-border-hover">
+  <div class="project-card relative rounded-2xl overflow-hidden min-h-[340px] border border-border cursor-pointer transition-all duration-500 hover:border-border-hover">
 
     {/* Background layer: image or gradient */}
     <div class="card-bg absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-110" style={bgStyle}></div>
@@ -182,7 +182,7 @@ const displayNumber = number ? String(number).padStart(2, '0') : undefined;
         </div>
       )}
       {detail && (
-        <p class="card-detail text-sm leading-relaxed text-white/80"
+        <p class="card-detail text-sm leading-relaxed text-white/80 line-clamp-3"
            style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
           {detail}
         </p>
@@ -229,24 +229,26 @@ const displayNumber = number ? String(number).padStart(2, '0') : undefined;
   /* Expand detail on hover */
   .card-detail {
     max-height: 0;
+    opacity: 0;
     overflow: hidden;
-    transition: max-height 0.5s ease, margin 0.4s ease;
+    transition: max-height 0.4s ease, margin 0.3s ease, opacity 0.3s ease;
     margin: 0;
   }
 
   .group:hover .card-detail,
   .project-card:focus-within .card-detail {
-    max-height: 200px;
-    margin-top: 0.75rem;
+    max-height: 5rem;
+    opacity: 1;
+    margin-top: 0.625rem;
   }
 
   @media (max-width: 768px) {
     .card-detail {
-      max-height: 200px;
-      margin-top: 0.75rem;
+      max-height: 5rem;
+      opacity: 1;
+      margin-top: 0.625rem;
     }
 
-    /* Reduce the decorative elements on mobile so content is clearer */
     .group:hover .project-card {
       transform: translateY(-2px);
     }

@@ -5,7 +5,7 @@ export const newsItems = [
   },
   {
     date: 'Jan 2025',
-    text: 'Joined <strong>MIT Senseable City Lab</strong> in Rio de Janeiro as Research Fellow, leading a 10-person team.',
+    text: 'Joined <strong>MIT Senseable City Lab</strong> in Rio de Janeiro as founding member of the new branch.',
   },
   {
     date: 'Sep 2024',

@@ -4,7 +4,7 @@ date: '2025-01-01T00:00:00Z'
 externalLink: 'https://senseablerio.mit.edu/'
 summary: "High-fidelity 3D reconstruction of Rio's favelas from terrestrial LiDAR and aerial imagery, driving CFD simulations of airborne pathogen dispersion to identify ventilation risk zones."
 label: "MIT Senseable City Lab · 2025"
-metric: "10-person team · neighborhood-scale CFD"
+metric: "founding member · neighborhood-scale CFD"
 gradient: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)"
 tags:
   - 3D Reconstruction
@@ -21,7 +21,7 @@ High-fidelity 3D reconstruction of Rio's favelas from terrestrial LiDAR and aeri
 
 ## Overview
 
-As Research Fellow at **MIT Senseable City Lab** in Rio de Janeiro, I lead a **10-person interdisciplinary team** (MIT + UFMG + TU Delft) building a high-fidelity digital twin of Rio's favelas to model airborne disease transmission. The project — **Brisa+** — fuses data from terrestrial LiDAR scans, aerial multispectral imagery, and digital terrain models into physics-ready 3D meshes of densely built informal settlements, environments where conventional mapping methods fail. These reconstructions feed directly into Computational Fluid Dynamics simulations that model ventilation patterns, pollutant dispersion, and pathogen spread at the neighborhood scale.
+As a founding member of **MIT Senseable City Lab**'s Rio de Janeiro branch, I joined from day one and helped coordinate the lab's creation across MIT, UFMG, and TU Delft — growing the group to its current 10 researchers. The project — **Brisa+** — fuses data from terrestrial LiDAR scans, aerial multispectral imagery, and digital terrain models into physics-ready 3D meshes of densely built informal settlements, environments where conventional mapping methods fail. These reconstructions feed directly into Computational Fluid Dynamics simulations that model ventilation patterns, pollutant dispersion, and pathogen spread at the neighborhood scale.
 
 ## Technical Pipeline
 
@@ -36,7 +36,7 @@ The reconstruction and simulation pipeline spans multiple data sources and proce
 
 ## Role
 
-I serve as **team lead**, responsible for the 3D reconstruction pipeline, CFD integration, and coordination across three institutions. Beyond the computational work, the project includes deploying a network of custom-built air quality sensors across target communities for ground-truth validation of the simulations.
+I own the **3D reconstruction pipeline and CFD integration**, and coordinate across three institutions. Beyond the computational work, the project includes deploying a network of custom-built air quality sensors across target communities for ground-truth validation of the simulations.
 
 ## Outcome
 

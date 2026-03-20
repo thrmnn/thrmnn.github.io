@@ -1,0 +1,135 @@
+---
+import '../styles/global.css';
+import { siteConfig } from '../data/site';
+import { author } from '../data/author';
+import { ClientRouter } from 'astro:transitions';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  ogType?: 'website' | 'profile' | 'article';
+}
+
+const { title, description, image, ogType = 'website' } = Astro.props;
+const pageTitle = title ? `${title} — ${siteConfig.title}` : siteConfig.title;
+const pageDescription = description || siteConfig.description;
+const canonicalUrl = new URL(Astro.url.pathname, siteConfig.url).href;
+const ogImage = new URL(image || siteConfig.ogImage, siteConfig.url).href;
+
+const socialUrls = author.social
+  .filter((s) => s.icon !== 'email')
+  .map((s) => s.href);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": author.name,
+  "jobTitle": author.role,
+  "url": siteConfig.url,
+  "image": new URL('/avatar.png', siteConfig.url).href,
+  "email": author.email,
+  "worksFor": {
+    "@type": "Organization",
+    "name": author.affiliation,
+  },
+  "sameAs": socialUrls,
+  "alumniOf": [...new Set(author.education.map((edu) => edu.institution))].map((name) => ({
+    "@type": "CollegeOrUniversity",
+    "name": name,
+  })),
+  "knowsAbout": [
+    "Computer Vision",
+    "Perception Systems",
+    "Sensor Fusion",
+    "LiDAR Processing",
+    "3D Reconstruction",
+    "Autonomous Navigation",
+    "Robot Operating System (ROS)",
+    "Deep Learning",
+    "Edge Deployment",
+    "MLOps",
+    "PyTorch",
+    "C++",
+  ],
+  "hasOccupation": {
+    "@type": "Occupation",
+    "name": author.role,
+    "occupationLocation": {
+      "@type": "Place",
+      "name": author.experience[0]?.location,
+    },
+    "description": author.experience[0]?.summary,
+  },
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Anti-FOUC: set data-theme synchronously before first paint -->
+    <script is:inline>
+      (function () {
+        var stored = localStorage.getItem('theme');
+        if (stored === 'light' || stored === 'dark') {
+          document.documentElement.setAttribute('data-theme', stored);
+        }
+        // When no stored preference, let :root / @media (prefers-color-scheme)
+        // in CSS handle it — no data-theme attribute needed.
+      })();
+    </script>
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="author" content={author.name} />
+
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:site_name" content={siteConfig.title} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={pageTitle} />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!-- Analytics -->
+    {import.meta.env.PROD && siteConfig.analytics?.plausible?.enabled && (
+      <script
+        defer
+        data-domain={siteConfig.analytics.plausible.domain}
+        src="https://plausible.io/js/script.js"
+      />
+    )}
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <ClientRouter />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

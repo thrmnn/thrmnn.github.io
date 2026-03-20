@@ -1,0 +1,296 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design System — Théo Hermann v2
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Color tokens — dynamic (overridable by theme switching)
+   `@theme inline` tells Tailwind to generate utilities that reference CSS
+   custom properties instead of inlining static values, so runtime overrides
+   via [data-theme] / prefers-color-scheme actually take effect.
+   -------------------------------------------------------------------------- */
+@theme inline {
+  /* Background layers */
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-accent: var(--bg-accent);
+
+  /* Text hierarchy */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  /* Accent */
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+
+  /* Links */
+  --color-link: var(--link);
+  --color-link-hover: var(--link-hover);
+
+  /* Borders */
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+}
+
+/* --------------------------------------------------------------------------
+   Static design tokens — fonts, spacing, layout (not theme-dependent)
+   -------------------------------------------------------------------------- */
+@theme {
+  /* --- Typography --- */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* --- Spacing (mobile-first, overridden at md in responsive section below) --- */
+  --space-section: 3.5rem;
+  --space-block: 2rem;
+  --space-element: 1.5rem;
+  --space-tight: 0.75rem;
+
+  /* --- Layout --- */
+  --max-w-prose: 65ch;
+  --max-w-content: 1100px;
+  --max-w-wide: 1280px;
+}
+
+/* ==========================================================================
+   Color Scheme Definitions
+   Dark = default (no attribute required). Light = opt-in via data-theme.
+   ========================================================================== */
+
+/* --- Dark Mode (default) --- */
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --bg-elevated: #1a1a1a;
+  --bg-accent: #141414;
+
+  --text-primary: #f5f5f5;
+  --text-secondary: #a1a1a1;
+  --text-muted: #666666;
+
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --accent-soft: oklch(0.55 0.15 250 / 0.1);
+
+  --link: #93c5fd;
+  --link-hover: #bfdbfe;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.16);
+
+  color-scheme: dark;
+}
+
+/* --- Light Mode (explicit toggle) --- */
+[data-theme="light"] {
+  --bg-primary: #fafafa;
+  --bg-secondary: #f5f5f5;
+  --bg-elevated: #ffffff;
+  --bg-accent: #f0f0f0;
+
+  --text-primary: #171717;
+  --text-secondary: #525252;
+  --text-muted: #a3a3a3;
+
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-soft: oklch(0.55 0.15 250 / 0.08);
+
+  --link: #2563eb;
+  --link-hover: #1d4ed8;
+
+  --border: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.16);
+
+  color-scheme: light;
+}
+
+/* --- Light Mode (OS preference fallback — applies only when no data-theme is set) --- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --bg-primary: #fafafa;
+    --bg-secondary: #f5f5f5;
+    --bg-elevated: #ffffff;
+    --bg-accent: #f0f0f0;
+
+    --text-primary: #171717;
+    --text-secondary: #525252;
+    --text-muted: #a3a3a3;
+
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-soft: oklch(0.55 0.15 250 / 0.08);
+
+    --link: #2563eb;
+    --link-hover: #1d4ed8;
+
+    --border: rgba(0, 0, 0, 0.08);
+    --border-hover: rgba(0, 0, 0, 0.16);
+
+    color-scheme: light;
+  }
+}
+
+/* --- Base Styles --- */
+
+html {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* --- Typography --- */
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h1 {
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  letter-spacing: -0.025em;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--color-link-hover);
+}
+
+/* --- Prose (markdown body) --- */
+
+.prose {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: var(--max-w-prose);
+}
+
+.prose h1, .prose h2, .prose h3 {
+  color: var(--color-text-primary);
+  margin-top: 2em;
+  margin-bottom: 0.75em;
+}
+
+.prose p {
+  margin-bottom: 1.25em;
+}
+
+.prose strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-bg-elevated);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+}
+
+.prose pre {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+}
+
+.prose img {
+  border-radius: 8px;
+  margin: 1.5em 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 0.9em;
+}
+
+.prose th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--color-border-hover);
+}
+
+.prose td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.prose blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: 1rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin: 1.5em 0;
+}
+
+.prose ul, .prose ol {
+  padding-left: 1.5em;
+  margin-bottom: 1.25em;
+}
+
+.prose li {
+  margin-bottom: 0.5em;
+}
+
+/* --- Responsive spacing overrides --- */
+
+@media (min-width: 768px) {
+  :root {
+    --space-section: 6rem;
+    --space-block: 3rem;
+  }
+}
+
+/* --- Selection --- */
+
+::selection {
+  background: rgba(59, 130, 246, 0.3);
+  color: var(--color-text-primary);
+}
+
+/* --- Focus visible --- */
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

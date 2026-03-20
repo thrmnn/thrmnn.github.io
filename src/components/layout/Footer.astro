@@ -1,0 +1,22 @@
+---
+import { footerLinks } from '../../data/navigation';
+---
+
+<footer class="border-t border-border mt-24">
+  <div class="mx-auto max-w-[var(--max-w-content)] px-6 py-12">
+    <nav class="flex justify-center gap-6 flex-wrap mb-6">
+      {footerLinks.map((link) => (
+        <a
+          href={link.href}
+          class="text-sm text-text-muted hover:text-text-secondary transition-colors"
+          {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+    <p class="text-center text-xs text-text-muted">
+      &copy; {new Date().getFullYear()} Théo Hermann
+    </p>
+  </div>
+</footer>

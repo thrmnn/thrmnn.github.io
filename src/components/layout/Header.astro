@@ -1,0 +1,85 @@
+---
+import { navLinks } from '../../data/navigation';
+import ThemeToggle from '../ui/ThemeToggle.astro';
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-bg-primary/80 backdrop-blur-md border-b border-border">
+  <!-- Checkbox peer lives here, as a direct child of header, before nav and mobile menu -->
+  <input type="checkbox" id="nav-toggle" class="hidden peer" />
+
+  <nav class="mx-auto max-w-[var(--max-w-content)] px-6 h-16 flex items-center justify-between">
+    <a href="/" class="text-text-primary font-bold text-lg hover:text-text-primary" style="font-family: var(--font-display); letter-spacing: -0.02em;">
+      Théo Hermann
+    </a>
+
+    <!-- Desktop nav -->
+    <ul class="hidden md:flex items-center gap-8">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class:list={[
+              'text-sm font-medium transition-colors',
+              currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
+                ? 'text-text-primary'
+                : 'text-text-muted hover:text-text-secondary',
+            ]}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Right side controls: theme toggle + mobile hamburger -->
+    <div class="flex items-center gap-1">
+      <ThemeToggle />
+
+      <!-- Mobile hamburger label (for= works regardless of nesting) -->
+      <label for="nav-toggle" class="md:hidden cursor-pointer text-text-secondary p-2">
+      <!-- Hamburger icon (visible when menu closed) -->
+      <svg class="w-5 h-5 block peer-checked-hide" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+      <!-- X close icon (visible when menu open) -->
+      <svg class="w-5 h-5 hidden peer-checked-show" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </label>
+    </div>
+  </nav>
+
+  <!-- Mobile menu (subsequent sibling of the checkbox peer, so peer-checked: works) -->
+  <div class="hidden peer-checked:block md:hidden border-t border-border bg-bg-primary/95 backdrop-blur-md">
+    <ul class="px-6 py-4 space-y-3">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class:list={[
+              'block text-sm font-medium py-1',
+              currentPath === link.href ? 'text-text-primary' : 'text-text-muted',
+            ]}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</header>
+
+<style>
+  /* Toggle hamburger / X icon based on checkbox state.
+     We cannot use Tailwind peer-checked: inside the label because the SVGs
+     are not siblings of the checkbox. Instead we use a CSS sibling selector
+     on the header-level checkbox to reach into the label via descendant. */
+  #nav-toggle:checked ~ nav .peer-checked-hide {
+    display: none;
+  }
+  #nav-toggle:checked ~ nav .peer-checked-show {
+    display: block;
+  }
+</style>

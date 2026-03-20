@@ -6,8 +6,8 @@ export const author = {
 
   bio: [
     '<strong>MSc Robotics, EPFL</strong> · 4+ years building perception and autonomy systems · Python, C++, PyTorch, ROS · Shipped production on edge hardware.',
-    'Currently at <strong>MIT Senseable City Lab</strong> as a founding member of the Rio de Janeiro branch — accompanied the lab\'s creation from day one, coordinating with stakeholders across MIT, UFMG, and TU Delft to build what is now a 10-person research group. Building city-scale 3D digital twins from LiDAR for public health. Previously first engineering hire at <strong>Roboat</strong> (MIT spinoff), where I built the full perception stack for autonomous vessels — camera-first detection and tracking at sub-30ms on Jetson Orin, deployed in Amsterdam.',
-    'I work across the full stack from sensor fusion to deployment. Looking for senior perception or robotics roles at companies pushing physical AI forward.',
+    'Founding member of <strong>MIT Senseable City Lab</strong> Rio — building city-scale 3D digital twins from LiDAR for public health (10-person group, 3 institutions). Previously first engineering hire at <strong>Roboat</strong> (MIT spinoff) — built the full perception stack for autonomous vessels, sub-30ms on Jetson Orin, deployed in Amsterdam.',
+    'Full stack from sensor fusion to edge deployment. Looking for senior perception or robotics roles at companies pushing physical AI forward.',
   ],
 
   interests: [
@@ -44,7 +44,7 @@ export const author = {
       period: 'Jan 2025 – Present',
       location: 'Rio de Janeiro, Brazil',
       summary:
-        'Founding member of the Rio de Janeiro branch — joined from day one, coordinated lab setup with stakeholders across MIT, UFMG, and TU Delft. Lab has grown to 10 researchers. Building high-fidelity 3D digital twins of Rio\'s favelas from terrestrial LiDAR, aerial imagery, and terrain data. Reconstructions feed OpenFOAM CFD simulations of airborne disease transmission. Tech: Python, Blender, GeoPandas, Google Earth Engine.',
+        'Founding member of the Rio branch (now 10 researchers, 3 institutions). Building high-fidelity 3D digital twins of favelas from terrestrial LiDAR and aerial imagery — reconstructions feed OpenFOAM CFD simulations of airborne disease transmission. Tech: Python, Blender, GeoPandas, Google Earth Engine.',
     },
     {
       role: 'Perception Engineer — First Engineering Hire',

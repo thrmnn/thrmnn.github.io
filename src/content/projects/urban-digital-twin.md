@@ -21,7 +21,7 @@ High-fidelity 3D reconstruction of Rio's favelas from terrestrial LiDAR and aeri
 
 ## Overview
 
-As a founding member of **MIT Senseable City Lab**'s Rio de Janeiro branch, I joined from day one and helped coordinate the lab's creation across MIT, UFMG, and TU Delft — growing the group to its current 10 researchers. The project — **Brisa+** — fuses data from terrestrial LiDAR scans, aerial multispectral imagery, and digital terrain models into physics-ready 3D meshes of densely built informal settlements, environments where conventional mapping methods fail. These reconstructions feed directly into Computational Fluid Dynamics simulations that model ventilation patterns, pollutant dispersion, and pathogen spread at the neighborhood scale.
+Founding member of **MIT Senseable City Lab** Rio (now 10 researchers across MIT, UFMG, and TU Delft). The project — **Brisa+** — fuses terrestrial LiDAR scans, aerial multispectral imagery, and digital terrain models into physics-ready 3D meshes of densely built informal settlements where conventional mapping fails. These reconstructions feed CFD simulations that model ventilation, pollutant dispersion, and pathogen spread at neighborhood scale.
 
 ## Technical Pipeline
 

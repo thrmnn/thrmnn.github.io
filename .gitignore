@@ -1,10 +1,7 @@
 __pycache__/
 *.pyc
 
-# Hugo build output
-public/
-
-# Hugo resource cache
+# Hugo (legacy)
 resources/_gen/
 
 # Astro

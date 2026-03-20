@@ -1,0 +1,57 @@
+---
+interface Props {
+  href: string;
+  variant?: 'primary' | 'secondary';
+  external?: boolean;
+}
+
+const { href, variant = 'primary', external = false } = Astro.props;
+const linkProps = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+<a
+  href={href}
+  class:list={[
+    'btn-component inline-flex items-center gap-2 rounded-lg font-medium transition-all duration-200',
+    variant === 'primary' && 'btn-primary px-6 py-3 text-sm bg-accent text-white hover:bg-accent-hover',
+    variant === 'secondary' && 'btn-secondary px-6 py-3 text-sm border border-border-hover text-text-secondary hover:border-accent hover:text-text-primary',
+  ]}
+  {...linkProps}
+>
+  <slot />
+  <span class="btn-arrow" aria-hidden="true">&rarr;</span>
+</a>
+
+<style>
+  .btn-arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+
+  .btn-component:hover .btn-arrow {
+    transform: translateX(3px);
+  }
+
+  .btn-component {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
+  .btn-primary {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    transition: background-color 0.2s ease, box-shadow 0.25s ease;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.35), 0 0 6px rgba(59, 130, 246, 0.2);
+  }
+
+  .btn-secondary {
+    background: var(--color-bg-elevated);
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    background: var(--color-bg-accent);
+  }
+</style>

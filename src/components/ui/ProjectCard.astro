@@ -1,0 +1,254 @@
+---
+interface Props {
+  title: string;
+  label?: string;
+  metric?: string;
+  tags?: string[];
+  detail?: string;
+  href: string;
+  gradient?: string;
+  image?: string;
+  number?: number;
+}
+
+const { title, label, metric, tags = [], detail, href, gradient, image, number } = Astro.props;
+
+const bgStyle = image
+  ? `background-image: url('${image}'); background-size: cover; background-position: center;`
+  : `background: ${gradient || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)'};`;
+
+/* Pick a decorative SVG icon based on keywords in the title/tags */
+function pickIcon(title: string, tags: string[]): string {
+  const text = `${title} ${tags.join(' ')}`.toLowerCase();
+  if (text.includes('lidar') || text.includes('3d') || text.includes('digital twin') || text.includes('cfd'))
+    return 'city'; // buildings / urban
+  if (text.includes('tree') || text.includes('canopy') || text.includes('remote sensing') || text.includes('aerial'))
+    return 'tree'; // nature / tree
+  if (text.includes('robot') || text.includes('autonomous') || text.includes('perception') || text.includes('boat') || text.includes('vessel'))
+    return 'robot'; // robotics
+  if (text.includes('ml') || text.includes('learning') || text.includes('neural') || text.includes('pytorch'))
+    return 'brain'; // ML / AI
+  if (text.includes('slam') || text.includes('navigation') || text.includes('mapping'))
+    return 'compass'; // navigation
+  return 'circuit'; // generic tech fallback
+}
+
+const icon = pickIcon(title, tags);
+const displayNumber = number ? String(number).padStart(2, '0') : undefined;
+---
+
+<a href={href} target="_blank" rel="noopener" class="block group">
+  <div class="project-card relative rounded-2xl overflow-hidden min-h-[320px] sm:aspect-[4/3] sm:min-h-0 border border-border cursor-pointer transition-all duration-500 hover:border-border-hover">
+
+    {/* Background layer: image or gradient */}
+    <div class="card-bg absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-110" style={bgStyle}></div>
+
+    {/* Noise texture overlay (visible only on gradient placeholders) */}
+    {!image && (
+      <div class="absolute inset-0 noise-overlay opacity-[0.035]"></div>
+    )}
+
+    {/* Dot pattern overlay */}
+    {!image && (
+      <div class="absolute inset-0 dot-pattern opacity-[0.06]"></div>
+    )}
+
+    {/* Large decorative icon */}
+    {!image && (
+      <div class="absolute -right-6 -top-6 w-48 h-48 opacity-[0.06] group-hover:opacity-[0.1] transition-opacity duration-700">
+        {icon === 'city' && (
+          <svg viewBox="0 0 100 100" fill="currentColor" class="w-full h-full text-white">
+            <rect x="10" y="35" width="18" height="55" rx="1" />
+            <rect x="14" y="40" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="14" y="48" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="14" y="56" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="20" y="40" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="20" y="48" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="35" y="15" width="22" height="75" rx="1" />
+            <rect x="40" y="20" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="40" y="28" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="40" y="36" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="40" y="44" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="48" y="20" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="48" y="28" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="48" y="36" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="48" y="44" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="65" y="45" width="20" height="45" rx="1" />
+            <rect x="70" y="50" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="70" y="58" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="76" y="50" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+            <rect x="76" y="58" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.4" />
+          </svg>
+        )}
+        {icon === 'tree' && (
+          <svg viewBox="0 0 100 100" fill="currentColor" class="w-full h-full text-white">
+            <ellipse cx="50" cy="30" rx="28" ry="24" opacity="0.8" />
+            <ellipse cx="35" cy="42" rx="18" ry="16" opacity="0.6" />
+            <ellipse cx="65" cy="42" rx="18" ry="16" opacity="0.6" />
+            <ellipse cx="50" cy="48" rx="22" ry="14" opacity="0.5" />
+            <rect x="46" y="55" width="8" height="35" rx="2" />
+          </svg>
+        )}
+        {icon === 'robot' && (
+          <svg viewBox="0 0 100 100" fill="currentColor" class="w-full h-full text-white">
+            <rect x="25" y="25" width="50" height="40" rx="6" />
+            <circle cx="38" cy="42" r="6" opacity="0.4" />
+            <circle cx="62" cy="42" r="6" opacity="0.4" />
+            <rect x="40" y="52" width="20" height="4" rx="2" opacity="0.4" />
+            <rect x="20" y="70" width="24" height="16" rx="4" />
+            <rect x="56" y="70" width="24" height="16" rx="4" />
+            <rect x="44" y="15" width="12" height="12" rx="6" />
+            <rect x="48" y="10" width="4" height="8" rx="2" />
+          </svg>
+        )}
+        {icon === 'brain' && (
+          <svg viewBox="0 0 100 100" fill="currentColor" class="w-full h-full text-white">
+            <path d="M50 15 C30 15, 15 30, 15 50 C15 70, 30 85, 50 85 C70 85, 85 70, 85 50 C85 30, 70 15, 50 15Z" opacity="0.3" />
+            <circle cx="35" cy="35" r="8" opacity="0.5" />
+            <circle cx="60" cy="30" r="10" opacity="0.5" />
+            <circle cx="40" cy="55" r="9" opacity="0.5" />
+            <circle cx="65" cy="55" r="7" opacity="0.5" />
+            <circle cx="50" cy="42" r="6" opacity="0.5" />
+            <line x1="35" y1="35" x2="60" y2="30" stroke="currentColor" stroke-width="1.5" opacity="0.3" />
+            <line x1="35" y1="35" x2="40" y2="55" stroke="currentColor" stroke-width="1.5" opacity="0.3" />
+            <line x1="60" y1="30" x2="65" y2="55" stroke="currentColor" stroke-width="1.5" opacity="0.3" />
+            <line x1="40" y1="55" x2="65" y2="55" stroke="currentColor" stroke-width="1.5" opacity="0.3" />
+            <line x1="50" y1="42" x2="35" y2="35" stroke="currentColor" stroke-width="1.5" opacity="0.3" />
+            <line x1="50" y1="42" x2="60" y2="30" stroke="currentColor" stroke-width="1.5" opacity="0.3" />
+            <line x1="50" y1="42" x2="65" y2="55" stroke="currentColor" stroke-width="1.5" opacity="0.3" />
+          </svg>
+        )}
+        {icon === 'compass' && (
+          <svg viewBox="0 0 100 100" fill="currentColor" class="w-full h-full text-white">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="3" opacity="0.4" />
+            <circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" stroke-width="1" opacity="0.2" />
+            <polygon points="50,20 55,48 50,55 45,48" opacity="0.6" />
+            <polygon points="50,80 45,52 50,45 55,52" opacity="0.3" />
+            <circle cx="50" cy="50" r="3" />
+          </svg>
+        )}
+        {icon === 'circuit' && (
+          <svg viewBox="0 0 100 100" fill="currentColor" class="w-full h-full text-white">
+            <rect x="35" y="35" width="30" height="30" rx="4" opacity="0.4" />
+            <circle cx="50" cy="50" r="8" opacity="0.3" />
+            <line x1="50" y1="10" x2="50" y2="35" stroke="currentColor" stroke-width="2" opacity="0.4" />
+            <line x1="50" y1="65" x2="50" y2="90" stroke="currentColor" stroke-width="2" opacity="0.4" />
+            <line x1="10" y1="50" x2="35" y2="50" stroke="currentColor" stroke-width="2" opacity="0.4" />
+            <line x1="65" y1="50" x2="90" y2="50" stroke="currentColor" stroke-width="2" opacity="0.4" />
+            <circle cx="50" cy="10" r="3" opacity="0.4" />
+            <circle cx="50" cy="90" r="3" opacity="0.4" />
+            <circle cx="10" cy="50" r="3" opacity="0.4" />
+            <circle cx="90" cy="50" r="3" opacity="0.4" />
+          </svg>
+        )}
+      </div>
+    )}
+
+    {/* Decorative number */}
+    {displayNumber && !image && (
+      <div class="absolute top-4 left-5 font-mono text-[3.5rem] font-black leading-none text-white/[0.08] group-hover:text-white/[0.14] transition-all duration-700 select-none tracking-tighter">
+        {displayNumber}
+      </div>
+    )}
+
+    {/* Darkening gradient overlay for text readability */}
+    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/5"></div>
+
+    {/* Content */}
+    <div class="absolute inset-0 flex flex-col justify-end p-6 text-white">
+      {label && (
+        <p class="text-[0.7rem] uppercase tracking-wider text-white/60 mb-1 font-medium"
+           style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
+          {label}
+        </p>
+      )}
+      <p class="text-lg font-bold leading-snug text-white"
+         style="font-family: var(--font-display); text-shadow: 0 1px 4px rgba(0,0,0,0.6);">
+        {title}
+      </p>
+      {metric && (
+        <span class="card-metric inline-flex items-center text-[0.7rem] font-semibold text-white/90 mt-2.5 px-2.5 py-1 border border-white/20 rounded-md w-fit backdrop-blur-sm bg-white/[0.05]"
+              style="text-shadow: 0 1px 2px rgba(0,0,0,0.4);">
+          {metric}
+        </span>
+      )}
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 mt-2.5">
+          {tags.slice(0, 5).map((tag) => (
+            <span class="text-[0.65rem] text-white/50 bg-white/[0.04] px-1.5 py-0.5 rounded">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+      {detail && (
+        <p class="card-detail text-sm leading-relaxed text-white/80"
+           style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
+          {detail}
+        </p>
+      )}
+    </div>
+  </div>
+</a>
+
+<style>
+  /* Card hover glow + lift */
+  .project-card {
+    box-shadow: 0 0 0 0 transparent, 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition:
+      box-shadow 0.5s ease,
+      border-color 0.5s ease,
+      transform 0.5s ease;
+  }
+
+  .group:hover .project-card {
+    box-shadow:
+      0 0 20px rgba(59, 130, 246, 0.15),
+      0 0 40px rgba(59, 130, 246, 0.05),
+      0 8px 30px rgba(0, 0, 0, 0.4);
+    transform: translateY(-4px);
+  }
+
+  /* Brighten gradient on hover */
+  .group:hover .card-bg {
+    filter: brightness(1.2) saturate(1.15);
+  }
+
+  /* Noise texture using SVG data URI */
+  .noise-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+  }
+
+  /* Dot grid pattern */
+  .dot-pattern {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.35) 0.75px, transparent 0.75px);
+    background-size: 16px 16px;
+  }
+
+  /* Expand detail on hover */
+  .card-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, margin 0.4s ease;
+    margin: 0;
+  }
+
+  .group:hover .card-detail,
+  .project-card:focus-within .card-detail {
+    max-height: 200px;
+    margin-top: 0.75rem;
+  }
+
+  @media (max-width: 768px) {
+    .card-detail {
+      max-height: 200px;
+      margin-top: 0.75rem;
+    }
+
+    /* Reduce the decorative elements on mobile so content is clearer */
+    .group:hover .project-card {
+      transform: translateY(-2px);
+    }
+  }
+</style>

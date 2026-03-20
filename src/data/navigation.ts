@@ -10,6 +10,6 @@ export const footerLinks = [
   { label: 'Now', href: '/now' },
   { label: 'GitHub', href: 'https://github.com/theoh-io', external: true },
   { label: 'Scholar', href: 'https://scholar.google.com/citations?user=SYHaPDAAAAAJ&hl=en', external: true },
-  { label: 'Contact', href: 'mailto:thermann@mit.edu' },
+  { label: 'Contact', href: '#', id: 'footer-email' },
   { label: 'RSS', href: '/rss.xml' },
 ];

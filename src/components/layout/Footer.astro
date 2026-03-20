@@ -8,6 +8,7 @@ import { footerLinks } from '../../data/navigation';
       {footerLinks.map((link) => (
         <a
           href={link.href}
+          id={link.id}
           class="text-sm text-text-muted hover:text-text-secondary transition-colors"
           {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         >
@@ -20,3 +21,15 @@ import { footerLinks } from '../../data/navigation';
     </p>
   </div>
 </footer>
+
+<script is:inline>
+  (function() {
+    var m = 'bWFpbHRvOnRoZXJtYW5uQG1pdC5lZHU=';
+    function p() {
+      var el = document.getElementById('footer-email');
+      if (el) el.setAttribute('href', atob(m));
+    }
+    document.addEventListener('DOMContentLoaded', p);
+    document.addEventListener('astro:page-load', p);
+  })();
+</script>

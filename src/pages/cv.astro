@@ -1,0 +1,92 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { author } from '../data/author';
+import { skills } from '../data/skills';
+---
+
+<PageLayout title="CV" description="Technical skills, work experience, education, and languages.">
+  <section class="py-[var(--space-section)]">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <div class="flex items-baseline justify-between mb-10">
+        <h1 class="text-3xl font-bold text-text-primary">CV</h1>
+        <a href="/resume.pdf" class="text-sm">Download PDF →</a>
+      </div>
+
+      <!-- Experience -->
+      <h2 class="text-xl font-semibold text-text-primary mb-6">Experience</h2>
+      <div class="space-y-8 mb-16 max-w-2xl">
+        {author.experience.map((job) => (
+          <div class="border-l-2 border-border pl-4 sm:pl-6">
+            <div class="flex items-baseline justify-between flex-wrap gap-2">
+              <h3 class="font-semibold text-text-primary">{job.role}</h3>
+              <span class="text-xs text-text-muted">{job.period}</span>
+            </div>
+            <p class="text-sm mt-0.5">
+              <a href={job.url} target="_blank" rel="noopener">{job.company}</a>
+              <span class="text-text-muted"> · {job.location}</span>
+            </p>
+            <p class="text-sm text-text-secondary mt-2 leading-relaxed">{job.summary}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Education -->
+      <h2 class="text-xl font-semibold text-text-primary mb-6">Education</h2>
+      <div class="space-y-4 mb-16 max-w-2xl">
+        {author.education.map((edu) => (
+          <div class="flex items-baseline justify-between gap-4 py-3 border-b border-border">
+            <div>
+              <p class="font-medium text-text-primary">{edu.degree}</p>
+              <p class="text-sm text-text-muted">{edu.institution}</p>
+            </div>
+            <span class="text-xs text-text-muted shrink-0">{edu.years}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Technical Skills -->
+      <h2 class="text-xl font-semibold text-text-primary mb-6">Technical Skills</h2>
+      <div class="max-w-2xl mb-16">
+        {/* Stacked on mobile, table on sm+ */}
+        <div class="sm:hidden space-y-4">
+          {skills.map((row) => (
+            <div class="border-b border-border pb-3">
+              <p class="font-medium text-text-primary text-sm">{row.domain}</p>
+              <p class="text-sm text-text-secondary mt-1">{row.technologies}</p>
+            </div>
+          ))}
+        </div>
+        <table class="hidden sm:table w-full text-sm">
+          <tbody>
+            {skills.map((row) => (
+              <tr class="border-b border-border">
+                <td class="py-3 pr-6 font-medium text-text-primary whitespace-nowrap align-top">{row.domain}</td>
+                <td class="py-3 text-text-secondary">{row.technologies}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Languages -->
+      <h2 class="text-xl font-semibold text-text-primary mb-6">Languages</h2>
+      <div class="flex flex-wrap gap-6 mb-16">
+        {author.languages.map((lang) => (
+          <div>
+            <span class="font-medium text-text-primary">{lang.name}</span>
+            <span class="text-text-muted text-sm ml-1">— {lang.level}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Open Source -->
+      <h2 class="text-xl font-semibold text-text-primary mb-4">Open Source</h2>
+      <p class="text-text-secondary text-sm">
+        Contributions and personal projects on GitHub:
+        <a href="https://github.com/theoh-io" target="_blank" rel="noopener">
+          github.com/theoh-io
+        </a>
+      </p>
+    </div>
+  </section>
+</PageLayout>

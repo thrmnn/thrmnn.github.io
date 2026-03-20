@@ -1,0 +1,65 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<PageLayout title={project.data.title} description={project.data.summary} image={project.data.image} ogType="article">
+  <section class="py-[var(--space-section)]">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <!-- Header -->
+      <div class="mb-10">
+        <a href="/projects" class="text-sm text-text-muted hover:text-text-secondary mb-4 inline-block">
+          ← Back to projects
+        </a>
+        <h1 class="text-3xl font-bold text-text-primary mt-2">{project.data.title}</h1>
+        {project.data.label && (
+          <p class="text-sm text-accent mt-2">{project.data.label}</p>
+        )}
+        {project.data.metric && (
+          <p class="text-xs text-text-muted mt-2 px-3 py-1 border border-border rounded-md w-fit">
+            {project.data.metric}
+          </p>
+        )}
+        {project.data.tags.length > 0 && (
+          <div class="flex flex-wrap gap-2 mt-4">
+            {project.data.tags.map((tag: string) => (
+              <span class="text-xs px-2 py-0.5 rounded-full bg-bg-elevated text-text-muted border border-border">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- Body -->
+      <article class="prose max-w-2xl">
+        <Content />
+      </article>
+
+      <!-- External link -->
+      {project.data.externalLink && (
+        <div class="mt-10">
+          <a
+            href={project.data.externalLink}
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-2 text-sm"
+          >
+            Visit project →
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+</PageLayout>

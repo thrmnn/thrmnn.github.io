@@ -1,0 +1,82 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+---
+
+<PageLayout title="Now" description="What I'm currently focused on.">
+  <section class="py-[var(--space-section)]">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <h1 class="text-3xl font-bold text-text-primary mb-2">What I'm Doing Now</h1>
+      <p class="text-sm text-text-muted mb-10">Updated March 2026</p>
+
+      <div class="prose max-w-2xl">
+        <p>
+          This is a <a href="https://nownownow.com/about">/now page</a>.
+          It tells you what I'm focused on at this point in my life.
+        </p>
+
+        <hr class="border-border my-8" />
+
+        <p><strong>Research</strong> — Submitting our LAI paper on large-scale urban tree census using aerial LiDAR and machine learning to Springer Nature. Co-authored with MIT Senseable City Lab and TU Delft, covering 12,350 trees across São Paulo's informal settlements.</p>
+
+        <p><strong>Building</strong> — Running an AI knowledge infrastructure agency. Landing page is live, first clients in outreach. Turning research engineering skills into production AI products — RAG pipelines, private knowledge systems, and automation.</p>
+
+        <p><strong>Learning</strong> — Following the ETH Zurich Robot Learning course by Oier Mees. Recording weekly Loom videos to document progress and build in public.</p>
+
+        <p><strong>Applying</strong> — Targeting frontier physical AI companies: Anduril, Figure AI, Waymo. Looking for senior roles where perception, autonomy, and embodied intelligence meet the real world.</p>
+
+        <p><strong>Training</strong> — Upper/lower split strength training and Brazilian Jiu-Jitsu.</p>
+
+        <hr class="border-border my-8" />
+
+        <p class="text-sm text-text-muted italic">
+          Inspired by <a href="https://sive.rs/nowff">Derek Sivers</a>.
+        </p>
+      </div>
+
+      <!-- Timeline -->
+      <div class="mt-16 max-w-2xl">
+        <h2 class="text-xl font-semibold text-text-primary mb-6">Timeline</h2>
+
+        <details open class="mb-4">
+          <summary class="font-semibold text-text-primary cursor-pointer py-2">2025</summary>
+          <div class="ml-1.5 pl-5 border-l border-border space-y-3 mt-2 text-sm text-text-secondary">
+            <p><strong class="text-text-primary">November</strong> — Poster and abstract accepted at AGU Fall Meeting 2025 on LiDAR-Informed 3D Modeling of Favelas for Public Health Research.</p>
+            <p><strong class="text-text-primary">January</strong> — Joined MIT Senseable City Lab in Rio de Janeiro as Research Fellow, leading a 10-person team on urban digital twins for public health.</p>
+          </div>
+        </details>
+
+        <details open class="mb-4">
+          <summary class="font-semibold text-text-primary cursor-pointer py-2">2024</summary>
+          <div class="ml-1.5 pl-5 border-l border-border space-y-3 mt-2 text-sm text-text-secondary">
+            <p><strong class="text-text-primary">September</strong> — Defended Master's thesis at EPFL: Urban Tree Morphology and Canopy Density Estimation from Aerial LiDAR, conducted at MIT Senseable City Lab Amsterdam.</p>
+            <p><strong class="text-text-primary">March</strong> — Joined Roboat (MIT spinoff) as first engineering hire. Built end-to-end perception system for autonomous vessels in Amsterdam.</p>
+          </div>
+        </details>
+
+        <details class="mb-4">
+          <summary class="font-semibold text-text-primary cursor-pointer py-2">2023</summary>
+          <div class="ml-1.5 pl-5 border-l border-border space-y-3 mt-2 text-sm text-text-secondary">
+            <p><strong class="text-text-primary">October</strong> — Started visiting research at IRI (CSIC-UPC), Barcelona, on event cameras for high-speed drone state estimation.</p>
+            <p><strong class="text-text-primary">June</strong> — Completed research assistantship at EPFL VITA Lab, building an open-source ROS autonomy stack for mobile robot navigation.</p>
+          </div>
+        </details>
+
+        <details class="mb-4">
+          <summary class="font-semibold text-text-primary cursor-pointer py-2">2022</summary>
+          <div class="ml-1.5 pl-5 border-l border-border space-y-3 mt-2 text-sm text-text-secondary">
+            <p><strong class="text-text-primary">September</strong> — Started as Teaching Assistant at EPFL for General Physics and Mobile Robotics.</p>
+            <p><strong class="text-text-primary">June</strong> — Joined VITA Lab at EPFL as Research Assistant under Dr. Alexandre Alahi.</p>
+          </div>
+        </details>
+
+        <details class="mb-4">
+          <summary class="font-semibold text-text-primary cursor-pointer py-2">2021</summary>
+          <div class="ml-1.5 pl-5 border-l border-border space-y-3 mt-2 text-sm text-text-secondary">
+            <p><strong class="text-text-primary">September</strong> — Started MSc in Robotics at EPFL.</p>
+            <p><strong class="text-text-primary">June</strong> — Completed exchange year at KTH Royal Institute of Technology, Stockholm.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+</PageLayout>

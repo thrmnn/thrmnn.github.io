@@ -1,0 +1,50 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import PublicationEntry from '../components/ui/PublicationEntry.astro';
+import { getCollection } from 'astro:content';
+
+const publications = (await getCollection('publications')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+---
+
+<PageLayout title="Research" description="Publications, conference papers, and technical writing.">
+  <!-- Publications -->
+  <section class="py-[var(--space-section)]">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <h1 class="text-3xl font-bold text-text-primary mb-10">Research</h1>
+
+      <h2 class="text-xl font-semibold text-text-primary mb-6">Publications</h2>
+      <div class="max-w-2xl">
+        {publications.map((pub) => (
+          <PublicationEntry
+            title={pub.data.title}
+            authors={pub.data.authors}
+            venue={pub.data.publication}
+            date={pub.data.date}
+            doi={pub.data.doi}
+            pdfUrl={pub.data.links?.pdf}
+          />
+        ))}
+      </div>
+
+      {posts.length > 0 && (
+        <>
+          <h2 class="text-xl font-semibold text-text-primary mt-16 mb-6">Writing</h2>
+          <div class="max-w-2xl space-y-4">
+            {posts.map((post) => (
+              <a href={`/posts/${post.id}`} class="block py-4 border-b border-border hover:border-border-hover transition-colors group">
+                <p class="font-semibold text-text-primary group-hover:text-accent transition-colors">{post.data.title}</p>
+                <p class="text-sm text-text-muted mt-1">{post.data.summary}</p>
+              </a>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  </section>
+</PageLayout>

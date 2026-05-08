@@ -1,16 +1,9 @@
-__pycache__/
-*.pyc
-
-# Hugo (legacy)
-resources/_gen/
-
 # Astro
 dist/
 .astro/
 node_modules/
 
 # Env / secrets
-.vercel
 .env
 *.key
 *.pem

@@ -9,9 +9,10 @@ interface Props {
   description?: string;
   image?: string;
   ogType?: 'website' | 'profile' | 'article';
+  articleJsonLd?: Record<string, unknown>;
 }
 
-const { title, description, image, ogType = 'website' } = Astro.props;
+const { title, description, image, ogType = 'website', articleJsonLd } = Astro.props;
 const pageTitle = title ? `${title} — ${siteConfig.title}` : siteConfig.title;
 const pageDescription = description || siteConfig.description;
 const canonicalUrl = new URL(Astro.url.pathname, siteConfig.url).href;
@@ -101,6 +102,8 @@ const jsonLd = {
     <meta property="og:site_name" content={siteConfig.title} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:alt" content={pageTitle} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
@@ -111,6 +114,9 @@ const jsonLd = {
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {articleJsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
+    )}
 
     <!-- Analytics -->
     {import.meta.env.PROD && siteConfig.analytics?.plausible?.enabled && (

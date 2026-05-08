@@ -8,12 +8,13 @@ interface Props {
   description?: string;
   image?: string;
   ogType?: 'website' | 'profile' | 'article';
+  articleJsonLd?: Record<string, unknown>;
 }
 
-const { title, description, image, ogType } = Astro.props;
+const { title, description, image, ogType, articleJsonLd } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} image={image} ogType={ogType}>
+<BaseLayout title={title} description={description} image={image} ogType={ogType} articleJsonLd={articleJsonLd}>
   <Header />
   <main class="pt-16">
     <slot />

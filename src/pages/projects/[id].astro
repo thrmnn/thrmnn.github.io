@@ -1,6 +1,8 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import { getCollection, render } from 'astro:content';
+import { author } from '../../data/author';
+import { siteConfig } from '../../data/site';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -12,9 +14,25 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: project.data.title,
+  description: project.data.summary,
+  datePublished: project.data.date.toISOString(),
+  author: {
+    '@type': 'Person',
+    name: author.name,
+    url: siteConfig.url,
+  },
+  image: new URL(project.data.image || siteConfig.ogImage, siteConfig.url).href,
+  url: new URL(`/projects/${project.id}`, siteConfig.url).href,
+  ...(project.data.tags.length > 0 && { keywords: project.data.tags.join(', ') }),
+};
 ---
 
-<PageLayout title={project.data.title} description={project.data.summary} image={project.data.image} ogType="article">
+<PageLayout title={project.data.title} description={project.data.summary} image={project.data.image} ogType="article" articleJsonLd={articleJsonLd}>
   <section class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
       <!-- Header -->

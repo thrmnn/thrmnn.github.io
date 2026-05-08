@@ -394,7 +394,7 @@ const featuredProjects = (await getCollection('projects'))
   <section id="projects" class="py-[var(--space-section)] bg-bg-secondary">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
       <h2 class="text-2xl font-bold text-text-primary mb-8">Featured Work</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {featuredProjects.map((project, i) => (
           <ProjectCard
             title={project.data.title}

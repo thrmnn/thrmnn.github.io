@@ -1,6 +1,8 @@
 ---
 title: "Event Cameras for High-Speed Drone State Estimation"
 date: '2023-07-01T00:00:00Z'
+featured: true
+featuredOrder: 4
 externalLink: 'https://www.iri.upc.edu/'
 summary: "PyTorch fusion model combining neuromorphic event cameras with visual-inertial odometry for robust 6-DOF drone state estimation during aggressive maneuvers exceeding 5g acceleration."
 label: "IRI (CSIC-UPC, Barcelona) · 2023"

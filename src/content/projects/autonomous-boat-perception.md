@@ -1,6 +1,8 @@
 ---
 title: "Perception Stack for Autonomous Canal Boats"
 date: '2024-08-01T00:00:00Z'
+featured: true
+featuredOrder: 3
 externalLink: 'https://roboat.ai'
 summary: "End-to-end perception system for autonomous canal boats achieving <30ms inference on edge hardware, deployed on physical vessels in Amsterdam."
 label: "Roboat (MIT spin-off) · 2024"

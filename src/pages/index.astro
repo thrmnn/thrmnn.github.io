@@ -13,35 +13,9 @@ const publications = (await getCollection('publications')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
 );
 
-const featuredProjects = [
-  {
-    title: 'Urban Digital Twin for Airborne Disease Modeling',
-    label: 'MIT Senseable City Lab · 2025',
-    metric: 'founding member · CFD pipeline · Deployed',
-    tags: ['LiDAR', 'OpenFOAM', 'Blender', 'Python', '3D Reconstruction'],
-    detail: 'Founding member of the Rio branch (MIT + UFMG + TU Delft). Building high-fidelity 3D digital twins of Rio\'s favelas from terrestrial LiDAR. Reconstructions feed CFD simulations of airborne pathogen dispersion for public health interventions.',
-    href: 'https://senseablerio.mit.edu/',
-    gradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-  },
-  {
-    title: 'Urban Tree Census at Scale: Aerial LiDAR + ML',
-    label: "Master's Thesis · EPFL + MIT · 2024",
-    metric: '12,350 trees classified · Paper under review (Springer Nature)',
-    tags: ['LiDAR', 'XGBoost', 'Random Forest', 'GeoPandas', 'Remote Sensing'],
-    detail: 'First large-scale automated tree census of informal settlements. Aerial LiDAR survey across São Paulo with ML-driven species classification and canopy health assessment.',
-    href: 'https://senseable.mit.edu/',
-    gradient: 'linear-gradient(135deg, #0d3b0d 0%, #1a472a 50%, #2d6a4f 100%)',
-  },
-  {
-    title: 'Perception Stack for Autonomous Canal Boats',
-    label: 'Roboat (MIT Spinoff) · 2024',
-    metric: '<30ms inference · 100+ hrs maritime data · Deployed on vessels',
-    tags: ['YOLO', 'PyTorch', 'Jetson Orin', 'DVC', 'MLOps', 'ROS2'],
-    detail: 'End-to-end camera-first perception replacing expensive LiDAR-only pipeline. Detection, multi-object tracking, and point cloud segmentation on edge hardware, deployed on physical vessels in Amsterdam.',
-    href: 'https://roboat.ai',
-    gradient: 'linear-gradient(135deg, #1a1a3e 0%, #2a2a5e 50%, #3a3a7e 100%)',
-  },
-];
+const featuredProjects = (await getCollection('projects'))
+  .filter((p) => p.data.featuredOrder !== undefined)
+  .sort((a, b) => a.data.featuredOrder! - b.data.featuredOrder!);
 ---
 
 <PageLayout ogType="profile">
@@ -420,7 +394,17 @@ const featuredProjects = [
       <h2 class="text-2xl font-bold text-text-primary mb-8">Featured Work</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {featuredProjects.map((project, i) => (
-          <ProjectCard {...project} number={i + 1} />
+          <ProjectCard
+            title={project.data.title}
+            label={project.data.label}
+            metric={project.data.metric}
+            tags={project.data.tags}
+            detail={project.data.summary}
+            gradient={project.data.gradient}
+            image={project.data.image}
+            href={`/projects/${project.id}`}
+            number={i + 1}
+          />
         ))}
       </div>
       <p class="text-center mt-8">

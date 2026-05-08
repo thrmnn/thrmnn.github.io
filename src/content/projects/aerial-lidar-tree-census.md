@@ -1,6 +1,8 @@
 ---
 title: "Urban Tree Census at Scale: Aerial LiDAR + ML"
 date: '2024-09-01T00:00:00Z'
+featured: true
+featuredOrder: 2
 externalLink: 'https://senseable.mit.edu/'
 summary: "Large-scale aerial LiDAR survey of São Paulo identifying 12,350 trees in favela communities using ML-driven species classification and health assessment."
 label: "MIT Senseable City Lab · 2024"

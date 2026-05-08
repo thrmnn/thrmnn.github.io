@@ -7,7 +7,7 @@ export const author = {
   bio: [
     '<strong>MSc Robotics, EPFL</strong> · 4+ years building perception and autonomy systems · Python, C++, PyTorch, ROS · Shipped production on edge hardware.',
     'Founding member of <strong>MIT Senseable City Lab</strong> Rio — building city-scale 3D digital twins from LiDAR for public health (10-person group, 3 institutions). Previously first engineering hire at <strong>Roboat</strong> (MIT spinoff) — built the full perception stack for autonomous vessels, sub-30ms on Jetson Orin, deployed in Amsterdam.',
-    'Full stack from sensor fusion to edge deployment. Looking for senior perception or robotics roles at companies pushing physical AI forward.',
+    'Full stack from sensor fusion to edge deployment. Open to senior <strong>perception, computer vision, and robotics</strong> roles — full-time or freelance — at companies pushing physical AI forward.',
   ],
 
   interests: [

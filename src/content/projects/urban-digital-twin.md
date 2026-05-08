@@ -19,7 +19,18 @@ tags:
   - Blender
 ---
 
-High-fidelity 3D reconstruction of Rio's favelas from terrestrial LiDAR and aerial imagery, driving CFD simulations of airborne pathogen dispersion to identify ventilation risk zones.
+<!--
+ASSETS TODO (replace or remove placeholders, then drop this comment):
+- Hero image: 1200x630 of a 3D reconstruction render, CFD streamlines over a favela mesh,
+  or terrestrial LiDAR scan capture
+  → save as /public/projects/urban-digital-twin-hero.jpg
+  → set `image: /projects/urban-digital-twin-hero.jpg` in frontmatter above
+- In-body figure(s): pipeline diagram (LiDAR + aerial → mesh → CFD → risk zones),
+  CFD wind field visualization, before/after risk-zone map
+- Quantitative gaps in copy: survey area covered, sensor count deployed, ventilation
+  threshold defined, expected affected population
+- Update "## Links" below with: any preprint, demo reel, lab landing page for Brisa+
+-->
 
 ## Overview
 
@@ -43,3 +54,10 @@ I own the **3D reconstruction pipeline and CFD integration**, and coordinate acr
 ## Outcome
 
 The project operates in close coordination with **Rio's city government and community stakeholders**, ensuring the research translates into real-world impact. The digital twin framework connects 3D urban geometry, vegetation, and airflow to public health outcomes — **informing targeted interventions in underserved communities** where airborne disease risk is highest. This work demonstrates how computational tools developed in robotics and remote sensing can address pressing public health challenges.
+
+## Links
+
+<!-- USER TODO: add preprint / demo reel / Brisa+ project page once public. -->
+
+- Lab: [MIT Senseable City Lab Rio](https://senseablerio.mit.edu/)
+- Conference: AGU Fall Meeting 2025 — _LiDAR-Informed 3D Modeling of Favelas for Public Health Research_

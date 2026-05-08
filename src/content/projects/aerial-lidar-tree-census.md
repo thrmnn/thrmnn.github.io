@@ -6,7 +6,7 @@ featuredOrder: 2
 externalLink: 'https://senseable.mit.edu/'
 summary: "Large-scale aerial LiDAR survey of São Paulo identifying 12,350 trees in favela communities using ML-driven species classification and health assessment."
 label: "MIT Senseable City Lab · 2024"
-metric: "12,350 trees identified · submitted to Springer Nature"
+metric: "12,350 trees identified · submitted to Nature Cities"
 gradient: "linear-gradient(135deg, #0d3b0d 0%, #1a472a 50%, #2d6a4f 100%)"
 tags:
   - LiDAR
@@ -19,7 +19,18 @@ tags:
   - Remote Sensing
 ---
 
-Large-scale aerial LiDAR survey of São Paulo identifying 12,350 trees in favela communities using ML-driven species classification and health assessment.
+<!--
+ASSETS TODO (replace or remove placeholders, then drop this comment):
+- Hero image: 1200x630 visual of São Paulo survey area, segmented point cloud,
+  or LAI raster overlay
+  → save as /public/projects/aerial-lidar-tree-census-hero.jpg
+  → set `image: /projects/aerial-lidar-tree-census-hero.jpg` in frontmatter above
+- In-body figure(s): pipeline diagram (LiDAR → features → ensemble → LAI),
+  sample tree segmentation, NDVI/LAI map
+- Update "## Links" below with: paper DOI/preprint URL once Nature Cities decision lands,
+  GitHub repo if code is public
+- Quantitative gaps in copy: survey area in km², LAI prediction accuracy, comparison to ground survey baseline
+-->
 
 ## Overview
 
@@ -41,4 +52,11 @@ I served as **lead researcher**, responsible for the full ML pipeline design, da
 
 ## Outcome
 
-The paper has been submitted to **Springer Nature**. This work established the methodological foundation for the urban digital twin project in Rio de Janeiro, where LAI estimation feeds into CFD simulations of urban ventilation in informal settlements. The pipeline demonstrated that tree morphology extracted from remote sensing data can reliably predict canopy density at city scale, enabling urban planners to assess green infrastructure without costly ground-level surveys.
+The paper has been submitted to **Nature Cities** (Springer Nature). This work established the methodological foundation for the urban digital twin project in Rio de Janeiro, where LAI estimation feeds into CFD simulations of urban ventilation in informal settlements. The pipeline demonstrated that tree morphology extracted from remote sensing data can reliably predict canopy density at city scale, enabling urban planners to assess green infrastructure without costly ground-level surveys.
+
+## Links
+
+<!-- USER TODO: add paper DOI / preprint and GitHub once available; remove this comment when done. -->
+
+- Lab: [MIT Senseable City Lab](https://senseable.mit.edu/)
+- Paper: _under review at Nature Cities_

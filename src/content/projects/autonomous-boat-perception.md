@@ -19,7 +19,16 @@ tags:
   - Edge Deployment
 ---
 
-End-to-end perception system for autonomous canal boats achieving <30ms inference on edge hardware, deployed on physical vessels in Amsterdam.
+<!--
+ASSETS TODO (replace or remove placeholders, then drop this comment):
+- Hero image: 1200x630 photo of Roboat operating in an Amsterdam canal
+  → save as /public/projects/autonomous-boat-perception-hero.jpg
+  → set `image: /projects/autonomous-boat-perception-hero.jpg` in frontmatter above
+- In-body figure: sample detection / sensor setup diagram
+  → reference inline as ![alt](/projects/autonomous-boat-perception-detections.jpg)
+- Demo video link (Roboat operational footage) — drop into "## Links" section below
+- Quantitative metrics not yet in copy: detection mAP, tracking consistency, false-positive rate
+-->
 
 ## Overview
 
@@ -42,3 +51,10 @@ The work spanned the full ML lifecycle. I built a complete **MLOps pipeline with
 ## Outcome
 
 The system was **deployed on physical vessels** operating autonomously in Amsterdam's canal network. This project demonstrated the ability to go from zero to a production perception stack under startup constraints, balancing research-grade accuracy with deployment-ready engineering. The camera-first architecture reduced sensor costs significantly while matching the safety requirements of urban maritime navigation.
+
+## Links
+
+<!-- USER TODO: replace or delete placeholders. Roboat is a closed-source startup so paper/repo may stay N/A. -->
+
+- Company: [roboat.ai](https://roboat.ai)
+- Demo footage: _coming soon_

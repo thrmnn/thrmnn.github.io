@@ -60,6 +60,19 @@ const articleJsonLd = {
         )}
       </div>
 
+      {project.data.image && (
+        <div class="mb-10 rounded-lg overflow-hidden border border-border">
+          <img
+            src={project.data.image}
+            alt={project.data.title}
+            width="1200"
+            height="630"
+            loading="eager"
+            class="w-full h-auto block"
+          />
+        </div>
+      )}
+
       <!-- Body -->
       <article class="prose max-w-2xl">
         <Content />

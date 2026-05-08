@@ -1,0 +1,113 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { author } from '../../data/author';
+import { siteConfig } from '../../data/site';
+
+export async function getStaticPaths() {
+  const publications = await getCollection('publications');
+  return publications.map((pub) => ({
+    params: { id: pub.id },
+    props: { pub },
+  }));
+}
+
+const { pub } = Astro.props;
+const { Content } = await render(pub);
+
+const resolvedAuthors = pub.data.authors.map((a) =>
+  a === 'admin' ? author.name : a
+);
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ScholarlyArticle',
+  headline: pub.data.title,
+  name: pub.data.title,
+  abstract: pub.data.abstract,
+  description: pub.data.summary || pub.data.abstract,
+  datePublished: pub.data.date.toISOString(),
+  author: resolvedAuthors.map((name) => ({ '@type': 'Person', name })),
+  publisher: { '@type': 'Organization', name: pub.data.publication },
+  isPartOf: { '@type': 'PublicationVolume', name: pub.data.publication },
+  url: new URL(`/research/${pub.id}`, siteConfig.url).href,
+  image: new URL(pub.data.image || siteConfig.ogImage, siteConfig.url).href,
+  ...(pub.data.doi && {
+    sameAs: `https://doi.org/${pub.data.doi}`,
+    identifier: {
+      '@type': 'PropertyValue',
+      propertyID: 'DOI',
+      value: pub.data.doi,
+    },
+  }),
+};
+
+const description = pub.data.summary || pub.data.abstract;
+---
+
+<PageLayout
+  title={pub.data.title}
+  description={description}
+  image={pub.data.image}
+  ogType="article"
+  articleJsonLd={articleJsonLd}
+>
+  <section class="py-[var(--space-section)]">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <a href="/research/" class="text-sm text-text-muted hover:text-text-secondary mb-4 inline-block">
+        ← Back to research
+      </a>
+
+      <h1 class="text-3xl font-bold text-text-primary mt-2">{pub.data.title}</h1>
+
+      <p class="text-sm text-text-muted mt-3">
+        {resolvedAuthors.join(', ')}
+      </p>
+      <p class="text-sm text-text-muted mt-1">
+        <span class="italic">{pub.data.publication}</span> · {pub.data.date.getFullYear()}
+      </p>
+
+      {(pub.data.doi || pub.data.links?.pdf || pub.data.links?.code) && (
+        <div class="flex flex-wrap gap-4 mt-4">
+          {pub.data.doi && (
+            <a
+              href={`https://doi.org/${pub.data.doi}`}
+              target="_blank"
+              rel="noopener"
+              class="text-sm text-accent hover:text-accent-hover font-medium"
+            >
+              DOI
+            </a>
+          )}
+          {pub.data.links?.pdf && (
+            <a
+              href={pub.data.links.pdf}
+              target="_blank"
+              rel="noopener"
+              class="text-sm text-accent hover:text-accent-hover font-medium"
+            >
+              PDF
+            </a>
+          )}
+          {pub.data.links?.code && (
+            <a
+              href={pub.data.links.code}
+              target="_blank"
+              rel="noopener"
+              class="text-sm text-accent hover:text-accent-hover font-medium"
+            >
+              Code
+            </a>
+          )}
+        </div>
+      )}
+
+      <h2 class="text-lg font-semibold text-text-primary mt-10 mb-3">Abstract</h2>
+      <p class="text-text-secondary max-w-2xl leading-relaxed">{pub.data.abstract}</p>
+
+      <article class="prose max-w-2xl mt-10">
+        <Content />
+      </article>
+    </div>
+  </section>
+</PageLayout>

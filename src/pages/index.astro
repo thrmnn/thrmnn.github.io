@@ -422,6 +422,7 @@ const featuredProjects = (await getCollection('projects'))
       <div class="max-w-2xl">
         {publications.map((pub) => (
           <PublicationEntry
+            href={`/research/${pub.id}/`}
             title={pub.data.title}
             authors={pub.data.authors}
             venue={pub.data.publication}

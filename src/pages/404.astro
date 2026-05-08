@@ -9,22 +9,22 @@ const pages = [
   },
   {
     label: 'Projects',
-    href: '/projects',
+    href: '/projects/',
     description: 'Perception systems, digital twins, autonomous boats',
   },
   {
     label: 'Research',
-    href: '/research',
+    href: '/research/',
     description: 'Papers, methods, technical deep-dives',
   },
   {
     label: 'CV',
-    href: '/cv',
+    href: '/cv/',
     description: 'Experience, education, skills',
   },
   {
     label: 'Now',
-    href: '/now',
+    href: '/now/',
     description: 'What I am working on right now',
   },
 ];
@@ -52,7 +52,7 @@ const pages = [
         {pages.map((page) => (
           <a
             href={page.href}
-            class="not-found-link group block rounded-lg border border-border px-5 py-4 transition-all duration-200 hover:border-border-hover hover:bg-bg-elevated"
+            class="not-found-link group block rounded-lg border border-border px-4 sm:px-5 py-4 transition-all duration-200 hover:border-border-hover hover:bg-bg-elevated"
           >
             <span
               class="text-base font-semibold text-text-primary group-hover:text-accent-hover transition-colors"

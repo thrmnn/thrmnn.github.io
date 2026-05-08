@@ -1,6 +1,0 @@
-{
-  "buildCommand": "bash vercel-build.sh",
-  "outputDirectory": "public",
-  "devCommand": "hugo server",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD ."
-}

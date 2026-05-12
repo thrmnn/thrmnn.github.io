@@ -4,6 +4,7 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
 import MonoRow from '../../components/typography/MonoRow.astro';
+import StatusPill from '../../components/primitives/StatusPill.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -61,7 +62,15 @@ const articleJsonLd = {
     <Breadcrumb />
     <MonoRow pieces={['Work', yyyyMm]} />
     <header class="project-header">
-      {d.status && <p class="mono-caption status">{d.status}</p>}
+      {
+        d.status && (
+          <p class="status-line">
+            <StatusPill tone={d.register === 'tropical' ? 'terra' : 'graphite'}>
+              {d.status}
+            </StatusPill>
+          </p>
+        )
+      }
       <h1 class="project-title">{d.title}</h1>
       {d.subtitle && <p class="project-subtitle">{d.subtitle}</p>}
     </header>
@@ -147,10 +156,8 @@ const articleJsonLd = {
   .project-header {
     margin-bottom: 2rem;
   }
-  .status {
-    display: inline-block;
-    margin-bottom: 1rem;
-    color: var(--color-accent);
+  .status-line {
+    margin: 0 0 1rem;
   }
   .project-title {
     font-size: clamp(2rem, 4.2vw, 3rem);

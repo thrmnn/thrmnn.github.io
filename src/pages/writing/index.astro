@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
+import StatusPill from '../../components/primitives/StatusPill.astro';
 
 const all = await getCollection('writing');
 const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -44,7 +45,11 @@ const languageLabel: Record<string, string> = {
                     month: 'short',
                     day: 'numeric',
                   })}
-                  <span class="entry-lang">{languageLabel[entry.data.language]}</span>
+                  <StatusPill
+                    tone={entry.data.register === 'tropical' ? 'oxblood' : 'graphite'}
+                  >
+                    {languageLabel[entry.data.language]}
+                  </StatusPill>
                 </span>
                 <h2 class="entry-title">{entry.data.title}</h2>
                 <p class="entry-summary">{entry.data.summary}</p>
@@ -114,12 +119,6 @@ const languageLabel: Record<string, string> = {
     display: inline-flex;
     gap: 0.6rem;
     align-items: center;
-  }
-  .entry-lang {
-    padding: 0.05rem 0.4rem;
-    border: 1px solid var(--color-rule-strong);
-    border-radius: 2px;
-    font-size: 0.65rem;
   }
   .entry-title {
     margin-top: 0.5rem;

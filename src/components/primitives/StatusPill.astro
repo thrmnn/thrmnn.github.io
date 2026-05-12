@@ -1,0 +1,48 @@
+---
+/**
+ * Mono-uppercase pill for status, language, or any short tag.
+ * 1px border in currentColor; padding from the spacing scale.
+ *
+ * Tones map to register palettes:
+ *   graphite, cool-grey  — Cartesian (research / technical)
+ *   terra, oxblood       — Tropical (essays / cultural)
+ */
+interface Props {
+  tone?: 'graphite' | 'terra' | 'cool-grey' | 'oxblood';
+  class?: string;
+}
+
+const { tone = 'graphite', class: className = '' } = Astro.props;
+---
+
+<span class:list={['status-pill', `status-pill--${tone}`, className]}>
+  <slot />
+</span>
+
+<style>
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-xs);
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    padding: var(--s-1) var(--s-3);
+    white-space: nowrap;
+  }
+  .status-pill--graphite {
+    color: var(--color-graphite);
+  }
+  .status-pill--terra {
+    color: var(--color-terra);
+  }
+  .status-pill--cool-grey {
+    color: var(--color-cool-grey);
+  }
+  .status-pill--oxblood {
+    color: var(--color-oxblood);
+  }
+</style>

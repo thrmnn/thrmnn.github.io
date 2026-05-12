@@ -130,6 +130,18 @@
   --text-mono-xs: 11px;
   --text-mono-sm: 13px;
 
+  /* Spacing scale — 4px baseline (per CLAUDE.md §5.4). */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-20: 80px;
+  --s-32: 128px;
+
   /* Layout */
   --max-w-prose: 64ch;
   --max-w-content: 1120px;

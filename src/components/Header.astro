@@ -16,15 +16,23 @@ function isActive(href: string): boolean {
       <Wordmark size="sm" />
       <span class="header-aux mono-caption--xs">Rio · 2026</span>
     </div>
-    <nav class="site-nav" aria-label="Primary">
-      {
-        nav.map((item) => (
-          <a href={item.href} class:list={['nav-link', { 'is-active': isActive(item.href) }]}>
-            {item.label}
-          </a>
-        ))
-      }
-    </nav>
+    <div class="header-right">
+      <a
+        href="/"
+        class:list={['filesystem-ref', { 'is-active': isActive('/') }]}
+        aria-label="Home (filesystem root)"
+        aria-current={isActive('/') ? 'page' : undefined}
+      >./</a>
+      <nav class="site-nav" aria-label="Primary">
+        {
+          nav.map((item) => (
+            <a href={item.href} class:list={['nav-link', { 'is-active': isActive(item.href) }]}>
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+    </div>
   </div>
 </header>
 
@@ -53,6 +61,29 @@ function isActive(href: string): boolean {
     padding-left: 1rem;
     border-left: 1px solid var(--color-rule);
     /* Mono-caption--xs already sets size, color, tracking, uppercase. */
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .filesystem-ref {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-sm);
+    color: var(--color-ink-muted);
+    text-decoration: none;
+    padding-block: 0.25rem;
+    border-bottom: 1px solid transparent;
+    transition:
+      color 200ms ease,
+      border-color 200ms ease;
+  }
+  .filesystem-ref:hover {
+    color: var(--color-ink);
+  }
+  .filesystem-ref.is-active {
+    color: var(--color-ink);
+    border-bottom-color: var(--color-accent);
   }
   .site-nav {
     display: flex;

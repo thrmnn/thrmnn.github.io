@@ -4,10 +4,10 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
 import StatusPill from '../../components/primitives/StatusPill.astro';
-import PaperGrainOverlay from '../../components/primitives/PaperGrainOverlay.astro';
 import VerticalLabel from '../../components/composition/VerticalLabel.astro';
 import SectionNumber from '../../components/composition/SectionNumber.astro';
 import SectionRule from '../../components/composition/SectionRule.astro';
+import Figure from '../../components/composition/Figure.astro';
 import ExternalLink from '../../components/primitives/ExternalLink.astro';
 
 export async function getStaticPaths() {
@@ -99,16 +99,14 @@ const articleJsonLd = {
     </header>
 
     <div class="col-2-12 project-hero-wrap">
-      {
-        d.heroImage ? (
-          <figure class="project-hero" data-kind={d.heroKind}>
-            <img src={d.heroImage} alt={d.heroAlt ?? d.title} />
-            {d.heroKind === 'photo' && <PaperGrainOverlay />}
-          </figure>
-        ) : (
-          <div class="project-hero hero-placeholder" aria-hidden="true" />
-        )
-      }
+      <Figure
+        caption={d.title}
+        meta={d.tags.slice(0, 4)}
+        ratio="3/2"
+        src={d.heroImage}
+        alt={d.heroAlt ?? d.title}
+        pending={!d.heroImage}
+      />
     </div>
 
     <!-- 01 Context -->
@@ -306,46 +304,6 @@ const articleJsonLd = {
 
   .project-hero-wrap {
     margin-block: var(--s-6);
-  }
-  .project-hero {
-    border: 1px solid var(--color-rule);
-    overflow: hidden;
-    position: relative;
-    margin: 0;
-  }
-  .project-hero img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  .hero-placeholder {
-    aspect-ratio: 16 / 9;
-    display: flex;
-    align-items: flex-end;
-    padding: var(--s-8);
-    background: linear-gradient(135deg, var(--color-paper-deep) 0%, var(--color-paper) 100%);
-    position: relative;
-  }
-  .hero-placeholder::before {
-    content: '';
-    position: absolute;
-    inset: var(--s-6);
-    border: 1px solid var(--color-rule);
-  }
-  [data-register='tropical'] .hero-placeholder {
-    background: linear-gradient(135deg, var(--color-sand) 0%, var(--color-paper) 80%);
-  }
-  .placeholder-mark {
-    font-family: var(--font-wordmark);
-    font-variation-settings:
-      'opsz' 144,
-      'SOFT' 60;
-    font-size: var(--text-display-md);
-    color: var(--color-ink-soft);
-    max-width: 70%;
-    line-height: 1.05;
-    position: relative;
-    z-index: 1;
   }
 
   /* Numbered sections — label sits in col 2-5, content in col 5-12.

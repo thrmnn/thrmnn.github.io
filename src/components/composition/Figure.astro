@@ -1,0 +1,126 @@
+---
+/**
+ * Figure primitive (Phase 4.7 D1).
+ *
+ * Designed-empty-state figure. Renders an image with caption + structured
+ * mono-meta strip, or — when `src` is omitted / `pending` is true — a
+ * deliberate empty-state object: aspect-correct frame, mono caption,
+ * mono meta strip. The frame is the design. Anna's principle: empty
+ * states are a design surface.
+ *
+ * Usage:
+ *   <Figure caption="Pedestrian Shade Index — Central Amsterdam"
+ *           meta={['AHN4 LiDAR', '1m resolution', '14:00 GMT', 'June–August']}
+ *           ratio="3/2" pending />
+ *
+ *   <Figure caption="Approach diagram" src="/figures/approach.svg"
+ *           alt="System diagram showing LiDAR pipeline" />
+ */
+interface Props {
+  caption?: string;
+  meta?: string[];
+  ratio?: string;
+  pending?: boolean;
+  src?: string;
+  alt?: string;
+}
+
+const { caption, meta = [], ratio = '3/2', pending, src, alt } = Astro.props;
+const isPending = pending || !src;
+const hasCaption = Boolean(caption);
+---
+
+<figure class="figure" style={`--ratio: ${ratio};`}>
+  <div class="figure-frame">
+    {
+      isPending ? (
+        <div class="figure-pending" aria-hidden="true">
+          <span class="figure-pending-glyph">⧉</span>
+          <span class="mono-caption">Figure pending</span>
+        </div>
+      ) : (
+        <img src={src} alt={alt ?? caption ?? ''} loading="lazy" decoding="async" />
+      )
+    }
+  </div>
+  {
+    hasCaption && (
+      <figcaption class="figure-caption">
+        <p class="mono-caption figure-caption-title">{caption}</p>
+        {meta.length > 0 && (
+          <ul class="figure-meta">
+            {meta.map((m) => (
+              <li class="mono-caption--xs">{m}</li>
+            ))}
+          </ul>
+        )}
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .figure {
+    margin: 0;
+  }
+  .figure-frame {
+    position: relative;
+    aspect-ratio: var(--ratio);
+    background: var(--color-paper);
+    border: 1px solid var(--color-rule);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .figure-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .figure-pending {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-2);
+    color: var(--color-ink-muted);
+  }
+  .figure-pending-glyph {
+    font-size: 32px;
+    opacity: 0.4;
+    line-height: 1;
+  }
+  .figure-caption {
+    margin-top: var(--s-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-1);
+  }
+  .figure-caption-title {
+    color: var(--color-ink);
+    margin: 0;
+  }
+  .figure-meta {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    color: var(--color-ink-muted);
+  }
+  .figure-meta li::before {
+    content: '·  ';
+    margin-right: var(--s-1);
+  }
+  .figure-meta li:first-child::before {
+    content: '';
+    margin: 0;
+  }
+
+  /* Tropical register: warmer placeholder ground */
+  :global([data-register='tropical']) .figure-frame {
+    background: linear-gradient(135deg, var(--color-sand) 0%, var(--color-paper) 80%);
+  }
+</style>

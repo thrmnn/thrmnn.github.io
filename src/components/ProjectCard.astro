@@ -39,14 +39,14 @@ const href = `/work/${id}`;
     color: var(--color-ink);
     border: 1px solid var(--color-rule);
     background: var(--color-paper);
-    transition:
-      border-color 250ms ease,
-      transform 250ms ease;
+    transition: border-color 250ms ease;
   }
-  .project-card:hover {
+  .project-card:hover,
+  .project-card:focus-within {
     border-color: var(--color-rule-strong);
   }
-  .project-card:hover .card-title {
+  .project-card:hover .card-title,
+  .project-card:focus-within .card-title {
     color: var(--color-accent);
   }
 
@@ -61,10 +61,6 @@ const href = `/work/${id}`;
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  .project-card:hover .card-media img {
-    transform: scale(1.02);
   }
 
   .card-placeholder {

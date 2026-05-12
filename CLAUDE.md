@@ -28,6 +28,7 @@ Built to last years. Adding a project or essay should take under 20 minutes. **R
 - Public name: **Théo Alessandro Hermann** (accent on Théo preserved, always)
 - Technical handle: `thrmnn`
 - Monogram: T·A·H — favicon and avatars only, never as on-page logo
+- Monogram source (canonical): `monogram/Asset 1.svg` (hand-drawn, 5 paths, 377.88×102.37). Every favicon and the full monogram asset pack regenerates from this single source via `npm run monogram`. `monogram/THEO.svg` is a type-comparison spec sheet, not a mark. The previous Space Grotesk auto-generated version is superseded.
 - Domain: `theoalessandro.com` (deploy still on `thrmnn.github.io` until launch cutover)
 - Social, public: `@theoalessandro`
 - Social, technical: `@thrmnn`
@@ -516,6 +517,8 @@ Format: `YYYY-MM-DD — decision — rationale.`
 - 2026-05-12 — **Git-derived `updated` timestamps queued.** Currently hand-maintained; move to build-time `git log -1 --format=%cI` derivation before the doc-maintenance lie becomes a habit.
 - 2026-05-12 — **License: MIT for code, CC BY-NC 4.0 for written content.** _Action item:_ current `LICENSE.md` still attributes Hugo Blox template author (George Cushen); replace with the correct two-license setup before public-repo announcement.
 - 2026-05-12 — **Tooling added:** `@astrojs/check` for typechecking, `prettier` + `prettier-plugin-astro` for formatting, and a markdown pipeline (`remark-smartypants`, `rehype-slug`, `rehype-autolink-headings`, `rehype-external-links`). All editorial niceties (curly quotes, em-dashes, heading anchors, safe external links) are now automatic. Shiki theme moved to `min-light` to suit Paper ground.
+- 2026-05-12 — **Brand mark canonical source: `monogram/Asset 1.svg`.** User's Illustrator export, single hand-drawn T·A·H wordmark. All site favicons (`public/favicon.svg`, `favicon.png`, `favicon.ico`, `apple-touch-icon.png`, `avatar.webp`) and the full monogram asset pack (3 color variants × 9 raster sizes + 3 master SVGs + multi-size .ico) regenerate from this source via `npm run monogram`. Rasterization is native per target size (no supersample + Lanczos downscale) — crisp edges down to 16 px. The previous auto-generated Space Grotesk monogram (`scripts/generate-monogram.py`) is superseded and not invoked by the `monogram` script; kept in repo only as historical reference.
+- 2026-05-12 — **Phase 4.5 UX/nav upgrade shipped** on `phase-4.5-ux-upgrade` branch (14 commits). Adds: header auxiliary row (RIO · 2026), `./` filesystem nav link, Breadcrumb component, two-row footer credit card with `lastShipped`, MonoRow above titles, StatusPill, ExternalLink, view transitions for shared chrome, project tile hover/focus reveal, `heroKind` schema + PaperGrainOverlay stub, Updated-date life signal. Spacing scale `--s-1`…`--s-32` now instantiated. Mono type tokens `--text-mono-{xs,sm}` instantiated. Body + display tokens still pending.
 
 ---
 

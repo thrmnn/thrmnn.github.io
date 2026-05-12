@@ -437,10 +437,14 @@
     letter-spacing: 0.01em;
   }
 
-  /* Tropical prose: serif drop, looser */
+  /* Tropical prose: serif drop, looser line-height, generous paragraph
+     spacing — distinguishable from Cartesian at a glance (D9 audit). */
   [data-register='tropical'] .prose {
     font-family: var(--font-body);
     line-height: 1.75;
+  }
+  [data-register='tropical'] .prose p {
+    margin-bottom: var(--s-6);
   }
   [data-register='tropical'] .prose figcaption {
     font-family: var(--font-tropical);

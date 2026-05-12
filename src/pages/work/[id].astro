@@ -5,6 +5,7 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
 import MonoRow from '../../components/typography/MonoRow.astro';
 import StatusPill from '../../components/primitives/StatusPill.astro';
+import PaperGrainOverlay from '../../components/primitives/PaperGrainOverlay.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -77,8 +78,9 @@ const articleJsonLd = {
 
     {
       d.heroImage ? (
-        <figure class="project-hero">
+        <figure class="project-hero" data-kind={d.heroKind}>
           <img src={d.heroImage} alt={d.heroAlt ?? d.title} />
+          {d.heroKind === 'photo' && <PaperGrainOverlay />}
         </figure>
       ) : (
         <div class="project-hero hero-placeholder" aria-hidden="true">
@@ -177,6 +179,7 @@ const articleJsonLd = {
     margin: 2.5rem 0;
     border: 1px solid var(--color-rule);
     overflow: hidden;
+    position: relative;
   }
   .project-hero img {
     width: 100%;

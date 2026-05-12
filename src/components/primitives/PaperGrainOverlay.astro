@@ -1,0 +1,32 @@
+---
+/**
+ * Paper-grain overlay for photographic imagery (CLAUDE.md §5.7).
+ *
+ * STUB — currently renders an empty div with no visual effect. The actual
+ * grain texture (PNG asset + 8% opacity + multiply blend mode) lands once
+ * we have the first photographic image on the site. Until then, including
+ * this component preserves the wire-up so flipping the switch is a one-line
+ * change later.
+ *
+ * Usage:
+ *   <figure>
+ *     <img src="..." alt="..." />
+ *     {kind === 'photo' && <PaperGrainOverlay />}
+ *   </figure>
+ */
+---
+
+<div class="paper-grain-overlay" aria-hidden="true"></div>
+
+<style>
+  .paper-grain-overlay {
+    /* Stub. Real implementation when first photo lands:
+       position: absolute; inset: 0;
+       background-image: url('/textures/paper-grain.png');
+       background-size: 480px;
+       mix-blend-mode: multiply;
+       opacity: 0.08;
+       pointer-events: none;
+    */
+  }
+</style>

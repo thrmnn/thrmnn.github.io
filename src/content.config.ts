@@ -14,6 +14,14 @@ const projects = defineCollection({
     featuredOrder: z.number().int().positive().optional(),
     heroImage: z.string().optional(),
     heroAlt: z.string().optional(),
+    /**
+     * Classifies the hero asset.
+     *   "photo"     — photographic; receives the paper-grain overlay
+     *   "technical" — diagrammatic / LiDAR / CFD / plot; rendered as-is
+     * Default is "technical" because every current project entry is
+     * scientific imagery rather than photography.
+     */
+    heroKind: z.enum(['photo', 'technical']).default('technical'),
     collaborators: z.array(z.string()).default([]),
     links: z
       .object({

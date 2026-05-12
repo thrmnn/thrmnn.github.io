@@ -374,6 +374,15 @@
     text-underline-offset: 3px;
   }
 
+  /* External-link affordance inside prose bodies. Excludes our own domains
+     so internal cross-links don't get the arrow. */
+  .prose a[href^='http']:not([href*='theoalessandro.com']):not([href*='thrmnn.github.io'])::after {
+    content: ' ↗';
+    font-family: var(--font-mono);
+    font-feature-settings: 'tnum';
+    font-size: 0.85em;
+  }
+
   /* Heading anchors (rehype-autolink-headings) — quiet hash, visible on hover */
   .prose h2,
   .prose h3 {

@@ -1,6 +1,7 @@
 ---
 import { author } from '../data/author';
 import { siteConfig, lastShipped } from '../data/site';
+import ExternalLink from './primitives/ExternalLink.astro';
 
 const year = new Date().getFullYear();
 
@@ -25,15 +26,15 @@ const lastShippedDate = new Date(lastShipped.date).toLocaleDateString('en-GB', {
       </div>
       <div class="footer-col">
         <span class="mono-caption--xs footer-caption">Public</span>
-        <a href={author.links.twitter} rel="me noopener" class="footer-value footer-link">
+        <ExternalLink href={author.links.twitter} class="footer-value footer-link" rel="me">
           @{author.handles.public}
-        </a>
+        </ExternalLink>
       </div>
       <div class="footer-col">
         <span class="mono-caption--xs footer-caption">Technical</span>
-        <a href={author.links.github} rel="me noopener" class="footer-value footer-link">
+        <ExternalLink href={author.links.github} class="footer-value footer-link" rel="me">
           @{author.handles.technical}
-        </a>
+        </ExternalLink>
       </div>
     </div>
 
@@ -51,7 +52,9 @@ const lastShippedDate = new Date(lastShipped.date).toLocaleDateString('en-GB', {
       </div>
       <div class="footer-col">
         <span class="mono-caption--xs footer-caption">Code</span>
-        <a href={siteConfig.repo} rel="noopener" class="footer-value footer-link">Repository</a>
+        <ExternalLink href={siteConfig.repo} class="footer-value footer-link">
+          Repository
+        </ExternalLink>
       </div>
       <div class="footer-col">
         <span class="mono-caption--xs footer-caption">©</span>

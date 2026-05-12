@@ -1,0 +1,41 @@
+---
+/**
+ * Explicit external link with an inline ↗ glyph affordance.
+ *
+ * Inside .prose markdown bodies, the arrow is added automatically via CSS
+ * (see global.css `.prose a[href^="http"]...`). Use this component when the
+ * link sits *outside* .prose (footer, page chrome, etc) and you want the
+ * same affordance.
+ *
+ * Sets target="_blank" rel="noopener noreferrer" by default.
+ */
+interface Props {
+  href: string;
+  class?: string;
+  rel?: string;
+  newTab?: boolean;
+}
+
+const { href, class: className = '', rel = '', newTab = true } = Astro.props;
+const safeRel = ['noopener', 'noreferrer', rel].filter(Boolean).join(' ').trim();
+---
+
+<a
+  href={href}
+  class:list={['external-link', className]}
+  {...newTab ? { target: '_blank', rel: safeRel } : {}}
+>
+  <slot />
+  <span class="external-arrow" aria-hidden="true">↗</span>
+</a>
+
+<style>
+  .external-arrow {
+    display: inline-block;
+    margin-left: 0.25em;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    line-height: 0;
+    transform: translateY(-0.05em);
+  }
+</style>

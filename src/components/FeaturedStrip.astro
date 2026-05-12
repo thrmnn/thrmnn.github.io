@@ -1,0 +1,84 @@
+---
+import { getCollection } from 'astro:content';
+import ProjectCard from './ProjectCard.astro';
+
+const all = await getCollection('projects');
+const featured = all
+  .filter((p) => p.data.featured)
+  .sort((a, b) => (a.data.featuredOrder ?? 99) - (b.data.featuredOrder ?? 99))
+  .slice(0, 4);
+---
+
+{
+  featured.length > 0 && (
+    <section class="featured">
+      <div class="featured-head">
+        <span class="eyebrow">Current work</span>
+        <a href="/work" class="featured-all">
+          All work →
+        </a>
+      </div>
+      <div class="featured-grid" data-count={featured.length}>
+        {featured.map((p, i) => (
+          <ProjectCard project={p} variant={i === 0 ? 'feature' : 'compact'} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .featured {
+    margin-top: var(--space-section);
+  }
+  .featured-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .featured-all {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+  .featured-all:hover {
+    color: var(--color-accent);
+  }
+
+  .featured-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 720px) {
+    .featured-grid[data-count='3'],
+    .featured-grid[data-count='4'] {
+      grid-template-columns: 1.4fr 1fr;
+      grid-template-rows: auto auto;
+    }
+    .featured-grid[data-count='3'] > :first-child,
+    .featured-grid[data-count='4'] > :first-child {
+      grid-row: 1 / span 2;
+    }
+    .featured-grid[data-count='4'] > :nth-child(4) {
+      grid-column: 1 / span 2;
+    }
+  }
+  @media (min-width: 1024px) {
+    .featured-grid[data-count='4'] {
+      grid-template-columns: 1.5fr 1fr 1fr;
+      grid-template-rows: auto;
+    }
+    .featured-grid[data-count='4'] > :first-child {
+      grid-row: 1;
+    }
+    .featured-grid[data-count='4'] > :nth-child(4) {
+      grid-column: auto;
+    }
+  }
+</style>

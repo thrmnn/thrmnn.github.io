@@ -2,40 +2,44 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const projects = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string().optional(),
+    date: z.coerce.date(),
+    status: z.string().optional(),
+    summary: z.string(),
+    register: z.enum(['cartesian', 'tropical']).default('cartesian'),
+    featured: z.boolean().default(false),
+    featuredOrder: z.number().int().positive().optional(),
+    heroImage: z.string().optional(),
+    heroAlt: z.string().optional(),
+    collaborators: z.array(z.string()).default([]),
+    links: z
+      .object({
+        paper: z.string().url().optional(),
+        preprint: z.string().url().optional(),
+        repo: z.string().url().optional(),
+        app: z.string().url().optional(),
+        site: z.string().url().optional(),
+      })
+      .default({}),
+    tags: z.array(z.string()).default([]),
+    updated: z.coerce.date().optional(),
+  }),
+});
+
+const writing = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/writing' }),
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
     summary: z.string(),
-    featured: z.boolean().default(false),
-    featuredOrder: z.number().int().positive().optional(),
-    externalLink: z.string().url().optional(),
-    image: z.string().optional(),
-    gradient: z.string().optional(),
+    register: z.enum(['cartesian', 'tropical']).default('tropical'),
+    language: z.enum(['en', 'fr', 'pt']).default('en'),
     tags: z.array(z.string()).default([]),
-    metric: z.string().optional(),
-    label: z.string().optional(),
+    updated: z.coerce.date().optional(),
   }),
 });
 
-const publications = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/publications' }),
-  schema: z.object({
-    title: z.string(),
-    authors: z.array(z.string()),
-    date: z.coerce.date(),
-    publicationType: z.string(),
-    publication: z.string(),
-    publicationShort: z.string(),
-    abstract: z.string(),
-    summary: z.string().optional(),
-    doi: z.string().optional(),
-    image: z.string().optional(),
-    links: z.object({
-      pdf: z.string().url().optional(),
-      code: z.string().url().optional(),
-    }).default({}),
-  }),
-});
-
-export const collections = { projects, publications };
+export const collections = { projects, writing };

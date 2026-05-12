@@ -1,0 +1,210 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { author } from '../data/author';
+
+const trajectory = [
+  { place: 'Paris', note: 'French-Brazilian, raised between the two.' },
+  { place: 'Lausanne', note: 'MSc in Robotics, EPFL. Perception, learning, control.' },
+  {
+    place: 'Amsterdam',
+    note: 'MIT Senseable City Lab. Urban tree morphology from LiDAR. Roboat — first engineering hire on autonomous vessels.',
+  },
+  {
+    place: 'Rio de Janeiro',
+    note: 'MIT Senseable City Lab — founding member of the Rio branch. Favela urban science: LiDAR, CFD airflow, solar exposure, environmental risk.',
+  },
+];
+---
+
+<PageLayout
+  title="About"
+  description="French-Brazilian researcher and builder. MIT Senseable Rio, founding member. Trained in robotics at EPFL; urban science at MIT Amsterdam; now research line on informal urban morphology in Rio."
+  ogType="profile"
+>
+  <section class="page-wrap about">
+    <header class="about-head">
+      <span class="eyebrow">About</span>
+      <h1 class="about-title">Théo Alessandro Hermann</h1>
+      <p class="about-positioning">
+        Researcher and builder. French-Brazilian, based in Rio. Founding member of the MIT Senseable
+        City Lab — Rio branch.
+      </p>
+    </header>
+
+    <div class="about-body">
+      <div class="about-prose prose">
+        <p>
+          The work splits two ways. On one side, urban science: how the geometry of cities — formal
+          and informal — produces climate, exposure, and risk at the pedestrian scale. The current
+          research line at MIT Senseable Rio maps favela morphology with LiDAR and translates it
+          into CFD airflow, solar exposure, and environmental signal.
+        </p>
+        <p>
+          On the other side, robotics. Open-source benchmarks for vision-language-action models on
+          top of HuggingFace lerobot. World-model work on the edge of where perception, action, and
+          learning meet.
+        </p>
+        <p>
+          The two halves talk to each other more than they look like they should. Both deal in
+          geometry, measurement, and acting on the world. Both reward building the artifact before
+          announcing the result.
+        </p>
+      </div>
+
+      <aside class="about-side">
+        <section class="side-section">
+          <span class="eyebrow">Trajectory</span>
+          <ol class="trajectory">
+            {
+              trajectory.map((stop) => (
+                <li>
+                  <span class="trajectory-place">{stop.place}</span>
+                  <span class="trajectory-note">{stop.note}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <section class="side-section">
+          <span class="eyebrow">Languages</span>
+          <ul class="languages">
+            {author.languages.map((lang) => <li>{lang}</li>)}
+          </ul>
+        </section>
+
+        <section class="side-section">
+          <span class="eyebrow">CV</span>
+          <p class="side-line">
+            <a href="/resume.pdf">Download CV (PDF)</a>
+          </p>
+        </section>
+
+        <section class="side-section">
+          <span class="eyebrow">Contact</span>
+          <p class="side-line">
+            <a href={`mailto:${author.email}`}>{author.email}</a>
+          </p>
+        </section>
+      </aside>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .about {
+    padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-section);
+  }
+  .about-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 60ch;
+    margin-bottom: 3rem;
+  }
+  .about-title {
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    line-height: 1.05;
+    max-width: 18ch;
+  }
+  .about-positioning {
+    font-family: var(--font-body);
+    color: var(--color-ink-soft);
+    font-size: 1.1rem;
+    line-height: 1.55;
+    max-width: 44ch;
+  }
+
+  .about-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .about-body {
+      grid-template-columns: minmax(0, 1fr) 18rem;
+      gap: 4rem;
+    }
+  }
+
+  .about-prose p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-ink);
+    margin-bottom: 1.25em;
+    max-width: 60ch;
+  }
+
+  .about-side {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-left: 0;
+    border-left: 0;
+  }
+  @media (min-width: 900px) {
+    .about-side {
+      border-left: 1px solid var(--color-rule);
+      padding-left: 2rem;
+    }
+  }
+  .side-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .trajectory {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .trajectory li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--color-rule);
+  }
+  .trajectory-place {
+    font-family: var(--font-cartesian);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-ink);
+  }
+  .trajectory-note {
+    font-size: 0.9rem;
+    color: var(--color-ink-muted);
+    line-height: 1.5;
+  }
+  .languages {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    color: var(--color-ink-soft);
+    font-size: 0.95rem;
+  }
+  .side-line {
+    color: var(--color-ink-soft);
+    font-size: 0.95rem;
+  }
+  .side-line a {
+    color: var(--color-ink);
+    border-bottom: 1px solid var(--color-rule);
+    padding-bottom: 1px;
+    transition:
+      border-color 200ms ease,
+      color 200ms ease;
+    text-decoration: none;
+  }
+  .side-line a:hover {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
+</style>

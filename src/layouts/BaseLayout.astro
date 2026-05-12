@@ -10,80 +10,53 @@ interface Props {
   image?: string;
   ogType?: 'website' | 'profile' | 'article';
   articleJsonLd?: Record<string, unknown>;
+  register?: 'cartesian' | 'tropical';
 }
 
-const { title, description, image, ogType = 'website', articleJsonLd } = Astro.props;
+const {
+  title,
+  description,
+  image,
+  ogType = 'website',
+  articleJsonLd,
+  register = 'cartesian',
+} = Astro.props;
+
 const pageTitle = title ? `${title} — ${siteConfig.title}` : siteConfig.title;
 const pageDescription = description || siteConfig.description;
 const canonicalUrl = new URL(Astro.url.pathname, siteConfig.url).href;
 const ogImage = new URL(image || siteConfig.ogImage, siteConfig.url).href;
 
-const socialUrls = author.social
-  .filter((s) => s.icon !== 'email')
-  .map((s) => s.href);
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": author.name,
-  "jobTitle": author.role,
-  "url": siteConfig.url,
-  "image": new URL('/avatar.webp', siteConfig.url).href,
-  "email": author.email,
-  "worksFor": {
-    "@type": "Organization",
-    "name": author.affiliation,
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: author.name,
+  jobTitle: author.role,
+  url: siteConfig.url,
+  email: author.email,
+  worksFor: {
+    '@type': 'Organization',
+    name: author.affiliation,
   },
-  "sameAs": socialUrls,
-  "alumniOf": [...new Set(author.education.map((edu) => edu.institution))].map((name) => ({
-    "@type": "CollegeOrUniversity",
-    "name": name,
-  })),
-  "knowsAbout": [
-    "Computer Vision",
-    "Perception Systems",
-    "Sensor Fusion",
-    "LiDAR Processing",
-    "3D Reconstruction",
-    "Autonomous Navigation",
-    "Robot Operating System (ROS)",
-    "Deep Learning",
-    "Edge Deployment",
-    "MLOps",
-    "PyTorch",
-    "C++",
-  ],
-  "hasOccupation": {
-    "@type": "Occupation",
-    "name": author.role,
-    "occupationLocation": {
-      "@type": "Place",
-      "name": author.experience[0]?.location,
-    },
-    "description": author.experience[0]?.summary,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: author.location,
   },
+  sameAs: [author.links.github, author.links.twitter, author.links.linkedin].filter(Boolean),
+  knowsLanguage: ['fr', 'pt', 'en'],
 };
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-register={register}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io"
+    />
     <meta name="generator" content={Astro.generator} />
-
-    <!-- Anti-FOUC: set data-theme synchronously before first paint -->
-    <script is:inline>
-      (function () {
-        var stored = localStorage.getItem('theme');
-        if (stored === 'light' || stored === 'dark') {
-          document.documentElement.setAttribute('data-theme', stored);
-        }
-        // When no stored preference, let :root / @media (prefers-color-scheme)
-        // in CSS handle it — no data-theme attribute needed.
-      })();
-    </script>
 
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
@@ -91,8 +64,8 @@ const jsonLd = {
 
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
@@ -101,9 +74,6 @@ const jsonLd = {
     <meta property="og:description" content={pageDescription} />
     <meta property="og:site_name" content={siteConfig.title} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:alt" content={pageTitle} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
@@ -112,25 +82,44 @@ const jsonLd = {
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-    {articleJsonLd && (
-      <script type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
-    )}
+    <!-- JSON-LD -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
+    {
+      articleJsonLd && (
+        <script is:inline type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
+      )
+    }
 
-    <!-- Analytics -->
-    {import.meta.env.PROD && siteConfig.analytics?.plausible?.enabled && (
-      <script
-        defer
-        data-domain={siteConfig.analytics.plausible.domain}
-        src="https://plausible.io/js/script.js"
-      />
-    )}
+    {
+      import.meta.env.PROD && siteConfig.analytics.plausible.enabled && (
+        <script
+          is:inline
+          defer
+          data-domain={siteConfig.analytics.plausible.domain}
+          src="https://plausible.io/js/script.js"
+        />
+      )
+    }
 
-    <!-- Fonts (self-hosted, latin subset preloaded; latin-ext lazy via unicode-range) -->
-    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <ClientRouter />
+    <!-- Fonts: preload Latin subsets used above the fold on every page.
+         Italic + Mono load on demand via @font-face unicode-range. -->
+    <link rel="preload" href="/fonts/switzer-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="preload"
+      href="/fonts/space-grotesk-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/fraunces-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <ClientRouter fallback="swap" />
   </head>
   <body>
     <slot />

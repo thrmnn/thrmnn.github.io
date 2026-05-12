@@ -1,0 +1,89 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+
+export async function getStaticPaths() {
+  const writing = await getCollection('writing');
+  return writing.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'writing'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: d.title,
+  description: d.summary,
+  datePublished: d.date.toISOString(),
+  dateModified: (d.updated ?? d.date).toISOString(),
+  inLanguage: d.language,
+  keywords: d.tags.join(', '),
+};
+---
+
+<PageLayout
+  title={d.title}
+  description={d.summary}
+  ogType="article"
+  register={d.register}
+  articleJsonLd={articleJsonLd}
+>
+  <article class="page-wrap essay">
+    <header class="essay-head">
+      <span class="mono-caption">
+        {d.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        {d.language !== 'en' && <span class="essay-lang">{d.language.toUpperCase()}</span>}
+      </span>
+      <h1 class="essay-title">{d.title}</h1>
+      <p class="essay-summary">{d.summary}</p>
+    </header>
+
+    <div class="essay-body prose">
+      <Content />
+    </div>
+  </article>
+</PageLayout>
+
+<style>
+  .essay {
+    padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-section);
+  }
+  .essay-head {
+    max-width: 64ch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+  }
+  .essay-lang {
+    margin-left: 0.5rem;
+    padding: 0.05rem 0.4rem;
+    border: 1px solid var(--color-rule-strong);
+    border-radius: 2px;
+    font-size: 0.7rem;
+  }
+  .essay-title {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    line-height: 1.08;
+    max-width: 22ch;
+  }
+  .essay-summary {
+    font-family: var(--font-body);
+    color: var(--color-ink-soft);
+    font-size: 1.15rem;
+    line-height: 1.55;
+    max-width: 54ch;
+  }
+  .essay-body {
+    max-width: 64ch;
+  }
+</style>

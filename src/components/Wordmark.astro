@@ -1,0 +1,66 @@
+---
+import { author } from '../data/author';
+
+interface Props {
+  /** Visual size: 'sm' for nav, 'md' inline, 'lg' for hero. */
+  size?: 'sm' | 'md' | 'lg';
+  /** Render as a link to the homepage. */
+  as?: 'link' | 'static';
+  class?: string;
+}
+
+const { size = 'md', as = 'link', class: className = '' } = Astro.props as Props;
+
+const sizeClasses = {
+  sm: 'wordmark-sm',
+  md: 'wordmark-md',
+  lg: 'wordmark-lg',
+} as const;
+const sizeClass = sizeClasses[size ?? 'md'];
+---
+
+{
+  as === 'link' ? (
+    <a href="/" class={`wordmark ${sizeClass} ${className}`} aria-label={`${author.name} — home`}>
+      {author.name}
+    </a>
+  ) : (
+    <span class={`wordmark ${sizeClass} ${className}`}>{author.name}</span>
+  )
+}
+
+<style>
+  /* All wordmark sizes share Fraunces. Optical size axis tuned per render size:
+     small (nav) uses text opsz; large (hero) uses display opsz. */
+  .wordmark-sm {
+    font-size: 1.0625rem;
+    letter-spacing: -0.005em;
+    font-variation-settings:
+      'opsz' 18,
+      'SOFT' 35;
+  }
+  .wordmark-md {
+    font-size: 1.75rem;
+    letter-spacing: -0.012em;
+    line-height: 1.1;
+    font-variation-settings:
+      'opsz' 36,
+      'SOFT' 45;
+  }
+  .wordmark-lg {
+    font-size: clamp(2.5rem, 6.5vw, 4.75rem);
+    letter-spacing: -0.022em;
+    line-height: 1.02;
+    font-variation-settings:
+      'opsz' 144,
+      'SOFT' 60;
+  }
+  a.wordmark {
+    text-decoration: none;
+    color: var(--color-ink);
+    transition: color 200ms ease;
+  }
+  a.wordmark:hover {
+    color: var(--color-ink-soft);
+  }
+</style>

@@ -1,32 +1,24 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* ==========================================================================
-   Self-hosted variable fonts (Inter + Space Grotesk, latin + latin-ext)
-   Variable fonts: a single woff2 covers all weights via the wght axis.
+   Self-hosted variable fonts (Latin subsets, woff2)
+   Variable axes:
+     Space Grotesk  → wght
+     Fraunces       → opsz, wght, SOFT, ital
+     Switzer        → wght
+     JetBrains Mono → wght
+   Each face is a single woff2 so the browser picks weights/optical sizes
+   off the variable axes without further downloads.
    ========================================================================== */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url('/fonts/inter-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url('/fonts/inter-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
 @font-face {
   font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
   src: url('/fonts/space-grotesk-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
   font-family: 'Space Grotesk';
@@ -34,311 +26,458 @@
   font-weight: 100 900;
   font-display: swap;
   src: url('/fonts/space-grotesk-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/fraunces-latin.woff2') format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/fraunces-latin-italic.woff2') format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Switzer';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/switzer-latin.woff2') format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Switzer';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/switzer-latin-italic.woff2') format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* ==========================================================================
-   Design System — Théo Hermann v2
+   Design system — Cartesian-Tropical Explicit
+   - Paper (ground) + Ink (text) are constant across the entire site.
+   - Register switches accent palette + heading face.
+   - Cartesian (default): Space Grotesk display, graphite/cool-grey accents.
+   - Tropical: Fraunces display, terra/oxblood/sand accents.
    ========================================================================== */
 
-/* --------------------------------------------------------------------------
-   Color tokens — dynamic (overridable by theme switching)
-   `@theme inline` tells Tailwind to generate utilities that reference CSS
-   custom properties instead of inlining static values, so runtime overrides
-   via [data-theme] / prefers-color-scheme actually take effect.
-   -------------------------------------------------------------------------- */
 @theme inline {
-  /* Background layers */
-  --color-bg-primary: var(--bg-primary);
-  --color-bg-secondary: var(--bg-secondary);
-  --color-bg-elevated: var(--bg-elevated);
-  --color-bg-accent: var(--bg-accent);
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
 
-  /* Text hierarchy */
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
+  --color-graphite: var(--graphite);
+  --color-cool-grey: var(--cool-grey);
+  --color-terra: var(--terra);
+  --color-oxblood: var(--oxblood);
+  --color-sand: var(--sand);
 
-  /* Accent */
   --color-accent: var(--accent);
-  --color-accent-hover: var(--accent-hover);
   --color-accent-soft: var(--accent-soft);
-
-  /* Links */
   --color-link: var(--link);
   --color-link-hover: var(--link-hover);
-
-  /* Borders */
-  --color-border: var(--border);
-  --color-border-hover: var(--border-hover);
 }
 
-/* --------------------------------------------------------------------------
-   Static design tokens — fonts, spacing, layout (not theme-dependent)
-   -------------------------------------------------------------------------- */
 @theme {
-  /* --- Typography --- */
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  /* Type stacks */
+  --font-cartesian: 'Space Grotesk', system-ui, sans-serif;
+  --font-tropical: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-wordmark: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Switzer', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+  /* Tailwind default-family aliases (so font-sans utility maps to body) */
+  --font-sans: 'Switzer', system-ui, sans-serif;
+  --font-serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
 
-  /* --- Spacing (mobile-first, overridden at md in responsive section below) --- */
-  --space-section: 3.5rem;
-  --space-block: 2rem;
-  --space-element: 1.5rem;
-  --space-tight: 0.75rem;
-
-  /* --- Layout --- */
-  --max-w-prose: 65ch;
-  --max-w-content: 1100px;
+  /* Layout */
+  --max-w-prose: 64ch;
+  --max-w-content: 1120px;
   --max-w-wide: 1280px;
+
+  /* Spacing rhythm */
+  --space-section: 4rem;
+  --space-block: 2rem;
+  --space-element: 1.25rem;
 }
-
-/* ==========================================================================
-   Color Scheme Definitions
-   Dark = default (no attribute required). Light = opt-in via data-theme.
-
-   All base element styles live in @layer base so that Tailwind's
-   @layer utilities always wins — preventing global a:hover from leaking
-   into buttons, nav links, or any element with an explicit color utility.
-   ========================================================================== */
 
 @layer base {
-
-  /* --- Dark Mode (default) --- */
   :root {
-    --bg-primary: #0a0a0a;
-    --bg-secondary: #111111;
-    --bg-elevated: #1a1a1a;
-    --bg-accent: #141414;
+    /* Constant ground (Paper + Ink) */
+    --paper: #f5f2ec;
+    --paper-deep: #ece7dd; /* secondary block fill, ~5% darker */
+    --ink: #1a1815;
+    --ink-soft: #4a4640; /* secondary text, ~7.4:1 on paper */
+    --ink-muted: #7a7570; /* tertiary text, ~4.6:1 on paper */
+    --rule: rgba(26, 24, 21, 0.1);
+    --rule-strong: rgba(26, 24, 21, 0.2);
 
-    --text-primary: #f5f5f5;
-    --text-secondary: #a1a1a1;
-    --text-muted: #666666;
+    /* Register palettes — both defined; register switches which one is "accent" */
+    --graphite: #3b4252;
+    --cool-grey: #9ca3ae;
+    --terra: #b95c3e;
+    --oxblood: #7a2e2a;
+    --sand: #e4c896;
 
-    --accent: #3b82f6;
-    --accent-hover: #60a5fa;
-    --accent-soft: oklch(0.55 0.15 250 / 0.1);
-
-    --link: #93c5fd;
-    --link-hover: #bfdbfe;
-
-    --border: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(255, 255, 255, 0.16);
-
-    color-scheme: dark;
-  }
-
-  /* --- Light Mode (explicit toggle) ---
-     Contrast ratios vs bg-primary #fafafa (WCAG AA = 4.5:1 text, 3:1 UI):
-       text-primary  #171717  → 15.8:1 ✓
-       text-secondary #525252  →  7.4:1 ✓
-       text-muted    #6b6b6b  →  5.0:1 ✓  (was #a3a3a3 = 2.3:1 ✗)
-       accent        #2563eb  →  4.8:1 ✓
-       link          #1d4ed8  →  6.0:1 ✓  */
-  [data-theme="light"] {
-    --bg-primary: #fafafa;
-    --bg-secondary: #f5f5f5;
-    --bg-elevated: #ffffff;
-    --bg-accent: #f0f0f0;
-
-    --text-primary: #171717;
-    --text-secondary: #525252;
-    --text-muted: #6b6b6b;
-
-    --accent: #2563eb;
-    --accent-hover: #1d4ed8;
-    --accent-soft: oklch(0.55 0.15 250 / 0.08);
-
-    --link: #1d4ed8;
-    --link-hover: #1e40af;
-
-    --border: rgba(0, 0, 0, 0.12);
-    --border-hover: rgba(0, 0, 0, 0.22);
+    /* Default register = Cartesian */
+    --accent: var(--graphite);
+    --accent-soft: rgba(59, 66, 82, 0.08);
+    --link: var(--ink);
+    --link-hover: var(--graphite);
 
     color-scheme: light;
   }
 
-  /* --- Light Mode (OS preference fallback — only when no data-theme is set) --- */
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme]) {
-      --bg-primary: #fafafa;
-      --bg-secondary: #f5f5f5;
-      --bg-elevated: #ffffff;
-      --bg-accent: #f0f0f0;
+  [data-register='tropical'] {
+    --accent: var(--terra);
+    --accent-soft: rgba(185, 92, 62, 0.1);
+    --link: var(--oxblood);
+    --link-hover: var(--terra);
+  }
 
-      --text-primary: #171717;
-      --text-secondary: #525252;
-      --text-muted: #6b6b6b;
-
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --accent-soft: oklch(0.55 0.15 250 / 0.08);
-
-      --link: #1d4ed8;
-      --link-hover: #1e40af;
-
-      --border: rgba(0, 0, 0, 0.12);
-      --border-hover: rgba(0, 0, 0, 0.22);
-
-      color-scheme: light;
+  /* Larger spacing rhythm on wider viewports */
+  @media (min-width: 768px) {
+    :root {
+      --space-section: 6.5rem;
+      --space-block: 3rem;
     }
   }
 
-  /* --- Base Element Styles --- */
+  /* ------------------------------------------------------------------------
+     Base elements
+     ------------------------------------------------------------------------ */
 
   html {
-    background-color: var(--color-bg-primary);
-    color: var(--color-text-secondary);
-    font-family: var(--font-sans);
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
   }
 
   body {
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
+    background-color: var(--color-paper);
   }
 
   main {
     flex: 1;
   }
 
-  /* --- Typography --- */
-
-  h1, h2, h3, h4, h5, h6 {
-    color: var(--color-text-primary);
-    font-family: var(--font-display);
-    font-weight: 700;
+  /* Headings — Cartesian display face by default; Tropical pages swap */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--color-ink);
+    font-family: var(--font-cartesian);
+    font-weight: 600;
     letter-spacing: -0.02em;
-    line-height: 1.2;
+    line-height: 1.15;
   }
-
-  h1 { letter-spacing: -0.03em; }
-  h2 { letter-spacing: -0.025em; }
-
-  /* Default link style — in @layer base so any Tailwind utility wins.
-     This means text-white on a button won't be overridden by a:hover. */
-  a {
-    color: var(--color-link);
-    text-decoration: none;
-    transition: color 0.15s ease;
-  }
-
-  a:hover {
-    color: var(--color-link-hover);
-  }
-
-  /* --- Prose (markdown body) --- */
-
-  .prose {
-    color: var(--color-text-secondary);
-    line-height: 1.7;
-    max-width: var(--max-w-prose);
-  }
-
-  .prose h1, .prose h2, .prose h3 {
-    color: var(--color-text-primary);
-    margin-top: 2em;
-    margin-bottom: 0.75em;
-  }
-
-  .prose p {
-    margin-bottom: 1.25em;
-  }
-
-  .prose strong {
-    color: var(--color-text-primary);
+  h1 {
+    letter-spacing: -0.03em;
     font-weight: 600;
   }
+  h2 {
+    letter-spacing: -0.025em;
+  }
 
+  [data-register='tropical'] h1,
+  [data-register='tropical'] h2,
+  [data-register='tropical'] h3,
+  [data-register='tropical'] h4 {
+    font-family: var(--font-tropical);
+    font-weight: 450;
+    letter-spacing: -0.015em;
+    font-variation-settings:
+      'opsz' 96,
+      'SOFT' 50;
+  }
+  [data-register='tropical'] h1 {
+    font-variation-settings:
+      'opsz' 144,
+      'SOFT' 60;
+  }
+
+  /* Links inherit ink; register pulls hover toward its accent */
+  a {
+    color: var(--color-link);
+    text-decoration: underline;
+    text-decoration-color: var(--color-rule-strong);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition:
+      color 200ms ease,
+      text-decoration-color 200ms ease;
+  }
+  a:hover {
+    color: var(--color-link-hover);
+    text-decoration-color: currentColor;
+  }
+
+  /* Quiet, deliberate selection */
+  ::selection {
+    background: var(--color-accent-soft);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  /* Horizontal rules */
+  hr {
+    border: 0;
+    border-top: 1px solid var(--color-rule);
+    margin: 2rem 0;
+  }
+
+  /* ------------------------------------------------------------------------
+     Prose (markdown body)
+     ------------------------------------------------------------------------ */
+
+  .prose {
+    color: var(--color-ink);
+    line-height: 1.7;
+    max-width: var(--max-w-prose);
+    font-size: 1.0625rem;
+  }
+  .prose p {
+    margin-bottom: 1.25em;
+    color: var(--color-ink-soft);
+  }
+  .prose h2 {
+    margin-top: 2.25em;
+    margin-bottom: 0.6em;
+    font-size: 1.5rem;
+  }
+  .prose h3 {
+    margin-top: 1.75em;
+    margin-bottom: 0.4em;
+    font-size: 1.2rem;
+  }
+  .prose strong {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .prose em {
+    font-style: italic;
+  }
   .prose code {
     font-family: var(--font-mono);
-    font-size: 0.875em;
-    background: var(--color-bg-elevated);
-    padding: 0.15em 0.35em;
-    border-radius: 4px;
+    font-size: 0.9em;
+    background: var(--color-paper-deep);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
   }
-
   .prose pre {
-    background: var(--color-bg-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    padding: 1.25rem;
+    background: var(--color-paper-deep);
+    border: 1px solid var(--color-rule);
+    border-radius: 6px;
+    padding: 1.1rem 1.25rem;
     overflow-x: auto;
-    margin: 1.5em 0;
+    margin: 1.75em 0;
+    font-size: 0.92em;
   }
-
   .prose pre code {
     background: none;
     padding: 0;
   }
-
-  .prose img {
-    border-radius: 8px;
-    margin: 1.5em 0;
-  }
-
-  .prose table {
+  .prose img,
+  .prose video {
+    border-radius: 4px;
+    margin: 2em 0;
     width: 100%;
-    border-collapse: collapse;
-    margin: 1.5em 0;
-    font-size: 0.9em;
+    height: auto;
   }
-
-  .prose th {
-    text-align: left;
-    font-weight: 600;
-    color: var(--color-text-primary);
-    padding: 0.75rem;
-    border-bottom: 1px solid var(--color-border-hover);
-  }
-
-  .prose td {
-    padding: 0.75rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-
   .prose blockquote {
-    border-left: 3px solid var(--color-accent);
+    border-left: 2px solid var(--color-accent);
     padding-left: 1rem;
-    color: var(--color-text-muted);
+    margin: 1.75em 0;
+    color: var(--color-ink-soft);
     font-style: italic;
-    margin: 1.5em 0;
   }
-
-  .prose ul, .prose ol {
+  .prose ul,
+  .prose ol {
     padding-left: 1.5em;
     margin-bottom: 1.25em;
+    color: var(--color-ink-soft);
   }
-
   .prose li {
-    margin-bottom: 0.5em;
+    margin-bottom: 0.4em;
+  }
+  .prose a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
   }
 
-  /* --- Responsive spacing overrides --- */
-
-  @media (min-width: 768px) {
-    :root {
-      --space-section: 6rem;
-      --space-block: 3rem;
+  /* Heading anchors (rehype-autolink-headings) — quiet hash, visible on hover */
+  .prose h2,
+  .prose h3 {
+    position: relative;
+  }
+  .prose .heading-anchor {
+    position: absolute;
+    left: -1.25rem;
+    top: 0;
+    bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-ink-muted);
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 200ms ease;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    line-height: 1;
+  }
+  .prose .heading-anchor::before {
+    content: '#';
+  }
+  .prose h2:hover .heading-anchor,
+  .prose h3:hover .heading-anchor,
+  .prose .heading-anchor:focus {
+    opacity: 1;
+  }
+  @media (max-width: 720px) {
+    .prose .heading-anchor {
+      display: none;
     }
   }
 
-  /* --- Selection --- */
-
-  ::selection {
-    background: rgba(59, 130, 246, 0.3);
-    color: var(--color-text-primary);
+  /* Cartesian prose: tighter rhythm, captions in mono */
+  [data-register='cartesian'] .prose figure figcaption,
+  [data-register='cartesian'] .prose figcaption {
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    color: var(--color-ink-muted);
+    margin-top: 0.5em;
+    letter-spacing: 0.01em;
   }
 
-  /* --- Focus visible --- */
-
-  :focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+  /* Tropical prose: serif drop, looser */
+  [data-register='tropical'] .prose {
+    font-family: var(--font-body);
+    line-height: 1.75;
+  }
+  [data-register='tropical'] .prose figcaption {
+    font-family: var(--font-tropical);
+    font-style: italic;
+    color: var(--color-ink-muted);
+    font-size: 0.95em;
+    margin-top: 0.5em;
   }
 
+  /* ------------------------------------------------------------------------
+     Motion — restrained, 250ms, reduced-motion respected
+     ------------------------------------------------------------------------ */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 } /* end @layer base */
+
+/* ==========================================================================
+   Component utilities
+   ========================================================================== */
+
+@layer components {
+  /* Wordmark — always Fraunces, regardless of register */
+  .wordmark {
+    font-family: var(--font-wordmark);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+    /* opsz + SOFT axis values are set per-size in Wordmark.astro */
+  }
+
+  /* Mono caption — used for status indicators, dates, technical labels */
+  .mono-caption {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-muted);
+  }
+
+  /* Eyebrow — small label above section titles */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-ink-muted);
+  }
+
+  /* Page wrapper — content gutter */
+  .page-wrap {
+    width: 100%;
+    max-width: var(--max-w-content);
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .page-wrap {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* Thin rule used for section breaks */
+  .rule {
+    height: 1px;
+    background: var(--color-rule);
+    border: 0;
+  }
+}

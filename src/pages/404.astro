@@ -2,168 +2,83 @@
 import PageLayout from '../layouts/PageLayout.astro';
 
 const pages = [
-  {
-    label: 'Home',
-    href: '/',
-    description: 'Bio, featured work, publications',
-  },
-  {
-    label: 'Projects',
-    href: '/projects/',
-    description: 'Perception systems, digital twins, autonomous boats',
-  },
-  {
-    label: 'Research',
-    href: '/research/',
-    description: 'Papers, methods, technical deep-dives',
-  },
-  {
-    label: 'CV',
-    href: '/cv/',
-    description: 'Experience, education, skills',
-  },
-  {
-    label: 'Now',
-    href: '/now/',
-    description: 'What I am working on right now',
-  },
+  { label: 'Work', href: '/work', note: 'Research and engineering projects.' },
+  { label: 'Writing', href: '/writing', note: 'Essays and field notes.' },
+  { label: 'Now', href: '/now', note: 'What I am working on this month.' },
+  { label: 'About', href: '/about', note: 'Trajectory and languages.' },
 ];
 ---
 
-<PageLayout title="404 — Page Not Found" description="This page does not exist.">
-  <section class="not-found-section relative min-h-[70vh] flex items-center justify-center overflow-hidden py-[var(--space-section)]">
-    <!-- Subtle background -->
-    <div class="not-found-bg absolute inset-0"></div>
-    <div class="not-found-grid absolute inset-0"></div>
+<PageLayout title="404" description="Page not found.">
+  <section class="page-wrap notfound">
+    <span class="mono-caption">404</span>
+    <h1 class="notfound-title">This page is not here.</h1>
+    <p class="notfound-lede">It may have moved, been renamed, or never existed at all.</p>
 
-    <div class="relative z-10 mx-auto max-w-[var(--max-w-content)] px-6 w-full">
-      <div class="text-center mb-12">
-        <!-- Large 404 with outline/gradient effect -->
-        <h1 class="not-found-heading select-none" style="font-family: var(--font-display);">
-          404
-        </h1>
-        <p class="text-lg sm:text-xl text-text-secondary mt-2 max-w-md mx-auto">
-          This page doesn't exist — but these do:
-        </p>
-      </div>
-
-      <!-- Navigation links -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-3xl mx-auto">
-        {pages.map((page) => (
-          <a
-            href={page.href}
-            class="not-found-link group block rounded-lg border border-border px-4 sm:px-5 py-4 transition-all duration-200 hover:border-border-hover hover:bg-bg-elevated"
-          >
-            <span
-              class="text-base font-semibold text-text-primary group-hover:text-accent-hover transition-colors"
-              style="font-family: var(--font-display);"
-            >
-              {page.label}
-              <span class="inline-block ml-1 opacity-0 -translate-x-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0">
-                &rarr;
-              </span>
-            </span>
-            <span class="block text-sm text-text-muted mt-1">
-              {page.description}
-            </span>
-          </a>
-        ))}
-      </div>
-
-      <p class="text-center mt-10 text-sm text-text-muted">
-        Or go back to the
-        <a href="/" class="text-[var(--color-link)] hover:text-[var(--color-link-hover)]">
-          homepage
-        </a>.
-      </p>
-    </div>
+    <ul class="notfound-list">
+      {
+        pages.map((p) => (
+          <li>
+            <a href={p.href} class="notfound-link">
+              <span class="notfound-label">{p.label}</span>
+              <span class="notfound-note">{p.note}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </section>
 </PageLayout>
 
 <style>
-  .not-found-heading {
-    font-size: clamp(6rem, 18vw, 12rem);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.04em;
-    background: linear-gradient(
-      180deg,
-      rgba(245, 245, 245, 0.15) 0%,
-      rgba(59, 130, 246, 0.10) 50%,
-      rgba(245, 245, 245, 0.04) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.12);
+  .notfound {
+    padding-block: clamp(3rem, 8vw, 5rem) var(--space-section);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 60ch;
   }
-
-  :global([data-theme="light"]) .not-found-heading {
-    background: linear-gradient(
-      180deg,
-      rgba(23, 23, 23, 0.18) 0%,
-      rgba(37, 99, 235, 0.15) 50%,
-      rgba(23, 23, 23, 0.05) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.08);
+  .notfound-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1.1;
   }
-
-  @media (prefers-color-scheme: light) {
-    :global(:root:not([data-theme])) .not-found-heading {
-      background: linear-gradient(
-        180deg,
-        rgba(23, 23, 23, 0.18) 0%,
-        rgba(37, 99, 235, 0.15) 50%,
-        rgba(23, 23, 23, 0.05) 100%
-      );
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.08);
-    }
+  .notfound-lede {
+    color: var(--color-ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.55;
+    margin-bottom: 1rem;
   }
-
-  .not-found-bg {
-    background: radial-gradient(
-      ellipse 60% 50% at 50% 40%,
-      rgba(59, 130, 246, 0.05) 0%,
-      transparent 70%
-    );
+  .notfound-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--color-rule);
   }
-
-  :global([data-theme="light"]) .not-found-bg {
-    background: radial-gradient(
-      ellipse 60% 50% at 50% 40%,
-      rgba(59, 130, 246, 0.08) 0%,
-      transparent 70%
-    );
+  .notfound-list li {
+    border-bottom: 1px solid var(--color-rule);
   }
-
-  .not-found-grid {
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 10%, transparent 60%);
-    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 10%, transparent 60%);
+  .notfound-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 0;
+    color: var(--color-ink);
+    text-decoration: none;
+    transition:
+      padding-left 250ms ease,
+      color 250ms ease;
   }
-
-  :global([data-theme="light"]) .not-found-grid {
-    background-image:
-      linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  .notfound-link:hover {
+    padding-left: 0.5rem;
+    color: var(--color-accent);
   }
-
-  @media (prefers-color-scheme: light) {
-    :global(:root:not([data-theme])) .not-found-grid {
-      background-image:
-        linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
-    }
+  .notfound-label {
+    font-family: var(--font-cartesian);
+    font-size: 1.1rem;
+    font-weight: 600;
   }
-
-  .not-found-link {
-    background: var(--color-bg-elevated);
+  .notfound-note {
+    color: var(--color-ink-muted);
+    font-size: 0.95rem;
   }
 </style>

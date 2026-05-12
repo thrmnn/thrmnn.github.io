@@ -1,88 +1,75 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
+
+const updated = new Date(2026, 4, 1); // May 2026
+const updatedLabel = updated.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
 ---
 
-<PageLayout title="Now" description="What I'm currently focused on.">
-  <section class="py-[var(--space-section)]">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h1 class="text-3xl font-bold text-text-primary mb-2">What I'm Doing Now</h1>
-      <p class="text-sm text-text-muted mb-10">Updated May 2026</p>
+<PageLayout title="Now" description="What Théo Alessandro Hermann is focused on this month.">
+  <section class="page-wrap now">
+    <header class="now-head">
+      <span class="eyebrow">Now</span>
+      <h1 class="now-title">May 2026 · Rio</h1>
+      <p class="now-meta mono-caption">Updated {updatedLabel}</p>
+    </header>
 
-      <div class="prose max-w-2xl">
-        <p>
-          This is a <a href="https://nownownow.com/about">/now page</a>.
-          It tells you what I'm focused on at this point in my life.
-        </p>
-
-        <hr class="border-border my-8" />
-
-        <p><strong>Research</strong> — Submitted our urban tree census paper to <em>Nature Cities</em>. Co-authored with MIT Senseable City Lab and TU Delft, covering 12,350 trees across São Paulo's informal settlements via aerial LiDAR + ML. Continuing the 3D digital twin and CFD work on Rio's favelas at Senseable Rio.</p>
-
-        <p><strong>Learning</strong> — Following the ETH Zurich Robot Learning course by Oier Mees. Recording weekly Loom videos to document progress and build in public.</p>
-
-        <p><strong>Open to</strong> — Senior perception, computer vision, and robotics roles — full-time or freelance. Targeting frontier physical AI companies like Anduril, Figure AI, Waymo, and computer-vision freelance contracts where shipping matters.</p>
-
-        <p><strong>Training</strong> — Upper/lower split strength training and Brazilian Jiu-Jitsu.</p>
-
-        <hr class="border-border my-8" />
-
-        <p class="text-sm text-text-muted italic">
-          Inspired by <a href="https://sive.rs/nowff">Derek Sivers</a>.
-        </p>
-      </div>
-
-      <!-- Timeline -->
-      <div class="mt-16 max-w-2xl">
-        <h2 class="text-xl font-semibold text-text-primary mb-6">Timeline</h2>
-
-        <details open class="mb-4">
-          <summary class="font-semibold text-text-primary cursor-pointer py-2">2026</summary>
-          <div class="ml-0.5 pl-3 sm:ml-1.5 sm:pl-5 border-l border-border space-y-3 mt-2 text-sm text-text-secondary">
-            <p><strong class="text-text-primary">May</strong> — Open to senior perception, computer vision, and robotics roles — full-time or freelance.</p>
-            <p><strong class="text-text-primary">March</strong> — Submitted urban tree census paper to <em>Nature Cities</em>: 12,350 trees across São Paulo's informal settlements (MIT · TU Delft co-authorship).</p>
-          </div>
-        </details>
-
-        <details open class="mb-4">
-          <summary class="font-semibold text-text-primary cursor-pointer py-2">2025</summary>
-          <div class="ml-0.5 pl-3 sm:ml-1.5 sm:pl-5 border-l border-border space-y-3 mt-2 text-sm text-text-secondary">
-            <p><strong class="text-text-primary">November</strong> — Poster and abstract accepted at AGU Fall Meeting 2025 on LiDAR-Informed 3D Modeling of Favelas for Public Health Research.</p>
-            <p><strong class="text-text-primary">January</strong> — Joined MIT Senseable City Lab in Rio de Janeiro as founding member. Lab now at 10 researchers across MIT, UFMG, and TU Delft, building urban digital twins for public health.</p>
-          </div>
-        </details>
-
-        <details class="mb-4">
-          <summary class="font-semibold text-text-primary cursor-pointer py-2">2024</summary>
-          <div class="ml-0.5 pl-3 sm:ml-1.5 sm:pl-5 border-l border-border space-y-3 mt-2 text-sm text-text-secondary">
-            <p><strong class="text-text-primary">September</strong> — Defended Master's thesis at EPFL: Urban Tree Morphology and Canopy Density Estimation from Aerial LiDAR, conducted at MIT Senseable City Lab Amsterdam.</p>
-            <p><strong class="text-text-primary">March</strong> — Joined Roboat (MIT spinoff) as first engineering hire. Built end-to-end perception system for autonomous vessels in Amsterdam.</p>
-          </div>
-        </details>
-
-        <details class="mb-4">
-          <summary class="font-semibold text-text-primary cursor-pointer py-2">2023</summary>
-          <div class="ml-0.5 pl-3 sm:ml-1.5 sm:pl-5 border-l border-border space-y-3 mt-2 text-sm text-text-secondary">
-            <p><strong class="text-text-primary">October</strong> — Started visiting research at IRI (CSIC-UPC), Barcelona, on event cameras for high-speed drone state estimation.</p>
-            <p><strong class="text-text-primary">June</strong> — Completed research assistantship at EPFL VITA Lab, building an open-source ROS autonomy stack for mobile robot navigation.</p>
-          </div>
-        </details>
-
-        <details class="mb-4">
-          <summary class="font-semibold text-text-primary cursor-pointer py-2">2022</summary>
-          <div class="ml-0.5 pl-3 sm:ml-1.5 sm:pl-5 border-l border-border space-y-3 mt-2 text-sm text-text-secondary">
-            <p><strong class="text-text-primary">September</strong> — Started as Teaching Assistant at EPFL for General Physics and Mobile Robotics.</p>
-            <p><strong class="text-text-primary">June</strong> — Joined VITA Lab at EPFL as Research Assistant under Dr. Alexandre Alahi.</p>
-          </div>
-        </details>
-
-        <details class="mb-4">
-          <summary class="font-semibold text-text-primary cursor-pointer py-2">2021</summary>
-          <div class="ml-0.5 pl-3 sm:ml-1.5 sm:pl-5 border-l border-border space-y-3 mt-2 text-sm text-text-secondary">
-            <p><strong class="text-text-primary">September</strong> — Started MSc in Robotics at EPFL.</p>
-            <p><strong class="text-text-primary">June</strong> — Completed exchange year at KTH Royal Institute of Technology, Stockholm.</p>
-          </div>
-        </details>
-      </div>
+    <div class="now-body prose">
+      <p>
+        Two papers in motion. The Amsterdam tree-shade study went to
+        <em>Nature Cities</em> this week. The favela morphology paper — LiDAR, CFD airflow, solar exposure
+        — is the next submission, targeting June.
+      </p>
+      <p>
+        Robotics side: building an open VLA benchmark on lerobot. Public release end of June.
+        Reading recent world-model work in parallel.
+      </p>
+      <p>
+        Building two stealth apps with shipping deadlines in May and June. Not yet linked from this
+        site. Separate from
+        <strong>Azimuth</strong>, an AI infrastructure agency launching alongside — kept under its
+        own brand.
+      </p>
+      <p>
+        Open to senior research and engineering conversations at frontier AI labs, and to a small
+        number of consulting engagements at the intersection of built environment and AI
+        infrastructure.
+      </p>
+      <hr />
+      <p class="now-attribution">
+        <a href="https://sive.rs/nowff" rel="noopener">/now page</a>, after Derek Sivers. Monthly
+        refresh.
+      </p>
     </div>
   </section>
 </PageLayout>
+
+<style>
+  .now {
+    padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-section);
+  }
+  .now-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 2.5rem;
+  }
+  .now-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1.08;
+  }
+  .now-meta {
+    color: var(--color-ink-muted);
+  }
+  .now-body {
+    max-width: 60ch;
+  }
+  .now-body p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-ink);
+  }
+  .now-attribution {
+    font-size: 0.9rem !important;
+    color: var(--color-ink-muted) !important;
+  }
+</style>

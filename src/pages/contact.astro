@@ -1,0 +1,102 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { author } from '../data/author';
+---
+
+<PageLayout title="Contact" description="Email and handles for Théo Alessandro Hermann.">
+  <section class="page-wrap contact">
+    <header class="contact-head">
+      <span class="eyebrow">Contact</span>
+      <h1 class="contact-title">Reach out.</h1>
+      <p class="contact-lede">
+        For research conversations, consulting at the intersection of built environment and AI
+        infrastructure, or anything that resembles either.
+      </p>
+    </header>
+
+    <dl class="contact-grid">
+      <div class="contact-row">
+        <dt class="mono-caption">Email</dt>
+        <dd><a href={`mailto:${author.email}`}>{author.email}</a></dd>
+      </div>
+      <div class="contact-row">
+        <dt class="mono-caption">Public</dt>
+        <dd><a href={author.links.twitter} rel="me noopener">@{author.handles.public}</a></dd>
+      </div>
+      <div class="contact-row">
+        <dt class="mono-caption">Technical</dt>
+        <dd><a href={author.links.github} rel="me noopener">@{author.handles.technical}</a></dd>
+      </div>
+      <div class="contact-row">
+        <dt class="mono-caption">LinkedIn</dt>
+        <dd><a href={author.links.linkedin} rel="me noopener">/in/{author.handles.public}</a></dd>
+      </div>
+      <div class="contact-row">
+        <dt class="mono-caption">Based</dt>
+        <dd>{author.location}</dd>
+      </div>
+    </dl>
+  </section>
+</PageLayout>
+
+<style>
+  .contact {
+    padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-section);
+  }
+  .contact-head {
+    max-width: 60ch;
+    margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .contact-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1.1;
+  }
+  .contact-lede {
+    font-family: var(--font-body);
+    color: var(--color-ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.55;
+  }
+  .contact-grid {
+    border-top: 1px solid var(--color-rule);
+    margin: 0;
+    padding: 0;
+  }
+  .contact-row {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .contact-row dt {
+    color: var(--color-ink-muted);
+  }
+  .contact-row dd {
+    margin: 0;
+    color: var(--color-ink);
+  }
+  .contact-row a {
+    color: var(--color-ink);
+    border-bottom: 1px solid var(--color-rule);
+    padding-bottom: 1px;
+    text-decoration: none;
+    transition:
+      color 200ms ease,
+      border-color 200ms ease;
+  }
+  .contact-row a:hover {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
+  @media (max-width: 520px) {
+    .contact-row {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+    }
+  }
+</style>

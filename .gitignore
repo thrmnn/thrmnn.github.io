@@ -8,3 +8,10 @@ node_modules/
 *.key
 *.pem
 credentials/
+
+# Local artifacts that shouldn't ship with the repo
+chrome/
+C:\\Users\\*
+lighthouse.*/
+monogram-package.zip
+

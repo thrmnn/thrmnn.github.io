@@ -13,19 +13,21 @@ Personal academic website built with [Hugo Blox Builder](https://hugoblox.com/),
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/thrmnn/thrmnn.github.io.git
    cd thrmnn.github.io
    ```
 
 2. Install Hugo (if not already installed):
+
    ```bash
    # macOS
    brew install hugo
-   
+
    # Linux
    sudo apt-get install hugo
-   
+
    # Or download from https://github.com/gohugoio/hugo/releases
    ```
 
@@ -42,6 +44,7 @@ hugo server
 This will start a local server (usually at `http://localhost:1313`). The site will automatically reload when you make changes to the files.
 
 **Options:**
+
 - `hugo server --bind 0.0.0.0` - Make the server accessible from other devices on your network
 - `hugo server --port 8080` - Run on a different port
 - `hugo server --disableFastRender` - Disable fast rendering for debugging
@@ -65,6 +68,7 @@ This repository uses a centralized information system for easy updates.
 1. **Update `PERSONAL_INFO.md`** with your latest information (this is your single source of truth)
 
 2. **Run the sync script** to automatically update all configuration files:
+
    ```bash
    python3 sync_personal_info.py
    ```
@@ -76,11 +80,13 @@ This repository uses a centralized information system for easy updates.
    - `content/_index.md` - Homepage contact buttons and hero section
 
 3. **Review the changes**:
+
    ```bash
    git diff
    ```
 
 4. **Test locally**:
+
    ```bash
    hugo server
    ```
@@ -95,6 +101,7 @@ This repository uses a centralized information system for easy updates.
 ### Manual Updates
 
 If you prefer to update files manually, the key files are:
+
 - `PERSONAL_INFO.md` - Centralized personal information
 - `config/_default/hugo.yaml` - Site configuration
 - `config/_default/params.yaml` - Site parameters and SEO

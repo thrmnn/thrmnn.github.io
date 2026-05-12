@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const all = await getCollection('projects');
+const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<PageLayout
+  title="Work"
+  description="Research and engineering projects by Théo Alessandro Hermann."
+>
+  <section class="page-wrap work-index">
+    <header class="work-head">
+      <span class="eyebrow">Work</span>
+      <h1 class="work-title">Research and engineering projects</h1>
+      <p class="work-lede">
+        Urban science from MIT Senseable Rio. Robotics on the edge of vision-language-action.
+        Open-source where it makes the field cheaper to reproduce.
+      </p>
+    </header>
+
+    <div class="work-grid">
+      {sorted.map((p) => <ProjectCard project={p} />)}
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .work-index {
+    padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-section);
+  }
+  .work-head {
+    max-width: 60ch;
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .work-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1.1;
+    max-width: 18ch;
+  }
+  .work-lede {
+    font-family: var(--font-body);
+    color: var(--color-ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+  .work-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 720px) {
+    .work-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1024px) {
+    .work-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,80 @@
+---
+import Wordmark from './Wordmark.astro';
+import { nav } from '../data/navigation';
+
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+function isActive(href: string): boolean {
+  if (href === '/') return pathname === '/';
+  return pathname === href || pathname.startsWith(href + '/');
+}
+---
+
+<header class="site-header">
+  <div class="page-wrap header-inner">
+    <Wordmark size="sm" />
+    <nav class="site-nav" aria-label="Primary">
+      {
+        nav.map((item) => (
+          <a href={item.href} class:list={['nav-link', { 'is-active': isActive(item.href) }]}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--color-rule);
+    background: var(--color-paper);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    backdrop-filter: saturate(140%) blur(6px);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1.1rem;
+  }
+  .site-nav {
+    display: flex;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+  }
+  .nav-link {
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    padding-block: 0.25rem;
+    border-bottom: 1px solid transparent;
+    transition:
+      color 200ms ease,
+      border-color 200ms ease;
+  }
+  .nav-link:hover {
+    color: var(--color-ink);
+  }
+  .nav-link.is-active {
+    color: var(--color-ink);
+    border-bottom-color: var(--color-accent);
+  }
+
+  @media (max-width: 640px) {
+    .header-inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding-block: 1rem;
+    }
+    .site-nav {
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>

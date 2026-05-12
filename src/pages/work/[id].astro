@@ -1,0 +1,271 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const d = project.data;
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+
+// Related work: other projects sharing at least one tag, ranked by overlap.
+const all = await getCollection('projects');
+const related = all
+  .filter((p) => p.id !== project.id)
+  .map((p) => ({
+    p,
+    overlap: p.data.tags.filter((t) => d.tags.includes(t)).length,
+  }))
+  .filter((r) => r.overlap > 0)
+  .sort((a, b) => b.overlap - a.overlap)
+  .slice(0, 2)
+  .map((r) => r.p);
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  headline: d.title,
+  description: d.summary,
+  datePublished: d.date.toISOString(),
+  dateModified: (d.updated ?? d.date).toISOString(),
+  keywords: d.tags.join(', '),
+};
+---
+
+<PageLayout
+  title={d.title}
+  description={d.summary}
+  ogType="article"
+  register={d.register}
+  articleJsonLd={articleJsonLd}
+>
+  <article class="page-wrap project">
+    <header class="project-header">
+      {d.status && <p class="mono-caption status">{d.status}</p>}
+      <h1 class="project-title">{d.title}</h1>
+      {d.subtitle && <p class="project-subtitle">{d.subtitle}</p>}
+    </header>
+
+    {
+      d.heroImage ? (
+        <figure class="project-hero">
+          <img src={d.heroImage} alt={d.heroAlt ?? d.title} />
+        </figure>
+      ) : (
+        <div class="project-hero hero-placeholder" aria-hidden="true">
+          <span class="placeholder-mark">{d.title}</span>
+        </div>
+      )
+    }
+
+    <div class="project-summary">
+      <p>{d.summary}</p>
+    </div>
+
+    <div class="project-meta">
+      <div class="meta-row">
+        <span class="mono-caption">Date</span>
+        <span>{formatDate(d.date)}</span>
+      </div>
+      {
+        d.collaborators.length > 0 && (
+          <div class="meta-row">
+            <span class="mono-caption">With</span>
+            <span>{d.collaborators.join(', ')}</span>
+          </div>
+        )
+      }
+      {
+        (d.links.paper || d.links.preprint || d.links.repo || d.links.app || d.links.site) && (
+          <div class="meta-row">
+            <span class="mono-caption">Links</span>
+            <span class="meta-links">
+              {d.links.paper && <a href={d.links.paper}>Paper</a>}
+              {d.links.preprint && <a href={d.links.preprint}>Preprint</a>}
+              {d.links.repo && <a href={d.links.repo}>Code</a>}
+              {d.links.app && <a href={d.links.app}>App</a>}
+              {d.links.site && <a href={d.links.site}>Site</a>}
+            </span>
+          </div>
+        )
+      }
+      {
+        d.updated && (
+          <div class="meta-row">
+            <span class="mono-caption">Updated</span>
+            <span>{formatDate(d.updated)}</span>
+          </div>
+        )
+      }
+    </div>
+
+    <div class="project-body prose">
+      <Content />
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="related">
+          <div class="featured-head">
+            <span class="eyebrow">Related work</span>
+          </div>
+          <div class="related-grid">
+            {related.map((r) => (
+              <ProjectCard project={r} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </article>
+</PageLayout>
+
+<style>
+  .project {
+    padding-block: clamp(2rem, 5vw, 3.5rem);
+  }
+  .project-header {
+    margin-bottom: 2rem;
+  }
+  .status {
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: var(--color-accent);
+  }
+  .project-title {
+    font-size: clamp(2rem, 4.2vw, 3rem);
+    line-height: 1.08;
+    max-width: 22ch;
+    margin-bottom: 0.6rem;
+  }
+  .project-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    color: var(--color-ink-soft);
+    max-width: 50ch;
+    line-height: 1.5;
+  }
+
+  .project-hero {
+    margin: 2.5rem 0;
+    border: 1px solid var(--color-rule);
+    overflow: hidden;
+  }
+  .project-hero img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .hero-placeholder {
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: flex-end;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--color-paper-deep) 0%, var(--color-paper) 100%);
+    position: relative;
+  }
+  .hero-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 1.5rem;
+    border: 1px solid var(--color-rule);
+  }
+  [data-register='tropical'] .hero-placeholder {
+    background: linear-gradient(135deg, var(--color-sand) 0%, var(--color-paper) 80%);
+  }
+  .placeholder-mark {
+    font-family: var(--font-wordmark);
+    font-variation-settings:
+      'opsz' 144,
+      'SOFT' 60;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    color: var(--color-ink-soft);
+    max-width: 70%;
+    line-height: 1.05;
+    position: relative;
+    z-index: 1;
+  }
+
+  .project-summary {
+    font-family: var(--font-body);
+    font-size: 1.18rem;
+    line-height: 1.6;
+    color: var(--color-ink);
+    max-width: 56ch;
+    margin: 0 0 2rem;
+  }
+
+  .project-meta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem 1rem;
+    padding: 1rem 0;
+    border-block: 1px solid var(--color-rule);
+    margin-bottom: 2.5rem;
+    font-size: 0.95rem;
+  }
+  .meta-row {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 1rem;
+    align-items: baseline;
+  }
+  .meta-row > span:last-child {
+    color: var(--color-ink-soft);
+  }
+  .meta-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .meta-links a {
+    color: var(--color-ink);
+  }
+
+  @media (max-width: 520px) {
+    .meta-row {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+    }
+  }
+
+  .project-body {
+    margin-top: 1rem;
+  }
+
+  .related {
+    margin-top: var(--space-section);
+  }
+  .featured-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 720px) {
+    .related-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

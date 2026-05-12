@@ -1,7 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import Header from '../components/layout/Header.astro';
-import Footer from '../components/layout/Footer.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
   title?: string;
@@ -9,14 +9,22 @@ interface Props {
   image?: string;
   ogType?: 'website' | 'profile' | 'article';
   articleJsonLd?: Record<string, unknown>;
+  register?: 'cartesian' | 'tropical';
 }
 
-const { title, description, image, ogType, articleJsonLd } = Astro.props;
+const { title, description, image, ogType, articleJsonLd, register } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} image={image} ogType={ogType} articleJsonLd={articleJsonLd}>
+<BaseLayout
+  title={title}
+  description={description}
+  image={image}
+  ogType={ogType}
+  articleJsonLd={articleJsonLd}
+  register={register}
+>
   <Header />
-  <main class="pt-16">
+  <main>
     <slot />
   </main>
   <Footer />

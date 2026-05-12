@@ -29,8 +29,6 @@ const d = project.data;
 const formatDate = (date: Date) =>
   date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
 
-const yyyyMm = `${d.date.getFullYear()}-${String(d.date.getMonth() + 1).padStart(2, '0')}`;
-
 const updatedLabel = d.updated
   ? d.updated.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
   : null;
@@ -73,138 +71,136 @@ const articleJsonLd = {
   register={d.register}
   articleJsonLd={articleJsonLd}
 >
-  <article class="project grid-cartesian">
-    <aside class="col-1-1 project-side" aria-hidden="true">
-      <VerticalLabel>Project · {d.date.getFullYear()}</VerticalLabel>
-    </aside>
-
-    <header class="col-2-12 project-header">
-      <Breadcrumb />
-      <div class="project-title-grid">
-        <div class="project-title-stack">
-          <h1 class="project-title">{d.title}</h1>
-          {d.subtitle && <p class="project-subtitle">{d.subtitle}</p>}
+  <article class="project">
+    <section class="project-intro grid-cartesian">
+      <header class="col-1-12 project-header">
+        <Breadcrumb />
+        <div class="project-title-grid">
+          <div class="project-title-stack">
+            <h1 class="project-title">{d.title}</h1>
+            {d.subtitle && <p class="project-subtitle">{d.subtitle}</p>}
+          </div>
+          {
+            d.status && (
+              <div class="project-status-cell">
+                <StatusPill tone={d.register === 'tropical' ? 'terra' : 'graphite'}>
+                  {d.status}
+                </StatusPill>
+              </div>
+            )
+          }
         </div>
+        {updatedLabel && <p class="updated-line mono-caption">Updated {updatedLabel}</p>}
+      </header>
+
+      <div class="col-1-12 project-hero-wrap">
+        <Figure
+          caption={d.title}
+          meta={d.tags.slice(0, 4)}
+          ratio="3/2"
+          src={d.heroImage}
+          alt={d.heroAlt ?? d.title}
+          pending={!d.heroImage}
+        />
+      </div>
+    </section>
+
+    <section class="project-section grid-cartesian" id="context">
+      <div class="col-1-1 project-section-label">
+        <VerticalLabel>CONTEXT</VerticalLabel>
+      </div>
+      <div class="col-2-2 project-section-number">
+        <SectionNumber>01</SectionNumber>
+      </div>
+      <div class="col-3-9 project-section-body project-section-body--lede">
+        <p>{d.summary}</p>
+      </div>
+    </section>
+
+    <section class="project-section grid-cartesian" id="method">
+      <div class="col-1-1 project-section-label">
+        <VerticalLabel>METHOD</VerticalLabel>
+      </div>
+      <div class="col-2-2 project-section-number">
+        <SectionNumber>02</SectionNumber>
+      </div>
+      <div class="col-3-9 project-section-body prose">
+        <Content />
+      </div>
+    </section>
+
+    <section class="project-section grid-cartesian" id="findings">
+      <div class="col-1-1 project-section-label">
+        <VerticalLabel>FINDINGS</VerticalLabel>
+      </div>
+      <div class="col-2-2 project-section-number">
+        <SectionNumber>03</SectionNumber>
+      </div>
+      <div class="col-3-9 project-section-body">
         {
-          d.status && (
-            <div class="project-status-cell">
-              <StatusPill tone={d.register === 'tropical' ? 'terra' : 'graphite'}>
-                {d.status}
-              </StatusPill>
-            </div>
+          links.length > 0 ? (
+            <ul class="links-list">
+              {links.map((l) => (
+                <li>
+                  <ExternalLink href={l.href}>{l.label}</ExternalLink>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="empty">Findings not yet linked.</p>
           )
         }
       </div>
-      {updatedLabel && <p class="updated-line mono-caption">Updated {updatedLabel}</p>}
-    </header>
+    </section>
 
-    <div class="col-2-12 project-hero-wrap">
-      <Figure
-        caption={d.title}
-        meta={d.tags.slice(0, 4)}
-        ratio="3/2"
-        src={d.heroImage}
-        alt={d.heroAlt ?? d.title}
-        pending={!d.heroImage}
-      />
-    </div>
-
-    <!-- 01 Context -->
-    <div class="col-2-4 section-label">
-      <SectionNumber>01</SectionNumber>
-      <h2 class="section-heading">Context</h2>
-    </div>
-    <div class="col-5-11 section-body section-body--lede">
-      <p>{d.summary}</p>
-    </div>
-
-    <div class="col-2-12"><SectionRule /></div>
-
-    <!-- 02 Method -->
-    <div class="col-2-4 section-label">
-      <SectionNumber>02</SectionNumber>
-      <h2 class="section-heading">Method</h2>
-    </div>
-    <div class="col-5-11 section-body prose">
-      <Content />
-    </div>
-
-    <div class="col-2-12"><SectionRule /></div>
-
-    <!-- 03 Findings & links -->
-    <div class="col-2-4 section-label">
-      <SectionNumber>03</SectionNumber>
-      <h2 class="section-heading">Findings & links</h2>
-    </div>
-    <div class="col-5-11 section-body">
-      {
-        links.length > 0 ? (
-          <ul class="links-list">
-            {links.map((l) => (
-              <li>
-                <ExternalLink href={l.href}>{l.label}</ExternalLink>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p class="empty">Findings not yet linked.</p>
-        )
-      }
-      {
-        d.tags.length > 0 && (
-          <p class="tags mono-caption">
-            {d.tags.map((tag, i) => (
-              <>
-                {i > 0 && (
-                  <span aria-hidden="true" class="tag-sep">
-                    /
-                  </span>
-                )}
-                {tag}
-              </>
-            ))}
-          </p>
-        )
-      }
-    </div>
-
-    <div class="col-2-12"><SectionRule /></div>
-
-    <!-- 04 Credit -->
-    <div class="col-2-4 section-label">
-      <SectionNumber>04</SectionNumber>
-      <h2 class="section-heading">Credit</h2>
-    </div>
-    <div class="col-5-11 section-body">
-      <dl class="credit-list">
-        <div class="credit-row">
-          <dt class="mono-caption">Date</dt>
-          <dd>{formatDate(d.date)}</dd>
-        </div>
-        {
-          d.collaborators.length > 0 && (
-            <div class="credit-row">
-              <dt class="mono-caption">With</dt>
-              <dd>{d.collaborators.join(', ')}</dd>
-            </div>
-          )
-        }
-        {
-          d.updated && (
-            <div class="credit-row">
-              <dt class="mono-caption">Updated</dt>
-              <dd>{formatDate(d.updated)}</dd>
-            </div>
-          )
-        }
-      </dl>
-    </div>
+    <section class="project-section grid-cartesian" id="credit">
+      <div class="col-1-1 project-section-label">
+        <VerticalLabel>CREDIT</VerticalLabel>
+      </div>
+      <div class="col-2-2 project-section-number">
+        <SectionNumber>04</SectionNumber>
+      </div>
+      <div class="col-3-9 project-section-body">
+        <dl class="credit-list">
+          <div class="credit-row">
+            <dt class="mono-caption">Date</dt>
+            <dd>{formatDate(d.date)}</dd>
+          </div>
+          {
+            d.collaborators.length > 0 && (
+              <div class="credit-row">
+                <dt class="mono-caption">With</dt>
+                <dd>{d.collaborators.join(', ')}</dd>
+              </div>
+            )
+          }
+          {
+            d.tags.length > 0 && (
+              <div class="credit-row">
+                <dt class="mono-caption">Tags</dt>
+                <dd>{d.tags.join(' / ')}</dd>
+              </div>
+            )
+          }
+          {
+            d.updated && (
+              <div class="credit-row">
+                <dt class="mono-caption">Updated</dt>
+                <dd>{formatDate(d.updated)}</dd>
+              </div>
+            )
+          }
+        </dl>
+      </div>
+    </section>
 
     {
       related.length > 0 && (
-        <section class="col-2-12 related">
-          <SectionRule align="start">Related work</SectionRule>
-          <div class="related-grid">
+        <section class="project-related grid-cartesian">
+          <div class="col-1-12">
+            <SectionRule align="start">Related work</SectionRule>
+          </div>
+          <div class="col-1-12 related-grid">
             {related.map((r) => (
               <ProjectCard project={r} />
             ))}
@@ -218,26 +214,25 @@ const articleJsonLd = {
 <style>
   .project {
     padding-block: clamp(2rem, 5vw, 3.5rem) var(--space-section);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-16);
+  }
+  .project-intro {
     row-gap: var(--s-8);
   }
-
-  .project-side {
-    position: sticky;
-    top: var(--s-20);
-    align-self: start;
-    height: 0;
+  .project-section {
+    row-gap: var(--s-4);
+    align-items: start;
   }
-  @media (max-width: 719px) {
-    .project-side {
-      display: none;
-    }
+  .project-related {
+    margin-top: var(--s-8);
   }
 
   .project-header {
     display: flex;
     flex-direction: column;
     gap: var(--s-4);
-    margin-bottom: var(--s-6);
   }
   .project-title-grid {
     display: grid;
@@ -302,48 +297,41 @@ const articleJsonLd = {
     margin: 0;
   }
 
-  .project-hero-wrap {
-    margin-block: var(--s-6);
+  /* Section anatomy (Phase 4.7 D5):
+       col-1-1: rotated VerticalLabel for the section name
+       col-2-2: large terra SectionNumber as typographic anchor
+       col-3-9: body content
+     VerticalLabel and SectionNumber both position: sticky so they
+     stay alongside the body as it scrolls. */
+  .project-section-label,
+  .project-section-number {
+    align-self: start;
   }
-
-  /* Numbered sections — label sits in col 2-5, content in col 5-12.
-     Section heading is Cartesian (or Fraunces in Tropical) at display-sm. */
-  .section-label {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-3);
-    align-items: flex-start;
+  .project-section-label .vertical-label {
+    position: sticky;
+    top: var(--s-20);
   }
-  .section-heading {
-    font-family: var(--font-cartesian);
-    font-size: var(--text-display-sm);
-    font-weight: 500;
-    letter-spacing: -0.015em;
-    line-height: 1.15;
-    margin: 0;
-  }
-  [data-register='tropical'] .section-heading {
-    font-family: var(--font-tropical);
-    font-weight: 450;
-    font-variation-settings:
-      'opsz' 36,
-      'SOFT' 50;
-  }
-  .section-body {
+  .project-section-body {
     font-family: var(--font-body);
     font-size: var(--text-body);
     line-height: 1.65;
     color: var(--color-ink-soft);
   }
-  .section-body--lede {
+  .project-section-body--lede {
     font-size: var(--text-body-lg);
     color: var(--color-ink);
   }
-  .section-body p {
+  .project-section-body p {
     margin: 0 0 1em;
   }
-  .section-body p:last-child {
+  .project-section-body p:last-child {
     margin-bottom: 0;
+  }
+  @media (max-width: 719px) {
+    .project-section-label .vertical-label,
+    .project-section-number :global(.section-number) {
+      position: static;
+    }
   }
 
   .links-list {
@@ -363,18 +351,6 @@ const articleJsonLd = {
     color: var(--color-ink-muted);
     font-style: italic;
     margin: 0;
-  }
-  .tags {
-    margin-top: var(--s-6);
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s-2);
-    align-items: baseline;
-  }
-  .tag-sep {
-    color: var(--color-ink-muted);
-    opacity: 0.55;
-    margin: 0 var(--s-1);
   }
 
   .credit-list {
@@ -403,9 +379,6 @@ const articleJsonLd = {
     }
   }
 
-  .related {
-    margin-top: var(--space-section);
-  }
   .related-grid {
     display: grid;
     grid-template-columns: 1fr;

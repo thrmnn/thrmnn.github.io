@@ -1,13 +1,12 @@
 ---
 /**
- * Large mono numeral marking a numbered section.
- * Sits in the wide column or hangs in the gutter alongside the heading.
+ * Large display numeral marking a numbered section (Phase 4.7 D5).
  *
- * Rendered with mono-light weight (300) for editorial restraint —
- * the number anchors, it does not shout. The downstream section heading
- * carries the actual weight.
+ * Display-md, light weight, terra accent — the number is a typographic
+ * anchor for the section, not a label. Sticks to viewport top via
+ * position: sticky so it stays beside the section body during scroll.
  *
- * Pass the number as the slot content — usually "01", "02", "03", "04".
+ * Pass the number as the slot content — '01', '02', '03', '04'.
  */
 interface Props {
   class?: string;
@@ -23,13 +22,15 @@ const { class: className = '' } = Astro.props;
 <style>
   .section-number {
     display: inline-block;
-    font-family: var(--font-mono);
-    font-size: var(--text-display-sm);
+    font-family: var(--font-cartesian);
+    font-size: var(--text-display-md);
     font-weight: 300;
     letter-spacing: 0;
     line-height: 1;
-    color: var(--color-ink-muted);
+    color: var(--color-terra);
     font-variant-numeric: tabular-nums;
+    position: sticky;
+    top: var(--s-20);
   }
   :global([data-register='tropical']) .section-number {
     color: var(--color-oxblood);

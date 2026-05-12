@@ -12,7 +12,10 @@ function isActive(href: string): boolean {
 
 <header class="site-header">
   <div class="page-wrap header-inner">
-    <Wordmark size="sm" />
+    <div class="header-left">
+      <Wordmark size="sm" />
+      <span class="header-aux mono-caption--xs">Rio · 2026</span>
+    </div>
     <nav class="site-nav" aria-label="Primary">
       {
         nav.map((item) => (
@@ -40,6 +43,16 @@ function isActive(href: string): boolean {
     justify-content: space-between;
     gap: 1.5rem;
     padding-block: 1.1rem;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .header-aux {
+    padding-left: 1rem;
+    border-left: 1px solid var(--color-rule);
+    /* Mono-caption--xs already sets size, color, tracking, uppercase. */
   }
   .site-nav {
     display: flex;
@@ -71,6 +84,15 @@ function isActive(href: string): boolean {
       align-items: flex-start;
       gap: 0.75rem;
       padding-block: 1rem;
+    }
+    .header-left {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.3rem;
+    }
+    .header-aux {
+      padding-left: 0;
+      border-left: 0;
     }
     .site-nav {
       gap: 1rem;

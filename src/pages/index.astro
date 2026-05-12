@@ -11,30 +11,38 @@ const writingAll = await getCollection('writing');
 const latestWriting = writingAll
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 1)[0];
+
+const projectCount = (await getCollection('projects')).filter((p) => p.data.featured).length;
+const scrollLabel = `↓ CURRENT WORK · ${String(projectCount).padStart(2, '0')} PROJECT${projectCount === 1 ? '' : 'S'}`;
 ---
 
 <PageLayout description={siteConfig.description}>
   <section class="hero">
-    <div class="grid-cartesian">
-      <h1 class="wordmark-hero col-1-8" aria-label={author.name}>
-        Théo<br />
-        <em>Alessandro</em><br />
-        Hermann
-      </h1>
-      <aside class="hero-aside col-10-12">
-        <Marginalia voice="mono">
-          Rio · 2026<br />
-          Franco-Brazilian engineer
-        </Marginalia>
+    <div class="hero-grid grid-cartesian">
+      <div class="hero-wordmark col-1-7">
+        <h1 class="wordmark-hero" aria-label={author.name}>
+          Théo<br />
+          <em>Alessandro</em><br />
+          Hermann
+        </h1>
+      </div>
+      <aside class="hero-meta col-10-12">
+        <p class="mono-caption">RIO · 2026</p>
+        <hr class="hero-rule" />
+        <p class="hero-positioning">
+          Researcher and builder.<br />
+          MIT Senseable Rio.<br />
+          Urban science, robotics,<br />
+          and what comes next.
+        </p>
+        <hr class="hero-rule" />
+        <p class="mono-caption">FR · BR · 4 LANGUAGES</p>
       </aside>
-      <p class="hero-positioning col-1-7">
-        Researcher and builder. <span class="hero-positioning-em">MIT Senseable Rio.</span>
-        Urban science, robotics, and what comes next.
-      </p>
     </div>
+    <p class="hero-scroll mono-caption">{scrollLabel}</p>
   </section>
 
-  <div class="page-wrap">
+  <div class="page-wrap below-hero">
     <FeaturedStrip />
 
     {
@@ -64,11 +72,58 @@ const latestWriting = writingAll
 </PageLayout>
 
 <style>
+  /* Hero — 100vh asymmetric composition (Phase 4.7 A3).
+     90vh leaves a sliver of the next section visible at the bottom,
+     hinting at scroll without showing actual content. */
   .hero {
-    padding-block: clamp(3rem, 9vw, 6rem) var(--s-16);
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-block: var(--s-16);
+    position: relative;
   }
-  .hero .grid-cartesian {
-    row-gap: var(--s-12);
+  .hero-grid {
+    width: 100%;
+    align-items: start;
+    padding-top: 8vh;
+  }
+  .hero-wordmark {
+    /* Wordmark breathes at top of viewport; no extra padding. */
+  }
+  .hero-meta {
+    padding-top: var(--s-20);
+    /* Asymmetric offset — meta starts well below the wordmark's baseline. */
+  }
+  .hero-rule {
+    border: 0;
+    border-top: 1px solid var(--color-rule);
+    margin: var(--s-4) 0;
+  }
+  .hero-positioning {
+    font-family: var(--font-body);
+    font-size: var(--text-body-lg);
+    line-height: 1.45;
+    color: var(--color-ink-soft);
+    margin-block: var(--s-4);
+  }
+  .hero-scroll {
+    text-align: left;
+    color: var(--color-ink-muted);
+    padding-bottom: var(--s-4);
+    margin: 0;
+  }
+  @media (max-width: 719px) {
+    .hero {
+      min-height: 80vh;
+      padding-block: var(--s-12);
+    }
+    .hero-grid {
+      padding-top: var(--s-12);
+    }
+    .hero-meta {
+      padding-top: var(--s-8);
+    }
   }
 
   /* Wordmark-hero — THE typographic moment (Phase 4.7 A1).
@@ -90,26 +145,9 @@ const latestWriting = writingAll
     letter-spacing: -0.04em;
   }
 
-  .hero-aside {
-    align-self: end;
-    padding-bottom: var(--s-2);
-  }
-  @media (max-width: 719px) {
-    .hero-aside {
-      margin-top: var(--s-6);
-    }
-  }
-
-  .hero-positioning {
-    font-family: var(--font-body);
-    font-size: var(--text-body-lg);
-    line-height: 1.45;
-    color: var(--color-ink-soft);
-    margin: 0;
-  }
-  .hero-positioning-em {
-    color: var(--color-ink);
-    font-weight: 500;
+  /* Below-fold sections — sit below the hero, only visible once scrolled. */
+  .below-hero {
+    margin-top: var(--space-section);
   }
 
   .writing-section {

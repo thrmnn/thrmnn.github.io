@@ -3,9 +3,23 @@ import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
 import SectionRule from '../../components/composition/SectionRule.astro';
+import Figure from '../../components/composition/Figure.astro';
+import StatusPill from '../../components/primitives/StatusPill.astro';
 
 const all = await getCollection('projects');
 const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const featured = all
+  .filter((p) => p.data.featured)
+  .sort((a, b) => (a.data.featuredOrder ?? 99) - (b.data.featuredOrder ?? 99))[0];
+
+const rest = featured ? sorted.filter((p) => p.id !== featured.id) : sorted;
+const total = sorted.length;
+
+const fmtYearMonth = (date: Date) =>
+  date
+    .toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
+    .toUpperCase();
 ---
 
 <PageLayout
@@ -22,18 +36,64 @@ const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
       Open-source where it makes the field cheaper to reproduce.
     </p>
 
+    {
+      featured && (
+        <article class="col-1-12 work-feature grid-cartesian">
+          <div class="featured-project col-1-8">
+            <a href={`/work/${featured.id}`} class="featured-link">
+              <Figure
+                caption={featured.data.title}
+                meta={featured.data.tags.slice(0, 4)}
+                ratio="3/2"
+                src={featured.data.heroImage}
+                alt={featured.data.heroAlt ?? featured.data.title}
+                pending={!featured.data.heroImage}
+              />
+              <div class="featured-meta">
+                <h2 class="featured-title">{featured.data.title}</h2>
+                {featured.data.subtitle && (
+                  <p class="featured-subtitle">{featured.data.subtitle}</p>
+                )}
+                <div class="featured-row">
+                  {featured.data.status && (
+                    <StatusPill tone="terra">{featured.data.status}</StatusPill>
+                  )}
+                  <span class="mono-caption featured-date">
+                    {fmtYearMonth(featured.data.date)}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </div>
+          <aside class="col-10-12 feature-side" aria-hidden="true">
+            <p class="mono-caption">
+              01 OF {String(total).padStart(2, '0')}
+            </p>
+            <hr class="hero-rule" />
+            <p class="mono-caption">CURRENT</p>
+            <hr class="hero-rule" />
+            <p class="mono-caption">{featured.data.date.getFullYear()}</p>
+          </aside>
+        </article>
+      )
+    }
+
     <div class="col-1-12">
       <SectionRule align="start">All work · by date</SectionRule>
     </div>
 
-    <ul class="col-1-12 work-list">
+    <ol class="col-1-12 work-list" start={featured ? 2 : 1}>
       {
-        sorted.map((p) => {
+        rest.map((p, i) => {
+          const idx = featured ? i + 2 : i + 1;
           const year = p.data.date.getFullYear();
           const status = p.data.status ?? 'Active';
           return (
-            <li>
+            <li value={idx}>
               <a href={`/work/${p.id}`} class="project-row">
+                <span class="work-row-num mono-caption">
+                  {String(idx).padStart(2, '0')}
+                </span>
                 <span class="row-year">{year}</span>
                 <div class="row-body">
                   <h2 class="row-title">{p.data.title}</h2>
@@ -45,7 +105,7 @@ const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
           );
         })
       }
-    </ul>
+    </ol>
   </section>
 </PageLayout>
 
@@ -78,6 +138,75 @@ const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
     margin-top: var(--s-4);
   }
 
+  /* Featured project — composed, not listed (A4). 60vh+ presence. */
+  .work-feature {
+    margin-top: var(--s-12);
+    padding-inline: 0;
+    max-width: none;
+    min-height: 60vh;
+    align-items: start;
+  }
+  .featured-project {
+    display: block;
+  }
+  .featured-link {
+    display: block;
+    text-decoration: none;
+    color: var(--color-ink);
+  }
+  .featured-meta {
+    margin-top: var(--s-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .featured-title {
+    font-family: var(--font-cartesian);
+    font-size: var(--text-display-md);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0;
+    max-width: 22ch;
+    text-wrap: balance;
+    transition: color 250ms ease;
+  }
+  .featured-link:hover .featured-title {
+    color: var(--color-accent);
+  }
+  .featured-subtitle {
+    font-family: var(--font-body);
+    font-size: var(--text-body-lg);
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    margin: 0;
+    max-width: 50ch;
+  }
+  .featured-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-4);
+    margin-top: var(--s-2);
+  }
+  .featured-date {
+    color: var(--color-ink-muted);
+  }
+  .feature-side {
+    padding-top: var(--s-4);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .feature-side .mono-caption {
+    margin: 0;
+  }
+  .hero-rule {
+    border: 0;
+    border-top: 1px solid var(--color-rule);
+    margin: var(--s-4) 0;
+  }
+
   .work-list {
     list-style: none;
     margin: 0;
@@ -89,7 +218,7 @@ const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   }
   .project-row {
     display: grid;
-    grid-template-columns: minmax(60px, 1fr) 7fr 3fr;
+    grid-template-columns: var(--s-12) minmax(60px, 1fr) 7fr 3fr;
     column-gap: var(--s-6);
     row-gap: var(--s-2);
     padding: var(--s-6) 0;
@@ -111,6 +240,15 @@ const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
     color: var(--color-accent);
   }
 
+  .work-row-num {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-sm);
+    color: var(--color-cool-grey);
+    line-height: 1.4;
+    padding-top: 0.3em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
   .row-year {
     font-family: var(--font-mono);
     font-size: var(--text-mono-sm);
@@ -156,6 +294,9 @@ const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   }
 
   @media (max-width: 720px) {
+    .work-feature {
+      min-height: auto;
+    }
     .project-row {
       grid-template-columns: 1fr;
       gap: var(--s-2);

@@ -10,7 +10,8 @@
     "check": "astro check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "brand-assets": "node scripts/generate-brand-assets.mjs"
+    "brand-assets": "node scripts/generate-brand-assets.mjs",
+    "monogram": "python3 scripts/generate-monogram-from-asset.py && node scripts/rasterize-monogram.mjs && python3 scripts/build-monogram-ico.py"
   },
   "type": "module",
   "dependencies": {

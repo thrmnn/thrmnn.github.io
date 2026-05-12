@@ -535,4 +535,13 @@
     background: var(--color-rule);
     border: 0;
   }
+
+  /* Tag row — flex container for TagPills (Phase 4.7 D3) */
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-block: var(--s-4);
+    align-items: center;
+  }
 }

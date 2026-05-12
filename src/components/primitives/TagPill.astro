@@ -1,0 +1,61 @@
+---
+/**
+ * TagPill (Phase 4.7 D3).
+ *
+ * Lowercase mono pill for project tags. 1 px rule, terra-ish hover.
+ * Replaces the flat slash-separated tag string from Phase 4.6.
+ *
+ * Usage:
+ *   <div class="tag-row">
+ *     {tags.map(t => <TagPill>{t}</TagPill>)}
+ *   </div>
+ *
+ * Pass `href` to render as a link; otherwise renders a plain span.
+ * No filter pages exist yet, so href is opt-in.
+ */
+interface Props {
+  href?: string;
+  class?: string;
+}
+
+const { href, class: className = '' } = Astro.props;
+---
+
+{
+  href ? (
+    <a href={href} class:list={['tag-pill', className]}>
+      <slot />
+    </a>
+  ) : (
+    <span class:list={['tag-pill', className]}>
+      <slot />
+    </span>
+  )
+}
+
+<style>
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--s-1) var(--s-2);
+    border: 1px solid var(--color-rule);
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-xs);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: lowercase;
+    color: var(--color-ink-muted);
+    text-decoration: none;
+    line-height: 1;
+    transition:
+      border-color 200ms ease,
+      color 200ms ease;
+  }
+  a.tag-pill:hover,
+  a.tag-pill:focus-visible {
+    border-color: var(--color-terra);
+    color: var(--color-ink);
+    outline: none;
+  }
+</style>

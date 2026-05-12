@@ -5,6 +5,7 @@ import Breadcrumb from '../../components/nav/Breadcrumb.astro';
 import SectionRule from '../../components/composition/SectionRule.astro';
 import Figure from '../../components/composition/Figure.astro';
 import StatusPill from '../../components/primitives/StatusPill.astro';
+import TagPill from '../../components/primitives/TagPill.astro';
 
 const all = await getCollection('projects');
 const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -98,6 +99,13 @@ const fmtYearMonth = (date: Date) =>
                 <div class="row-body">
                   <h2 class="row-title">{p.data.title}</h2>
                   {p.data.subtitle && <p class="row-summary">{p.data.subtitle}</p>}
+                  {p.data.tags.length > 0 && (
+                    <div class="row-tags tag-row">
+                      {p.data.tags.slice(0, 3).map((t) => (
+                        <TagPill>{t}</TagPill>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <span class="row-status">{status}</span>
               </a>
@@ -281,6 +289,10 @@ const fmtYearMonth = (date: Date) =>
     color: var(--color-ink-muted);
     margin: 0;
     max-width: 60ch;
+  }
+  .row-tags {
+    margin-block: 0;
+    margin-top: var(--s-1);
   }
   .row-status {
     font-family: var(--font-mono);

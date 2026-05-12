@@ -1,7 +1,6 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import PullQuote from '../components/composition/PullQuote.astro';
-import Marginalia from '../components/composition/Marginalia.astro';
 import SectionRule from '../components/composition/SectionRule.astro';
 import { author } from '../data/author';
 
@@ -45,7 +44,7 @@ const trajectory = [
     </div>
 
     <div class="col-2-7">
-      <PullQuote attribution="— Thesis, locked">
+      <PullQuote citation="Thesis · internal">
         Cartesian rigor applied to tropical complexity.
       </PullQuote>
     </div>
@@ -69,12 +68,12 @@ const trajectory = [
       </p>
     </div>
 
-    <aside class="col-7-8 about-margin">
-      <Marginalia voice="serif">
+    <div class="col-2-7 about-closing-quote">
+      <PullQuote citation="Working principle">
         Frontier methods, messy systems. The favela is not a problem to be solved — it is a system
         to be understood.
-      </Marginalia>
-    </aside>
+      </PullQuote>
+    </div>
 
     <div class="col-1-8">
       <SectionRule align="start">Trajectory</SectionRule>
@@ -149,14 +148,8 @@ const trajectory = [
     margin-bottom: 0;
   }
 
-  .about-margin {
-    align-self: start;
-    padding-top: var(--s-4);
-  }
-  @media (max-width: 719px) {
-    .about-margin {
-      padding-top: 0;
-    }
+  .about-closing-quote {
+    margin-top: var(--s-8);
   }
 
   .trajectory {

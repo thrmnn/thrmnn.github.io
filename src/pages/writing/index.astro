@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
 import StatusPill from '../../components/primitives/StatusPill.astro';
-import MonoRow from '../../components/typography/MonoRow.astro';
 import SectionRule from '../../components/composition/SectionRule.astro';
 
 const all = await getCollection('writing');
@@ -14,15 +13,12 @@ const languageLabel: Record<string, string> = {
   fr: 'FR',
   pt: 'PT',
 };
-const year = new Date().getFullYear();
-const entriesLabel = `${sorted.length} ${sorted.length === 1 ? 'entry' : 'entries'}`;
 ---
 
 <PageLayout title="Writing" description="Essays and field notes by Théo Alessandro Hermann.">
   <section class="writing grid-cartesian">
     <div class="col-1-13 writing-head">
       <Breadcrumb />
-      <MonoRow pieces={['Writing', String(year), entriesLabel]} />
     </div>
     <h1 class="col-1-9 writing-title">Essays and field notes</h1>
     <p class="col-3-9 writing-lede">

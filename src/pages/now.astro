@@ -1,10 +1,6 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
-import MonoRow from '../components/typography/MonoRow.astro';
 import SectionRule from '../components/composition/SectionRule.astro';
-
-const updated = new Date(2026, 4, 1); // May 2026
-const updatedLabel = updated.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
 
 const blocks = [
   {
@@ -28,9 +24,6 @@ const blocks = [
 
 <PageLayout title="Now" description="What Théo Alessandro Hermann is focused on this month.">
   <section class="now grid-cartesian">
-    <div class="col-1-13 now-head">
-      <MonoRow pieces={['Now', `Updated ${updatedLabel}`]} />
-    </div>
     <h1 class="col-1-9 now-title">May 2026 · Rio</h1>
     <p class="col-3-9 now-lede">
       A monthly snapshot of what's open, what's shipping, and what's next.

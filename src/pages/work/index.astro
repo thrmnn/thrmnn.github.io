@@ -2,13 +2,10 @@
 import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
-import MonoRow from '../../components/typography/MonoRow.astro';
 import SectionRule from '../../components/composition/SectionRule.astro';
 
 const all = await getCollection('projects');
 const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-const year = new Date().getFullYear();
-const projectsLabel = `${sorted.length} project${sorted.length === 1 ? '' : 's'}`;
 ---
 
 <PageLayout
@@ -18,7 +15,6 @@ const projectsLabel = `${sorted.length} project${sorted.length === 1 ? '' : 's'}
   <section class="work-index grid-cartesian">
     <div class="col-1-13 work-head">
       <Breadcrumb />
-      <MonoRow pieces={['Work', String(year), projectsLabel]} />
     </div>
     <h1 class="col-1-9 work-title">Research and engineering projects</h1>
     <p class="col-3-9 work-lede">

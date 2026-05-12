@@ -1,6 +1,5 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
-import MonoRow from '../components/typography/MonoRow.astro';
 import SectionRule from '../components/composition/SectionRule.astro';
 import Marginalia from '../components/composition/Marginalia.astro';
 import { author } from '../data/author';
@@ -8,9 +7,6 @@ import { author } from '../data/author';
 
 <PageLayout title="Contact" description="Email and handles for Théo Alessandro Hermann.">
   <section class="contact grid-cartesian">
-    <div class="col-1-13 contact-head">
-      <MonoRow pieces={['Contact', 'Rio']} />
-    </div>
     <h1 class="col-1-9 contact-title">Reach out.</h1>
     <p class="col-3-9 contact-lede">
       For research conversations, consulting at the intersection of built environment and AI

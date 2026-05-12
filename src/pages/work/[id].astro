@@ -3,7 +3,6 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
-import MonoRow from '../../components/typography/MonoRow.astro';
 import StatusPill from '../../components/primitives/StatusPill.astro';
 import PaperGrainOverlay from '../../components/primitives/PaperGrainOverlay.astro';
 import VerticalLabel from '../../components/composition/VerticalLabel.astro';
@@ -81,7 +80,6 @@ const articleJsonLd = {
 
     <header class="col-2-13 project-header">
       <Breadcrumb />
-      <MonoRow pieces={['Work', yyyyMm]} />
       {
         d.status && (
           <p class="status-line">

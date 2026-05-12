@@ -15,3 +15,6 @@ C:\\Users\\*
 lighthouse.*/
 monogram-package.zip
 
+# Windows alternate data streams (from WSL/Explorer drag-and-drop)
+*:Zone.Identifier
+

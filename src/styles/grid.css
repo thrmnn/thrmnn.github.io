@@ -3,9 +3,11 @@
    - .grid-cartesian → 12-column, 1280px max, gutter from spacing scale
    - .grid-tropical  → 8-column, 960px max, wider gutter for editorial breath
 
-   Both grids collapse to single-column below 720px. Above that, they
-   expose 12 / 8 column tracks so children can opt into asymmetric spans
-   via .col-{start}-{end} utility helpers below.
+   Both grids collapse to single-column below 720px. Above that, they expose
+   12 / 8 column tracks. Children opt into spans via .col-{start}-{end}
+   helpers below — INCLUSIVE-ENDPOINT convention: col-1-8 = cols 1 through 8
+   inclusive (8 columns total). A single .col-{start}-{end} namespace works
+   inside both grids; pick spans that fit the host grid's track count.
 
    No utility classes inside components beyond these grid + span helpers.
    ========================================================================== */
@@ -55,73 +57,74 @@
   }
 }
 
-/* Span helpers — opt-in column placement.
-   Used only inside .grid-cartesian or .grid-tropical children.
-   Naming: .col-{start}-{end} (1-indexed, inclusive of start, exclusive of end).
-   The 13 / 9 lines are the trailing edge so .col-1-13 / .col-1-9 = full width. */
+/* ==========================================================================
+   Span helpers — INCLUSIVE-ENDPOINT
+   col-X-Y = grid-column: X / (Y + 1) — covers columns X through Y inclusive.
+   Generated for every X ≤ Y ≤ 12. Use spans that fit the host grid.
+   ========================================================================== */
 @media (min-width: 720px) {
-  /* Cartesian 12-col span helpers — only the lines actually used in the
-     site's compositions are exposed. Add more here if a layout needs them. */
-  .col-1-13 { grid-column: 1 / 13; }
-  .col-1-9  { grid-column: 1 / 9;  }
-  .col-1-8  { grid-column: 1 / 8;  }
-  .col-1-7  { grid-column: 1 / 7;  }
-  .col-1-6  { grid-column: 1 / 6;  }
-  .col-1-5  { grid-column: 1 / 5;  }
-  .col-1-4  { grid-column: 1 / 4;  }
-  .col-1-3  { grid-column: 1 / 3;  }
-  .col-1-2  { grid-column: 1 / 2;  }
-  .col-2-13 { grid-column: 2 / 13; }
-  .col-2-12 { grid-column: 2 / 12; }
-  .col-2-11 { grid-column: 2 / 11; }
-  .col-2-10 { grid-column: 2 / 10; }
-  .col-2-9  { grid-column: 2 / 9;  }
-  .col-2-8  { grid-column: 2 / 8;  }
-  .col-2-7  { grid-column: 2 / 7;  }
-  .col-2-6  { grid-column: 2 / 6;  }
-  .col-2-5  { grid-column: 2 / 5;  }
-  .col-3-13 { grid-column: 3 / 13; }
-  .col-3-11 { grid-column: 3 / 11; }
-  .col-3-9  { grid-column: 3 / 9;  }
-  .col-3-8  { grid-column: 3 / 8;  }
-  .col-3-7  { grid-column: 3 / 7;  }
-  .col-3-6  { grid-column: 3 / 6;  }
-  .col-4-13 { grid-column: 4 / 13; }
-  .col-4-12 { grid-column: 4 / 12; }
-  .col-4-11 { grid-column: 4 / 11; }
-  .col-4-10 { grid-column: 4 / 10; }
-  .col-4-9  { grid-column: 4 / 9;  }
-  .col-5-13 { grid-column: 5 / 13; }
-  .col-5-12 { grid-column: 5 / 12; }
-  .col-5-11 { grid-column: 5 / 11; }
-  .col-6-13 { grid-column: 6 / 13; }
-  .col-7-13 { grid-column: 7 / 13; }
-  .col-7-12 { grid-column: 7 / 12; }
-  .col-8-13 { grid-column: 8 / 13; }
-  .col-9-13 { grid-column: 9 / 13; }
-  .col-10-13 { grid-column: 10 / 13; }
-  .col-11-13 { grid-column: 11 / 13; }
+  .col-1-1  { grid-column: 1 / 2;  }
+  .col-1-2  { grid-column: 1 / 3;  }
+  .col-1-3  { grid-column: 1 / 4;  }
+  .col-1-4  { grid-column: 1 / 5;  }
+  .col-1-5  { grid-column: 1 / 6;  }
+  .col-1-6  { grid-column: 1 / 7;  }
+  .col-1-7  { grid-column: 1 / 8;  }
+  .col-1-8  { grid-column: 1 / 9;  }
+  .col-1-9  { grid-column: 1 / 10; }
+  .col-1-10 { grid-column: 1 / 11; }
+  .col-1-11 { grid-column: 1 / 12; }
+  .col-1-12 { grid-column: 1 / 13; }
 
-  /* Tropical 8-col span helpers — only what current compositions need. */
-  .col-t-1-9 { grid-column: 1 / 9; }
-  .col-t-1-8 { grid-column: 1 / 8; }
-  .col-t-1-7 { grid-column: 1 / 7; }
-  .col-t-1-6 { grid-column: 1 / 6; }
-  .col-t-1-5 { grid-column: 1 / 5; }
-  .col-t-1-4 { grid-column: 1 / 4; }
-  .col-t-1-3 { grid-column: 1 / 3; }
-  .col-t-1-2 { grid-column: 1 / 2; }
-  .col-t-2-9 { grid-column: 2 / 9; }
-  .col-t-2-8 { grid-column: 2 / 8; }
-  .col-t-2-7 { grid-column: 2 / 7; }
-  .col-t-2-6 { grid-column: 2 / 6; }
-  .col-t-2-5 { grid-column: 2 / 5; }
-  .col-t-3-9 { grid-column: 3 / 9; }
-  .col-t-3-8 { grid-column: 3 / 8; }
-  .col-t-3-7 { grid-column: 3 / 7; }
-  .col-t-3-6 { grid-column: 3 / 6; }
-  .col-t-4-9 { grid-column: 4 / 9; }
-  .col-t-5-9 { grid-column: 5 / 9; }
-  .col-t-6-9 { grid-column: 6 / 9; }
-  .col-t-7-9 { grid-column: 7 / 9; }
+  .col-2-2  { grid-column: 2 / 3;  }
+  .col-2-3  { grid-column: 2 / 4;  }
+  .col-2-4  { grid-column: 2 / 5;  }
+  .col-2-5  { grid-column: 2 / 6;  }
+  .col-2-6  { grid-column: 2 / 7;  }
+  .col-2-7  { grid-column: 2 / 8;  }
+  .col-2-8  { grid-column: 2 / 9;  }
+  .col-2-9  { grid-column: 2 / 10; }
+  .col-2-10 { grid-column: 2 / 11; }
+  .col-2-11 { grid-column: 2 / 12; }
+  .col-2-12 { grid-column: 2 / 13; }
+
+  .col-3-3  { grid-column: 3 / 4;  }
+  .col-3-4  { grid-column: 3 / 5;  }
+  .col-3-5  { grid-column: 3 / 6;  }
+  .col-3-6  { grid-column: 3 / 7;  }
+  .col-3-7  { grid-column: 3 / 8;  }
+  .col-3-8  { grid-column: 3 / 9;  }
+  .col-3-9  { grid-column: 3 / 10; }
+  .col-3-10 { grid-column: 3 / 11; }
+  .col-3-11 { grid-column: 3 / 12; }
+  .col-3-12 { grid-column: 3 / 13; }
+
+  .col-4-9  { grid-column: 4 / 10; }
+  .col-4-10 { grid-column: 4 / 11; }
+  .col-4-11 { grid-column: 4 / 12; }
+  .col-4-12 { grid-column: 4 / 13; }
+
+  .col-5-8  { grid-column: 5 / 9;  }
+  .col-5-9  { grid-column: 5 / 10; }
+  .col-5-10 { grid-column: 5 / 11; }
+  .col-5-11 { grid-column: 5 / 12; }
+  .col-5-12 { grid-column: 5 / 13; }
+
+  .col-6-12 { grid-column: 6 / 13; }
+
+  .col-7-7  { grid-column: 7 / 8;  }
+  .col-7-8  { grid-column: 7 / 9;  }
+  .col-7-9  { grid-column: 7 / 10; }
+  .col-7-11 { grid-column: 7 / 12; }
+  .col-7-12 { grid-column: 7 / 13; }
+
+  .col-8-8  { grid-column: 8 / 9;  }
+  .col-8-12 { grid-column: 8 / 13; }
+
+  .col-9-12 { grid-column: 9 / 13; }
+
+  .col-10-10 { grid-column: 10 / 11; }
+  .col-10-12 { grid-column: 10 / 13; }
+
+  .col-11-12 { grid-column: 11 / 13; }
 }

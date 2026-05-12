@@ -16,18 +16,18 @@ const latestWriting = writingAll
 <PageLayout description={siteConfig.description}>
   <section class="hero">
     <div class="grid-cartesian">
-      <h1 class="hero-name col-1-9" aria-label={author.name}>
+      <h1 class="hero-name col-1-8" aria-label={author.name}>
         <span class="hero-name-line" aria-hidden="true">Théo</span>
         <span class="hero-name-line" aria-hidden="true">Alessandro</span>
         <span class="hero-name-line hero-name-line--italic" aria-hidden="true">Hermann</span>
       </h1>
-      <aside class="hero-aside col-10-13">
+      <aside class="hero-aside col-10-12">
         <Marginalia voice="mono">
           Rio · 2026<br />
           Franco-Brazilian engineer
         </Marginalia>
       </aside>
-      <p class="hero-positioning col-1-8">
+      <p class="hero-positioning col-1-7">
         Researcher and builder. <span class="hero-positioning-em">MIT Senseable Rio.</span>
         Urban science, robotics, and what comes next.
       </p>
@@ -42,7 +42,7 @@ const latestWriting = writingAll
         <section class="writing-section">
           <SectionRule>Writing</SectionRule>
           <div class="grid-cartesian writing-grid">
-            <a href={`/writing/${latestWriting.id}`} class="writing-card col-1-9">
+            <a href={`/writing/${latestWriting.id}`} class="writing-card col-1-8">
               <span class="mono-caption">
                 {latestWriting.data.date.toLocaleDateString('en-US', {
                   year: 'numeric',
@@ -53,7 +53,7 @@ const latestWriting = writingAll
               <h3 class="writing-title">{latestWriting.data.title}</h3>
               <p class="writing-summary">{latestWriting.data.summary}</p>
             </a>
-            <aside class="col-10-13 writing-meta">
+            <aside class="col-10-12 writing-meta">
               <Marginalia voice="mono">Notes & essays — irregular cadence</Marginalia>
             </aside>
           </div>

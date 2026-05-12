@@ -17,29 +17,29 @@ const languageLabel: Record<string, string> = {
 
 <PageLayout title="Writing" description="Essays and field notes by Théo Alessandro Hermann.">
   <section class="writing grid-cartesian">
-    <div class="col-1-13 writing-head">
+    <div class="col-1-12 writing-head">
       <Breadcrumb />
     </div>
-    <h1 class="col-1-9 writing-title">Essays and field notes</h1>
-    <p class="col-3-9 writing-lede">
+    <h1 class="col-1-8 writing-title">Essays and field notes</h1>
+    <p class="col-3-8 writing-lede">
       Long-form on urban science, robotics, and the work between them. Pieces appear in English,
       French, or Portuguese — tagged accordingly.
     </p>
 
-    <div class="col-1-13">
+    <div class="col-1-12">
       <SectionRule align="start">All writing · by date</SectionRule>
     </div>
 
     {
       sorted.length === 0 ? (
-        <div class="col-1-9 empty">
+        <div class="col-1-8 empty">
           <p>First essays drop later this year. The page exists for when they do.</p>
           <p class="empty-meta">
             <a href="/rss.xml">RSS feed</a> · <a href="/now">What I'm writing now</a>
           </p>
         </div>
       ) : (
-        <ol class="col-1-13 writing-list">
+        <ol class="col-1-12 writing-list">
           {sorted.map((entry) => (
             <li class="writing-entry" data-register={entry.data.register}>
               <a href={`/writing/${entry.id}`} class="entry-link">

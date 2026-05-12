@@ -53,22 +53,22 @@ const isTropical = d.register === 'tropical';
   articleJsonLd={articleJsonLd}
 >
   <article class="essay grid-tropical">
-    <aside class="col-t-1-2 essay-side" aria-hidden="true">
+    <aside class="col-1-1 essay-side" aria-hidden="true">
       <VerticalLabel>Essay · {d.date.getFullYear()}</VerticalLabel>
     </aside>
 
-    <header class="col-t-2-9 essay-header">
+    <header class="col-2-8 essay-header">
       <Breadcrumb />
       <h1 class="essay-title">{d.title}</h1>
       <p class="essay-summary">{d.summary}</p>
       {updatedLabel && <p class="updated-line mono-caption">Updated {updatedLabel}</p>}
     </header>
 
-    <div class="col-t-2-8 essay-body prose">
+    <div class="col-2-7 essay-body prose">
       <Content />
     </div>
 
-    <aside class="col-t-8-9 essay-margin">
+    <aside class="col-8-8 essay-margin">
       <Marginalia voice={isTropical ? 'serif' : 'mono'}>
         {dateLabel} · Rio
       </Marginalia>

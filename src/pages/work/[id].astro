@@ -74,11 +74,11 @@ const articleJsonLd = {
   articleJsonLd={articleJsonLd}
 >
   <article class="project grid-cartesian">
-    <aside class="col-1-2 project-side" aria-hidden="true">
+    <aside class="col-1-1 project-side" aria-hidden="true">
       <VerticalLabel>Project · {d.date.getFullYear()}</VerticalLabel>
     </aside>
 
-    <header class="col-2-13 project-header">
+    <header class="col-2-12 project-header">
       <Breadcrumb />
       <div class="project-title-grid">
         <div class="project-title-stack">
@@ -98,7 +98,7 @@ const articleJsonLd = {
       {updatedLabel && <p class="updated-line mono-caption">Updated {updatedLabel}</p>}
     </header>
 
-    <div class="col-2-13 project-hero-wrap">
+    <div class="col-2-12 project-hero-wrap">
       {
         d.heroImage ? (
           <figure class="project-hero" data-kind={d.heroKind}>
@@ -112,33 +112,33 @@ const articleJsonLd = {
     </div>
 
     <!-- 01 Context -->
-    <div class="col-2-5 section-label">
+    <div class="col-2-4 section-label">
       <SectionNumber>01</SectionNumber>
       <h2 class="section-heading">Context</h2>
     </div>
-    <div class="col-5-12 section-body section-body--lede">
+    <div class="col-5-11 section-body section-body--lede">
       <p>{d.summary}</p>
     </div>
 
-    <div class="col-2-13"><SectionRule /></div>
+    <div class="col-2-12"><SectionRule /></div>
 
     <!-- 02 Method -->
-    <div class="col-2-5 section-label">
+    <div class="col-2-4 section-label">
       <SectionNumber>02</SectionNumber>
       <h2 class="section-heading">Method</h2>
     </div>
-    <div class="col-5-12 section-body prose">
+    <div class="col-5-11 section-body prose">
       <Content />
     </div>
 
-    <div class="col-2-13"><SectionRule /></div>
+    <div class="col-2-12"><SectionRule /></div>
 
     <!-- 03 Findings & links -->
-    <div class="col-2-5 section-label">
+    <div class="col-2-4 section-label">
       <SectionNumber>03</SectionNumber>
       <h2 class="section-heading">Findings & links</h2>
     </div>
-    <div class="col-5-12 section-body">
+    <div class="col-5-11 section-body">
       {
         links.length > 0 ? (
           <ul class="links-list">
@@ -170,14 +170,14 @@ const articleJsonLd = {
       }
     </div>
 
-    <div class="col-2-13"><SectionRule /></div>
+    <div class="col-2-12"><SectionRule /></div>
 
     <!-- 04 Credit -->
-    <div class="col-2-5 section-label">
+    <div class="col-2-4 section-label">
       <SectionNumber>04</SectionNumber>
       <h2 class="section-heading">Credit</h2>
     </div>
-    <div class="col-5-12 section-body">
+    <div class="col-5-11 section-body">
       <dl class="credit-list">
         <div class="credit-row">
           <dt class="mono-caption">Date</dt>
@@ -204,7 +204,7 @@ const articleJsonLd = {
 
     {
       related.length > 0 && (
-        <section class="col-2-13 related">
+        <section class="col-2-12 related">
           <SectionRule align="start">Related work</SectionRule>
           <div class="related-grid">
             {related.map((r) => (

@@ -24,31 +24,31 @@ const blocks = [
 
 <PageLayout title="Now" description="What Théo Alessandro Hermann is focused on this month.">
   <section class="now grid-cartesian">
-    <h1 class="col-1-9 now-title">May 2026 · Rio</h1>
-    <p class="col-3-9 now-lede">
+    <h1 class="col-1-8 now-title">May 2026 · Rio</h1>
+    <p class="col-3-8 now-lede">
       A monthly snapshot of what's open, what's shipping, and what's next.
     </p>
 
-    <div class="col-1-13">
+    <div class="col-1-12">
       <SectionRule align="start">Active</SectionRule>
     </div>
 
     {
       blocks.map((b) => (
         <>
-          <div class="col-1-3 block-label">
+          <div class="col-1-2 block-label">
             <span class="mono-caption">{b.label}</span>
           </div>
-          <p class="col-3-10 block-body">{b.body}</p>
+          <p class="col-3-9 block-body">{b.body}</p>
         </>
       ))
     }
 
-    <div class="col-1-13">
+    <div class="col-1-12">
       <SectionRule />
     </div>
 
-    <p class="col-1-9 now-attribution mono-caption">
+    <p class="col-1-8 now-attribution mono-caption">
       <a href="https://sive.rs/nowff" rel="noopener">/now page</a>, after Derek Sivers · Monthly refresh
     </p>
   </section>

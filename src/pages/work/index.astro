@@ -13,20 +13,20 @@ const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   description="Research and engineering projects by Théo Alessandro Hermann."
 >
   <section class="work-index grid-cartesian">
-    <div class="col-1-13 work-head">
+    <div class="col-1-12 work-head">
       <Breadcrumb />
     </div>
-    <h1 class="col-1-9 work-title">Research and engineering projects</h1>
-    <p class="col-3-9 work-lede">
+    <h1 class="col-1-8 work-title">Research and engineering projects</h1>
+    <p class="col-3-8 work-lede">
       Urban science from MIT Senseable Rio. Robotics on the edge of vision-language-action.
       Open-source where it makes the field cheaper to reproduce.
     </p>
 
-    <div class="col-1-13">
+    <div class="col-1-12">
       <SectionRule align="start">All work · by date</SectionRule>
     </div>
 
-    <ul class="col-1-13 work-list">
+    <ul class="col-1-12 work-list">
       {
         sorted.map((p) => {
           const year = p.data.date.getFullYear();

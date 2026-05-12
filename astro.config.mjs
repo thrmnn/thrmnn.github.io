@@ -8,7 +8,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeExternalLinks from 'rehype-external-links';
 
 export default defineConfig({
-  site: 'https://thrmnn.github.io',
+  site: 'https://theoalessandro.com',
   integrations: [mdx(), sitemap()],
   output: 'static',
   vite: {

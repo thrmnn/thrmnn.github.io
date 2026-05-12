@@ -1,75 +1,117 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
+import MonoRow from '../components/typography/MonoRow.astro';
+import SectionRule from '../components/composition/SectionRule.astro';
 
 const updated = new Date(2026, 4, 1); // May 2026
 const updatedLabel = updated.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+
+const blocks = [
+  {
+    label: 'Research',
+    body: 'Two papers in motion. The Amsterdam tree-shade study went to Nature Cities this week. The favela morphology paper — LiDAR, CFD airflow, solar exposure — is the next submission, targeting June.',
+  },
+  {
+    label: 'Robotics',
+    body: 'Building an open VLA benchmark on lerobot. Public release end of June. Reading recent world-model work in parallel.',
+  },
+  {
+    label: 'Building',
+    body: 'Two stealth apps with shipping deadlines in May and June. Not yet linked from this site. Separate from Azimuth — an AI infrastructure agency launching alongside, kept under its own brand.',
+  },
+  {
+    label: 'Open to',
+    body: 'Senior research and engineering conversations at frontier AI labs, and a small number of consulting engagements at the intersection of built environment and AI infrastructure.',
+  },
+];
 ---
 
 <PageLayout title="Now" description="What Théo Alessandro Hermann is focused on this month.">
-  <section class="page-wrap now">
-    <header class="now-head">
-      <span class="mono-caption">Now</span>
-      <h1 class="now-title">May 2026 · Rio</h1>
-      <p class="now-meta mono-caption">Updated {updatedLabel}</p>
-    </header>
-
-    <div class="now-body prose">
-      <p>
-        Two papers in motion. The Amsterdam tree-shade study went to
-        <em>Nature Cities</em> this week. The favela morphology paper — LiDAR, CFD airflow, solar exposure
-        — is the next submission, targeting June.
-      </p>
-      <p>
-        Robotics side: building an open VLA benchmark on lerobot. Public release end of June.
-        Reading recent world-model work in parallel.
-      </p>
-      <p>
-        Building two stealth apps with shipping deadlines in May and June. Not yet linked from this
-        site. Separate from
-        <strong>Azimuth</strong>, an AI infrastructure agency launching alongside — kept under its
-        own brand.
-      </p>
-      <p>
-        Open to senior research and engineering conversations at frontier AI labs, and to a small
-        number of consulting engagements at the intersection of built environment and AI
-        infrastructure.
-      </p>
-      <hr />
-      <p class="now-attribution">
-        <a href="https://sive.rs/nowff" rel="noopener">/now page</a>, after Derek Sivers. Monthly
-        refresh.
-      </p>
+  <section class="now grid-cartesian">
+    <div class="col-1-13 now-head">
+      <MonoRow pieces={['Now', `Updated ${updatedLabel}`]} />
     </div>
+    <h1 class="col-1-9 now-title">May 2026 · Rio</h1>
+    <p class="col-3-9 now-lede">
+      A monthly snapshot of what's open, what's shipping, and what's next.
+    </p>
+
+    <div class="col-1-13">
+      <SectionRule align="start">Active</SectionRule>
+    </div>
+
+    {
+      blocks.map((b) => (
+        <>
+          <div class="col-1-3 block-label">
+            <span class="mono-caption">{b.label}</span>
+          </div>
+          <p class="col-3-10 block-body">{b.body}</p>
+        </>
+      ))
+    }
+
+    <div class="col-1-13">
+      <SectionRule />
+    </div>
+
+    <p class="col-1-9 now-attribution mono-caption">
+      <a href="https://sive.rs/nowff" rel="noopener">/now page</a>, after Derek Sivers · Monthly refresh
+    </p>
   </section>
 </PageLayout>
 
 <style>
   .now {
     padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-section);
+    row-gap: var(--s-6);
   }
   .now-head {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
-    margin-bottom: 2.5rem;
+    gap: var(--s-4);
   }
   .now-title {
-    font-size: clamp(2rem, 4vw, 2.75rem);
-    line-height: 1.08;
+    font-family: var(--font-cartesian);
+    font-size: var(--text-display-lg);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin: 0;
   }
-  .now-meta {
-    color: var(--color-ink-muted);
+  .now-lede {
+    font-family: var(--font-body);
+    color: var(--color-ink-soft);
+    font-size: var(--text-body-lg);
+    line-height: 1.55;
+    margin: 0;
+    margin-top: var(--s-4);
   }
-  .now-body {
+
+  .block-label {
+    padding-top: var(--s-2);
+  }
+  .block-body {
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.65;
+    color: var(--color-ink);
+    margin: 0;
     max-width: 60ch;
   }
-  .now-body p {
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: var(--color-ink);
+
+  @media (max-width: 719px) {
+    .block-label {
+      padding-top: 0;
+      margin-top: var(--s-4);
+    }
   }
+
   .now-attribution {
-    font-size: 0.9rem !important;
-    color: var(--color-ink-muted) !important;
+    margin-top: var(--s-4);
+    color: var(--color-ink-muted);
+  }
+  .now-attribution a {
+    color: inherit;
   }
 </style>

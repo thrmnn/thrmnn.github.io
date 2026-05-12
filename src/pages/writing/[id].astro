@@ -3,6 +3,8 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
 import MonoRow from '../../components/typography/MonoRow.astro';
+import VerticalLabel from '../../components/composition/VerticalLabel.astro';
+import Marginalia from '../../components/composition/Marginalia.astro';
 
 export async function getStaticPaths() {
   const writing = await getCollection('writing');
@@ -40,6 +42,8 @@ const articleJsonLd = {
   inLanguage: d.language,
   keywords: d.tags.join(', '),
 };
+
+const isTropical = d.register === 'tropical';
 ---
 
 <PageLayout
@@ -49,56 +53,90 @@ const articleJsonLd = {
   register={d.register}
   articleJsonLd={articleJsonLd}
 >
-  <article class="page-wrap essay">
-    <Breadcrumb />
-    <MonoRow pieces={['Writing', dateLabel, d.language]} />
-    <header class="essay-head">
+  <article class="essay grid-tropical">
+    <aside class="col-t-1-2 essay-side" aria-hidden="true">
+      <VerticalLabel>Essay · {d.date.getFullYear()}</VerticalLabel>
+    </aside>
+
+    <header class="col-t-2-9 essay-header">
+      <Breadcrumb />
+      <MonoRow pieces={['Writing', dateLabel, d.language.toUpperCase()]} />
       <h1 class="essay-title">{d.title}</h1>
       <p class="essay-summary">{d.summary}</p>
       {updatedLabel && <p class="updated-line mono-caption">Updated {updatedLabel}</p>}
     </header>
 
-    <div class="essay-body prose">
+    <div class="col-t-2-8 essay-body prose">
       <Content />
     </div>
+
+    <aside class="col-t-8-9 essay-margin">
+      <Marginalia voice={isTropical ? 'serif' : 'mono'}>
+        {dateLabel} · Rio
+      </Marginalia>
+    </aside>
   </article>
 </PageLayout>
 
 <style>
   .essay {
     padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-section);
+    row-gap: var(--s-8);
   }
-  .essay-head {
-    max-width: 64ch;
+
+  .essay-side {
+    position: sticky;
+    top: var(--s-20);
+    align-self: start;
+    height: 0;
+  }
+  @media (max-width: 719px) {
+    .essay-side {
+      display: none;
+    }
+  }
+
+  .essay-header {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 2.5rem;
-  }
-  .essay-lang {
-    margin-left: 0.5rem;
-    padding: 0.05rem 0.4rem;
-    border: 1px solid var(--color-rule-strong);
-    border-radius: 2px;
-    font-size: 0.7rem;
+    gap: var(--s-3);
   }
   .essay-title {
-    font-size: clamp(2rem, 4.5vw, 3rem);
-    line-height: 1.08;
+    font-family: var(--font-tropical);
+    font-weight: 450;
+    font-size: var(--text-display-lg);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
     max-width: 22ch;
+    margin: var(--s-2) 0 0;
+    font-variation-settings:
+      'opsz' 144,
+      'SOFT' 60;
+  }
+  [data-register='cartesian'] .essay-title {
+    font-family: var(--font-cartesian);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    font-variation-settings: normal;
   }
   .essay-summary {
     font-family: var(--font-body);
     color: var(--color-ink-soft);
-    font-size: 1.15rem;
+    font-size: var(--text-body-lg);
     line-height: 1.55;
     max-width: 54ch;
+    margin: 0;
   }
   .updated-line {
-    margin-top: 0.5rem;
+    margin: 0;
     color: var(--color-ink-muted);
   }
   .essay-body {
     max-width: 64ch;
+  }
+
+  .essay-margin {
+    align-self: start;
+    padding-top: var(--s-4);
   }
 </style>

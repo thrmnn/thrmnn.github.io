@@ -1,21 +1,27 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import MonoRow from '../components/typography/MonoRow.astro';
+import SectionRule from '../components/composition/SectionRule.astro';
+import Marginalia from '../components/composition/Marginalia.astro';
 import { author } from '../data/author';
 ---
 
 <PageLayout title="Contact" description="Email and handles for Théo Alessandro Hermann.">
-  <section class="page-wrap contact">
-    <MonoRow pieces={['Contact', 'Rio']} />
-    <header class="contact-head">
-      <h1 class="contact-title">Reach out.</h1>
-      <p class="contact-lede">
-        For research conversations, consulting at the intersection of built environment and AI
-        infrastructure, or anything that resembles either.
-      </p>
-    </header>
+  <section class="contact grid-cartesian">
+    <div class="col-1-13 contact-head">
+      <MonoRow pieces={['Contact', 'Rio']} />
+    </div>
+    <h1 class="col-1-9 contact-title">Reach out.</h1>
+    <p class="col-3-9 contact-lede">
+      For research conversations, consulting at the intersection of built environment and AI
+      infrastructure, or anything that resembles either.
+    </p>
 
-    <dl class="contact-grid">
+    <div class="col-1-13">
+      <SectionRule align="start">Channels</SectionRule>
+    </div>
+
+    <dl class="col-1-9 contact-grid">
       <div class="contact-row">
         <dt class="mono-caption">Email</dt>
         <dd><a href={`mailto:${author.email}`}>{author.email}</a></dd>
@@ -37,29 +43,40 @@ import { author } from '../data/author';
         <dd>{author.location}</dd>
       </div>
     </dl>
+
+    <aside class="col-10-13 contact-margin">
+      <Marginalia voice="mono">
+        Replies within a few days. No noisy newsletter.
+      </Marginalia>
+    </aside>
   </section>
 </PageLayout>
 
 <style>
   .contact {
     padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-section);
+    row-gap: var(--s-6);
   }
   .contact-head {
-    max-width: 60ch;
-    margin-bottom: 3rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--s-4);
   }
   .contact-title {
-    font-size: clamp(2rem, 4vw, 2.75rem);
-    line-height: 1.1;
+    font-family: var(--font-cartesian);
+    font-size: var(--text-display-lg);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin: 0;
   }
   .contact-lede {
     font-family: var(--font-body);
     color: var(--color-ink-soft);
-    font-size: 1.05rem;
+    font-size: var(--text-body-lg);
     line-height: 1.55;
+    margin: 0;
+    margin-top: var(--s-4);
   }
   .contact-grid {
     border-top: 1px solid var(--color-rule);
@@ -68,17 +85,19 @@ import { author } from '../data/author';
   }
   .contact-row {
     display: grid;
-    grid-template-columns: 7rem 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 8rem 1fr;
+    gap: var(--s-6);
     align-items: baseline;
-    padding: 1.1rem 0;
+    padding: var(--s-4) 0;
     border-bottom: 1px solid var(--color-rule);
   }
   .contact-row dt {
-    color: var(--color-ink-muted);
+    margin: 0;
   }
   .contact-row dd {
     margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--text-body);
     color: var(--color-ink);
   }
   .contact-row a {
@@ -94,10 +113,14 @@ import { author } from '../data/author';
     color: var(--color-accent);
     border-bottom-color: var(--color-accent);
   }
+  .contact-margin {
+    align-self: end;
+    padding-bottom: var(--s-6);
+  }
   @media (max-width: 520px) {
     .contact-row {
       grid-template-columns: 1fr;
-      gap: 0.4rem;
+      gap: var(--s-1);
     }
   }
 </style>

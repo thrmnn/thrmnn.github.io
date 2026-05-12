@@ -1,0 +1,47 @@
+---
+/**
+ * Mono label rotated 90° to run vertically alongside a content column.
+ * Use for project pages, essay margins, or any place where the page wants
+ * a quiet structural marker outside the reading column.
+ *
+ * Direction:
+ *   'up'   — reads bottom-to-top (default; classic editorial sideways label)
+ *   'down' — reads top-to-bottom
+ *
+ * Color follows the active register: Cartesian → ink-muted, Tropical → terra.
+ * Sits in its own layout slot — the parent supplies the column / placement.
+ */
+interface Props {
+  direction?: 'up' | 'down';
+  class?: string;
+}
+
+const { direction = 'up', class: className = '' } = Astro.props;
+---
+
+<span class:list={['vertical-label', `vertical-label--${direction}`, className]}>
+  <slot />
+</span>
+
+<style>
+  .vertical-label {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-sm);
+    line-height: 1;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    white-space: nowrap;
+  }
+  .vertical-label--up {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+  .vertical-label--down {
+    writing-mode: vertical-rl;
+  }
+  :global([data-register='tropical']) .vertical-label {
+    color: var(--color-terra);
+  }
+</style>

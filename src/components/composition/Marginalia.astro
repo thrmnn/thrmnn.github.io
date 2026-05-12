@@ -1,0 +1,58 @@
+---
+/**
+ * Small text in the gutter alongside body content.
+ * Two voices:
+ *   'mono'  — JetBrains Mono, uppercase tracked (Cartesian default)
+ *   'serif' — Fraunces italic at body size (Tropical / editorial)
+ *
+ * Color follows register: graphite (Cartesian) or oxblood (Tropical).
+ * Parent column supplies placement; this component owns voice only.
+ *
+ * Usage:
+ *   <Marginalia voice="serif">
+ *     The favela is not a problem to be solved — it is a system to be understood.
+ *   </Marginalia>
+ */
+interface Props {
+  voice?: 'mono' | 'serif';
+  class?: string;
+}
+
+const { voice = 'mono', class: className = '' } = Astro.props;
+---
+
+<aside class:list={['marginalia', `marginalia--${voice}`, className]}>
+  <slot />
+</aside>
+
+<style>
+  .marginalia {
+    display: block;
+    max-width: 26ch;
+    color: var(--color-ink-soft);
+  }
+  .marginalia--mono {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-sm);
+    line-height: 1.45;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-graphite);
+  }
+  .marginalia--serif {
+    font-family: var(--font-tropical);
+    font-style: italic;
+    font-size: var(--text-body-sm);
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    font-variation-settings:
+      'opsz' 14,
+      'SOFT' 60;
+  }
+  :global([data-register='tropical']) .marginalia--mono {
+    color: var(--color-oxblood);
+  }
+  :global([data-register='tropical']) .marginalia--serif {
+    color: var(--color-oxblood);
+  }
+</style>

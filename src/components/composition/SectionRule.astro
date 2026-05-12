@@ -1,0 +1,67 @@
+---
+/**
+ * Horizontal rule with an optional centered marker — used to break
+ * sections without the silence of a plain <hr>. The marker is rendered
+ * in mono and inherits register accent color.
+ *
+ * Two layouts:
+ *   default        — rule sits flush left/right with marker on the left
+ *   align="center" — rule splits around a centered marker
+ *
+ * Usage:
+ *   <SectionRule>§</SectionRule>
+ *   <SectionRule align="center">§ III</SectionRule>
+ *   <SectionRule />  (no marker — pure rule)
+ */
+interface Props {
+  align?: 'start' | 'center';
+  class?: string;
+}
+
+const { align = 'start', class: className = '' } = Astro.props;
+const hasSlot = Astro.slots.has('default');
+---
+
+<div class:list={['section-rule', `section-rule--${align}`, className]} role="separator">
+  {
+    hasSlot ? (
+      <>
+        {align === 'start' && <span class="section-rule-marker"><slot /></span>}
+        <span class="section-rule-line" aria-hidden="true" />
+        {align === 'center' && <span class="section-rule-marker"><slot /></span>}
+        {align === 'center' && <span class="section-rule-line" aria-hidden="true" />}
+      </>
+    ) : (
+      <span class="section-rule-line" aria-hidden="true" />
+    )
+  }
+</div>
+
+<style>
+  .section-rule {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    margin: var(--s-16) 0;
+  }
+  .section-rule--center {
+    justify-content: center;
+  }
+  .section-rule-line {
+    flex: 1;
+    height: 1px;
+    background: var(--color-rule);
+  }
+  .section-rule-marker {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-ink-muted);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  :global([data-register='tropical']) .section-rule-marker {
+    color: var(--color-terra);
+  }
+</style>

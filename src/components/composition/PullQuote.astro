@@ -1,0 +1,67 @@
+---
+/**
+ * Editorial pull quote. Display-md size, register-aware face:
+ *   Cartesian → Space Grotesk, weight 400
+ *   Tropical  → Fraunces opsz/SOFT engaged, italic optional
+ *
+ * Framed left by a 2px accent rule (graphite on Cartesian, terra on Tropical).
+ * Padding from the spacing scale. Optional <small> attribution slot below.
+ *
+ * Usage:
+ *   <PullQuote attribution="— Anna Lindqvist">
+ *     The system should outlive the ambition that built it.
+ *   </PullQuote>
+ */
+interface Props {
+  attribution?: string;
+  italic?: boolean;
+  class?: string;
+}
+
+const { attribution, italic = false, class: className = '' } = Astro.props;
+---
+
+<figure class:list={['pull-quote', italic && 'pull-quote--italic', className]}>
+  <blockquote>
+    <slot />
+  </blockquote>
+  {attribution && <figcaption class="pull-quote-attribution">{attribution}</figcaption>}
+</figure>
+
+<style>
+  .pull-quote {
+    margin: var(--s-12) 0;
+    padding: var(--s-2) 0 var(--s-2) var(--s-6);
+    border-left: 2px solid var(--color-accent);
+    max-width: 38ch;
+  }
+  .pull-quote blockquote {
+    margin: 0;
+    font-family: var(--font-cartesian);
+    font-size: var(--text-display-md);
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+  }
+  :global([data-register='tropical']) .pull-quote blockquote {
+    font-family: var(--font-tropical);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    font-variation-settings:
+      'opsz' 120,
+      'SOFT' 70;
+  }
+  .pull-quote--italic blockquote {
+    font-style: italic;
+  }
+  .pull-quote-attribution {
+    margin-top: var(--s-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-muted);
+  }
+</style>

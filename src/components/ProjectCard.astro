@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import Figure from './composition/Figure.astro';
+import StatusPill from './primitives/StatusPill.astro';
 
 interface Props {
   project: CollectionEntry<'projects'>;
@@ -12,6 +13,7 @@ const { project, variant = 'compact' } = Astro.props;
 const { data, id } = project;
 const href = `/work/${id}`;
 const figureRatio = variant === 'feature' ? '16/10' : '4/3';
+const pillTone = data.register === 'tropical' ? 'terra' : 'graphite';
 
 // Tile meta strip: STATUS · DATE · WITH — shown on hover / focus-within.
 const yyyyMm = `${data.date.getFullYear()}-${String(data.date.getMonth() + 1).padStart(2, '0')}`;
@@ -31,6 +33,15 @@ const metaPieces = [data.status, yyyyMm, withList].filter(
     />
   </div>
   <div class="card-body">
+    {
+      data.status && (
+        <div class="card-status">
+          <StatusPill tone={pillTone} size="sm">
+            {data.status}
+          </StatusPill>
+        </div>
+      )
+    }
     <h3 class="card-title">{data.title}</h3>
     {data.subtitle && <p class="card-subtitle">{data.subtitle}</p>}
     <div class="tile-meta">
@@ -93,6 +104,9 @@ const metaPieces = [data.status, yyyyMm, withList].filter(
     display: flex;
     flex-direction: column;
     gap: 0.45rem;
+  }
+  .card-status {
+    margin-bottom: var(--s-1);
   }
   .card-title {
     font-family: var(--font-cartesian);

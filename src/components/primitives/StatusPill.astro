@@ -1,21 +1,30 @@
 ---
 /**
  * Mono-uppercase pill for status, language, or any short tag.
- * 1px border in currentColor; padding from the spacing scale.
+ * 1px border, padding from the spacing scale.
  *
  * Tones map to register palettes:
  *   graphite, cool-grey  — Cartesian (research / technical)
  *   terra, oxblood       — Tropical (essays / cultural)
+ *
+ * Sizes:
+ *   default — padding s-1 / s-3 (status pills)
+ *   sm      — padding s-1 / s-2 (writing language badges)
+ *
+ * cool-grey is a structural border accent only. On Paper ground it
+ * fails AA at 11 px text — the pill keeps a cool-grey BORDER but
+ * pushes text to --ink-muted so the inner label passes contrast.
  */
 interface Props {
   tone?: 'graphite' | 'terra' | 'cool-grey' | 'oxblood';
+  size?: 'default' | 'sm';
   class?: string;
 }
 
-const { tone = 'graphite', class: className = '' } = Astro.props;
+const { tone = 'graphite', size = 'default', class: className = '' } = Astro.props;
 ---
 
-<span class:list={['status-pill', `status-pill--${tone}`, className]}>
+<span class:list={['status-pill', `status-pill--${tone}`, `status-pill--${size}`, className]}>
   <slot />
 </span>
 
@@ -25,13 +34,18 @@ const { tone = 'graphite', class: className = '' } = Astro.props;
     align-items: center;
     font-family: var(--font-mono);
     font-size: var(--text-mono-xs);
+    font-weight: 400;
     line-height: 1;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     border: 1px solid currentColor;
     border-radius: 2px;
     padding: var(--s-1) var(--s-3);
     white-space: nowrap;
+  }
+  .status-pill--sm {
+    padding: var(--s-1) var(--s-2);
+    letter-spacing: 0.08em;
   }
   .status-pill--graphite {
     color: var(--color-graphite);
@@ -39,10 +53,13 @@ const { tone = 'graphite', class: className = '' } = Astro.props;
   .status-pill--terra {
     color: var(--color-terra);
   }
-  .status-pill--cool-grey {
-    color: var(--color-cool-grey);
-  }
   .status-pill--oxblood {
     color: var(--color-oxblood);
+  }
+  /* cool-grey: border keeps the accent color via border-color override,
+     text uses ink-muted so 11 px mono passes AA contrast. */
+  .status-pill--cool-grey {
+    color: var(--color-ink-muted);
+    border-color: var(--color-cool-grey);
   }
 </style>

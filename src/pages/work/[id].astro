@@ -9,6 +9,7 @@ import SectionNumber from '../../components/composition/SectionNumber.astro';
 import SectionRule from '../../components/composition/SectionRule.astro';
 import Figure from '../../components/composition/Figure.astro';
 import ExternalLink from '../../components/primitives/ExternalLink.astro';
+import TagPill from '../../components/primitives/TagPill.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -147,7 +148,9 @@ const articleJsonLd = {
               ))}
             </ul>
           ) : (
-            <p class="empty">Findings not yet linked.</p>
+            <p class="credit-pending mono-caption mono-caption--xs">
+              ⧉&nbsp;&nbsp;Findings surfaced on publication
+            </p>
           )
         }
       </div>
@@ -161,36 +164,68 @@ const articleJsonLd = {
         <SectionNumber>04</SectionNumber>
       </div>
       <div class="col-3-9 project-section-body">
-        <dl class="credit-list">
-          <div class="credit-row">
-            <dt class="mono-caption">Date</dt>
-            <dd>{formatDate(d.date)}</dd>
-          </div>
+        <div class="credit-block">
+          <h4 class="mono-caption credit-heading">WITH</h4>
           {
-            d.collaborators.length > 0 && (
-              <div class="credit-row">
-                <dt class="mono-caption">With</dt>
-                <dd>{d.collaborators.join(', ')}</dd>
-              </div>
+            d.collaborators.length > 0 ? (
+              <ul class="credit-list-inline">
+                {d.collaborators.map((c) => (
+                  <li>{c}</li>
+                ))}
+              </ul>
+            ) : (
+              <p class="credit-pending mono-caption mono-caption--xs">
+                ⧉&nbsp;&nbsp;Collaborators surfaced on publication
+              </p>
             )
           }
+        </div>
+
+        <div class="credit-block">
+          <h4 class="mono-caption credit-heading">LINKS</h4>
           {
-            d.tags.length > 0 && (
-              <div class="credit-row">
-                <dt class="mono-caption">Tags</dt>
-                <dd>{d.tags.join(' / ')}</dd>
-              </div>
+            links.length > 0 ? (
+              <ul class="credit-list-inline">
+                {links.map((l) => (
+                  <li>
+                    <ExternalLink href={l.href}>{l.label}</ExternalLink>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p class="credit-pending mono-caption mono-caption--xs">
+                ⧉&nbsp;&nbsp;Links surfaced on release
+              </p>
             )
           }
-          {
-            d.updated && (
-              <div class="credit-row">
-                <dt class="mono-caption">Updated</dt>
-                <dd>{formatDate(d.updated)}</dd>
+        </div>
+
+        {
+          d.tags.length > 0 && (
+            <div class="credit-block">
+              <h4 class="mono-caption credit-heading">TAGS</h4>
+              <div class="tag-row">
+                {d.tags.map((t) => (
+                  <TagPill>{t}</TagPill>
+                ))}
               </div>
-            )
-          }
-        </dl>
+            </div>
+          )
+        }
+
+        <div class="credit-block">
+          <h4 class="mono-caption credit-heading">DATE</h4>
+          <p class="credit-value">{formatDate(d.date)}</p>
+        </div>
+
+        {
+          d.updated && (
+            <div class="credit-block">
+              <h4 class="mono-caption credit-heading">UPDATED</h4>
+              <p class="credit-value">{formatDate(d.updated)}</p>
+            </div>
+          )
+        }
       </div>
     </section>
 
@@ -347,36 +382,47 @@ const articleJsonLd = {
     font-size: var(--text-body);
     color: var(--color-ink);
   }
-  .empty {
-    color: var(--color-ink-muted);
-    font-style: italic;
-    margin: 0;
-  }
 
-  .credit-list {
-    margin: 0;
+  /* Credit section blocks (D6) — each block is a heading + content
+     (or pending state). The pending state IS the design surface, not
+     a fallback — Anna's principle. */
+  .credit-block {
     display: flex;
     flex-direction: column;
-    gap: var(--s-4);
+    gap: var(--s-2);
+    margin-bottom: var(--s-8);
   }
-  .credit-row {
-    display: grid;
-    grid-template-columns: 7rem 1fr;
-    gap: var(--s-4);
-    align-items: baseline;
+  .credit-block:last-child {
+    margin-bottom: 0;
   }
-  .credit-row dt {
+  .credit-heading {
+    margin: 0 0 var(--s-1);
+    font-weight: 400;
+  }
+  .credit-list-inline {
+    list-style: none;
     margin: 0;
-  }
-  .credit-row dd {
-    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
     color: var(--color-ink-soft);
   }
-  @media (max-width: 520px) {
-    .credit-row {
-      grid-template-columns: 1fr;
-      gap: var(--s-1);
-    }
+  .credit-value {
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    color: var(--color-ink-soft);
+    margin: 0;
+  }
+  .credit-pending {
+    color: var(--color-ink-muted);
+    margin: 0;
+    padding: var(--s-2) 0;
+  }
+  .credit-pending::before {
+    /* ⧉ glyph is inline-rendered with non-breaking spaces; no extra ::before. */
   }
 
   .related-grid {

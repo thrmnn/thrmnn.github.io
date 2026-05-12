@@ -6,6 +6,10 @@ import Breadcrumb from '../../components/nav/Breadcrumb.astro';
 import MonoRow from '../../components/typography/MonoRow.astro';
 import StatusPill from '../../components/primitives/StatusPill.astro';
 import PaperGrainOverlay from '../../components/primitives/PaperGrainOverlay.astro';
+import VerticalLabel from '../../components/composition/VerticalLabel.astro';
+import SectionNumber from '../../components/composition/SectionNumber.astro';
+import SectionRule from '../../components/composition/SectionRule.astro';
+import ExternalLink from '../../components/primitives/ExternalLink.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -32,7 +36,14 @@ const updatedLabel = d.updated
   ? d.updated.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
   : null;
 
-// Related work: other projects sharing at least one tag, ranked by overlap.
+const links = [
+  d.links.paper && { label: 'Paper', href: d.links.paper },
+  d.links.preprint && { label: 'Preprint', href: d.links.preprint },
+  d.links.repo && { label: 'Code', href: d.links.repo },
+  d.links.app && { label: 'App', href: d.links.app },
+  d.links.site && { label: 'Site', href: d.links.site },
+].filter((l): l is { label: string; href: string } => Boolean(l));
+
 const all = await getCollection('projects');
 const related = all
   .filter((p) => p.id !== project.id)
@@ -63,10 +74,14 @@ const articleJsonLd = {
   register={d.register}
   articleJsonLd={articleJsonLd}
 >
-  <article class="page-wrap project">
-    <Breadcrumb />
-    <MonoRow pieces={['Work', yyyyMm]} />
-    <header class="project-header">
+  <article class="project grid-cartesian">
+    <aside class="col-1-2 project-side" aria-hidden="true">
+      <VerticalLabel>Project · {d.date.getFullYear()}</VerticalLabel>
+    </aside>
+
+    <header class="col-2-13 project-header">
+      <Breadcrumb />
+      <MonoRow pieces={['Work', yyyyMm]} />
       {
         d.status && (
           <p class="status-line">
@@ -81,70 +96,116 @@ const articleJsonLd = {
       {updatedLabel && <p class="updated-line mono-caption">Updated {updatedLabel}</p>}
     </header>
 
-    {
-      d.heroImage ? (
-        <figure class="project-hero" data-kind={d.heroKind}>
-          <img src={d.heroImage} alt={d.heroAlt ?? d.title} />
-          {d.heroKind === 'photo' && <PaperGrainOverlay />}
-        </figure>
-      ) : (
-        <div class="project-hero hero-placeholder" aria-hidden="true">
-          <span class="placeholder-mark">{d.title}</span>
-        </div>
-      )
-    }
+    <div class="col-2-13 project-hero-wrap">
+      {
+        d.heroImage ? (
+          <figure class="project-hero" data-kind={d.heroKind}>
+            <img src={d.heroImage} alt={d.heroAlt ?? d.title} />
+            {d.heroKind === 'photo' && <PaperGrainOverlay />}
+          </figure>
+        ) : (
+          <div class="project-hero hero-placeholder" aria-hidden="true">
+            <span class="placeholder-mark">{d.title}</span>
+          </div>
+        )
+      }
+    </div>
 
-    <div class="project-summary">
+    <!-- 01 Context -->
+    <div class="col-2-5 section-label">
+      <SectionNumber>01</SectionNumber>
+      <h2 class="section-heading">Context</h2>
+    </div>
+    <div class="col-5-12 section-body section-body--lede">
       <p>{d.summary}</p>
     </div>
 
-    <div class="project-meta">
-      <div class="meta-row">
-        <span class="mono-caption">Date</span>
-        <span>{formatDate(d.date)}</span>
-      </div>
+    <div class="col-2-13"><SectionRule /></div>
+
+    <!-- 02 Method -->
+    <div class="col-2-5 section-label">
+      <SectionNumber>02</SectionNumber>
+      <h2 class="section-heading">Method</h2>
+    </div>
+    <div class="col-5-12 section-body prose">
+      <Content />
+    </div>
+
+    <div class="col-2-13"><SectionRule /></div>
+
+    <!-- 03 Findings & links -->
+    <div class="col-2-5 section-label">
+      <SectionNumber>03</SectionNumber>
+      <h2 class="section-heading">Findings & links</h2>
+    </div>
+    <div class="col-5-12 section-body">
       {
-        d.collaborators.length > 0 && (
-          <div class="meta-row">
-            <span class="mono-caption">With</span>
-            <span>{d.collaborators.join(', ')}</span>
-          </div>
+        links.length > 0 ? (
+          <ul class="links-list">
+            {links.map((l) => (
+              <li>
+                <ExternalLink href={l.href}>{l.label}</ExternalLink>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="empty">Findings not yet linked.</p>
         )
       }
       {
-        (d.links.paper || d.links.preprint || d.links.repo || d.links.app || d.links.site) && (
-          <div class="meta-row">
-            <span class="mono-caption">Links</span>
-            <span class="meta-links">
-              {d.links.paper && <a href={d.links.paper}>Paper</a>}
-              {d.links.preprint && <a href={d.links.preprint}>Preprint</a>}
-              {d.links.repo && <a href={d.links.repo}>Code</a>}
-              {d.links.app && <a href={d.links.app}>App</a>}
-              {d.links.site && <a href={d.links.site}>Site</a>}
-            </span>
-          </div>
-        )
-      }
-      {
-        d.updated && (
-          <div class="meta-row">
-            <span class="mono-caption">Updated</span>
-            <span>{formatDate(d.updated)}</span>
-          </div>
+        d.tags.length > 0 && (
+          <p class="tags mono-caption">
+            {d.tags.map((tag, i) => (
+              <>
+                {i > 0 && (
+                  <span aria-hidden="true" class="tag-sep">
+                    /
+                  </span>
+                )}
+                {tag}
+              </>
+            ))}
+          </p>
         )
       }
     </div>
 
-    <div class="project-body prose">
-      <Content />
+    <div class="col-2-13"><SectionRule /></div>
+
+    <!-- 04 Credit -->
+    <div class="col-2-5 section-label">
+      <SectionNumber>04</SectionNumber>
+      <h2 class="section-heading">Credit</h2>
+    </div>
+    <div class="col-5-12 section-body">
+      <dl class="credit-list">
+        <div class="credit-row">
+          <dt class="mono-caption">Date</dt>
+          <dd>{formatDate(d.date)}</dd>
+        </div>
+        {
+          d.collaborators.length > 0 && (
+            <div class="credit-row">
+              <dt class="mono-caption">With</dt>
+              <dd>{d.collaborators.join(', ')}</dd>
+            </div>
+          )
+        }
+        {
+          d.updated && (
+            <div class="credit-row">
+              <dt class="mono-caption">Updated</dt>
+              <dd>{formatDate(d.updated)}</dd>
+            </div>
+          )
+        }
+      </dl>
     </div>
 
     {
       related.length > 0 && (
-        <section class="related">
-          <div class="featured-head">
-            <span class="mono-caption">Related work</span>
-          </div>
+        <section class="col-2-13 related">
+          <SectionRule align="start">Related work</SectionRule>
           <div class="related-grid">
             {related.map((r) => (
               <ProjectCard project={r} />
@@ -158,37 +219,69 @@ const articleJsonLd = {
 
 <style>
   .project {
-    padding-block: clamp(2rem, 5vw, 3.5rem);
+    padding-block: clamp(2rem, 5vw, 3.5rem) var(--space-section);
+    row-gap: var(--s-8);
   }
+
+  .project-side {
+    position: sticky;
+    top: var(--s-20);
+    align-self: start;
+    height: 0;
+  }
+  @media (max-width: 719px) {
+    .project-side {
+      display: none;
+    }
+  }
+
   .project-header {
-    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    margin-bottom: var(--s-6);
   }
   .status-line {
-    margin: 0 0 1rem;
+    margin: var(--s-2) 0 0;
   }
   .project-title {
-    font-size: clamp(2rem, 4.2vw, 3rem);
-    line-height: 1.08;
+    font-family: var(--font-cartesian);
+    font-size: var(--text-display-lg);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
     max-width: 22ch;
-    margin-bottom: 0.6rem;
+    margin: var(--s-2) 0 0;
+  }
+  [data-register='tropical'] .project-title {
+    font-family: var(--font-tropical);
+    font-weight: 450;
+    font-variation-settings:
+      'opsz' 144,
+      'SOFT' 60;
+    letter-spacing: -0.015em;
   }
   .project-subtitle {
     font-family: var(--font-body);
-    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    font-size: var(--text-body-lg);
     color: var(--color-ink-soft);
     max-width: 50ch;
     line-height: 1.5;
+    margin: 0;
   }
   .updated-line {
-    margin-top: 0.6rem;
     color: var(--color-ink-muted);
+    margin: 0;
   }
 
+  .project-hero-wrap {
+    margin-block: var(--s-6);
+  }
   .project-hero {
-    margin: 2.5rem 0;
     border: 1px solid var(--color-rule);
     overflow: hidden;
     position: relative;
+    margin: 0;
   }
   .project-hero img {
     width: 100%;
@@ -199,14 +292,14 @@ const articleJsonLd = {
     aspect-ratio: 16 / 9;
     display: flex;
     align-items: flex-end;
-    padding: 2rem;
+    padding: var(--s-8);
     background: linear-gradient(135deg, var(--color-paper-deep) 0%, var(--color-paper) 100%);
     position: relative;
   }
   .hero-placeholder::before {
     content: '';
     position: absolute;
-    inset: 1.5rem;
+    inset: var(--s-6);
     border: 1px solid var(--color-rule);
   }
   [data-register='tropical'] .hero-placeholder {
@@ -217,7 +310,7 @@ const articleJsonLd = {
     font-variation-settings:
       'opsz' 144,
       'SOFT' 60;
-    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-size: var(--text-display-md);
     color: var(--color-ink-soft);
     max-width: 70%;
     line-height: 1.05;
@@ -225,68 +318,110 @@ const articleJsonLd = {
     z-index: 1;
   }
 
-  .project-summary {
+  /* Numbered sections — label sits in col 2-5, content in col 5-12.
+     Section heading is Cartesian (or Fraunces in Tropical) at display-sm. */
+  .section-label {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    align-items: flex-start;
+  }
+  .section-heading {
+    font-family: var(--font-cartesian);
+    font-size: var(--text-display-sm);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    margin: 0;
+  }
+  [data-register='tropical'] .section-heading {
+    font-family: var(--font-tropical);
+    font-weight: 450;
+    font-variation-settings:
+      'opsz' 36,
+      'SOFT' 50;
+  }
+  .section-body {
     font-family: var(--font-body);
-    font-size: 1.18rem;
-    line-height: 1.6;
-    color: var(--color-ink);
-    max-width: 56ch;
-    margin: 0 0 2rem;
-  }
-
-  .project-meta {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.5rem 1rem;
-    padding: 1rem 0;
-    border-block: 1px solid var(--color-rule);
-    margin-bottom: 2.5rem;
-    font-size: 0.95rem;
-  }
-  .meta-row {
-    display: grid;
-    grid-template-columns: 6.5rem 1fr;
-    gap: 1rem;
-    align-items: baseline;
-  }
-  .meta-row > span:last-child {
+    font-size: var(--text-body);
+    line-height: 1.65;
     color: var(--color-ink-soft);
   }
-  .meta-links {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .meta-links a {
+  .section-body--lede {
+    font-size: var(--text-body-lg);
     color: var(--color-ink);
   }
-
-  @media (max-width: 520px) {
-    .meta-row {
-      grid-template-columns: 1fr;
-      gap: 0.25rem;
-    }
+  .section-body p {
+    margin: 0 0 1em;
+  }
+  .section-body p:last-child {
+    margin-bottom: 0;
   }
 
-  .project-body {
-    margin-top: 1rem;
+  .links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .links-list a {
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    color: var(--color-ink);
+  }
+  .empty {
+    color: var(--color-ink-muted);
+    font-style: italic;
+    margin: 0;
+  }
+  .tags {
+    margin-top: var(--s-6);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    align-items: baseline;
+  }
+  .tag-sep {
+    color: var(--color-ink-muted);
+    opacity: 0.55;
+    margin: 0 var(--s-1);
+  }
+
+  .credit-list {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+  .credit-row {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: var(--s-4);
+    align-items: baseline;
+  }
+  .credit-row dt {
+    margin: 0;
+  }
+  .credit-row dd {
+    margin: 0;
+    color: var(--color-ink-soft);
+  }
+  @media (max-width: 520px) {
+    .credit-row {
+      grid-template-columns: 1fr;
+      gap: var(--s-1);
+    }
   }
 
   .related {
     margin-top: var(--space-section);
   }
-  .featured-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid var(--color-rule);
-  }
   .related-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.25rem;
+    gap: var(--s-6);
   }
   @media (min-width: 720px) {
     .related-grid {

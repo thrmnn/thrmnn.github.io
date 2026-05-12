@@ -80,17 +80,21 @@ const articleJsonLd = {
 
     <header class="col-2-13 project-header">
       <Breadcrumb />
-      {
-        d.status && (
-          <p class="status-line">
-            <StatusPill tone={d.register === 'tropical' ? 'terra' : 'graphite'}>
-              {d.status}
-            </StatusPill>
-          </p>
-        )
-      }
-      <h1 class="project-title">{d.title}</h1>
-      {d.subtitle && <p class="project-subtitle">{d.subtitle}</p>}
+      <div class="project-title-grid">
+        <div class="project-title-stack">
+          <h1 class="project-title">{d.title}</h1>
+          {d.subtitle && <p class="project-subtitle">{d.subtitle}</p>}
+        </div>
+        {
+          d.status && (
+            <div class="project-status-cell">
+              <StatusPill tone={d.register === 'tropical' ? 'terra' : 'graphite'}>
+                {d.status}
+              </StatusPill>
+            </div>
+          )
+        }
+      </div>
       {updatedLabel && <p class="updated-line mono-caption">Updated {updatedLabel}</p>}
     </header>
 
@@ -234,11 +238,40 @@ const articleJsonLd = {
   .project-header {
     display: flex;
     flex-direction: column;
-    gap: var(--s-3);
+    gap: var(--s-4);
     margin-bottom: var(--s-6);
   }
-  .status-line {
-    margin: var(--s-2) 0 0;
+  .project-title-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--s-6);
+    row-gap: var(--s-3);
+    align-items: start;
+  }
+  .project-title-stack {
+    grid-column: 1 / 10;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .project-status-cell {
+    grid-column: 10 / 13;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--s-2);
+  }
+  @media (max-width: 720px) {
+    .project-title-grid {
+      grid-template-columns: 1fr;
+    }
+    .project-title-stack,
+    .project-status-cell {
+      grid-column: 1;
+    }
+    .project-status-cell {
+      justify-content: flex-start;
+      padding-top: 0;
+    }
   }
   .project-title {
     font-family: var(--font-cartesian);

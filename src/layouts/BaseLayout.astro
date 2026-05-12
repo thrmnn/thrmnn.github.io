@@ -123,5 +123,36 @@ const personJsonLd = {
   </head>
   <body>
     <slot />
+    <script is:inline>
+      // Compact-on-scroll header (Phase 4.7 D7).
+      // Inserts a sentinel above the header and toggles .is-compact on
+      // the header when the sentinel scrolls out of view. Survives Astro
+      // view transitions by re-running on every astro:page-load.
+      (function () {
+        function setup() {
+          var header = document.querySelector('.site-header');
+          if (!header) return;
+          // Remove any prior sentinel left over from a previous page.
+          var prior = document.getElementById('header-sentinel');
+          if (prior) prior.remove();
+          var sentinel = document.createElement('div');
+          sentinel.id = 'header-sentinel';
+          sentinel.setAttribute('aria-hidden', 'true');
+          sentinel.style.cssText = 'position:absolute;top:0;height:1px;width:100%;pointer-events:none;';
+          document.body.prepend(sentinel);
+          var obs = new IntersectionObserver(function (entries) {
+            var entry = entries[0];
+            header.classList.toggle('is-compact', !entry.isIntersecting);
+          });
+          obs.observe(sentinel);
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', setup);
+        } else {
+          setup();
+        }
+        document.addEventListener('astro:page-load', setup);
+      })();
+    </script>
   </body>
 </html>

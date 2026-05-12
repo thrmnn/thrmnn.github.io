@@ -1,9 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
 import MonoRow from '../../components/typography/MonoRow.astro';
+import SectionRule from '../../components/composition/SectionRule.astro';
 
 const all = await getCollection('projects');
 const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -15,58 +15,156 @@ const projectsLabel = `${sorted.length} project${sorted.length === 1 ? '' : 's'}
   title="Work"
   description="Research and engineering projects by Théo Alessandro Hermann."
 >
-  <section class="page-wrap work-index">
-    <Breadcrumb />
-    <MonoRow pieces={['Work', String(year), projectsLabel]} />
-    <header class="work-head">
-      <h1 class="work-title">Research and engineering projects</h1>
-      <p class="work-lede">
-        Urban science from MIT Senseable Rio. Robotics on the edge of vision-language-action.
-        Open-source where it makes the field cheaper to reproduce.
-      </p>
-    </header>
-
-    <div class="work-grid">
-      {sorted.map((p) => <ProjectCard project={p} />)}
+  <section class="work-index grid-cartesian">
+    <div class="col-1-13 work-head">
+      <Breadcrumb />
+      <MonoRow pieces={['Work', String(year), projectsLabel]} />
     </div>
+    <h1 class="col-1-9 work-title">Research and engineering projects</h1>
+    <p class="col-3-9 work-lede">
+      Urban science from MIT Senseable Rio. Robotics on the edge of vision-language-action.
+      Open-source where it makes the field cheaper to reproduce.
+    </p>
+
+    <div class="col-1-13">
+      <SectionRule align="start">All work · by date</SectionRule>
+    </div>
+
+    <ul class="col-1-13 work-list">
+      {
+        sorted.map((p) => {
+          const year = p.data.date.getFullYear();
+          const status = p.data.status ?? 'Active';
+          return (
+            <li>
+              <a href={`/work/${p.id}`} class="project-row">
+                <span class="row-year">{year}</span>
+                <div class="row-body">
+                  <h3 class="row-title">{p.data.title}</h3>
+                  {p.data.subtitle && <p class="row-summary">{p.data.subtitle}</p>}
+                </div>
+                <span class="row-status">{status}</span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
   </section>
 </PageLayout>
 
 <style>
   .work-index {
     padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-section);
+    row-gap: var(--s-6);
   }
   .work-head {
-    max-width: 60ch;
-    margin-bottom: 2.5rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--s-4);
   }
   .work-title {
-    font-size: clamp(2rem, 4vw, 2.75rem);
-    line-height: 1.1;
-    max-width: 18ch;
+    font-family: var(--font-cartesian);
+    font-size: var(--text-display-lg);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin: 0;
   }
   .work-lede {
     font-family: var(--font-body);
     color: var(--color-ink-soft);
-    font-size: 1.05rem;
-    line-height: 1.6;
+    font-size: var(--text-body-lg);
+    line-height: 1.55;
+    margin: 0;
+    margin-top: var(--s-4);
   }
-  .work-grid {
+
+  .work-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--color-rule);
+  }
+  .work-list li {
+    margin: 0;
+  }
+  .project-row {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-columns: minmax(60px, 1fr) 7fr 3fr;
+    column-gap: var(--s-6);
+    row-gap: var(--s-2);
+    padding: var(--s-6) 0;
+    border-bottom: 1px solid var(--color-rule);
+    text-decoration: none;
+    color: var(--color-ink);
+    transition:
+      border-color 250ms ease,
+      background 250ms ease;
   }
-  @media (min-width: 720px) {
-    .work-grid {
-      grid-template-columns: 1fr 1fr;
+  .project-row:hover,
+  .project-row:focus-visible {
+    border-bottom-color: var(--color-rule-strong);
+    background: var(--color-paper-deep);
+    outline: none;
+  }
+  .project-row:hover .row-title,
+  .project-row:focus-visible .row-title {
+    color: var(--color-accent);
+  }
+
+  .row-year {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-sm);
+    color: var(--color-ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    padding-top: 0.3em;
+  }
+  .row-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    min-width: 0;
+  }
+  .row-title {
+    font-family: var(--font-cartesian);
+    font-size: var(--text-display-sm);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 0;
+    color: var(--color-ink);
+    transition: color 250ms ease;
+  }
+  .row-summary {
+    font-family: var(--font-body);
+    font-size: var(--text-body-sm);
+    line-height: 1.55;
+    color: var(--color-ink-muted);
+    margin: 0;
+    max-width: 60ch;
+  }
+  .row-status {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-xs);
+    color: var(--color-ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-align: right;
+    padding-top: 0.3em;
+  }
+
+  @media (max-width: 720px) {
+    .project-row {
+      grid-template-columns: 1fr;
+      gap: var(--s-2);
     }
-  }
-  @media (min-width: 1024px) {
-    .work-grid {
-      grid-template-columns: 1fr 1fr 1fr;
+    .row-status {
+      text-align: left;
+      padding-top: 0;
     }
   }
 </style>

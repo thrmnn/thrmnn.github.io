@@ -88,24 +88,6 @@ const trajectory = [
       }
     </ol>
 
-    <div class="col-t-1-9">
-      <SectionRule align="start">Credit</SectionRule>
-    </div>
-
-    <dl class="col-t-1-9 about-credit">
-      <div class="credit-item">
-        <dt class="mono-caption">Languages</dt>
-        <dd>{author.languages.join(' · ')}</dd>
-      </div>
-      <div class="credit-item">
-        <dt class="mono-caption">CV</dt>
-        <dd><a href="/resume.pdf">Download CV (PDF)</a></dd>
-      </div>
-      <div class="credit-item">
-        <dt class="mono-caption">Contact</dt>
-        <dd><a href={`mailto:${author.email}`}>{author.email}</a></dd>
-      </div>
-    </dl>
   </section>
 </PageLayout>
 
@@ -212,44 +194,4 @@ const trajectory = [
     }
   }
 
-  .about-credit {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--s-8);
-    padding: var(--s-4) 0;
-    margin: 0;
-  }
-  .credit-item {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-2);
-  }
-  .credit-item dt {
-    margin: 0;
-  }
-  .credit-item dd {
-    margin: 0;
-    font-family: var(--font-body);
-    font-size: var(--text-body);
-    color: var(--color-ink);
-  }
-  .credit-item dd a {
-    color: var(--color-ink);
-    border-bottom: 1px solid var(--color-rule);
-    padding-bottom: 1px;
-    text-decoration: none;
-    transition:
-      border-color 200ms ease,
-      color 200ms ease;
-  }
-  .credit-item dd a:hover {
-    color: var(--color-oxblood);
-    border-bottom-color: var(--color-oxblood);
-  }
-  @media (max-width: 720px) {
-    .about-credit {
-      grid-template-columns: 1fr;
-      gap: var(--s-4);
-    }
-  }
 </style>

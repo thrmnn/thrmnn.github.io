@@ -23,7 +23,7 @@ const trajectory = [
 >
   <section class="page-wrap about">
     <header class="about-head">
-      <span class="eyebrow">About</span>
+      <span class="mono-caption">About</span>
       <h1 class="about-title">Théo Alessandro Hermann</h1>
       <p class="about-positioning">
         Researcher and builder. French-Brazilian, based in Rio. Founding member of the MIT Senseable
@@ -53,7 +53,7 @@ const trajectory = [
 
       <aside class="about-side">
         <section class="side-section">
-          <span class="eyebrow">Trajectory</span>
+          <span class="mono-caption">Trajectory</span>
           <ol class="trajectory">
             {
               trajectory.map((stop) => (
@@ -67,21 +67,21 @@ const trajectory = [
         </section>
 
         <section class="side-section">
-          <span class="eyebrow">Languages</span>
+          <span class="mono-caption">Languages</span>
           <ul class="languages">
             {author.languages.map((lang) => <li>{lang}</li>)}
           </ul>
         </section>
 
         <section class="side-section">
-          <span class="eyebrow">CV</span>
+          <span class="mono-caption">CV</span>
           <p class="side-line">
             <a href="/resume.pdf">Download CV (PDF)</a>
           </p>
         </section>
 
         <section class="side-section">
-          <span class="eyebrow">Contact</span>
+          <span class="mono-caption">Contact</span>
           <p class="side-line">
             <a href={`mailto:${author.email}`}>{author.email}</a>
           </p>

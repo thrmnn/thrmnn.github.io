@@ -125,6 +125,11 @@
   --font-sans: 'Switzer', system-ui, sans-serif;
   --font-serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
 
+  /* Type scale — mono family (per CLAUDE.md §5.2). Body + display tokens
+     not yet instantiated; flagged for a future tokenization pass. */
+  --text-mono-xs: 11px;
+  --text-mono-sm: 13px;
+
   /* Layout */
   --max-w-prose: 64ch;
   --max-w-content: 1120px;
@@ -443,21 +448,26 @@
     /* opsz + SOFT axis values are set per-size in Wordmark.astro */
   }
 
-  /* Mono caption — used for status indicators, dates, technical labels */
+  /* Mono caption — single system for structural metadata, captions, eyebrows,
+     status, dates, technical labels. Exactly two sizes from the locked scale:
+       .mono-caption       — body of the system, --text-mono-sm
+       .mono-caption--xs   — tighter, for pill interiors + fine metadata
+     Replaces the previous .eyebrow / .mono-caption split. */
   .mono-caption {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: var(--text-mono-sm);
+    line-height: 1.4;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--color-ink-muted);
   }
 
-  /* Eyebrow — small label above section titles */
-  .eyebrow {
+  .mono-caption--xs {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-mono-xs);
+    line-height: 1.3;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     color: var(--color-ink-muted);
   }
 

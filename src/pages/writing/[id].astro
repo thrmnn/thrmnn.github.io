@@ -2,6 +2,7 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
+import MonoRow from '../../components/typography/MonoRow.astro';
 
 export async function getStaticPaths() {
   const writing = await getCollection('writing');
@@ -18,6 +19,9 @@ interface Props {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
+
+const dateLabel = d.date
+  .toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
 const articleJsonLd = {
   '@context': 'https://schema.org',
@@ -40,11 +44,8 @@ const articleJsonLd = {
 >
   <article class="page-wrap essay">
     <Breadcrumb />
+    <MonoRow pieces={['Writing', dateLabel, d.language]} />
     <header class="essay-head">
-      <span class="mono-caption">
-        {d.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-        {d.language !== 'en' && <span class="essay-lang">{d.language.toUpperCase()}</span>}
-      </span>
       <h1 class="essay-title">{d.title}</h1>
       <p class="essay-summary">{d.summary}</p>
     </header>

@@ -3,6 +3,7 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
+import MonoRow from '../../components/typography/MonoRow.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -22,6 +23,8 @@ const d = project.data;
 
 const formatDate = (date: Date) =>
   date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+
+const yyyyMm = `${d.date.getFullYear()}-${String(d.date.getMonth() + 1).padStart(2, '0')}`;
 
 // Related work: other projects sharing at least one tag, ranked by overlap.
 const all = await getCollection('projects');
@@ -56,6 +59,7 @@ const articleJsonLd = {
 >
   <article class="page-wrap project">
     <Breadcrumb />
+    <MonoRow pieces={['Work', yyyyMm]} />
     <header class="project-header">
       {d.status && <p class="mono-caption status">{d.status}</p>}
       <h1 class="project-title">{d.title}</h1>

@@ -1,12 +1,13 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
+import MonoRow from '../components/typography/MonoRow.astro';
 import { author } from '../data/author';
 ---
 
 <PageLayout title="Contact" description="Email and handles for Théo Alessandro Hermann.">
   <section class="page-wrap contact">
+    <MonoRow pieces={['Contact', 'Rio']} />
     <header class="contact-head">
-      <span class="mono-caption">Contact</span>
       <h1 class="contact-title">Reach out.</h1>
       <p class="contact-lede">
         For research conversations, consulting at the intersection of built environment and AI

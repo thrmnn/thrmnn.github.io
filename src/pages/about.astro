@@ -1,5 +1,6 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
+import MonoRow from '../components/typography/MonoRow.astro';
 import { author } from '../data/author';
 
 const trajectory = [
@@ -22,8 +23,8 @@ const trajectory = [
   ogType="profile"
 >
   <section class="page-wrap about">
+    <MonoRow pieces={['About', 'Trajectory']} />
     <header class="about-head">
-      <span class="mono-caption">About</span>
       <h1 class="about-title">Théo Alessandro Hermann</h1>
       <p class="about-positioning">
         Researcher and builder. French-Brazilian, based in Rio. Founding member of the MIT Senseable

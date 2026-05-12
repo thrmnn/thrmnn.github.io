@@ -1,0 +1,61 @@
+---
+/**
+ * Structured mono caption row above a page title.
+ *
+ * Pass `pieces` as an array of strings. Falsy entries are dropped, the rest
+ * joined visually by middle-dot separators. Color follows the active register:
+ *   Cartesian → --ink-muted
+ *   Tropical  → --oxblood
+ *
+ * Example:
+ *   <MonoRow pieces={['Work', '2026-05', 'Submitted to Nature Cities']} />
+ */
+interface Props {
+  pieces: (string | undefined | null | false)[];
+}
+
+const { pieces } = Astro.props;
+const filtered = pieces.filter((p): p is string => typeof p === 'string' && p.length > 0);
+---
+
+<p class="mono-row">
+  {
+    filtered.map((piece, i) => (
+      <>
+        {i > 0 && (
+          <span class="mono-row-sep" aria-hidden="true">
+            ·
+          </span>
+        )}
+        <span class="mono-row-piece">{piece}</span>
+      </>
+    ))
+  }
+</p>
+
+<style>
+  .mono-row {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-sm);
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 0;
+  }
+  :global([data-register='tropical']) .mono-row {
+    color: var(--color-oxblood);
+  }
+  .mono-row-sep {
+    color: var(--color-ink-muted);
+    opacity: 0.55;
+  }
+  :global([data-register='tropical']) .mono-row-sep {
+    color: var(--color-oxblood);
+    opacity: 0.5;
+  }
+</style>

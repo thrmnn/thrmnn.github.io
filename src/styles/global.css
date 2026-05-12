@@ -126,9 +126,9 @@
   --font-sans: 'Switzer', system-ui, sans-serif;
   --font-serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
 
-  /* Type scale (per CLAUDE.md §5.2). Fluid clamp() between min @ 375px
-     viewport and max @ ~1280px+. Slope: preferred = min + ((max-min) /
-     (1280-375)) * (vw - 375). No raw font-size values in components. */
+  /* Type scale (per CLAUDE.md §5.2, extended in Phase 4.7 A1). Fluid
+     clamp() between min @ ~375px viewport and max @ ~1280px+. No raw
+     font-size values in components. */
   --text-mono-xs: 11px;
   --text-mono-sm: 13px;
   --text-body-sm: clamp(14px, 13.6px + 0.11vw, 15px);
@@ -136,8 +136,9 @@
   --text-body-lg: clamp(18px, 17.2px + 0.22vw, 20px);
   --text-display-sm: clamp(22px, 20.3px + 0.44vw, 26px);
   --text-display-md: clamp(30px, 24px + 1.55vw, 44px);
-  --text-display-lg: clamp(36px, 28px + 2.2vw, 56px);
-  --text-display-xl: clamp(40px, 25px + 4vw, 76px);
+  --text-display-lg: clamp(36px, 5vw, 64px); /* page H1s — Phase 4.7 A1 */
+  --text-display-xl: clamp(40px, 6vw, 72px); /* project H1 — Phase 4.7 A1 */
+  --text-hero: clamp(64px, 14vw, 168px); /* homepage wordmark — Phase 4.7 A1 */
 
   /* Spacing scale — 4px baseline (per CLAUDE.md §5.4). */
   --s-1: 4px;

@@ -16,10 +16,10 @@ const latestWriting = writingAll
 <PageLayout description={siteConfig.description}>
   <section class="hero">
     <div class="grid-cartesian">
-      <h1 class="hero-name col-1-8" aria-label={author.name}>
-        <span class="hero-name-line" aria-hidden="true">Théo</span>
-        <span class="hero-name-line" aria-hidden="true">Alessandro</span>
-        <span class="hero-name-line hero-name-line--italic" aria-hidden="true">Hermann</span>
+      <h1 class="wordmark-hero col-1-8" aria-label={author.name}>
+        Théo<br />
+        <em>Alessandro</em><br />
+        Hermann
       </h1>
       <aside class="hero-aside col-10-12">
         <Marginalia voice="mono">
@@ -71,33 +71,23 @@ const latestWriting = writingAll
     row-gap: var(--s-12);
   }
 
-  /* Multi-line stacked wordmark.
-     Always Fraunces (per CLAUDE.md §2). Third line italic for tension —
-     opsz + SOFT engaged at display sizes. */
-  .hero-name {
-    font-family: var(--font-wordmark);
-    font-weight: 400;
-    font-size: var(--text-display-xl);
-    line-height: 1;
-    letter-spacing: -0.022em;
+  /* Wordmark-hero — THE typographic moment (Phase 4.7 A1).
+     Cartesian display face (Space Grotesk) at --text-hero scale; the
+     <em> middle line is italic and lighter for tension. Aria label on
+     the h1 preserves the spoken name. */
+  .wordmark-hero {
+    font-family: var(--font-cartesian);
+    font-size: var(--text-hero);
+    font-weight: 500;
+    line-height: 0.88;
+    letter-spacing: -0.03em;
     color: var(--color-ink);
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    font-variation-settings:
-      'opsz' 144,
-      'SOFT' 60;
   }
-  .hero-name-line {
-    display: block;
-  }
-  .hero-name-line--italic {
+  .wordmark-hero em {
     font-style: italic;
-    font-variation-settings:
-      'opsz' 144,
-      'SOFT' 70;
-    letter-spacing: -0.018em;
+    font-weight: 300;
+    letter-spacing: -0.04em;
   }
 
   .hero-aside {

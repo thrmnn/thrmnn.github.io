@@ -1,0 +1,64 @@
+---
+/**
+ * DataRow (Phase 4.7 D4).
+ *
+ * Two-column micro layout: mono caption label on the left, body value
+ * on the right. Used inside Marginalia blocks (sticky aside on /about)
+ * and anywhere else a key/value pair needs to render cleanly without
+ * the weight of a full <dl>.
+ *
+ * Usage:
+ *   <DataRow label="FR" value="native" />
+ *   <DataRow label="2025" value="Rio · MIT founding" />
+ *
+ * For rich values pass them as children instead:
+ *   <DataRow label="CV"><a href="/resume.pdf">Download (PDF)</a></DataRow>
+ */
+interface Props {
+  label: string;
+  value?: string;
+  class?: string;
+}
+
+const { label, value, class: className = '' } = Astro.props;
+---
+
+<div class:list={['data-row', className]}>
+  <span class="data-row-label mono-caption--xs">{label}</span>
+  <span class="data-row-value">
+    {value}
+    <slot />
+  </span>
+</div>
+
+<style>
+  .data-row {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    column-gap: var(--s-3);
+    align-items: baseline;
+    padding-block: var(--s-1);
+  }
+  .data-row-label {
+    color: var(--color-ink-muted);
+  }
+  .data-row-value {
+    font-family: var(--font-body);
+    font-size: var(--text-body-sm);
+    color: var(--color-ink);
+    line-height: 1.4;
+  }
+  .data-row-value :global(a) {
+    color: var(--color-ink);
+    border-bottom: 1px solid var(--color-rule);
+    text-decoration: none;
+    padding-bottom: 1px;
+    transition:
+      border-color 200ms ease,
+      color 200ms ease;
+  }
+  .data-row-value :global(a:hover) {
+    color: var(--color-oxblood);
+    border-bottom-color: var(--color-oxblood);
+  }
+</style>

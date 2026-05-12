@@ -1,26 +1,22 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import PullQuote from '../components/composition/PullQuote.astro';
-import SectionRule from '../components/composition/SectionRule.astro';
+import DataRow from '../components/primitives/DataRow.astro';
+import ExternalLink from '../components/primitives/ExternalLink.astro';
 import { author } from '../data/author';
 
+const languages = [
+  { label: 'FR', value: 'native' },
+  { label: 'PT', value: 'native' },
+  { label: 'EN', value: 'fluent' },
+  { label: 'ES', value: 'reads' },
+];
+
 const trajectory = [
-  { place: 'Paris', period: '1996–2014', note: 'French-Brazilian, raised between the two.' },
-  {
-    place: 'Lausanne',
-    period: '2014–2020',
-    note: 'MSc in Robotics, EPFL. Perception, learning, control.',
-  },
-  {
-    place: 'Amsterdam',
-    period: '2020–2023',
-    note: 'MIT Senseable City Lab. Urban tree morphology from LiDAR. Roboat — first engineering hire on autonomous vessels.',
-  },
-  {
-    place: 'Rio de Janeiro',
-    period: '2024–',
-    note: 'MIT Senseable City Lab — founding member of the Rio branch. Favela urban science: LiDAR, CFD airflow, solar exposure, environmental risk.',
-  },
+  { year: '2014', place: 'Paris' },
+  { year: '2020', place: 'Lausanne · EPFL' },
+  { year: '2022', place: 'Amsterdam · MIT' },
+  { year: '2025', place: 'Rio · MIT founding' },
 ];
 ---
 
@@ -30,7 +26,7 @@ const trajectory = [
   ogType="profile"
   register="tropical"
 >
-  <section class="about grid-tropical">
+  <article class="about-page grid-tropical">
     <div class="col-1-8 about-head">
       <h1 class="about-title" aria-label="Théo Alessandro Hermann">
         Théo<br />
@@ -43,13 +39,11 @@ const trajectory = [
       </p>
     </div>
 
-    <div class="col-2-7">
+    <div class="col-2-6 about-body">
       <PullQuote citation="Thesis · internal">
         Cartesian rigor applied to tropical complexity.
       </PullQuote>
-    </div>
 
-    <div class="col-1-6 about-prose">
       <p>
         The work splits two ways. On one side, urban science: how the geometry of cities — formal
         and informal — produces climate, exposure, and risk at the pedestrian scale. The current
@@ -66,36 +60,40 @@ const trajectory = [
         geometry, measurement, and acting on the world. Both reward building the artifact before
         announcing the result.
       </p>
-    </div>
 
-    <div class="col-2-7 about-closing-quote">
       <PullQuote citation="Working principle">
         Frontier methods, messy systems. The favela is not a problem to be solved — it is a system
         to be understood.
       </PullQuote>
     </div>
 
-    <div class="col-1-8">
-      <SectionRule align="start">Trajectory</SectionRule>
-    </div>
-
-    <ol class="col-1-8 trajectory">
-      {
-        trajectory.map((stop) => (
-          <li class="trajectory-row">
-            <span class="trajectory-place">{stop.place}</span>
-            <span class="trajectory-period mono-caption">{stop.period}</span>
-            <span class="trajectory-note">{stop.note}</span>
-          </li>
-        ))
-      }
-    </ol>
-
-  </section>
+    <aside class="col-7-8 marginalia">
+      <section class="marginalia-block">
+        <h4 class="mono-caption marginalia-heading">LANGUAGES</h4>
+        {languages.map((l) => <DataRow label={l.label} value={l.value} />)}
+      </section>
+      <section class="marginalia-block">
+        <h4 class="mono-caption marginalia-heading">TRAJECTORY</h4>
+        {trajectory.map((t) => <DataRow label={t.year} value={t.place} />)}
+      </section>
+      <section class="marginalia-block">
+        <h4 class="mono-caption marginalia-heading">CV</h4>
+        <DataRow label="PDF">
+          <ExternalLink href="/resume.pdf">Download</ExternalLink>
+        </DataRow>
+      </section>
+      <section class="marginalia-block">
+        <h4 class="mono-caption marginalia-heading">CONTACT</h4>
+        <DataRow label="MAIL">
+          <a href={`mailto:${author.email}`}>{author.email}</a>
+        </DataRow>
+      </section>
+    </aside>
+  </article>
 </PageLayout>
 
 <style>
-  .about {
+  .about-page {
     padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-section);
     row-gap: var(--s-8);
   }
@@ -128,74 +126,49 @@ const trajectory = [
     font-family: var(--font-body);
     color: var(--color-ink-soft);
     font-size: var(--text-body-lg);
-    line-height: 1.55;
+    line-height: 1.7;
     max-width: 44ch;
     margin: 0;
   }
 
-  .about-prose {
-    color: var(--color-ink);
-  }
-  .about-prose p {
+  /* Body — generous Tropical rhythm: line-height 1.7, paragraph spacing
+     from --s-6, larger than Cartesian. */
+  .about-body p {
     font-family: var(--font-body);
     font-size: var(--text-body-lg);
     line-height: 1.7;
     color: var(--color-ink-soft);
-    margin-bottom: 1.25em;
+    margin-block: 0 var(--s-6);
     max-width: 60ch;
   }
-  .about-prose p:last-child {
+  .about-body p:last-child {
     margin-bottom: 0;
   }
 
-  .about-closing-quote {
-    margin-top: var(--s-8);
-  }
-
-  .trajectory {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  /* Marginalia — sticky asymmetric aside at col-7-8 (Phase 4.7 D4). */
+  .marginalia {
+    position: sticky;
+    top: var(--s-16);
+    height: fit-content;
+    align-self: start;
     display: flex;
     flex-direction: column;
-    gap: var(--s-6);
+    gap: var(--s-8);
   }
-  .trajectory-row {
-    display: grid;
-    grid-template-columns: 10rem 8rem 1fr;
-    column-gap: var(--s-6);
-    row-gap: var(--s-1);
-    padding-bottom: var(--s-4);
-    border-bottom: 1px solid var(--color-rule);
+  .marginalia-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
   }
-  .trajectory-place {
-    font-family: var(--font-tropical);
-    font-weight: 450;
-    font-size: var(--text-display-sm);
-    line-height: 1.1;
-    color: var(--color-ink);
-    letter-spacing: -0.01em;
-    font-variation-settings:
-      'opsz' 36,
-      'SOFT' 50;
-  }
-  .trajectory-period {
+  .marginalia-heading {
+    margin: 0 0 var(--s-2);
     color: var(--color-oxblood);
-    padding-top: 0.3em;
+    font-weight: 400;
   }
-  .trajectory-note {
-    font-family: var(--font-body);
-    font-size: var(--text-body);
-    color: var(--color-ink-soft);
-    line-height: 1.55;
-    max-width: 50ch;
-  }
-  @media (max-width: 720px) {
-    .trajectory-row {
-      grid-template-columns: 1fr;
-      gap: var(--s-2);
-      padding-bottom: var(--s-6);
+  @media (max-width: 719px) {
+    .marginalia {
+      position: static;
+      margin-top: var(--s-12);
     }
   }
-
 </style>

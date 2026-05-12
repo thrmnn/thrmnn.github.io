@@ -28,6 +28,10 @@ const formatDate = (date: Date) =>
 
 const yyyyMm = `${d.date.getFullYear()}-${String(d.date.getMonth() + 1).padStart(2, '0')}`;
 
+const updatedLabel = d.updated
+  ? d.updated.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+  : null;
+
 // Related work: other projects sharing at least one tag, ranked by overlap.
 const all = await getCollection('projects');
 const related = all
@@ -74,6 +78,7 @@ const articleJsonLd = {
       }
       <h1 class="project-title">{d.title}</h1>
       {d.subtitle && <p class="project-subtitle">{d.subtitle}</p>}
+      {updatedLabel && <p class="updated-line mono-caption">Updated {updatedLabel}</p>}
     </header>
 
     {
@@ -173,6 +178,10 @@ const articleJsonLd = {
     color: var(--color-ink-soft);
     max-width: 50ch;
     line-height: 1.5;
+  }
+  .updated-line {
+    margin-top: 0.6rem;
+    color: var(--color-ink-muted);
   }
 
   .project-hero {

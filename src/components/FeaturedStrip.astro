@@ -13,7 +13,7 @@ const featured = all
   featured.length > 0 && (
     <section class="featured">
       <div class="featured-head">
-        <span class="mono-caption">Current work</span>
+        <h2 class="featured-section-heading mono-caption">Current work</h2>
         <a href="/work" class="featured-all">
           All work →
         </a>
@@ -38,6 +38,10 @@ const featured = all
     margin-bottom: 1.25rem;
     padding-bottom: 0.6rem;
     border-bottom: 1px solid var(--color-rule);
+  }
+  .featured-section-heading {
+    margin: 0;
+    font-weight: inherit;
   }
   .featured-all {
     font-family: var(--font-body);

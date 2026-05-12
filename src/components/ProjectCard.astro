@@ -65,6 +65,14 @@ const metaPieces = [data.status, yyyyMm, withList].filter(
   .project-card:focus-within {
     border-color: var(--color-rule-strong);
   }
+  /* Cartesian register lifts the hover border to cool-grey (the Cartesian
+     secondary accent) — gives the otherwise neutral hover a slight blue
+     tint that pairs with the graphite accent. Tropical keeps the warm
+     rule-strong already in place. */
+  .project-card[data-register='cartesian']:hover,
+  .project-card[data-register='cartesian']:focus-within {
+    border-color: var(--color-cool-grey);
+  }
   .project-card:hover .card-title,
   .project-card:focus-within .card-title {
     color: var(--color-accent);

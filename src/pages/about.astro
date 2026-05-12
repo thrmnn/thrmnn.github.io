@@ -1,17 +1,26 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import MonoRow from '../components/typography/MonoRow.astro';
+import PullQuote from '../components/composition/PullQuote.astro';
+import Marginalia from '../components/composition/Marginalia.astro';
+import SectionRule from '../components/composition/SectionRule.astro';
 import { author } from '../data/author';
 
 const trajectory = [
-  { place: 'Paris', note: 'French-Brazilian, raised between the two.' },
-  { place: 'Lausanne', note: 'MSc in Robotics, EPFL. Perception, learning, control.' },
+  { place: 'Paris', period: '1996–2014', note: 'French-Brazilian, raised between the two.' },
+  {
+    place: 'Lausanne',
+    period: '2014–2020',
+    note: 'MSc in Robotics, EPFL. Perception, learning, control.',
+  },
   {
     place: 'Amsterdam',
+    period: '2020–2023',
     note: 'MIT Senseable City Lab. Urban tree morphology from LiDAR. Roboat — first engineering hire on autonomous vessels.',
   },
   {
     place: 'Rio de Janeiro',
+    period: '2024–',
     note: 'MIT Senseable City Lab — founding member of the Rio branch. Favela urban science: LiDAR, CFD airflow, solar exposure, environmental risk.',
   },
 ];
@@ -21,191 +30,228 @@ const trajectory = [
   title="About"
   description="French-Brazilian researcher and builder. MIT Senseable Rio, founding member. Trained in robotics at EPFL; urban science at MIT Amsterdam; now research line on informal urban morphology in Rio."
   ogType="profile"
+  register="tropical"
 >
-  <section class="page-wrap about">
-    <MonoRow pieces={['About', 'Trajectory']} />
-    <header class="about-head">
+  <section class="about grid-tropical">
+    <div class="col-t-1-9 about-head">
+      <MonoRow pieces={['About', 'Trajectory']} />
       <h1 class="about-title">Théo Alessandro Hermann</h1>
       <p class="about-positioning">
         Researcher and builder. French-Brazilian, based in Rio. Founding member of the MIT Senseable
         City Lab — Rio branch.
       </p>
-    </header>
-
-    <div class="about-body">
-      <div class="about-prose prose">
-        <p>
-          The work splits two ways. On one side, urban science: how the geometry of cities — formal
-          and informal — produces climate, exposure, and risk at the pedestrian scale. The current
-          research line at MIT Senseable Rio maps favela morphology with LiDAR and translates it
-          into CFD airflow, solar exposure, and environmental signal.
-        </p>
-        <p>
-          On the other side, robotics. Open-source benchmarks for vision-language-action models on
-          top of HuggingFace lerobot. World-model work on the edge of where perception, action, and
-          learning meet.
-        </p>
-        <p>
-          The two halves talk to each other more than they look like they should. Both deal in
-          geometry, measurement, and acting on the world. Both reward building the artifact before
-          announcing the result.
-        </p>
-      </div>
-
-      <aside class="about-side">
-        <section class="side-section">
-          <span class="mono-caption">Trajectory</span>
-          <ol class="trajectory">
-            {
-              trajectory.map((stop) => (
-                <li>
-                  <span class="trajectory-place">{stop.place}</span>
-                  <span class="trajectory-note">{stop.note}</span>
-                </li>
-              ))
-            }
-          </ol>
-        </section>
-
-        <section class="side-section">
-          <span class="mono-caption">Languages</span>
-          <ul class="languages">
-            {author.languages.map((lang) => <li>{lang}</li>)}
-          </ul>
-        </section>
-
-        <section class="side-section">
-          <span class="mono-caption">CV</span>
-          <p class="side-line">
-            <a href="/resume.pdf">Download CV (PDF)</a>
-          </p>
-        </section>
-
-        <section class="side-section">
-          <span class="mono-caption">Contact</span>
-          <p class="side-line">
-            <a href={`mailto:${author.email}`}>{author.email}</a>
-          </p>
-        </section>
-      </aside>
     </div>
+
+    <div class="col-t-2-8">
+      <PullQuote attribution="— Thesis, locked">
+        Cartesian rigor applied to tropical complexity.
+      </PullQuote>
+    </div>
+
+    <div class="col-t-1-7 about-prose">
+      <p>
+        The work splits two ways. On one side, urban science: how the geometry of cities — formal
+        and informal — produces climate, exposure, and risk at the pedestrian scale. The current
+        research line at MIT Senseable Rio maps favela morphology with LiDAR and translates it into
+        CFD airflow, solar exposure, and environmental signal.
+      </p>
+      <p>
+        On the other side, robotics. Open-source benchmarks for vision-language-action models on top
+        of HuggingFace lerobot. World-model work on the edge of where perception, action, and
+        learning meet.
+      </p>
+      <p>
+        The two halves talk to each other more than they look like they should. Both deal in
+        geometry, measurement, and acting on the world. Both reward building the artifact before
+        announcing the result.
+      </p>
+    </div>
+
+    <aside class="col-t-7-9 about-margin">
+      <Marginalia voice="serif">
+        Frontier methods, messy systems. The favela is not a problem to be solved — it is a system
+        to be understood.
+      </Marginalia>
+    </aside>
+
+    <div class="col-t-1-9">
+      <SectionRule align="start">Trajectory</SectionRule>
+    </div>
+
+    <ol class="col-t-1-9 trajectory">
+      {
+        trajectory.map((stop) => (
+          <li class="trajectory-row">
+            <span class="trajectory-place">{stop.place}</span>
+            <span class="trajectory-period mono-caption">{stop.period}</span>
+            <span class="trajectory-note">{stop.note}</span>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="col-t-1-9">
+      <SectionRule align="start">Credit</SectionRule>
+    </div>
+
+    <dl class="col-t-1-9 about-credit">
+      <div class="credit-item">
+        <dt class="mono-caption">Languages</dt>
+        <dd>{author.languages.join(' · ')}</dd>
+      </div>
+      <div class="credit-item">
+        <dt class="mono-caption">CV</dt>
+        <dd><a href="/resume.pdf">Download CV (PDF)</a></dd>
+      </div>
+      <div class="credit-item">
+        <dt class="mono-caption">Contact</dt>
+        <dd><a href={`mailto:${author.email}`}>{author.email}</a></dd>
+      </div>
+    </dl>
   </section>
 </PageLayout>
 
 <style>
   .about {
     padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-section);
+    row-gap: var(--s-8);
   }
+
   .about-head {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    max-width: 60ch;
-    margin-bottom: 3rem;
+    gap: var(--s-4);
   }
   .about-title {
-    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    font-family: var(--font-tropical);
+    font-weight: 450;
+    font-size: var(--text-display-lg);
     line-height: 1.05;
-    max-width: 18ch;
+    letter-spacing: -0.015em;
+    max-width: 20ch;
+    margin: 0;
+    font-variation-settings:
+      'opsz' 144,
+      'SOFT' 60;
   }
   .about-positioning {
     font-family: var(--font-body);
     color: var(--color-ink-soft);
-    font-size: 1.1rem;
+    font-size: var(--text-body-lg);
     line-height: 1.55;
     max-width: 44ch;
+    margin: 0;
   }
 
-  .about-body {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-    align-items: start;
-  }
-  @media (min-width: 900px) {
-    .about-body {
-      grid-template-columns: minmax(0, 1fr) 18rem;
-      gap: 4rem;
-    }
-  }
-
-  .about-prose p {
-    font-size: 1.05rem;
-    line-height: 1.7;
+  .about-prose {
     color: var(--color-ink);
+  }
+  .about-prose p {
+    font-family: var(--font-body);
+    font-size: var(--text-body-lg);
+    line-height: 1.7;
+    color: var(--color-ink-soft);
     margin-bottom: 1.25em;
     max-width: 60ch;
   }
-
-  .about-side {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    padding-left: 0;
-    border-left: 0;
+  .about-prose p:last-child {
+    margin-bottom: 0;
   }
-  @media (min-width: 900px) {
-    .about-side {
-      border-left: 1px solid var(--color-rule);
-      padding-left: 2rem;
+
+  .about-margin {
+    align-self: start;
+    padding-top: var(--s-4);
+  }
+  @media (max-width: 719px) {
+    .about-margin {
+      padding-top: 0;
     }
   }
-  .side-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
+
   .trajectory {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
+    gap: var(--s-6);
   }
-  .trajectory li {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    padding-left: 0.75rem;
-    border-left: 1px solid var(--color-rule);
+  .trajectory-row {
+    display: grid;
+    grid-template-columns: 10rem 8rem 1fr;
+    column-gap: var(--s-6);
+    row-gap: var(--s-1);
+    padding-bottom: var(--s-4);
+    border-bottom: 1px solid var(--color-rule);
   }
   .trajectory-place {
-    font-family: var(--font-cartesian);
-    font-weight: 600;
-    font-size: 0.95rem;
+    font-family: var(--font-tropical);
+    font-weight: 450;
+    font-size: var(--text-display-sm);
+    line-height: 1.1;
     color: var(--color-ink);
+    letter-spacing: -0.01em;
+    font-variation-settings:
+      'opsz' 36,
+      'SOFT' 50;
+  }
+  .trajectory-period {
+    color: var(--color-terra);
+    padding-top: 0.3em;
   }
   .trajectory-note {
-    font-size: 0.9rem;
-    color: var(--color-ink-muted);
-    line-height: 1.5;
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    color: var(--color-ink-soft);
+    line-height: 1.55;
+    max-width: 50ch;
   }
-  .languages {
-    list-style: none;
-    padding: 0;
+  @media (max-width: 720px) {
+    .trajectory-row {
+      grid-template-columns: 1fr;
+      gap: var(--s-2);
+      padding-bottom: var(--s-6);
+    }
+  }
+
+  .about-credit {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-8);
+    padding: var(--s-4) 0;
     margin: 0;
+  }
+  .credit-item {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
-    color: var(--color-ink-soft);
-    font-size: 0.95rem;
+    gap: var(--s-2);
   }
-  .side-line {
-    color: var(--color-ink-soft);
-    font-size: 0.95rem;
+  .credit-item dt {
+    margin: 0;
   }
-  .side-line a {
+  .credit-item dd {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    color: var(--color-ink);
+  }
+  .credit-item dd a {
     color: var(--color-ink);
     border-bottom: 1px solid var(--color-rule);
     padding-bottom: 1px;
+    text-decoration: none;
     transition:
       border-color 200ms ease,
       color 200ms ease;
-    text-decoration: none;
   }
-  .side-line a:hover {
-    color: var(--color-accent);
-    border-bottom-color: var(--color-accent);
+  .credit-item dd a:hover {
+    color: var(--color-oxblood);
+    border-bottom-color: var(--color-oxblood);
+  }
+  @media (max-width: 720px) {
+    .about-credit {
+      grid-template-columns: 1fr;
+      gap: var(--s-4);
+    }
   }
 </style>

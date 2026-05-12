@@ -1,0 +1,69 @@
+---
+/**
+ * File-path style breadcrumb. Renders e.g. `./work/amsterdam-tree-shade`,
+ * with each segment a link except the last (current). Mono caption type.
+ *
+ * Pass `path` to override; otherwise the current request pathname is used.
+ */
+interface Props {
+  path?: string;
+}
+
+const { path } = Astro.props;
+const pathname = (path ?? Astro.url.pathname).replace(/\/$/, '') || '/';
+const segments = pathname === '/' ? [] : pathname.split('/').filter(Boolean);
+
+const trail = segments.map((seg, i) => ({
+  label: seg,
+  href: '/' + segments.slice(0, i + 1).join('/'),
+  isLast: i === segments.length - 1,
+}));
+---
+
+<nav class="breadcrumb mono-caption" aria-label="Breadcrumb">
+  <a href="/" class="breadcrumb-root">./</a>
+  {
+    trail.map(({ label, href, isLast }) => (
+      <>
+        <span class="breadcrumb-sep" aria-hidden="true">/</span>
+        {isLast ? (
+          <span class="breadcrumb-current" aria-current="page">
+            {label}
+          </span>
+        ) : (
+          <a href={href}>{label}</a>
+        )}
+      </>
+    ))
+  }
+</nav>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+    text-transform: none; /* preserve case of slugs */
+    letter-spacing: 0.04em;
+    color: var(--color-ink-muted);
+  }
+  .breadcrumb a {
+    color: var(--color-ink-muted);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+  .breadcrumb a:hover {
+    color: var(--color-ink);
+  }
+  .breadcrumb-root {
+    /* the ./ root link */
+  }
+  .breadcrumb-sep {
+    color: var(--color-ink-muted);
+    opacity: 0.6;
+  }
+  .breadcrumb-current {
+    color: var(--color-ink);
+  }
+</style>

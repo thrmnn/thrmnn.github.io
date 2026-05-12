@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import Breadcrumb from '../../components/nav/Breadcrumb.astro';
 
 const all = await getCollection('projects');
 const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -12,6 +13,7 @@ const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   description="Research and engineering projects by Théo Alessandro Hermann."
 >
   <section class="page-wrap work-index">
+    <Breadcrumb />
     <header class="work-head">
       <span class="mono-caption">Work</span>
       <h1 class="work-title">Research and engineering projects</h1>

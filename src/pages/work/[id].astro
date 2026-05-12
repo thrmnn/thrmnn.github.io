@@ -2,6 +2,7 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import Breadcrumb from '../../components/nav/Breadcrumb.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -54,6 +55,7 @@ const articleJsonLd = {
   articleJsonLd={articleJsonLd}
 >
   <article class="page-wrap project">
+    <Breadcrumb />
     <header class="project-header">
       {d.status && <p class="mono-caption status">{d.status}</p>}
       <h1 class="project-title">{d.title}</h1>

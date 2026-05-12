@@ -156,6 +156,10 @@ const articleJsonLd = {
       </div>
     </section>
 
+    <p class="end-of-doc mono-caption" aria-hidden="true">
+      END · 04 SECTIONS · {formatDate(d.updated ?? d.date).toUpperCase()}
+    </p>
+
     <section class="project-section grid-cartesian" id="credit">
       <div class="col-1-1 project-section-label">
         <VerticalLabel>CREDIT</VerticalLabel>
@@ -423,6 +427,23 @@ const articleJsonLd = {
   }
   .credit-pending::before {
     /* ⧉ glyph is inline-rendered with non-breaking spaces; no extra ::before. */
+  }
+
+  /* End-of-document signal (Phase 4.7 D8). Sits between section 03
+     (Findings) and section 04 (Credit) — Credit is metadata, the body
+     ends above it. Editorial polish; reads as document, not webpage. */
+  .end-of-doc {
+    text-align: center;
+    padding-block: var(--s-12);
+    color: var(--color-ink-muted);
+    letter-spacing: 0.2em;
+    margin: 0;
+  }
+  .end-of-doc::before {
+    content: '— —  ';
+  }
+  .end-of-doc::after {
+    content: '  — —';
   }
 
   .related-grid {

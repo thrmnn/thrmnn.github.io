@@ -1,12 +1,15 @@
 // Site-wide configuration.
-// `url` stays on thrmnn.github.io until the launch-day cutover to theoalessandro.com.
+// `url` matches astro.config.mjs `site` — both are theoalessandro.com.
+// Deployed at thrmnn.github.io until the launch-day CNAME cutover; the
+// canonical/OG/JSON-LD URLs already point at the production domain so
+// indexing converges on the right host.
 export const siteConfig = {
   title: 'Théo Alessandro Hermann',
   positioning:
     'Researcher and builder. MIT Senseable Rio. Urban science, robotics, and what comes next.',
   description:
     'Théo Alessandro Hermann — researcher and builder. MIT Senseable Rio. Urban science, robotics, and what comes next.',
-  url: 'https://thrmnn.github.io',
+  url: 'https://theoalessandro.com',
   repo: 'https://github.com/thrmnn/thrmnn.github.io',
   ogImage: '/og-default.png',
   analytics: {

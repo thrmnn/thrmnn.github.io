@@ -33,14 +33,14 @@ const sizeClass = sizeClasses[size ?? 'md'];
   /* All wordmark sizes share Fraunces. Optical size axis tuned per render size:
      small (nav) uses text opsz; large (hero) uses display opsz. */
   .wordmark-sm {
-    font-size: 1.0625rem;
+    font-size: var(--text-body);
     letter-spacing: -0.005em;
     font-variation-settings:
       'opsz' 18,
       'SOFT' 35;
   }
   .wordmark-md {
-    font-size: 1.75rem;
+    font-size: var(--text-display-sm);
     letter-spacing: -0.012em;
     line-height: 1.1;
     font-variation-settings:
@@ -48,7 +48,7 @@ const sizeClass = sizeClasses[size ?? 'md'];
       'SOFT' 45;
   }
   .wordmark-lg {
-    font-size: clamp(2.5rem, 6.5vw, 4.75rem);
+    font-size: var(--text-display-xl);
     letter-spacing: -0.022em;
     line-height: 1.02;
     font-variation-settings:

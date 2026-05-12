@@ -212,7 +212,7 @@
     background-color: var(--color-paper);
     color: var(--color-ink);
     font-family: var(--font-body);
-    font-size: 17px;
+    font-size: var(--text-body);
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -311,7 +311,7 @@
     color: var(--color-ink);
     line-height: 1.7;
     max-width: var(--max-w-prose);
-    font-size: 1.0625rem;
+    font-size: var(--text-body);
   }
   .prose p {
     margin-bottom: 1.25em;
@@ -320,12 +320,12 @@
   .prose h2 {
     margin-top: 2.25em;
     margin-bottom: 0.6em;
-    font-size: 1.5rem;
+    font-size: var(--text-display-sm);
   }
   .prose h3 {
     margin-top: 1.75em;
     margin-bottom: 0.4em;
-    font-size: 1.2rem;
+    font-size: var(--text-body-lg);
   }
   .prose strong {
     color: var(--color-ink);

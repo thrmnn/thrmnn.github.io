@@ -1,9 +1,11 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
-import Wordmark from '../components/Wordmark.astro';
 import FeaturedStrip from '../components/FeaturedStrip.astro';
+import Marginalia from '../components/composition/Marginalia.astro';
+import SectionRule from '../components/composition/SectionRule.astro';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../data/site';
+import { author } from '../data/author';
 
 const writingAll = await getCollection('writing');
 const latestWriting = writingAll
@@ -12,12 +14,24 @@ const latestWriting = writingAll
 ---
 
 <PageLayout description={siteConfig.description}>
-  <section class="hero page-wrap">
-    <Wordmark size="lg" as="static" />
-    <p class="positioning">
-      Researcher and builder. <span class="positioning-em">MIT Senseable Rio.</span>
-      Urban science, robotics, and what comes next.
-    </p>
+  <section class="hero">
+    <div class="grid-cartesian">
+      <h1 class="hero-name col-1-9" aria-label={author.name}>
+        <span class="hero-name-line" aria-hidden="true">Théo</span>
+        <span class="hero-name-line" aria-hidden="true">Alessandro</span>
+        <span class="hero-name-line hero-name-line--italic" aria-hidden="true">Hermann</span>
+      </h1>
+      <aside class="hero-aside col-10-13">
+        <Marginalia voice="mono">
+          Rio · 2026<br />
+          Franco-Brazilian engineer
+        </Marginalia>
+      </aside>
+      <p class="hero-positioning col-1-8">
+        Researcher and builder. <span class="hero-positioning-em">MIT Senseable Rio.</span>
+        Urban science, robotics, and what comes next.
+      </p>
+    </div>
   </section>
 
   <div class="page-wrap">
@@ -25,24 +39,24 @@ const latestWriting = writingAll
 
     {
       latestWriting && (
-        <section class="latest-writing">
-          <div class="featured-head">
-            <span class="mono-caption">Latest writing</span>
-            <a href="/writing" class="featured-all">
-              All writing →
+        <section class="writing-section">
+          <SectionRule>Writing</SectionRule>
+          <div class="grid-cartesian writing-grid">
+            <a href={`/writing/${latestWriting.id}`} class="writing-card col-1-9">
+              <span class="mono-caption">
+                {latestWriting.data.date.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </span>
+              <h3 class="writing-title">{latestWriting.data.title}</h3>
+              <p class="writing-summary">{latestWriting.data.summary}</p>
             </a>
+            <aside class="col-10-13 writing-meta">
+              <Marginalia voice="mono">Notes & essays — irregular cadence</Marginalia>
+            </aside>
           </div>
-          <a href={`/writing/${latestWriting.id}`} class="writing-card">
-            <span class="mono-caption">
-              {latestWriting.data.date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </span>
-            <h3 class="writing-title">{latestWriting.data.title}</h3>
-            <p class="writing-summary">{latestWriting.data.summary}</p>
-          </a>
         </section>
       )
     }
@@ -51,62 +65,88 @@ const latestWriting = writingAll
 
 <style>
   .hero {
-    padding-block: clamp(3rem, 9vw, 6rem) 1.5rem;
+    padding-block: clamp(3rem, 9vw, 6rem) var(--s-16);
+  }
+  .hero .grid-cartesian {
+    row-gap: var(--s-12);
+  }
+
+  /* Multi-line stacked wordmark.
+     Always Fraunces (per CLAUDE.md §2). Third line italic for tension —
+     opsz + SOFT engaged at display sizes. */
+  .hero-name {
+    font-family: var(--font-wordmark);
+    font-weight: 400;
+    font-size: var(--text-display-xl);
+    line-height: 1;
+    letter-spacing: -0.022em;
+    color: var(--color-ink);
+    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    overflow-wrap: break-word;
+    gap: 0;
+    font-variation-settings:
+      'opsz' 144,
+      'SOFT' 60;
   }
-  .positioning {
+  .hero-name-line {
+    display: block;
+  }
+  .hero-name-line--italic {
+    font-style: italic;
+    font-variation-settings:
+      'opsz' 144,
+      'SOFT' 70;
+    letter-spacing: -0.018em;
+  }
+
+  .hero-aside {
+    align-self: end;
+    padding-bottom: var(--s-2);
+  }
+  @media (max-width: 719px) {
+    .hero-aside {
+      margin-top: var(--s-6);
+    }
+  }
+
+  .hero-positioning {
     font-family: var(--font-body);
-    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
-    line-height: 1.55;
+    font-size: var(--text-body-lg);
+    line-height: 1.45;
     color: var(--color-ink-soft);
-    max-width: 38ch;
+    margin: 0;
   }
-  .positioning-em {
+  .hero-positioning-em {
     color: var(--color-ink);
     font-weight: 500;
   }
 
-  .latest-writing {
+  .writing-section {
     margin-top: var(--space-section);
   }
-  .featured-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid var(--color-rule);
-  }
-  .featured-all {
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    color: var(--color-ink-soft);
-    text-decoration: none;
-    transition: color 200ms ease;
-  }
-  .featured-all:hover {
-    color: var(--color-accent);
+  .writing-grid {
+    padding-inline: 0;
+    max-width: none;
   }
 
   .writing-card {
     display: block;
     text-decoration: none;
-    padding: 1.25rem 0;
+    padding: var(--s-4) 0;
+    border-top: 1px solid var(--color-rule);
     border-bottom: 1px solid var(--color-rule);
     color: var(--color-ink);
     transition: border-color 250ms ease;
   }
   .writing-card:hover {
-    border-bottom-color: var(--color-rule-strong);
+    border-color: var(--color-rule-strong);
   }
   .writing-title {
     font-family: var(--font-cartesian);
-    font-size: 1.25rem;
+    font-size: var(--text-display-sm);
     font-weight: 600;
-    margin-top: 0.5rem;
+    margin-top: var(--s-2);
     letter-spacing: -0.015em;
   }
   .writing-card:hover .writing-title {
@@ -114,8 +154,11 @@ const latestWriting = writingAll
   }
   .writing-summary {
     color: var(--color-ink-muted);
-    margin-top: 0.4rem;
+    margin-top: var(--s-2);
     max-width: 62ch;
-    font-size: 0.98rem;
+    font-size: var(--text-body-sm);
+  }
+  .writing-meta {
+    align-self: center;
   }
 </style>

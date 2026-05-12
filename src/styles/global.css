@@ -453,6 +453,18 @@
       scroll-behavior: auto !important;
     }
   }
+
+  /* View transitions — Astro <ClientRouter />. The root fade is the default
+     page-to-page transition. Shared chrome elements (wordmark, site-header,
+     header-nav, footer) carry transition:name directives so they persist
+     across route changes rather than fade-out/fade-in. */
+  @media (prefers-reduced-motion: no-preference) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 250ms;
+      animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
 } /* end @layer base */
 
 /* ==========================================================================

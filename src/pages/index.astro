@@ -126,12 +126,9 @@ const scrollLabel = `↓ CURRENT WORK · ${String(projectCount).padStart(2, '0')
   }
 
   /* Wordmark-hero — THE typographic moment (Phase 4.7 A1).
-     Cartesian display face (Space Grotesk) at --text-hero scale.
-     <em>Alessandro</em> switches to Fraunces italic (Tomás 2026-05-14):
-     Space Grotesk has no italic woff2 — the previous render was browser-
-     synthesized oblique. Threading the Tropical face into the Cartesian
-     home reads as deliberate register-mixing rather than a typesetting
-     accident, and earns the Franco-Italian middle name. */
+     Cartesian display face (Space Grotesk) at --text-hero scale; the
+     <em> middle line is italic and lighter for tension. Aria label on
+     the h1 preserves the spoken name. */
   .wordmark-hero {
     font-family: var(--font-cartesian);
     font-size: var(--text-hero);
@@ -142,14 +139,9 @@ const scrollLabel = `↓ CURRENT WORK · ${String(projectCount).padStart(2, '0')
     margin: 0;
   }
   .wordmark-hero em {
-    font-family: var(--font-tropical);
     font-style: italic;
-    font-weight: 400;
-    letter-spacing: -0.025em;
-    font-variation-settings:
-      'opsz' 144,
-      'SOFT' 60,
-      'WONK' 1;
+    font-weight: 300;
+    letter-spacing: -0.04em;
   }
 
   /* Below-fold sections — sit below the hero, only visible once scrolled. */

@@ -169,7 +169,7 @@ const articleJsonLd = {
       </div>
       <div class="col-3-9 project-section-body">
         <div class="credit-block">
-          <h4 class="mono-caption credit-heading">WITH</h4>
+          <h3 class="mono-caption credit-heading">WITH</h3>
           {
             d.collaborators.length > 0 ? (
               <ul class="credit-list-inline">
@@ -186,7 +186,7 @@ const articleJsonLd = {
         </div>
 
         <div class="credit-block">
-          <h4 class="mono-caption credit-heading">LINKS</h4>
+          <h3 class="mono-caption credit-heading">LINKS</h3>
           {
             links.length > 0 ? (
               <ul class="credit-list-inline">
@@ -207,7 +207,7 @@ const articleJsonLd = {
         {
           d.tags.length > 0 && (
             <div class="credit-block">
-              <h4 class="mono-caption credit-heading">TAGS</h4>
+              <h3 class="mono-caption credit-heading">TAGS</h3>
               <div class="tag-row">
                 {d.tags.map((t) => (
                   <TagPill>{t}</TagPill>
@@ -218,14 +218,14 @@ const articleJsonLd = {
         }
 
         <div class="credit-block">
-          <h4 class="mono-caption credit-heading">DATE</h4>
+          <h3 class="mono-caption credit-heading">DATE</h3>
           <p class="credit-value">{formatDate(d.date)}</p>
         </div>
 
         {
           d.updated && (
             <div class="credit-block">
-              <h4 class="mono-caption credit-heading">UPDATED</h4>
+              <h3 class="mono-caption credit-heading">UPDATED</h3>
               <p class="credit-value">{formatDate(d.updated)}</p>
             </div>
           )

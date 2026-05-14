@@ -6,6 +6,7 @@ import SectionRule from '../../components/composition/SectionRule.astro';
 import Figure from '../../components/composition/Figure.astro';
 import StatusPill from '../../components/primitives/StatusPill.astro';
 import TagPill from '../../components/primitives/TagPill.astro';
+import { statusTone } from '../../utils/statusTone';
 
 const all = await getCollection('projects');
 const sorted = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -57,7 +58,9 @@ const fmtYearMonth = (date: Date) =>
                 )}
                 <div class="featured-row">
                   {featured.data.status && (
-                    <StatusPill tone="terra">{featured.data.status}</StatusPill>
+                    <StatusPill tone={statusTone(featured.data.status)}>
+                      {featured.data.status}
+                    </StatusPill>
                   )}
                   <span class="mono-caption featured-date">
                     {fmtYearMonth(featured.data.date)}

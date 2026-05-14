@@ -10,6 +10,7 @@ import SectionRule from '../../components/composition/SectionRule.astro';
 import Figure from '../../components/composition/Figure.astro';
 import ExternalLink from '../../components/primitives/ExternalLink.astro';
 import TagPill from '../../components/primitives/TagPill.astro';
+import { statusTone } from '../../utils/statusTone';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -84,9 +85,7 @@ const articleJsonLd = {
           {
             d.status && (
               <div class="project-status-cell">
-                <StatusPill tone={d.register === 'tropical' ? 'terra' : 'graphite'}>
-                  {d.status}
-                </StatusPill>
+                <StatusPill tone={statusTone(d.status)}>{d.status}</StatusPill>
               </div>
             )
           }

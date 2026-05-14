@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import Figure from './composition/Figure.astro';
 import StatusPill from './primitives/StatusPill.astro';
+import { statusTone } from '../utils/statusTone';
 
 interface Props {
   project: CollectionEntry<'projects'>;
@@ -13,7 +14,7 @@ const { project, variant = 'compact' } = Astro.props;
 const { data, id } = project;
 const href = `/work/${id}`;
 const figureRatio = variant === 'feature' ? '16/10' : '4/3';
-const pillTone = data.register === 'tropical' ? 'terra' : 'graphite';
+const pillTone = statusTone(data.status);
 
 // Tile meta strip: STATUS · DATE · WITH — shown on hover / focus-within.
 const yyyyMm = `${data.date.getFullYear()}-${String(data.date.getMonth() + 1).padStart(2, '0')}`;

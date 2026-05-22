@@ -382,17 +382,6 @@
   }
 }
 
-/* --- Section index — monospace data-readout label (instrument idiom) --- */
-.section-idx {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-  margin-bottom: 0.6rem;
-}
 
 /* --- Hero gradient (animated only when motion is allowed) --- */
 @keyframes hero-shift {

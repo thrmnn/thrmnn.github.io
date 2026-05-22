@@ -3,52 +3,53 @@ import { navLinks } from '../../data/navigation';
 import ThemeToggle from '../ui/ThemeToggle.astro';
 
 const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === currentPath ||
+  (href !== '/' && !href.startsWith('/#') && currentPath.startsWith(href));
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 bg-bg-primary/80 backdrop-blur-md border-b border-border">
-  <!-- Checkbox peer lives here, as a direct child of header, before nav and mobile menu -->
+<header class="site-header" data-header>
   <input type="checkbox" id="nav-toggle" class="hidden peer" aria-hidden="true" tabindex="-1" />
 
-  <nav class="mx-auto max-w-[var(--max-w-content)] px-6 h-16 flex items-center justify-between">
-    <a
-      href="/"
-      aria-label="Théo Alessandro Hermann — Home"
-      class="monogram-link flex items-center"
-    >
-      <!-- T·A·H monogram — Space Grotesk, literal middle-dot characters -->
-      <span class="monogram" aria-hidden="true">
-        <span class="mono-ch" style="--i:0">T</span>
-        <span class="mono-ch" style="--i:1">·</span>
-        <span class="mono-ch" style="--i:2">A</span>
-        <span class="mono-ch" style="--i:3">·</span>
-        <span class="mono-ch" style="--i:4">H</span>
+  <div class="header-inner">
+    <!-- Left: monogram + live scan readout -->
+    <div class="header-left">
+      <a href="/" aria-label="Théo Alessandro Hermann — Home" class="monogram-link">
+        <span class="monogram" aria-hidden="true">
+          <span class="mono-ch" style="--i:0">T</span>
+          <span class="mono-ch" style="--i:1">·</span>
+          <span class="mono-ch" style="--i:2">A</span>
+          <span class="mono-ch" style="--i:3">·</span>
+          <span class="mono-ch" style="--i:4">H</span>
+        </span>
+      </a>
+      <span class="header-rule" aria-hidden="true"></span>
+      <span class="header-readout" aria-hidden="true">
+        <span class="readout-tick">&#9656;</span>
+        <span data-readout>home</span>
       </span>
-    </a>
+    </div>
 
     <!-- Desktop nav -->
-    <ul class="hidden md:flex items-center gap-8">
-      {navLinks.map((link) => (
-        <li>
-          <a
-            href={link.href}
-            class:list={[
-              'text-sm font-medium transition-colors',
-              currentPath === link.href || (link.href !== '/' && !link.href.startsWith('/#') && currentPath.startsWith(link.href))
-                ? 'text-text-primary'
-                : 'text-text-muted hover:text-text-secondary',
-            ]}
-          >
-            {link.label}
-          </a>
-        </li>
-      ))}
-    </ul>
+    <nav class="header-nav" aria-label="Primary">
+      <ul>
+        {navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="nav-link"
+              {...(isActive(link.href) ? { 'aria-current': 'page' } : {})}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
 
-    <!-- Right side controls: theme toggle + mobile hamburger -->
-    <div class="flex items-center gap-2">
+    <!-- Controls -->
+    <div class="header-controls">
       <ThemeToggle />
-
-      <!-- Mobile hamburger label (for= works regardless of nesting) -->
       <label
         for="nav-toggle"
         role="button"
@@ -56,31 +57,30 @@ const currentPath = Astro.url.pathname;
         aria-label="Toggle navigation menu"
         aria-controls="mobile-menu"
         aria-expanded="false"
-        class="md:hidden cursor-pointer text-text-secondary p-2"
+        class="nav-burger"
       >
-        <!-- Hamburger icon (visible when menu closed) -->
-        <svg class="w-5 h-5 block peer-checked-hide" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg class="burger-open" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
-        <!-- X close icon (visible when menu open) -->
-        <svg class="w-5 h-5 hidden peer-checked-show" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg class="burger-close" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </label>
     </div>
-  </nav>
+  </div>
 
-  <!-- Mobile menu (subsequent sibling of the checkbox peer, so peer-checked: works) -->
-  <div id="mobile-menu" class="hidden peer-checked:block md:hidden border-t border-border bg-bg-primary/95 backdrop-blur-md">
-    <ul class="px-6 py-4 space-y-3">
+  <!-- Scan-progress line — fills with scroll position -->
+  <div class="header-progress" data-progress aria-hidden="true"></div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="mobile-menu">
+    <ul>
       {navLinks.map((link) => (
         <li>
           <a
             href={link.href}
-            class:list={[
-              'block text-sm font-medium py-1',
-              currentPath === link.href ? 'text-text-primary' : 'text-text-muted',
-            ]}
+            class="nav-link"
+            {...(isActive(link.href) ? { 'aria-current': 'page' } : {})}
           >
             {link.label}
           </a>
@@ -91,13 +91,178 @@ const currentPath = Astro.url.pathname;
 </header>
 
 <style>
-  /* Toggle hamburger / X icon based on checkbox state. */
-  #nav-toggle:checked ~ nav .peer-checked-hide { display: none; }
-  #nav-toggle:checked ~ nav .peer-checked-show { display: block; }
+  /* ============================ Instrument-console header ============================ */
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background-color: color-mix(in srgb, var(--color-bg-primary) 76%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+    transition: background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out);
+  }
+  .site-header.condensed {
+    background-color: color-mix(in srgb, var(--color-bg-primary) 94%, transparent);
+    border-bottom-color: var(--color-border-hover);
+  }
+
+  .header-inner {
+    max-width: var(--max-w-content);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    min-width: 0;
+  }
+
+  /* Divider between monogram and readout */
+  .header-rule {
+    width: 1px;
+    height: 1.15rem;
+    background: var(--color-border-hover);
+  }
+
+  /* Live scan readout */
+  .header-readout {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: lowercase;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+  .readout-tick {
+    color: var(--color-accent);
+    font-size: 0.6rem;
+    animation: readout-pulse 2.6s ease-in-out infinite;
+  }
+  [data-readout] {
+    color: var(--color-text-secondary);
+    transition: color var(--dur-1) var(--ease-out);
+  }
+  @keyframes readout-pulse {
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .readout-tick { animation: none; opacity: 1; }
+  }
+
+  /* Nav — monospace instrument list */
+  .header-nav ul {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+  }
+  .nav-link {
+    position: relative;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+    color: var(--color-text-muted);
+    transition: color var(--dur-1) var(--ease-out);
+    padding: 0.3rem 0;
+  }
+  .nav-link::before {
+    content: "";
+    position: absolute;
+    left: -0.7rem;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    margin-top: -2px;
+    background: var(--color-accent);
+    opacity: 0;
+    transform: scale(0.4);
+    transition: opacity var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+  }
+  .nav-link:hover {
+    color: var(--color-text-secondary);
+  }
+  .nav-link:hover::before {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  .nav-link[aria-current='page'] {
+    color: var(--color-text-primary);
+  }
+  .nav-link[aria-current='page']::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  /* Scan-progress line */
+  .header-progress {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 2px;
+    width: calc(var(--progress, 0) * 100%);
+    background: linear-gradient(90deg, var(--color-accent), #8b5cf6);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.55);
+  }
+
+  /* Burger */
+  .nav-burger {
+    display: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    padding: 0.5rem;
+  }
+  .nav-burger svg { width: 1.25rem; height: 1.25rem; display: block; }
+  .burger-close { display: none; }
+  #nav-toggle:checked ~ .header-inner .nav-burger .burger-open { display: none; }
+  #nav-toggle:checked ~ .header-inner .nav-burger .burger-close { display: block; }
+
+  /* Mobile menu */
+  .mobile-menu {
+    display: none;
+    border-top: 1px solid var(--color-border);
+    background-color: color-mix(in srgb, var(--color-bg-primary) 96%, transparent);
+    backdrop-filter: blur(12px);
+  }
+  #nav-toggle:checked ~ .mobile-menu { display: block; }
+  .mobile-menu ul {
+    padding: 1rem 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 767px) {
+    .header-nav,
+    .header-rule,
+    .header-readout {
+      display: none;
+    }
+    .nav-burger { display: block; }
+  }
 
   /* --- T·A·H monogram --- */
   .monogram-link { color: var(--color-text-primary); }
-
   .monogram {
     position: relative;
     display: inline-block;
@@ -109,10 +274,8 @@ const currentPath = Astro.url.pathname;
     color: var(--color-text-primary);
     white-space: nowrap;
   }
-
   .mono-ch { display: inline-block; }
 
-  /* Scan-sweep line, runs on hover */
   .monogram::after {
     content: "";
     position: absolute;
@@ -133,18 +296,15 @@ const currentPath = Astro.url.pathname;
       animation-delay: calc(var(--i) * 0.07s);
     }
   }
-
   @media (prefers-reduced-motion: no-preference) and (pointer: fine) {
     .monogram-link:hover .monogram::after {
       animation: mono-scan 0.55s ease;
     }
   }
-
   @keyframes mono-in {
     from { opacity: 0; transform: translateY(0.22em); }
     to   { opacity: 1; transform: translateY(0); }
   }
-
   @keyframes mono-scan {
     0%   { left: -2px; opacity: 0; }
     25%  { opacity: 1; }
@@ -154,22 +314,68 @@ const currentPath = Astro.url.pathname;
 </style>
 
 <script>
-  // Keyboard support for the checkbox-hack mobile menu: the <label> toggles
-  // on Enter/Space, and aria-expanded is kept in sync with the checkbox.
+  // Instrument-console header: scroll-progress scan line, condensed state,
+  // and a live readout that names the section currently in view.
   (() => {
-    const cb = document.getElementById('nav-toggle') as HTMLInputElement | null;
-    const label = document.querySelector('label[for="nav-toggle"]');
-    if (!cb || !label) return;
-    label.addEventListener('keydown', (e) => {
-      const ev = e as KeyboardEvent;
-      if (ev.key === 'Enter' || ev.key === ' ') {
-        ev.preventDefault();
-        cb.checked = !cb.checked;
-        cb.dispatchEvent(new Event('change'));
+    const header = document.querySelector('[data-header]') as HTMLElement | null;
+    if (!header) return;
+
+    let ticking = false;
+    function update() {
+      ticking = false;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+      header!.style.setProperty('--progress', String(p));
+      header!.classList.toggle('condensed', window.scrollY > 32);
+    }
+    window.addEventListener(
+      'scroll',
+      () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } },
+      { passive: true },
+    );
+    update();
+
+    // Live section readout
+    const readout = header.querySelector('[data-readout]');
+    if (readout) {
+      const labels: Record<string, string> = {
+        home: 'home', about: 'profile', projects: 'work', news: 'latest', contact: 'contact',
+      };
+      const sections = document.querySelectorAll('main section[id]');
+      if (window.location.pathname === '/' && sections.length) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                const id = (e.target as HTMLElement).id;
+                readout.textContent = labels[id] || id;
+              }
+            }
+          },
+          { rootMargin: '-48% 0px -48% 0px' },
+        );
+        sections.forEach((s) => io.observe(s));
+      } else {
+        const seg = window.location.pathname.split('/').filter(Boolean)[0];
+        readout.textContent = seg || 'home';
       }
-    });
-    cb.addEventListener('change', () => {
-      label.setAttribute('aria-expanded', String(cb.checked));
-    });
+    }
+
+    // Mobile-menu keyboard support
+    const cb = document.getElementById('nav-toggle') as HTMLInputElement | null;
+    const burger = header.querySelector('label[for="nav-toggle"]');
+    if (cb && burger) {
+      burger.addEventListener('keydown', (e) => {
+        const ev = e as KeyboardEvent;
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          cb.checked = !cb.checked;
+          cb.dispatchEvent(new Event('change'));
+        }
+      });
+      cb.addEventListener('change', () => {
+        burger.setAttribute('aria-expanded', String(cb.checked));
+      });
+    }
   })();
 </script>

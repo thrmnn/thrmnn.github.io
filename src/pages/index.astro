@@ -2,51 +2,41 @@
 import PageLayout from '../layouts/PageLayout.astro';
 import ProjectCard from '../components/ui/ProjectCard.astro';
 import NewsItem from '../components/ui/NewsItem.astro';
-import PublicationEntry from '../components/ui/PublicationEntry.astro';
 import Button from '../components/ui/Button.astro';
 import SocialIcon from '../components/ui/SocialIcon.astro';
 import { author } from '../data/author';
 import { newsItems } from '../data/news';
 import { getCollection } from 'astro:content';
 
-const publications = (await getCollection('publications')).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
-);
-
 const featuredProjects = (await getCollection('projects'))
   .filter((p) => p.data.featuredOrder !== undefined)
   .sort((a, b) => a.data.featuredOrder! - b.data.featuredOrder!);
+
+const heroTags = ['Robotics', 'Urban Science', 'What Comes Next'];
+const mailto = `mailto:${author.email}`;
 ---
 
 <PageLayout ogType="profile">
   <!-- Hero -->
   <section class="hero-section relative min-h-[70vh] sm:min-h-[85vh] flex items-center justify-center overflow-hidden">
-    <!-- Animated gradient background -->
     <div class="absolute inset-0 hero-gradient">
-      <!-- Grid overlay -->
-      <div class="hero-grid absolute inset-0"></div>
-      <!-- Radial spotlight behind text -->
+      <canvas class="hero-canvas absolute inset-0" aria-hidden="true"></canvas>
       <div class="hero-spotlight absolute inset-0"></div>
-      <!-- Floating particles -->
-      <div class="hero-particle hero-particle-1"></div>
-      <div class="hero-particle hero-particle-2"></div>
-      <div class="hero-particle hero-particle-3"></div>
-      <!-- Bottom fade to bg-primary -->
       <div class="hero-bottom-fade absolute inset-x-0 bottom-0 h-[40%]"></div>
     </div>
     <div class="relative z-10 text-center px-6 max-w-3xl">
       <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-4">
-        {['Perception', 'Autonomous Systems', '3D Reconstruction', 'Robotics'].map((tag, i) => (
+        {heroTags.map((tag, i) => (
           <span
-            class="hero-tag text-xs text-text-muted uppercase tracking-wider px-2 py-1 sm:px-3 rounded-full border border-border"
-            style={`font-family: var(--font-display); animation-delay: ${i * 0.12}s;`}
+            class="hero-tag text-xs text-text-secondary uppercase tracking-wider px-2 py-1 sm:px-3 rounded-full border"
+            style={`font-family: var(--font-display); border-color: rgba(255,255,255,0.14); animation-delay: ${i * 0.12}s;`}
           >
             {tag}
           </span>
         ))}
       </div>
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-text-primary tracking-tight" style="font-family: var(--font-display);">
-        Théo Hermann
+        {author.name}
       </h1>
       <p class="mt-6 text-lg text-text-secondary max-w-xl mx-auto">
         Robotics engineer building perception and autonomy systems that ship to the real world. Currently at MIT Senseable City Lab.
@@ -58,276 +48,6 @@ const featuredProjects = (await getCollection('projects'))
     </div>
   </section>
 
-  <style>
-    /* --- Hero tag stagger --- */
-    @keyframes tag-enter {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero-tag {
-      opacity: 0;
-      animation: tag-enter 0.5s ease-out forwards;
-    }
-
-    /* --- Hero gradient animation --- */
-    @keyframes hero-shift {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
-      }
-    }
-
-    .hero-gradient {
-      background: linear-gradient(
-        135deg,
-        #0c0c1d 0%,
-        #111638 20%,
-        #16143a 35%,
-        #0e2248 50%,
-        #1a1445 65%,
-        #141230 80%,
-        #0c0c1d 100%
-      );
-      background-size: 300% 300%;
-      animation: hero-shift 20s ease infinite;
-    }
-
-    :global([data-theme="light"]) .hero-gradient {
-      background: linear-gradient(
-        135deg,
-        #e8edf5 0%,
-        #dce4f5 20%,
-        #d4ddf2 35%,
-        #cdd8f0 50%,
-        #d4ddf2 65%,
-        #dce4f5 80%,
-        #e8edf5 100%
-      );
-      background-size: 300% 300%;
-    }
-
-    @media (prefers-color-scheme: light) {
-      :global(:root:not([data-theme])) .hero-gradient {
-        background: linear-gradient(
-          135deg,
-          #e8edf5 0%,
-          #dce4f5 20%,
-          #d4ddf2 35%,
-          #cdd8f0 50%,
-          #d4ddf2 65%,
-          #dce4f5 80%,
-          #e8edf5 100%
-        );
-        background-size: 300% 300%;
-      }
-    }
-
-    /* --- Grid pattern --- */
-    .hero-grid {
-      background-image:
-        linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-      background-size: 48px 48px;
-      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
-      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
-    }
-
-    :global([data-theme="light"]) .hero-grid {
-      background-image:
-        linear-gradient(rgba(0, 0, 0, 0.09) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 0, 0, 0.09) 1px, transparent 1px);
-    }
-
-    @media (prefers-color-scheme: light) {
-      :global(:root:not([data-theme])) .hero-grid {
-        background-image:
-          linear-gradient(rgba(0, 0, 0, 0.09) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0, 0, 0, 0.09) 1px, transparent 1px);
-      }
-    }
-
-    /* --- Radial spotlight behind text --- */
-    .hero-spotlight {
-      background: radial-gradient(
-        ellipse 50% 40% at 50% 48%,
-        rgba(59, 130, 246, 0.08) 0%,
-        rgba(99, 102, 241, 0.04) 40%,
-        transparent 70%
-      );
-    }
-
-    :global([data-theme="light"]) .hero-spotlight {
-      background: radial-gradient(
-        ellipse 50% 40% at 50% 48%,
-        rgba(59, 130, 246, 0.12) 0%,
-        rgba(99, 102, 241, 0.06) 40%,
-        transparent 70%
-      );
-    }
-
-    @media (prefers-color-scheme: light) {
-      :global(:root:not([data-theme])) .hero-spotlight {
-        background: radial-gradient(
-          ellipse 50% 40% at 50% 48%,
-          rgba(59, 130, 246, 0.12) 0%,
-          rgba(99, 102, 241, 0.06) 40%,
-          transparent 70%
-        );
-      }
-    }
-
-    /* --- Bottom fade to page background --- */
-    .hero-bottom-fade {
-      background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        rgba(10, 10, 10, 0.4) 30%,
-        rgba(10, 10, 10, 0.8) 60%,
-        var(--color-bg-primary) 100%
-      );
-    }
-
-    :global([data-theme="light"]) .hero-bottom-fade {
-      background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        rgba(250, 250, 250, 0.4) 30%,
-        rgba(250, 250, 250, 0.8) 60%,
-        var(--color-bg-primary) 100%
-      );
-    }
-
-    @media (prefers-color-scheme: light) {
-      :global(:root:not([data-theme])) .hero-bottom-fade {
-        background: linear-gradient(
-          to bottom,
-          transparent 0%,
-          rgba(250, 250, 250, 0.4) 30%,
-          rgba(250, 250, 250, 0.8) 60%,
-          var(--color-bg-primary) 100%
-        );
-      }
-    }
-
-    /* --- Floating particles --- */
-    .hero-particle {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-      will-change: transform, opacity;
-    }
-
-    .hero-particle-1 {
-      width: 4px;
-      height: 4px;
-      background: rgba(59, 130, 246, 0.35);
-      box-shadow: 0 0 8px 2px rgba(59, 130, 246, 0.15);
-      top: 28%;
-      left: 18%;
-      animation: particle-float-1 14s ease-in-out infinite;
-    }
-
-    .hero-particle-2 {
-      width: 3px;
-      height: 3px;
-      background: rgba(139, 92, 246, 0.3);
-      box-shadow: 0 0 6px 2px rgba(139, 92, 246, 0.12);
-      top: 55%;
-      right: 22%;
-      animation: particle-float-2 18s ease-in-out infinite;
-    }
-
-    .hero-particle-3 {
-      width: 2.5px;
-      height: 2.5px;
-      background: rgba(99, 102, 241, 0.25);
-      box-shadow: 0 0 6px 2px rgba(99, 102, 241, 0.1);
-      top: 38%;
-      right: 35%;
-      animation: particle-float-3 22s ease-in-out infinite;
-    }
-
-    @keyframes particle-float-1 {
-      0%, 100% {
-        transform: translate(0, 0);
-        opacity: 0.4;
-      }
-      25% {
-        transform: translate(30px, -20px);
-        opacity: 0.7;
-      }
-      50% {
-        transform: translate(-15px, -40px);
-        opacity: 0.3;
-      }
-      75% {
-        transform: translate(20px, -10px);
-        opacity: 0.6;
-      }
-    }
-
-    @keyframes particle-float-2 {
-      0%, 100% {
-        transform: translate(0, 0);
-        opacity: 0.3;
-      }
-      33% {
-        transform: translate(-25px, 20px);
-        opacity: 0.6;
-      }
-      66% {
-        transform: translate(20px, -30px);
-        opacity: 0.35;
-      }
-    }
-
-    @keyframes particle-float-3 {
-      0%, 100% {
-        transform: translate(0, 0);
-        opacity: 0.25;
-      }
-      20% {
-        transform: translate(15px, 25px);
-        opacity: 0.5;
-      }
-      40% {
-        transform: translate(-20px, 10px);
-        opacity: 0.3;
-      }
-      60% {
-        transform: translate(-10px, -20px);
-        opacity: 0.55;
-      }
-      80% {
-        transform: translate(25px, -5px);
-        opacity: 0.3;
-      }
-    }
-  </style>
-
-  <style>
-    .avatar-ring {
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6, #3b82f6);
-      background-size: 200% 200%;
-      animation: ring-shift 6s ease infinite;
-    }
-
-    @keyframes ring-shift {
-      0%, 100% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-    }
-  </style>
-
   <!-- Biography -->
   <section id="about" class="py-[var(--space-section)] bg-bg-accent">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6 flex flex-col md:flex-row gap-12 items-start">
@@ -335,7 +55,7 @@ const featuredProjects = (await getCollection('projects'))
         <div class="avatar-ring rounded-full p-[3px]">
           <img
             src="/avatar.webp"
-            alt="Théo Hermann"
+            alt={author.name}
             width="180"
             height="180"
             loading="eager"
@@ -350,15 +70,14 @@ const featuredProjects = (await getCollection('projects'))
         </div>
         <div class="flex gap-3 mt-4 justify-center md:justify-start">
           {author.social.map((s) => (
-            s.icon === 'email' ? (
-              <a href="#" id="email-icon" class="text-text-muted hover:text-text-secondary transition-colors" title={s.label}>
-                <SocialIcon type="email" />
-              </a>
-            ) : (
-              <a href={s.href} target="_blank" rel="noopener" class="text-text-muted hover:text-text-secondary transition-colors" title={s.label}>
-                <SocialIcon type={s.icon as 'github' | 'linkedin' | 'scholar'} />
-              </a>
-            )
+            <a
+              href={s.href}
+              {...(s.icon !== 'email' ? { target: '_blank', rel: 'noopener' } : {})}
+              class="text-text-muted hover:text-text-secondary transition-colors"
+              title={s.label}
+            >
+              <SocialIcon type={s.icon as 'email' | 'github' | 'linkedin' | 'scholar'} />
+            </a>
           ))}
         </div>
       </div>
@@ -373,27 +92,10 @@ const featuredProjects = (await getCollection('projects'))
     </div>
   </section>
 
-  <!-- Latest News -->
-  <section id="news" class="py-[var(--space-section)]">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="text-2xl font-bold text-text-primary mb-8">Latest</h2>
-      <div class="max-w-xl">
-        {newsItems.map((item) => (
-          <NewsItem date={item.date} text={item.text} />
-        ))}
-      </div>
-      <p class="mt-6">
-        <a href="/now/" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">
-          Full timeline & what I'm doing now →
-        </a>
-      </p>
-    </div>
-  </section>
-
-  <!-- Featured Work -->
+  <!-- Featured Work (promoted above Latest for recruiter-first funnel) -->
   <section id="projects" class="py-[var(--space-section)] bg-bg-secondary">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="text-2xl font-bold text-text-primary mb-8">Featured Work</h2>
+      <h2 class="text-3xl font-bold text-text-primary mb-8">Featured Work</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {featuredProjects.map((project, i) => (
           <ProjectCard
@@ -417,23 +119,20 @@ const featuredProjects = (await getCollection('projects'))
     </div>
   </section>
 
-  <!-- Publications -->
-  <section id="publications" class="py-[var(--space-section)]">
+  <!-- Latest -->
+  <section id="news" class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="text-2xl font-bold text-text-primary mb-8">Publications</h2>
-      <div class="max-w-2xl">
-        {publications.map((pub) => (
-          <PublicationEntry
-            href={`/research/${pub.id}/`}
-            title={pub.data.title}
-            authors={pub.data.authors}
-            venue={pub.data.publication}
-            date={pub.data.date}
-            doi={pub.data.doi}
-            pdfUrl={pub.data.links?.pdf}
-          />
+      <h2 class="text-3xl font-bold text-text-primary mb-8">Latest</h2>
+      <div class="max-w-xl">
+        {newsItems.map((item) => (
+          <NewsItem date={item.date} text={item.text} />
         ))}
       </div>
+      <p class="mt-6">
+        <a href="/now/" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">
+          Full timeline & what I'm doing now →
+        </a>
+      </p>
     </div>
   </section>
 
@@ -446,7 +145,7 @@ const featuredProjects = (await getCollection('projects'))
         Open to senior perception, computer vision, and robotics roles — full-time or freelance. Especially interested in autonomous vehicles, humanoid robots, and embodied AI.
       </p>
       <div class="flex justify-center gap-3 sm:gap-5 flex-wrap">
-        <Button href="#" id="email-cta">
+        <Button href={mailto}>
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
           E-mail
         </Button>
@@ -458,41 +157,334 @@ const featuredProjects = (await getCollection('projects'))
     </div>
   </section>
 
-  <style>
-    .contact-bg {
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(59, 130, 246, 0.08) 0%, transparent 70%),
-        linear-gradient(180deg, var(--color-bg-accent) 0%, #0d1020 50%, var(--color-bg-accent) 100%);
-    }
+  <script>
+    // Hero canvas: a continuous LiDAR-style scan that assembles dense
+    // point-cloud objects — a favela hillside, then an urban tree — column
+    // by column as the scan front passes. Plus an ambient point field and,
+    // on desktop, a cursor depth-sensor. The reveal is fully automatic, so
+    // it carries the experience on touch as well as with a pointer.
+    (() => {
+      const canvas = document.querySelector('.hero-canvas') as HTMLCanvasElement | null;
+      const hero = canvas?.closest('.hero-section') as HTMLElement | null;
+      if (!canvas || !hero) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
 
-    :global([data-theme="light"]) .contact-bg {
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(59, 130, 246, 0.1) 0%, transparent 70%),
-        linear-gradient(180deg, var(--color-bg-accent) 0%, #e0e7f5 50%, var(--color-bg-accent) 100%);
-    }
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const finePointer = window.matchMedia('(pointer: fine)');
 
-    @media (prefers-color-scheme: light) {
-      :global(:root:not([data-theme])) .contact-bg {
-        background:
-          radial-gradient(ellipse 80% 60% at 50% 100%, rgba(59, 130, 246, 0.1) 0%, transparent 70%),
-          linear-gradient(180deg, var(--color-bg-accent) 0%, #e0e7f5 50%, var(--color-bg-accent) 100%);
+      const T_SCAN = 4200, T_HOLD = 2000, T_FADE = 1100, T_GAP = 500;
+      const CYCLE = T_SCAN + T_HOLD + T_FADE + T_GAP;
+      const REVEAL_RAMP = 50;
+      const CURSOR_R = 158;
+
+      const clamp = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : v);
+
+      // --- point-cloud models (local coords, x:0..1 right, y:0..1 up) ---
+
+      // Dense favela hillside: distinct outlined houses with windows,
+      // stacked into a jagged blocky skyline — the Rocinha/Vidigal look.
+      function favelaModel() {
+        const p: number[][] = [];
+        const EDGE = 0.017;
+        const rect = (x0: number, y0: number, x1: number, y1: number) => {
+          for (let x = x0; x <= x1 + 1e-6; x += EDGE) { p.push([x, y0]); p.push([x, y1]); }
+          for (let y = y0; y <= y1 + 1e-6; y += EDGE) { p.push([x0, y]); p.push([x1, y]); }
+        };
+        const win = (cx: number, cy: number, s: number) => {
+          for (let x = -s; x <= s + 1e-6; x += s)
+            for (let y = -s; y <= s + 1e-6; y += s) p.push([cx + x, cy + y]);
+        };
+        const cols = 13;
+        for (let ci = 0; ci < cols; ci++) {
+          const t = ci / (cols - 1);
+          const cx = ci / cols;
+          const cw = (1 / cols) * (0.88 + Math.random() * 0.62);
+          const edgeTaper = Math.min(1, Math.min(t, 1 - t) * 2.6 + 0.3);
+          const profile = Math.max(0.16, (0.45 + Math.random() * 0.46) * edgeTaper);
+          let y = 0;
+          while (y < profile - 0.05) {
+            const remain = profile - y;
+            const hh = Math.min(remain, 0.09 + Math.random() * 0.13);
+            const jx = (Math.random() - 0.5) * 0.022;
+            const jw = (Math.random() - 0.5) * 0.03;
+            const x0 = cx + jx, x1 = cx + cw + jx + jw;
+            rect(x0, y, x1, y + hh);
+            const wins = hh > 0.13 ? 2 : 1;
+            for (let k = 0; k < wins; k++) {
+              const wx = x0 + (x1 - x0) * (0.28 + Math.random() * 0.44);
+              const wy = y + hh * (0.3 + k * 0.34 + Math.random() * 0.08);
+              win(wx, wy, 0.013);
+            }
+            y += hh + Math.random() * 0.012;
+          }
+        }
+        return p;
       }
-    }
-  </style>
 
-  <!-- Email obfuscation: assembled at runtime to prevent bot harvesting -->
-  <script is:inline>
-    (function() {
-      var m = 'bWFpbHRvOnRoZXJtYW5uQG1pdC5lZHU=';
-      function p() {
-        var h = atob(m);
-        var c = document.getElementById('email-cta');
-        if (c) c.setAttribute('href', h);
-        var i = document.getElementById('email-icon');
-        if (i) i.setAttribute('href', h);
+      // Urban tree: tapered trunk with root flare, a few branches, and a
+      // dense canopy filled from a union of circles.
+      function treeModel() {
+        const p: number[][] = [];
+        const PER = 0.022;
+        for (let y = 0; y <= 0.42 + 1e-6; y += PER) {
+          const flare = y < 0.06 ? (0.06 - y) * 0.6 : 0;
+          const half = Math.max(0.012, 0.05 - y * 0.045 + flare);
+          p.push([0.5 - half, y]); p.push([0.5 + half, y]);
+          p.push([0.5, y]);
+        }
+        const branches = [[-0.2, 0.62], [0.22, 0.66], [-0.1, 0.8], [0.14, 0.82], [0.0, 0.7]];
+        for (const [bx, by] of branches) {
+          for (let s = 0; s <= 16; s++) {
+            const f = s / 16;
+            p.push([0.5 + bx * f, 0.4 + (by - 0.4) * f]);
+          }
+        }
+        const circles = [
+          [0.50, 0.70, 0.30], [0.32, 0.64, 0.21], [0.68, 0.66, 0.22],
+          [0.50, 0.89, 0.19], [0.38, 0.82, 0.17], [0.63, 0.83, 0.17],
+          [0.50, 0.60, 0.23],
+        ];
+        let tries = 0;
+        while (p.length < 640 && tries < 24000) {
+          tries++;
+          const x = Math.random(), y = 0.40 + Math.random() * 0.62;
+          for (const [cx, cy, r] of circles) {
+            const dx = x - cx, dy = y - cy;
+            if (dx * dx + dy * dy < r * r) { p.push([x, y]); break; }
+          }
+        }
+        return p;
       }
-      document.addEventListener('DOMContentLoaded', p);
-      document.addEventListener('astro:page-load', p);
+
+      function normalize(raw: number[][]) {
+        let mnX = 1e9, mnY = 1e9, mxX = -1e9, mxY = -1e9;
+        for (const [x, y] of raw) {
+          if (x < mnX) mnX = x;
+          if (x > mxX) mxX = x;
+          if (y < mnY) mnY = y;
+          if (y > mxY) mxY = y;
+        }
+        const sx = mxX - mnX || 1, sy = mxY - mnY || 1;
+        return raw.map(([x, y]) => ({
+          lx: (x - mnX) / sx,
+          ly: (y - mnY) / sy,
+          ph: Math.random() * Math.PI * 2,
+          useB: Math.random() > 0.7,
+        }));
+      }
+
+      const MODELS: any[] = [
+        { pts: normalize(favelaModel()), aspect: 1.78, box: { x: 0, y: 0, w: 0, h: 0 } },
+        { pts: normalize(treeModel()), aspect: 0.92, box: { x: 0, y: 0, w: 0, h: 0 } },
+      ];
+
+      let w = 0, h = 0, dpr = 1;
+      let field: any[] = [];
+      let raf = 0, running = false, t0 = performance.now();
+      let inView = true, visible = true;
+      let lastStyle = '';
+      const cursor = { x: -9999, y: -9999, active: false };
+
+      function palette() {
+        const dt = document.documentElement.getAttribute('data-theme');
+        const light = dt === 'light' ||
+          (!dt && window.matchMedia('(prefers-color-scheme: light)').matches);
+        return light
+          ? { a: '37,99,235', b: '124,58,237', base: 0.5, ray: '37,99,235', glow: 0.1, scan: '37,99,235' }
+          : { a: '96,165,250', b: '150,120,246', base: 0.42, ray: '120,170,255', glow: 0.12, scan: '130,175,255' };
+      }
+      let pal = palette();
+
+      function buildField() {
+        const count = Math.max(24, Math.min(56, Math.round((w * h) / 38000)));
+        field = [];
+        for (let i = 0; i < count; i++) {
+          const x = Math.random() * w, y = Math.random() * h;
+          field.push({
+            bx: x, by: y, x, y,
+            r: 1 + Math.random() * 1.6,
+            amp: 4 + Math.random() * 8,
+            sp: 0.0002 + Math.random() * 0.0004,
+            ph: Math.random() * Math.PI * 2,
+            useB: Math.random() > 0.5,
+          });
+        }
+      }
+
+      function placeModels() {
+        const maxH = Math.min(h * 0.66, 480);
+        const maxW = w * 0.84;
+        for (const m of MODELS) {
+          let bw = maxH * m.aspect, bh = maxH;
+          if (bw > maxW) { bw = maxW; bh = bw / m.aspect; }
+          m.box.w = bw;
+          m.box.h = bh;
+          m.box.x = w / 2 - bw / 2;
+          m.box.y = h * 0.54 - bh / 2;
+        }
+      }
+
+      function resize() {
+        const rect = hero!.getBoundingClientRect();
+        w = rect.width; h = rect.height;
+        if (!w || !h) return;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas!.width = Math.round(w * dpr);
+        canvas!.height = Math.round(h * dpr);
+        ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+        buildField();
+        placeModels();
+        if (!running) render(performance.now());
+      }
+
+      function ray(x: number, y: number) {
+        if (!cursor.active) return 0;
+        const dx = x - cursor.x, dy = y - cursor.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist >= CURSOR_R) return 0;
+        const k = 1 - dist / CURSOR_R;
+        ctx!.strokeStyle = `rgba(${pal.ray},${(k * 0.24).toFixed(3)})`;
+        ctx!.lineWidth = 0.6;
+        ctx!.beginPath();
+        ctx!.moveTo(cursor.x, cursor.y);
+        ctx!.lineTo(x, y);
+        ctx!.stroke();
+        lastStyle = '';
+        return k;
+      }
+
+      function dot(x: number, y: number, r: number, col: string, alpha: number) {
+        const s = `rgba(${col},${clamp(alpha, 0, 1).toFixed(2)})`;
+        if (s !== lastStyle) { ctx!.fillStyle = s; lastStyle = s; }
+        ctx!.fillRect(x - r * 0.5, y - r * 0.5, r, r);
+      }
+
+      function render(now: number) {
+        const moving = !reduceMotion.matches;
+        ctx!.clearRect(0, 0, w, h);
+        lastStyle = '';
+
+        // phase machine — which model, what stage of its reveal
+        let modelIdx = 0, phase = 'hold', pt = 0, scanX = -1;
+        if (moving) {
+          const el = now - t0;
+          modelIdx = Math.floor(el / CYCLE) % MODELS.length;
+          const c = el % CYCLE;
+          if (c < T_SCAN) { phase = 'scan'; pt = c / T_SCAN; scanX = pt * w; }
+          else if (c < T_SCAN + T_HOLD) { phase = 'hold'; }
+          else if (c < T_SCAN + T_HOLD + T_FADE) { phase = 'fade'; pt = (c - T_SCAN - T_HOLD) / T_FADE; }
+          else { phase = 'gap'; }
+        }
+        const model = MODELS[modelIdx];
+        const bx = model.box;
+
+        // ambient point field
+        for (const p of field) {
+          if (moving) {
+            p.x = p.bx + Math.cos(now * p.sp + p.ph) * p.amp;
+            p.y = p.by + Math.sin(now * p.sp * 1.3 + p.ph) * p.amp * 0.7;
+          } else { p.x = p.bx; p.y = p.by; }
+          let bright = pal.base * 0.55, radius = p.r;
+          if (scanX >= 0) {
+            const d = Math.abs(p.x - scanX);
+            if (d < 66) { const k = 1 - d / 66; bright += k * 0.34; radius += k * 1.2; }
+          }
+          const k = ray(p.x, p.y);
+          if (k) { bright += k * 0.4; radius += k; }
+          dot(p.x, p.y, radius, p.useB ? pal.b : pal.a, bright);
+        }
+
+        // active model — points reveal as the scan front passes them
+        for (const mp of model.pts) {
+          const sx = bx.x + mp.lx * bx.w;
+          const sy = bx.y + (1 - mp.ly) * bx.h;
+          // lively high-frequency vibration — the cloud "buzzes" softly
+          const vib = moving ? 1.5 : 0;
+          const x = sx + Math.cos(now * 0.0042 + mp.ph) * vib;
+          const y = sy + Math.sin(now * 0.0049 + mp.ph * 1.7) * vib;
+
+          let rv = 1;
+          if (phase === 'scan') rv = clamp((scanX - sx) / REVEAL_RAMP, 0, 1);
+          else if (phase === 'fade') rv = 1 - pt;
+          else if (phase === 'gap') rv = 0;
+          if (rv <= 0) continue;
+
+          let bright = pal.base * rv, radius = 1.3 + 0.5 * rv;
+          if (phase === 'scan' && scanX >= 0) {
+            const d = Math.abs(x - scanX);
+            if (d < 48) { const k = (1 - d / 48) * rv; bright += k * 0.62; radius += k * 1.7; }
+          }
+          const k = ray(x, y);
+          if (k) { bright += k * 0.5 * rv; radius += k; }
+          dot(x, y, radius, mp.useB ? pal.b : pal.a, bright);
+        }
+
+        // scan line
+        if (scanX >= 0) {
+          ctx!.save();
+          ctx!.fillStyle = `rgba(${pal.scan},0.42)`;
+          ctx!.shadowColor = `rgba(${pal.scan},0.7)`;
+          ctx!.shadowBlur = 16;
+          ctx!.fillRect(scanX - 1, 0, 2, h);
+          ctx!.restore();
+          lastStyle = '';
+        }
+
+        // cursor sensor glow
+        if (cursor.active) {
+          const g = ctx!.createRadialGradient(cursor.x, cursor.y, 0, cursor.x, cursor.y, CURSOR_R);
+          g.addColorStop(0, `rgba(${pal.ray},${pal.glow})`);
+          g.addColorStop(1, `rgba(${pal.ray},0)`);
+          ctx!.fillStyle = g;
+          ctx!.fillRect(cursor.x - CURSOR_R, cursor.y - CURSOR_R, CURSOR_R * 2, CURSOR_R * 2);
+          lastStyle = '';
+        }
+      }
+
+      function loop(now: number) {
+        render(now);
+        if (running) raf = requestAnimationFrame(loop);
+      }
+      function sync() {
+        const should = inView && visible && !reduceMotion.matches;
+        if (should && !running) {
+          running = true;
+          t0 = performance.now();
+          raf = requestAnimationFrame(loop);
+        } else if (!should && running) {
+          running = false;
+          cancelAnimationFrame(raf);
+        }
+      }
+
+      resize();
+      window.addEventListener('resize', resize, { passive: true });
+      document.addEventListener('visibilitychange', () => { visible = !document.hidden; sync(); });
+      new IntersectionObserver((e) => { inView = e[0].isIntersecting; sync(); }, { threshold: 0 }).observe(hero);
+
+      if (finePointer.matches) {
+        hero.addEventListener('pointermove', (e) => {
+          const rect = canvas.getBoundingClientRect();
+          cursor.x = e.clientX - rect.left;
+          cursor.y = e.clientY - rect.top;
+          cursor.active = true;
+          if (reduceMotion.matches) render(performance.now());
+        }, { passive: true });
+        hero.addEventListener('pointerleave', () => {
+          cursor.active = false;
+          if (reduceMotion.matches) render(performance.now());
+        }, { passive: true });
+      }
+
+      const onTheme = () => { pal = palette(); if (!running) render(performance.now()); };
+      new MutationObserver(onTheme).observe(document.documentElement, {
+        attributes: true, attributeFilter: ['data-theme'],
+      });
+      window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', onTheme);
+      reduceMotion.addEventListener('change', () => { sync(); render(performance.now()); });
+
+      sync();
     })();
   </script>
 </PageLayout>

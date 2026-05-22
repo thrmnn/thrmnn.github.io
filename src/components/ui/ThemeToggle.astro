@@ -107,9 +107,5 @@
     });
   }
 
-  // Run on initial load
   initThemeToggle();
-
-  // Re-run after Astro client-side navigations (View Transitions)
-  document.addEventListener('astro:after-swap', initThemeToggle);
 </script>

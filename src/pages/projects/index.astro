@@ -21,9 +21,9 @@ const projects = (await getCollection('projects')).sort(
             title={project.data.title}
             label={project.data.label}
             metric={project.data.metric}
-            tags={project.data.tags.slice(0, 5)}
+            tags={project.data.tags}
             detail={project.data.summary}
-            href={project.data.externalLink || `/projects/${project.id}`}
+            href={`/projects/${project.id}/`}
             gradient={project.data.gradient}
             image={project.data.image}
           />

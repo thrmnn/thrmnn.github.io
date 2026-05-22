@@ -257,6 +257,51 @@ const mailto = `mailto:${author.email}`;
         return p;
       }
 
+      // Humanoid robot as a pose skeleton — keypoint joints linked by limb
+      // segments, the output of a perception / pose-estimation system.
+      function robotModel() {
+        const p: number[][] = [];
+        const J: Record<string, number[]> = {
+          head: [0.5, 0.93], neck: [0.5, 0.79], spine: [0.5, 0.6], pelvis: [0.5, 0.44],
+          ls: [0.37, 0.77], rs: [0.63, 0.77],
+          le: [0.28, 0.6], re: [0.72, 0.6],
+          lw: [0.31, 0.42], rw: [0.69, 0.42],
+          lh: [0.43, 0.44], rh: [0.57, 0.44],
+          lk: [0.41, 0.23], rk: [0.59, 0.23],
+          la: [0.40, 0.03], ra: [0.60, 0.03],
+        };
+        const bones = [
+          ['neck', 'head'], ['neck', 'spine'], ['spine', 'pelvis'],
+          ['neck', 'ls'], ['neck', 'rs'],
+          ['ls', 'le'], ['le', 'lw'], ['rs', 're'], ['re', 'rw'],
+          ['pelvis', 'lh'], ['pelvis', 'rh'],
+          ['lh', 'lk'], ['lk', 'la'], ['rh', 'rk'], ['rk', 'ra'],
+        ];
+        for (const [a, b] of bones) {
+          const [x0, y0] = J[a], [x1, y1] = J[b];
+          const n = Math.max(7, Math.round(Math.hypot(x1 - x0, y1 - y0) / 0.013));
+          for (let i = 0; i <= n; i++) {
+            const f = i / n;
+            p.push([x0 + (x1 - x0) * f, y0 + (y1 - y0) * f]);
+          }
+        }
+        for (const k in J) {
+          if (k === 'head') continue;
+          const [jx, jy] = J[k];
+          for (let a = 0; a < 11; a++) {
+            const ang = (a / 11) * Math.PI * 2;
+            p.push([jx + Math.cos(ang) * 0.015, jy + Math.sin(ang) * 0.015]);
+          }
+          p.push([jx, jy]);
+        }
+        const [hx, hy] = J.head;
+        const hw = 0.072, hh = 0.082, EDGE = 0.012;
+        for (let x = -hw; x <= hw + 1e-6; x += EDGE) { p.push([hx + x, hy - hh]); p.push([hx + x, hy + hh]); }
+        for (let y = -hh; y <= hh + 1e-6; y += EDGE) { p.push([hx - hw, hy + y]); p.push([hx + hw, hy + y]); }
+        for (let x = -hw * 0.6; x <= hw * 0.6 + 1e-6; x += EDGE) p.push([hx + x, hy + hh * 0.1]);
+        return p;
+      }
+
       function normalize(raw: number[][]) {
         let mnX = 1e9, mnY = 1e9, mxX = -1e9, mxY = -1e9;
         for (const [x, y] of raw) {
@@ -277,6 +322,7 @@ const mailto = `mailto:${author.email}`;
       const MODELS: any[] = [
         { pts: normalize(favelaModel()), aspect: 1.78, box: { x: 0, y: 0, w: 0, h: 0 } },
         { pts: normalize(treeModel()), aspect: 0.92, box: { x: 0, y: 0, w: 0, h: 0 } },
+        { pts: normalize(robotModel()), aspect: 0.5, box: { x: 0, y: 0, w: 0, h: 0 } },
       ];
 
       let w = 0, h = 0, dpr = 1;

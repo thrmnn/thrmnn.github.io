@@ -77,6 +77,13 @@
   --max-w-prose: 65ch;
   --max-w-content: 1100px;
   --max-w-wide: 1280px;
+
+  /* --- Motion system --- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-scan: cubic-bezier(0.45, 0, 0.12, 1);
+  --dur-1: 0.2s;
+  --dur-2: 0.5s;
+  --dur-3: 0.85s;
 }
 
 /* ==========================================================================
@@ -356,21 +363,35 @@
    All non-essential motion is gated behind prefers-reduced-motion: no-preference.
    ========================================================================== */
 
-/* --- Hero tag stagger --- */
-@keyframes tag-enter {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.hero-tag {
-  opacity: 1;
-}
-
+/* --- Scroll-reveal motion system ---
+   [data-reveal] elements resolve into place as they enter the viewport.
+   Gated behind .reveal-ready (set by JS) so a no-JS / failed-JS load shows
+   everything, and behind prefers-reduced-motion. --reveal-d staggers. */
 @media (prefers-reduced-motion: no-preference) {
-  .hero-tag {
+  .reveal-ready [data-reveal] {
     opacity: 0;
-    animation: tag-enter 0.5s ease-out forwards;
+    transform: translateY(22px);
+    transition:
+      opacity var(--dur-3) var(--ease-out),
+      transform var(--dur-3) var(--ease-out);
+    transition-delay: calc(var(--reveal-d, 0) * 0.075s);
   }
+  .reveal-ready [data-reveal].in-view {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- Section index — monospace data-readout label (instrument idiom) --- */
+.section-idx {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 0.6rem;
 }
 
 /* --- Hero gradient (animated only when motion is allowed) --- */

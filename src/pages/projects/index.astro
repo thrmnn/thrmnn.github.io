@@ -11,12 +11,12 @@ const projects = (await getCollection('projects')).sort(
 <PageLayout title="Projects" description="Research and engineering projects spanning perception, autonomous navigation, 3D urban intelligence, and robot learning.">
   <section class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h1 class="text-3xl font-bold text-text-primary mb-2">Projects</h1>
-      <p class="text-text-secondary mb-10 max-w-2xl">
+      <h1 class="text-3xl font-bold text-text-primary mb-2" data-reveal>Projects</h1>
+      <p class="text-text-secondary mb-10 max-w-2xl" data-reveal style="--reveal-d: 1;">
         Perception, autonomy, and 3D reconstruction — from production systems deployed on physical hardware to research prototypes across maritime, aerial, and urban domains.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => (
+        {projects.map((project, i) => (
           <ProjectCard
             title={project.data.title}
             label={project.data.label}
@@ -26,6 +26,7 @@ const projects = (await getCollection('projects')).sort(
             href={`/projects/${project.id}/`}
             gradient={project.data.gradient}
             image={project.data.image}
+            index={i % 3}
           />
         ))}
       </div>

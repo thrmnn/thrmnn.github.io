@@ -2,12 +2,17 @@
 interface Props {
   date: string;
   text: string;
+  index?: number;
 }
 
-const { date, text } = Astro.props;
+const { date, text, index = 0 } = Astro.props;
 ---
 
-<div class="flex gap-4 items-baseline py-3 border-b border-border last:border-b-0">
+<div
+  class="flex gap-4 items-baseline py-3 border-b border-border last:border-b-0"
+  data-reveal
+  style={`--reveal-d: ${index}`}
+>
   <span class="shrink-0 text-xs font-semibold text-text-muted uppercase tracking-wide min-w-[5rem]">
     {date}
   </span>

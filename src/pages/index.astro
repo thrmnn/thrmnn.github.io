@@ -28,20 +28,25 @@ const mailto = `mailto:${author.email}`;
       <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-4">
         {heroTags.map((tag, i) => (
           <span
-            class="hero-tag text-xs text-text-secondary uppercase tracking-wider px-2 py-1 sm:px-3 rounded-full border"
-            style={`font-family: var(--font-display); border-color: rgba(255,255,255,0.14); animation-delay: ${i * 0.12}s;`}
+            class="text-xs text-text-secondary uppercase tracking-wider px-2 py-1 sm:px-3 rounded-full border"
+            data-reveal
+            style={`font-family: var(--font-display); border-color: rgba(255,255,255,0.14); --reveal-d: ${i};`}
           >
             {tag}
           </span>
         ))}
       </div>
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-text-primary tracking-tight" style="font-family: var(--font-display);">
+      <h1
+        class="text-4xl sm:text-5xl lg:text-6xl font-bold text-text-primary tracking-tight"
+        data-reveal
+        style="font-family: var(--font-display); --reveal-d: 3;"
+      >
         {author.name}
       </h1>
-      <p class="mt-6 text-lg text-text-secondary max-w-xl mx-auto">
+      <p class="mt-6 text-lg text-text-secondary max-w-xl mx-auto" data-reveal style="--reveal-d: 4;">
         Robotics engineer building perception and autonomy systems that ship to the real world. Currently at MIT Senseable City Lab.
       </p>
-      <div class="mt-10 flex items-center justify-center gap-4 flex-wrap">
+      <div class="mt-10 flex items-center justify-center gap-4 flex-wrap" data-reveal style="--reveal-d: 5;">
         <Button href="/projects/">View Work</Button>
         <Button href="/resume.pdf" variant="secondary">Download CV</Button>
       </div>
@@ -50,8 +55,10 @@ const mailto = `mailto:${author.email}`;
 
   <!-- Biography -->
   <section id="about" class="py-[var(--space-section)] bg-bg-accent">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6 flex flex-col md:flex-row gap-12 items-start">
-      <div class="shrink-0 mx-auto md:mx-0">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <span class="section-idx" data-reveal>01 / Profile</span>
+      <div class="flex flex-col md:flex-row gap-12 items-start">
+      <div class="shrink-0 mx-auto md:mx-0" data-reveal style="--reveal-d: 1;">
         <div class="avatar-ring rounded-full p-[3px]">
           <img
             src="/avatar.webp"
@@ -82,7 +89,7 @@ const mailto = `mailto:${author.email}`;
           ))}
         </div>
       </div>
-      <div class="flex-1 max-w-prose">
+      <div class="flex-1 max-w-prose" data-reveal style="--reveal-d: 2;">
         {author.bio.map((paragraph) => (
           <p class="text-text-secondary leading-relaxed mb-4" set:html={paragraph} />
         ))}
@@ -90,13 +97,15 @@ const mailto = `mailto:${author.email}`;
           <Button href="/cv/" variant="secondary">Full CV</Button>
         </div>
       </div>
+      </div>
     </div>
   </section>
 
   <!-- Featured Work (promoted above Latest for recruiter-first funnel) -->
   <section id="projects" class="py-[var(--space-section)] bg-bg-secondary">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="text-3xl font-bold text-text-primary mb-8">Featured Work</h2>
+      <span class="section-idx" data-reveal>02 / Work</span>
+      <h2 class="text-3xl font-bold text-text-primary mb-8" data-reveal style="--reveal-d: 1;">Featured Work</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {featuredProjects.map((project, i) => (
           <ProjectCard
@@ -109,10 +118,11 @@ const mailto = `mailto:${author.email}`;
             image={project.data.image}
             href={`/projects/${project.id}/`}
             number={i + 1}
+            index={i}
           />
         ))}
       </div>
-      <p class="text-center mt-8">
+      <p class="text-center mt-8" data-reveal>
         <a href="/projects/" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">
           See all projects →
         </a>
@@ -123,13 +133,14 @@ const mailto = `mailto:${author.email}`;
   <!-- Latest -->
   <section id="news" class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="text-3xl font-bold text-text-primary mb-8">Latest</h2>
+      <span class="section-idx" data-reveal>03 / Latest</span>
+      <h2 class="text-3xl font-bold text-text-primary mb-8" data-reveal style="--reveal-d: 1;">Latest</h2>
       <div class="max-w-xl">
-        {newsItems.map((item) => (
-          <NewsItem date={item.date} text={item.text} />
+        {newsItems.map((item, i) => (
+          <NewsItem date={item.date} text={item.text} index={i} />
         ))}
       </div>
-      <p class="mt-6">
+      <p class="mt-6" data-reveal>
         <a href="/now/" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">
           Full timeline & what I'm doing now →
         </a>
@@ -141,11 +152,12 @@ const mailto = `mailto:${author.email}`;
   <section id="contact" class="contact-section relative py-[var(--space-section)] overflow-hidden">
     <div class="contact-bg absolute inset-0"></div>
     <div class="relative z-10 mx-auto max-w-[var(--max-w-content)] px-6 text-center">
-      <h2 class="text-3xl font-bold text-text-primary mb-4">Let's Talk</h2>
-      <p class="text-text-secondary mb-10 max-w-lg mx-auto text-lg">
+      <span class="section-idx" data-reveal>04 / Contact</span>
+      <h2 class="text-3xl font-bold text-text-primary mb-4" data-reveal style="--reveal-d: 1;">Let's Talk</h2>
+      <p class="text-text-secondary mb-10 max-w-lg mx-auto text-lg" data-reveal style="--reveal-d: 2;">
         Open to senior perception, computer vision, and robotics roles — full-time or freelance. Especially interested in autonomous vehicles, humanoid robots, and embodied AI.
       </p>
-      <div class="flex justify-center gap-3 sm:gap-5 flex-wrap">
+      <div class="flex justify-center gap-3 sm:gap-5 flex-wrap" data-reveal style="--reveal-d: 3;">
         <Button href={mailto}>
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
           E-mail

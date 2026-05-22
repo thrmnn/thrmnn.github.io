@@ -9,9 +9,10 @@ interface Props {
   gradient?: string;
   image?: string;
   number?: number;
+  index?: number;
 }
 
-const { title, label, metric, tags = [], detail, href, gradient, image, number } = Astro.props;
+const { title, label, metric, tags = [], detail, href, gradient, image, number, index = 0 } = Astro.props;
 
 const bgStyle = image
   ? `background-image: url('${image}'); background-size: cover; background-position: center;`
@@ -27,6 +28,8 @@ const visibleTags = tags.slice(0, 3);
   target={isExternal ? '_blank' : undefined}
   rel={isExternal ? 'noopener' : undefined}
   class="block group"
+  data-reveal
+  style={`--reveal-d: ${index}`}
 >
   <div class="project-card relative rounded-2xl overflow-hidden min-h-[340px] border border-border cursor-pointer transition-all duration-500 hover:border-border-hover">
 

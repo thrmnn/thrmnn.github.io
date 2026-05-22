@@ -51,8 +51,11 @@ const currentPath = Astro.url.pathname;
       <!-- Mobile hamburger label (for= works regardless of nesting) -->
       <label
         for="nav-toggle"
+        role="button"
+        tabindex="0"
         aria-label="Toggle navigation menu"
         aria-controls="mobile-menu"
+        aria-expanded="false"
         class="md:hidden cursor-pointer text-text-secondary p-2"
       >
         <!-- Hamburger icon (visible when menu closed) -->
@@ -149,3 +152,24 @@ const currentPath = Astro.url.pathname;
     100% { left: 100%; opacity: 0; }
   }
 </style>
+
+<script>
+  // Keyboard support for the checkbox-hack mobile menu: the <label> toggles
+  // on Enter/Space, and aria-expanded is kept in sync with the checkbox.
+  (() => {
+    const cb = document.getElementById('nav-toggle') as HTMLInputElement | null;
+    const label = document.querySelector('label[for="nav-toggle"]');
+    if (!cb || !label) return;
+    label.addEventListener('keydown', (e) => {
+      const ev = e as KeyboardEvent;
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        cb.checked = !cb.checked;
+        cb.dispatchEvent(new Event('change'));
+      }
+    });
+    cb.addEventListener('change', () => {
+      label.setAttribute('aria-expanded', String(cb.checked));
+    });
+  })();
+</script>

@@ -15,8 +15,9 @@ const { title, description, image, ogType, articleJsonLd } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} image={image} ogType={ogType} articleJsonLd={articleJsonLd}>
+  <a href="#main-content" class="skip-link">Skip to content</a>
   <Header />
-  <main class="pt-16">
+  <main id="main-content" class="pt-16">
     <slot />
   </main>
   <Footer />

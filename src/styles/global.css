@@ -326,6 +326,28 @@
     outline-offset: 2px;
   }
 
+  /* --- Skip-to-content link (visible only on keyboard focus) --- */
+
+  .skip-link {
+    position: fixed;
+    left: 0.75rem;
+    top: 0.75rem;
+    z-index: 100;
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: var(--color-bg-elevated);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border-hover);
+    border-radius: 0.5rem;
+    transform: translateY(-160%);
+    transition: transform 0.18s ease;
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
 } /* end @layer base */
 
 /* ==========================================================================

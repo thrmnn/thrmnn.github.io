@@ -74,6 +74,7 @@ const mailto = `mailto:${author.email}`;
               href={s.href}
               {...(s.icon !== 'email' ? { target: '_blank', rel: 'noopener' } : {})}
               class="text-text-muted hover:text-text-secondary transition-colors"
+              aria-label={s.label}
               title={s.label}
             >
               <SocialIcon type={s.icon as 'email' | 'github' | 'linkedin' | 'scholar'} />

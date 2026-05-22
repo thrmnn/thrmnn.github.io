@@ -4,12 +4,8 @@ export const newsItems = [
     text: '<strong>Open to senior roles</strong> in perception, computer vision, and robotics — full-time or freelance.',
   },
   {
-    date: 'Mar 2026',
-    text: 'Submitted our urban tree census paper to <strong>Nature Cities</strong> — 12,350 trees across São Paulo\'s informal settlements (MIT · TU Delft).',
-  },
-  {
-    date: 'Nov 2025',
-    text: 'Poster accepted at <strong>AGU Fall Meeting</strong> — LiDAR-informed 3D modeling of favelas for public health.',
+    date: 'Apr 2026',
+    text: 'Building in public — weekly progress on robot learning, following <strong>ETH Zurich</strong>\'s Robot Learning course by Oier Mees.',
   },
   {
     date: 'Jan 2025',

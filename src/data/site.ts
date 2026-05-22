@@ -1,9 +1,9 @@
 export const siteConfig = {
-  title: 'Théo Hermann',
+  title: 'Théo Alessandro Hermann',
   description:
-    'Perception & Robotics Engineer | MIT Senseable City Lab | LiDAR, Computer Vision, Autonomous Systems, PyTorch, ROS, C++',
+    'Robotics · Urban Science · What Comes Next — MIT Senseable City Lab. Perception, autonomy, 3D digital twins, edge deployment.',
   url: 'https://thrmnn.github.io',
-  author: 'Théo Hermann',
+  author: 'Théo Alessandro Hermann',
   ogImage: '/og-default.png',
   analytics: {
     plausible: {

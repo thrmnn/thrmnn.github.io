@@ -4,14 +4,14 @@ import { getCollection } from 'astro:content';
 import { siteConfig } from '../data/site';
 
 export async function GET(context: APIContext) {
-  const publications = await getCollection('publications');
+  const projects = await getCollection('projects');
 
-  const items = publications
-    .map((pub) => ({
-      title: pub.data.title,
-      description: pub.data.summary || pub.data.abstract,
-      pubDate: pub.data.date,
-      link: `/research/${pub.id}/`,
+  const items = projects
+    .map((project) => ({
+      title: project.data.title,
+      description: project.data.summary,
+      pubDate: project.data.date,
+      link: project.data.externalLink || `/projects/${project.id}/`,
     }))
     .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
 

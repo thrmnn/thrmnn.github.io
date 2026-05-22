@@ -1,11 +1,12 @@
 export const author = {
-  name: 'Théo Hermann',
+  name: 'Théo Alessandro Hermann',
+  monogram: 'T.A.H',
   role: 'Perception & Robotics Engineer',
   affiliation: 'MIT Senseable City Lab',
   email: 'thermann@mit.edu',
 
   bio: [
-    '<strong>MSc Robotics, EPFL</strong> · 4+ years building perception and autonomy systems · Python, C++, PyTorch, ROS · Shipped production on edge hardware.',
+    '<strong>MSc Robotics, EPFL</strong> · 3+ years building perception and autonomy systems · Python, C++, PyTorch, ROS · Shipped production on edge hardware.',
     'Founding member of <strong>MIT Senseable City Lab</strong> Rio — building city-scale 3D digital twins from LiDAR for public health (10-person group, 3 institutions). Previously first engineering hire at <strong>Roboat</strong> (MIT spinoff) — built the full perception stack for autonomous vessels, sub-30ms on Jetson Orin, deployed in Amsterdam.',
     'Full stack from sensor fusion to edge deployment. Open to senior <strong>perception, computer vision, and robotics</strong> roles — full-time or freelance — at companies pushing physical AI forward.',
   ],
@@ -79,7 +80,6 @@ export const author = {
     { label: 'Email', href: 'mailto:thermann@mit.edu', icon: 'email' },
     { label: 'GitHub', href: 'https://github.com/theoh-io', icon: 'github' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/theohermann-epfl/', icon: 'linkedin' },
-    { label: 'Google Scholar', href: 'https://scholar.google.com/citations?user=SYHaPDAAAAAJ&hl=en', icon: 'scholar' },
   ],
 
   languages: [

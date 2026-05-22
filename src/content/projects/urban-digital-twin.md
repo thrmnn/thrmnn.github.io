@@ -29,7 +29,7 @@ ASSETS TODO (replace or remove placeholders, then drop this comment):
   CFD wind field visualization, before/after risk-zone map
 - Quantitative gaps in copy: survey area covered, sensor count deployed, ventilation
   threshold defined, expected affected population
-- Update "## Links" below with: any preprint, demo reel, lab landing page for Brisa+
+- Update "## Links" below with: demo reel, lab landing page for Brisa+
 -->
 
 ## Overview
@@ -57,7 +57,4 @@ The project operates in close coordination with **Rio's city government and comm
 
 ## Links
 
-<!-- USER TODO: add preprint / demo reel / Brisa+ project page once public. -->
-
 - Lab: [MIT Senseable City Lab Rio](https://senseablerio.mit.edu/)
-- Conference: AGU Fall Meeting 2025 — _LiDAR-Informed 3D Modeling of Favelas for Public Health Research_

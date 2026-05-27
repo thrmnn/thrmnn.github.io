@@ -89,17 +89,37 @@ const articleJsonLd = {
         <Content />
       </article>
 
-      <!-- External link -->
-      {project.data.externalLink && (
-        <div class="mt-10">
-          <a
-            href={project.data.externalLink}
-            target="_blank"
-            rel="noopener"
-            class="inline-flex items-center gap-2 text-sm"
-          >
-            Visit project →
-          </a>
+      <!-- Links -->
+      {(project.data.externalLink || project.data.github || project.data.proprietary) && (
+        <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
+          {project.data.externalLink && (
+            <a
+              href={project.data.externalLink}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-2"
+            >
+              Visit project →
+            </a>
+          )}
+          {project.data.github && (
+            <a
+              href={project.data.github}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-2"
+            >
+              Source code →
+            </a>
+          )}
+          {project.data.proprietary && (
+            <span
+              class="inline-flex items-center gap-2 text-xs text-text-muted px-2.5 py-1 border border-border rounded-md"
+              title="Source code remains proprietary — no public repository."
+            >
+              Code: proprietary
+            </span>
+          )}
         </div>
       )}
 

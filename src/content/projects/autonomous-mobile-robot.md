@@ -2,6 +2,7 @@
 title: "Autonomous Mobile Robot Navigation — Segway Loomo"
 date: '2023-06-01T00:00:00Z'
 externalLink: 'https://www.epfl.ch/labs/vita/'
+github: 'https://github.com/thrmnn/ROS_Autonomous_Driving'
 summary: "Full autonomy stack on Segway Loomo: SLAM-based mapping, path planning, obstacle avoidance, and person following deployed in real indoor environments."
 label: "EPFL VITA Lab · 2023"
 metric: "End-to-end on physical robots · open-source ROS contribution"

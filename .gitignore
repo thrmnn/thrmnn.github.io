@@ -8,3 +8,21 @@ node_modules/
 *.key
 *.pem
 credentials/
+
+# Build / tooling artifacts
+chrome/
+lighthouse.*
+monogram-package.zip
+
+# WSL-on-Windows path leaks (Chrome / lighthouse profiles created with
+# Windows-style paths inside the WSL filesystem)
+C:\\*/
+"C:\\"*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

@@ -1,42 +1,72 @@
 ---
-title: "Hybrid MPC-RL for Autonomous Racing"
-date: '2023-12-01T00:00:00Z'
+title: 'Real-Time Hybrid Control: RL + MPC for Autonomous Systems'
+date: '2023-01-13T00:00:00Z'
 externalLink: 'https://www.epfl.ch/labs/biorob/'
-summary: "Hybrid control architecture combining Model Predictive Control with Reinforcement Learning for high-speed autonomous racing, enabling aggressive maneuvers beyond classical MPC limits."
-label: "EPFL BioRob Lab · 2023"
-metric: "Outperformed standalone MPC · faster convergence than pure RL"
-gradient: "linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 50%, #8b3a3a 100%)"
+proprietary: true
+image: '/projects/hybrid-mpc-rl-racing/tracks-snapshot.png'
+summary: 'Semester project at EPFL BioRob (Ijspeert lab) under G. Bellegarda — a switching hybrid controller that combines Reinforcement Learning and Model Predictive Control to drive a car through learned tracks faster than either approach alone.'
+label: 'EPFL BioRob · Bellegarda / Ijspeert · MA3, Fall 2022'
+metric: 'PPO + MPC switching · car dynamics · OpenAI Gym tracks'
+gradient: 'linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 50%, #8b3a3a 100%)'
 tags:
   - Model Predictive Control
   - Reinforcement Learning
-  - Motion Planning
-  - PPO
+  - Proximal Policy Optimization
+  - Actor-Critic
   - Optimal Control
-  - Python
-  - F1Tenth
+  - Value Function Approximation
+  - Curriculum Learning
+  - OpenAI Gym
 ---
 
-Hybrid control architecture combining Model Predictive Control with Reinforcement Learning for high-speed autonomous racing, enabling aggressive maneuvers beyond classical MPC limits.
+<!--
+ASSETS NOTE: this project's repository lived on a private GitLab no longer
+accessible. The technical artifact preserved is the EPFL BioRob semester
+report (rapport.pdf) plus the figure set used in the final presentation
+(2023-01). All images surfaced below were rendered for the original report
+or final presentation and are reproduced here.
+-->
 
 ## Overview
 
-As a semester research project at **EPFL's BioRob Lab**, I designed a hybrid control architecture that combines **Model Predictive Control (MPC)** with **Reinforcement Learning (RL)** for autonomous racing on the F1Tenth platform. The key insight: MPC provides strong safety guarantees and respects vehicle dynamics constraints, but is limited by the accuracy of its dynamics model and struggles with aggressive maneuvers like controlled drifting. RL can discover policies that exploit the full dynamics envelope, but lacks safety guarantees and suffers from sample-inefficient training. The hybrid approach uses MPC as a safety-constrained base controller while RL learns a residual policy that pushes performance beyond what classical control achieves alone.
+Semester project at **EPFL BioRob Lab** under [G. Bellegarda](https://gbellegarda.github.io/) and Prof. [Auke Ijspeert](https://www.epfl.ch/labs/biorob/), Fall 2022 (MA3, 10 ECTS). Title: **_Real-Time Hybrid Control: Combining Reinforcement Learning and Model Predictive Control for Autonomous Systems_**.
 
-## Technical Approach
+The core question: classical Model Predictive Control gives strong safety guarantees and respects vehicle dynamics, but it's limited by the dynamics model and struggles with aggressive maneuvers. Reinforcement Learning can discover policies that exploit the full dynamics envelope, but it's sample-inefficient and lacks safety guarantees. Can a switching controller get the best of both?
 
-The architecture combines classical optimal control with modern policy learning:
+![Switching architecture — RL when off-track, MPC when on a confident trajectory.](/projects/hybrid-mpc-rl-racing/architecture-diagram.png)
 
-- **MPC base layer** — Solves a constrained optimization problem over a receding horizon, enforcing track boundaries and vehicle dynamics limits
-- **RL residual policy** — A PPO agent (Stable-Baselines3) learns corrective actions on top of MPC outputs, optimizing for lap time while the MPC layer ensures constraint satisfaction
-- **Reward shaping** — Custom reward function balancing lap time minimization, trajectory smoothness, and track boundary penalties
-- **Simulation environment** — F1Tenth simulator with realistic tire dynamics and track geometries
+## Method
 
-The hybrid architecture significantly **accelerated RL training** by providing a strong MPC prior — the agent starts from competent driving behavior rather than random exploration, reducing training from scratch by orders of magnitude.
+### MPC layer
 
-## Role
+Receding-horizon optimal control over the car dynamics, enforcing track boundaries and physical limits.
 
-I was responsible for the **full algorithm design and implementation**, working within EPFL's autonomous racing research group. This included the MPC formulation, RL training pipeline, reward engineering, and simulation benchmarking.
+![Bicycle model used for the car dynamics.](/projects/hybrid-mpc-rl-racing/car-model.png)
 
-## Outcome
+### RL layer
 
-The hybrid controller **outperformed standalone MPC** in lap time while maintaining safety constraint satisfaction, and achieved **faster convergence than pure RL**. The system enabled aggressive driving behaviors — including controlled drifting through tight corners — that exceed the capability of classical MPC alone. This work demonstrated that combining model-based and learning-based control is a practical approach to pushing the performance frontier in autonomous racing.
+Actor-Critic with Proximal Policy Optimization (PPO), trained on OpenAI Gym track environments. Curriculum learning ramps difficulty: simple straight tracks → simple curves → composed circuits.
+
+![PPO learning curves across track difficulties.](/projects/hybrid-mpc-rl-racing/rl-learning-curves.png)
+
+### Switching controller
+
+The hybrid layer chooses between RL and MPC based on the **learned value function** from the critic — switching to MPC when the RL agent's confidence drops below a threshold (e.g. recovery from off-track), and back to RL once on a confident trajectory.
+
+![Online switching policy — value-function-driven controller selection.](/projects/hybrid-mpc-rl-racing/online-switching.png)
+
+![Value function MLP — separates high-confidence states from recovery states.](/projects/hybrid-mpc-rl-racing/mlp-value-function.png)
+
+## Results
+
+The switching controller out-laps both standalone MPC and pure-RL across the evaluated tracks. The hybrid prior accelerates learning: starting from MPC behavior, the RL agent does not have to re-discover competent driving from scratch.
+
+The full report covers methodology, alternative architectures considered (including residual-policy and reward-shaping variants), and experimental results across track geometries.
+
+## Article
+
+The full EPFL BioRob semester report is available as a PDF — see the **Source / Article** link in the project links section below.
+
+## Repository status
+
+The original code lived on a private EPFL GitLab; access lapsed after the semester closed. **No public source repository available.** The report and figures here are the authoritative record of the work.

@@ -1,14 +1,14 @@
 export const author = {
   name: 'Théo Alessandro Hermann',
   monogram: 'T.A.H',
-  role: 'Perception & Robotics Engineer',
+  role: 'Researcher & Robotics Engineer',
   affiliation: 'MIT Senseable City Lab',
   email: 'thermann@mit.edu',
 
   bio: [
-    '<strong>MSc Robotics, EPFL</strong> · 3+ years building perception and autonomy systems · Python, C++, PyTorch, ROS · Shipped production on edge hardware.',
-    'Founding member of <strong>MIT Senseable City Lab</strong> Rio — building city-scale 3D digital twins from LiDAR for public health (10-person group, 3 institutions). Previously first engineering hire at <strong>Roboat</strong> (MIT spinoff) — built the full perception stack for autonomous vessels, sub-30ms on Jetson Orin, deployed in Amsterdam.',
-    'Full stack from sensor fusion to edge deployment. Open to senior <strong>perception, computer vision, and robotics</strong> roles — full-time or freelance — at companies pushing physical AI forward.',
+    'Researcher and builder. <strong>MSc Robotics, EPFL</strong> · 3 years shipping perception and autonomy systems on edge hardware · Franco-Brazilian, trained in Switzerland.',
+    'Founding member of <strong>MIT Senseable City Lab</strong> Rio — building city-scale 3D digital twins of favelas from LiDAR for public health research (10-person group across MIT, UFMG, TU Delft). On the side, building open-source robotics software.',
+    'Previously first engineering hire at <strong>Roboat</strong> (MIT spinoff) — built the full perception stack for autonomous canal vessels, sub-30ms on Jetson Orin, deployed in Amsterdam. Open to senior <strong>perception, computer vision, and robotics</strong> roles — full-time or freelance — at companies pushing physical AI forward.',
   ],
 
   interests: [
@@ -78,7 +78,7 @@ export const author = {
 
   social: [
     { label: 'Email', href: 'mailto:thermann@mit.edu', icon: 'email' },
-    { label: 'GitHub', href: 'https://github.com/theoh-io', icon: 'github' },
+    { label: 'GitHub', href: 'https://github.com/thrmnn', icon: 'github' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/theohermann-epfl/', icon: 'linkedin' },
   ],
 

@@ -7,7 +7,7 @@ export const navLinks = [
 
 export const footerLinks = [
   { label: 'Now', href: '/now/' },
-  { label: 'GitHub', href: 'https://github.com/theoh-io', external: true },
+  { label: 'GitHub', href: 'https://github.com/thrmnn', external: true },
   { label: 'Contact', href: 'mailto:thermann@mit.edu' },
   { label: 'RSS', href: '/rss.xml' },
 ];

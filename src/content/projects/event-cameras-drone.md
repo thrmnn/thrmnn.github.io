@@ -20,8 +20,6 @@ tags:
   - C++
 ---
 
-PyTorch fusion model combining neuromorphic event cameras with visual-inertial odometry for robust 6-DOF drone state estimation during aggressive maneuvers exceeding 5g acceleration.
-
 ## Overview
 
 During a visiting research position at **IRI (CSIC-UPC, Barcelona)**, I developed a 6-DOF state estimation system that fuses neuromorphic event cameras with visual-inertial odometry (VIO) for quadrotor drones performing aggressive flight maneuvers. The core problem: conventional frame-based cameras suffer from motion blur at high angular and linear velocities, causing standard VIO pipelines to diverge during maneuvers exceeding **5g acceleration**. Event cameras — which asynchronously report per-pixel brightness changes with microsecond resolution — eliminate motion blur entirely, but require fundamentally different processing architectures.

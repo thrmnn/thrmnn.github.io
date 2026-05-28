@@ -20,19 +20,6 @@ tags:
   - Blender
 ---
 
-<!--
-ASSETS TODO (replace or remove placeholders, then drop this comment):
-- Hero image: 1200x630 of a 3D reconstruction render, CFD streamlines over a favela mesh,
-  or terrestrial LiDAR scan capture
-  → save as /public/projects/urban-digital-twin-hero.jpg
-  → set `image: /projects/urban-digital-twin-hero.jpg` in frontmatter above
-- In-body figure(s): pipeline diagram (LiDAR + aerial → mesh → CFD → risk zones),
-  CFD wind field visualization, before/after risk-zone map
-- Quantitative gaps in copy: survey area covered, sensor count deployed, ventilation
-  threshold defined, expected affected population
-- Update "## Links" below with: demo reel, lab landing page for Brisa+
--->
-
 ## Overview
 
 Founding member of **MIT Senseable City Lab** Rio (now 10 researchers across MIT, UFMG, and TU Delft). The project — **Brisa+** — fuses terrestrial LiDAR scans, aerial multispectral imagery, and digital terrain models into physics-ready 3D meshes of densely built informal settlements where conventional mapping fails. These reconstructions feed CFD simulations that model ventilation, pollutant dispersion, and pathogen spread at neighborhood scale.

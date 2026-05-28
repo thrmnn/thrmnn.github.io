@@ -19,8 +19,6 @@ tags:
   - Mobile Robotics
 ---
 
-Full autonomy stack on Segway Loomo: SLAM-based mapping, path planning, obstacle avoidance, and person following deployed in real indoor environments.
-
 ## Overview
 
 At EPFL's VITA Lab, I implemented a **complete autonomy stack** enabling Segway Loomo robots to navigate safely through crowded, dynamic indoor environments. The system covers the full perception-to-planning loop: SLAM-based mapping, A* path planning, real-time obstacle avoidance, and person-following behavior. Unlike many academic navigation projects that remain in simulation, this system was validated **end-to-end on physical robots** operating among pedestrians.

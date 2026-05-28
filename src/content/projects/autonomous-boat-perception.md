@@ -20,17 +20,6 @@ tags:
   - Edge Deployment
 ---
 
-<!--
-ASSETS TODO (replace or remove placeholders, then drop this comment):
-- Hero image: 1200x630 photo of Roboat operating in an Amsterdam canal
-  → save as /public/projects/autonomous-boat-perception-hero.jpg
-  → set `image: /projects/autonomous-boat-perception-hero.jpg` in frontmatter above
-- In-body figure: sample detection / sensor setup diagram
-  → reference inline as ![alt](/projects/autonomous-boat-perception-detections.jpg)
-- Demo video link (Roboat operational footage) — drop into "## Links" section below
-- Quantitative metrics not yet in copy: detection mAP, tracking consistency, false-positive rate
--->
-
 ## Overview
 
 As the **first engineering hire (perception)** at Roboat — a startup spun out of MIT's Senseable City Lab — I designed and built the entire perception stack from scratch for autonomous vessels navigating Amsterdam's canals. The core challenge was replacing an expensive LiDAR-only pipeline with a cost-effective, camera-first architecture while maintaining the reliability needed for real-world maritime operations.
@@ -55,7 +44,4 @@ The system was **deployed on physical vessels** operating autonomously in Amster
 
 ## Links
 
-<!-- USER TODO: replace or delete placeholders. Roboat is a closed-source startup so paper/repo may stay N/A. -->
-
 - Company: [roboat.ai](https://roboat.ai)
-- Demo footage: _coming soon_

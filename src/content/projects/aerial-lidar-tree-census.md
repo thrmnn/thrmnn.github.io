@@ -20,17 +20,6 @@ tags:
   - Remote Sensing
 ---
 
-<!--
-ASSETS TODO (replace or remove placeholders, then drop this comment):
-- Hero image: 1200x630 visual of São Paulo survey area, segmented point cloud,
-  or LAI raster overlay
-  → save as /public/projects/aerial-lidar-tree-census-hero.jpg
-  → set `image: /projects/aerial-lidar-tree-census-hero.jpg` in frontmatter above
-- In-body figure(s): pipeline diagram (LiDAR → features → ensemble → LAI),
-  sample tree segmentation, NDVI/LAI map
-- Quantitative gaps in copy: survey area in km², LAI prediction accuracy, comparison to ground survey baseline
--->
-
 ## Overview
 
 For my Master's thesis at MIT Senseable City Lab, I designed and executed a large-scale automated tree census across informal settlements in São Paulo, Brazil. The project identified and characterized **12,350 individual trees** in favela communities — environments where conventional ground-level surveys are impractical due to dense, irregular urban morphology. This is the first large-scale automated tree census of informal settlements, demonstrating that airborne remote sensing combined with machine learning can deliver city-scale ecological assessments in areas traditionally invisible to urban planning data.

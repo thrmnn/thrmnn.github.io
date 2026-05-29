@@ -1,8 +1,10 @@
 ---
 title: 'Perception Pipeline — Modern Real-Time Vision Stack'
 date: '2026-05-27T00:00:00Z'
+draft: true
 externalLink: 'https://github.com/thrmnn/perception-pipeline'
 github: 'https://github.com/thrmnn/perception-pipeline'
+image: '/projects/perception-pipeline/hero.webp'
 summary: 'Consolidated, modernized perception stack — detection, multi-object tracking, ReID, pose — replacing four years of one-off prototypes with a single modular, latency-budget-aware pipeline.'
 label: 'Open-source · in progress · 2026'
 metric: 'Modular stack · consolidates 4 years of perception work'
@@ -47,9 +49,9 @@ Public scaffold landed 2026-05-27. Implementation is sequenced:
 
 The historical record — these still run on their original dependency stacks:
 
-- [Perception-Pipeline](https://github.com/theoh-io/Perception-Pipeline) (2022) — single-person detection + tracking, method comparison
-- [ReID-Colab](https://github.com/theoh-io/ReID-Colab) (2022) — YOLO + ReID demo notebook
-- [PostureTrack](https://github.com/theoh-io/PostureTrack) (2023) — modular pose tracking, single + multi-person
+- [Perception-Pipeline](https://github.com/thrmnn/Perception-Pipeline) (2022) — single-person detection + tracking, method comparison
+- **ReID** (2022) — YOLO + ReID demo notebook · _repo under maintenance_
+- **PostureTrack** (2023) — modular pose tracking, single + multi-person · _repo under maintenance_
 - [ROS_Autonomous_Driving](https://github.com/thrmnn/ROS_Autonomous_Driving) perception module (2023) — same primitives wrapped in ROS for the Loomo robot
 
 ## Why open

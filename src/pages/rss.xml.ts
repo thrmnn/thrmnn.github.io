@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 import { siteConfig } from '../data/site';
 
 export async function GET(context: APIContext) {
-  const projects = await getCollection('projects');
+  const projects = await getCollection('projects', ({ data }) => !data.draft);
 
   const items = projects
     .map((project) => ({

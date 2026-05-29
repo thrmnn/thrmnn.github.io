@@ -14,6 +14,10 @@ chrome/
 lighthouse.*
 monogram-package.zip
 
+# Raw asset staging — drop originals here; Claude optimizes them into
+# public/projects/<slug>/ and wires the frontmatter. Not committed.
+asset-intake/
+
 # WSL-on-Windows path leaks (Chrome / lighthouse profiles created with
 # Windows-style paths inside the WSL filesystem)
 C:\\*/

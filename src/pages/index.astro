@@ -9,7 +9,7 @@ import { newsItems } from '../data/news';
 import { getCollection } from 'astro:content';
 
 const featuredProjects = (await getCollection('projects'))
-  .filter((p) => p.data.featuredOrder !== undefined)
+  .filter((p) => p.data.featuredOrder !== undefined && !p.data.draft)
   .sort((a, b) => a.data.featuredOrder! - b.data.featuredOrder!);
 
 const heroTags = ['Robotics', 'Urban Science', 'What Comes Next'];

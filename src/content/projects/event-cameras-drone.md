@@ -5,6 +5,7 @@ featured: true
 featuredOrder: 4
 externalLink: 'https://www.iri.upc.edu/'
 github: 'https://github.com/thrmnn/EVIO'
+image: '/projects/event-cameras-drone/hero.webp'
 summary: "PyTorch fusion model combining neuromorphic event cameras with visual-inertial odometry for robust 6-DOF drone state estimation during aggressive maneuvers exceeding 5g acceleration."
 label: "IRI (CSIC-UPC, Barcelona) · 2023"
 metric: "6-DOF pose estimation · >5g flight regime"

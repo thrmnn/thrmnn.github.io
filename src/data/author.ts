@@ -1,14 +1,14 @@
 export const author = {
   name: 'Théo Alessandro Hermann',
   monogram: 'T.A.H',
-  role: 'Researcher & Robotics Engineer',
-  affiliation: 'MIT Senseable City Lab',
+  role: 'Researcher & Perception Engineer',
+  affiliation: 'MIT Senseable City Lab Rio',
   email: 'thermann@mit.edu',
 
   bio: [
     'Researcher and builder. <strong>MSc Robotics, EPFL</strong> · 3 years shipping perception and autonomy systems on edge hardware · Franco-Brazilian, trained in Switzerland.',
-    'Founding member of <strong>MIT Senseable City Lab</strong> Rio — building city-scale 3D digital twins of favelas from LiDAR for public health research (10-person group across MIT, UFMG, TU Delft). On the side, building open-source robotics software.',
-    'Previously first engineering hire at <strong>Roboat</strong> (MIT spinoff) — built the full perception stack for autonomous canal vessels, sub-30ms on Jetson Orin, deployed in Amsterdam. Open to senior <strong>perception, computer vision, and robotics</strong> roles — full-time or freelance — at companies pushing physical AI forward.',
+    'Founding member of <strong>MIT Senseable City Lab Rio</strong> — building city-scale 3D digital twins of favelas from LiDAR for public health research (10-person group across MIT, UFMG, TU Delft). On the side, building open-source robotics software.',
+    'Previously first engineering hire at <strong>Roboat</strong> (MIT spinoff) — built the full perception stack for autonomous canal vessels, sub-30ms on Jetson Orin, deployed in Amsterdam. Open to senior <strong>perception, computer vision, and robotics</strong> roles at companies pushing physical AI forward.',
   ],
 
   interests: [
@@ -40,7 +40,7 @@ export const author = {
   experience: [
     {
       role: 'Research Fellow — Founding Member',
-      company: 'MIT Senseable City Lab',
+      company: 'MIT Senseable City Lab Rio',
       url: 'https://senseablerio.mit.edu/',
       period: 'Jan 2025 – Present',
       location: 'Rio de Janeiro, Brazil',

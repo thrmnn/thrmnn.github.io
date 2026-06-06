@@ -1,7 +1,6 @@
 ---
 title: "Perception Stack for Autonomous Canal Boats"
 date: '2024-08-01T00:00:00Z'
-featured: true
 featuredOrder: 3
 externalLink: 'https://roboat.ai'
 proprietary: true

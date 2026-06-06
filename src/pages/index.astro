@@ -10,7 +10,8 @@ import { getCollection } from 'astro:content';
 
 const featuredProjects = (await getCollection('projects'))
   .filter((p) => p.data.featuredOrder !== undefined && !p.data.draft)
-  .sort((a, b) => a.data.featuredOrder! - b.data.featuredOrder!);
+  .sort((a, b) => a.data.featuredOrder! - b.data.featuredOrder!)
+  .slice(0, 4);
 
 const heroTags = ['Robotics', 'Urban Science', 'What Comes Next'];
 const mailto = `mailto:${author.email}`;

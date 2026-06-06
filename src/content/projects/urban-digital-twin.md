@@ -1,13 +1,12 @@
 ---
 title: "Urban Digital Twin for Airborne Disease Modeling"
 date: '2025-01-01T00:00:00Z'
-featured: true
 featuredOrder: 1
 externalLink: 'https://senseablerio.mit.edu/'
 github: 'https://github.com/thrmnn/MorphoFavela'
 summary: "High-fidelity 3D reconstruction of Rio's favelas from terrestrial LiDAR and aerial imagery, driving CFD simulations of airborne pathogen dispersion to identify ventilation risk zones."
-label: "MIT Senseable City Lab · 2025"
-metric: "founding member · neighborhood-scale CFD"
+label: "MIT Senseable City Lab Rio · founding member · 2025"
+metric: "10 researchers · 3 institutions"
 gradient: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)"
 tags:
   - 3D Reconstruction

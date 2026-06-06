@@ -1,7 +1,6 @@
 ---
 title: "Urban Tree Census at Scale: Aerial LiDAR + ML"
 date: '2024-09-01T00:00:00Z'
-featured: true
 featuredOrder: 2
 externalLink: 'https://senseable.mit.edu/'
 github: 'https://github.com/thrmnn/LAI'

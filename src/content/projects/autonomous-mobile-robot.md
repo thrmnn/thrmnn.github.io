@@ -7,6 +7,7 @@ image: '/projects/autonomous-mobile-robot/hero-poster.jpg'
 summary: "Full autonomy stack on Segway Loomo: SLAM-based mapping, path planning, obstacle avoidance, and person following deployed in real indoor environments."
 label: "EPFL VITA Lab · 2023"
 metric: "End-to-end on physical robots · open-source ROS contribution"
+featuredOrder: 5
 gradient: "linear-gradient(135deg, #1a3a3a 0%, #2d5a5a 50%, #3a7a7a 100%)"
 tags:
   - SLAM

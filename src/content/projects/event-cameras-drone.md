@@ -1,7 +1,6 @@
 ---
 title: "Event Cameras for High-Speed Drone State Estimation"
 date: '2023-07-01T00:00:00Z'
-featured: true
 featuredOrder: 4
 externalLink: 'https://www.iri.upc.edu/'
 github: 'https://github.com/thrmnn/EVIO'

@@ -3,9 +3,14 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import ProjectCard from '../../components/ui/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 
-const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
-);
+const projects = await getCollection('projects', ({ data }) => !data.draft);
+const featured = projects
+  .filter((p) => p.data.featuredOrder !== undefined)
+  .sort((a, b) => a.data.featuredOrder! - b.data.featuredOrder!);
+const rest = projects
+  .filter((p) => p.data.featuredOrder === undefined)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const ordered = [...featured, ...rest];
 ---
 
 <PageLayout title="Projects" description="Research and engineering projects spanning perception, autonomous navigation, 3D urban intelligence, and robot learning.">
@@ -16,7 +21,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
         Perception, autonomy, and 3D reconstruction — from production systems deployed on physical hardware to research prototypes across maritime, aerial, and urban domains.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project, i) => (
+        {ordered.map((project, i) => (
           <ProjectCard
             title={project.data.title}
             label={project.data.label}
@@ -26,7 +31,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
             href={`/projects/${project.id}/`}
             gradient={project.data.gradient}
             image={project.data.image}
-            index={i % 3}
+            index={i}
           />
         ))}
       </div>

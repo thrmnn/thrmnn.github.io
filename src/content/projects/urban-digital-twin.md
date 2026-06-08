@@ -5,8 +5,8 @@ featuredOrder: 1
 externalLink: 'https://senseablerio.mit.edu/'
 github: 'https://github.com/thrmnn/MorphoFavela'
 summary: "High-fidelity 3D reconstruction of Rio's favelas from terrestrial LiDAR and aerial imagery, driving CFD simulations of airborne pathogen dispersion to identify ventilation risk zones."
-label: "MIT Senseable City Lab Rio · founding member · 2025"
-metric: "10 researchers · 3 institutions"
+label: "MIT Senseable City Lab Rio · 2025"
+metric: "first 3D twin of Rio favelas at building scale · CFD-ready"
 gradient: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)"
 tags:
   - 3D Reconstruction
@@ -21,7 +21,7 @@ tags:
 
 ## Overview
 
-Founding member of **MIT Senseable City Lab** Rio (now 10 researchers across MIT, UFMG, and TU Delft). The project — **Brisa+** — fuses terrestrial LiDAR scans, aerial multispectral imagery, and digital terrain models into physics-ready 3D meshes of densely built informal settlements where conventional mapping fails. These reconstructions feed CFD simulations that model ventilation, pollutant dispersion, and pathogen spread at neighborhood scale.
+Founding member of **MIT Senseable City Lab Rio** — researcher on the digital-twin line. The project — **Brisa+** — fuses terrestrial LiDAR scans, aerial multispectral imagery, and digital terrain models into physics-ready 3D meshes of densely built informal settlements where conventional mapping fails. These reconstructions feed CFD simulations that model ventilation, pollutant dispersion, and pathogen spread at neighborhood scale.
 
 ## Technical Pipeline
 
@@ -36,7 +36,7 @@ The reconstruction and simulation pipeline spans multiple data sources and proce
 
 ## Role
 
-I own the **3D reconstruction pipeline and CFD integration**, and coordinate across three institutions. Beyond the computational work, the project includes deploying a network of custom-built air quality sensors across target communities for ground-truth validation of the simulations.
+I work on the **3D reconstruction pipeline and CFD integration**. Beyond the computational work, the project includes deploying a network of custom-built air quality sensors across target communities for ground-truth validation of the simulations.
 
 ## Outcome
 

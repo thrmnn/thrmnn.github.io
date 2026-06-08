@@ -7,7 +7,7 @@ export const author = {
 
   bio: [
     'Researcher and builder. <strong>MSc Robotics, EPFL</strong> · 3 years shipping perception and autonomy systems on edge hardware · Franco-Brazilian, trained in Switzerland.',
-    'Founding member of <strong>MIT Senseable City Lab Rio</strong> — building city-scale 3D digital twins of favelas from LiDAR for public health research (10-person group across MIT, UFMG, TU Delft). On the side, building open-source robotics software.',
+    'Founding member of <strong>MIT Senseable City Lab Rio</strong> — researcher on the 3D digital twins of favelas line, reconstructing dense informal settlements from LiDAR for public health work. On the side, building open-source robotics software.',
     'Previously first engineering hire at <strong>Roboat</strong> (MIT spinoff) — built the full perception stack for autonomous canal vessels, sub-30ms on Jetson Orin, deployed in Amsterdam. Open to senior <strong>perception, computer vision, and robotics</strong> roles at companies pushing physical AI forward.',
   ],
 
@@ -39,13 +39,13 @@ export const author = {
 
   experience: [
     {
-      role: 'Research Fellow — Founding Member',
+      role: 'Research Fellow — Founding Member, Rio branch',
       company: 'MIT Senseable City Lab Rio',
       url: 'https://senseablerio.mit.edu/',
       period: 'Jan 2025 – Present',
       location: 'Rio de Janeiro, Brazil',
       summary:
-        'Founding member of the Rio branch (now 10 researchers, 3 institutions). Building high-fidelity 3D digital twins of favelas from terrestrial LiDAR and aerial imagery — reconstructions feed OpenFOAM CFD simulations of airborne disease transmission. Tech: Python, Blender, GeoPandas, Google Earth Engine.',
+        'Researcher on the urban-digital-twin line — high-fidelity 3D reconstructions of favelas from terrestrial LiDAR and aerial imagery, feeding OpenFOAM CFD simulations of airborne disease transmission. Tech: Python, Blender, GeoPandas, Google Earth Engine.',
     },
     {
       role: 'Perception Engineer — First Engineering Hire',

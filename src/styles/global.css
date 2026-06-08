@@ -451,32 +451,29 @@
   -webkit-mask-image: radial-gradient(ellipse 78% 70% at 50% 48%, black 35%, transparent 92%);
 }
 
-/* --- Hero spotlight behind text --- */
+/* --- Hero spotlight behind text (softened so the LiDAR scan owns the visual budget) --- */
 .hero-spotlight {
   background: radial-gradient(
-    ellipse 50% 40% at 50% 48%,
-    rgba(59, 130, 246, 0.08) 0%,
-    rgba(99, 102, 241, 0.04) 40%,
-    transparent 70%
+    ellipse 45% 35% at 50% 50%,
+    rgba(59, 130, 246, 0.05) 0%,
+    transparent 75%
   );
 }
 
 [data-theme="light"] .hero-spotlight {
   background: radial-gradient(
-    ellipse 50% 40% at 50% 48%,
-    rgba(59, 130, 246, 0.12) 0%,
-    rgba(99, 102, 241, 0.06) 40%,
-    transparent 70%
+    ellipse 45% 35% at 50% 50%,
+    rgba(59, 130, 246, 0.08) 0%,
+    transparent 75%
   );
 }
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) .hero-spotlight {
     background: radial-gradient(
-      ellipse 50% 40% at 50% 48%,
-      rgba(59, 130, 246, 0.12) 0%,
-      rgba(99, 102, 241, 0.06) 40%,
-      transparent 70%
+      ellipse 45% 35% at 50% 50%,
+      rgba(59, 130, 246, 0.08) 0%,
+      transparent 75%
     );
   }
 }

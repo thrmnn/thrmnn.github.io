@@ -11,16 +11,14 @@ const routeReadouts: Record<string, string> = {
   '/': 'home',
   '/projects': 'work',
   '/consulting': 'consulting',
-  '/now': 'now',
-  '/cv': 'profile',
+  '/now': 'signal',
+  '/cv': 'dossier',
 };
 const seg = '/' + (currentPath.split('/').filter(Boolean)[0] ?? '');
 const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.replace('/', '') || 'home');
 ---
 
-<header class="site-header" data-header>
-  <input type="checkbox" id="nav-toggle" class="hidden peer" aria-hidden="true" tabindex="-1" />
-
+<header class="site-header" data-header data-open="false">
   <div class="header-inner">
     <!-- Left: monogram + live scan readout -->
     <div class="header-left">
@@ -34,9 +32,9 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
         </span>
       </a>
       <span class="header-rule" aria-hidden="true"></span>
-      <span class="header-readout" aria-hidden="true">
-        <span class="readout-tick">&#9656;</span>
-        <span data-readout>{initialReadout}</span>
+      <span class="header-readout">
+        <span class="readout-tick" aria-hidden="true">&#9656;</span>
+        <span data-readout aria-hidden="true">{initialReadout}</span>
       </span>
     </div>
 
@@ -60,14 +58,13 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
     <!-- Controls -->
     <div class="header-controls">
       <ThemeToggle />
-      <label
-        for="nav-toggle"
-        role="button"
-        tabindex="0"
-        aria-label="Toggle navigation menu"
+      <button
+        type="button"
+        id="nav-toggle-btn"
+        class="nav-burger"
         aria-controls="mobile-menu"
         aria-expanded="false"
-        class="nav-burger"
+        aria-label="Toggle navigation"
       >
         <svg class="burger-open" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -75,7 +72,7 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
         <svg class="burger-close" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
-      </label>
+      </button>
     </div>
   </div>
 
@@ -164,7 +161,12 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
   [data-readout] {
     display: inline-block;
     color: var(--color-text-secondary);
-    transition: color var(--dur-1) var(--ease-out), opacity 140ms var(--ease-out), transform 140ms var(--ease-out);
+    transition: color var(--dur-1) var(--ease-out), opacity 90ms var(--ease-out), transform 90ms var(--ease-out);
+  }
+  .header-readout [data-readout].swapping {
+    opacity: 0.25;
+    transform: translateX(2px);
+    transition: opacity 90ms var(--ease-out), transform 90ms var(--ease-out);
   }
   @keyframes readout-pulse {
     0%, 100% { opacity: 0.4; }
@@ -207,8 +209,10 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
     color: var(--color-text-secondary);
   }
   .nav-link:hover::before {
-    opacity: 0.5;
-    transform: scale(1);
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--color-accent);
+    opacity: 0.85;
+    transform: scale(0.9);
   }
   .nav-link[aria-current='page'] {
     color: var(--color-text-primary);
@@ -240,9 +244,19 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
     left: 0;
     bottom: -1px;
     height: 1px;
-    width: calc(var(--progress, 0) * 100%);
-    background: linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 60%, transparent), var(--color-accent));
-    box-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 45%, transparent);
+    width: 100%;
+    transform: scaleX(var(--progress, 0));
+    transform-origin: left center;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-accent) 0%, transparent) 0%,
+      color-mix(in srgb, var(--color-accent) 70%, transparent) 40%,
+      var(--color-accent) 100%
+    );
+    box-shadow: 0 0 6px color-mix(in srgb, var(--color-accent) 45%, transparent),
+      0 0 12px color-mix(in srgb, var(--color-accent) 25%, transparent);
+    contain: strict;
+    will-change: transform;
   }
 
   /* Burger */
@@ -256,6 +270,10 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
     align-items: center;
     justify-content: center;
     margin-right: -0.35rem;
+    background: transparent;
+    border: 0;
+    appearance: none;
+    -webkit-appearance: none;
   }
   .nav-burger svg { width: 1.35rem; height: 1.35rem; display: block; }
   .nav-burger:focus-visible {
@@ -264,8 +282,8 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
     border-radius: 4px;
   }
   .burger-close { display: none; }
-  #nav-toggle:checked ~ .header-inner .nav-burger .burger-open { display: none; }
-  #nav-toggle:checked ~ .header-inner .nav-burger .burger-close { display: block; }
+  .site-header[data-open="true"] .nav-burger .burger-open { display: none; }
+  .site-header[data-open="true"] .nav-burger .burger-close { display: block; }
 
   /* Mobile menu */
   .mobile-menu {
@@ -274,7 +292,7 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
     background-color: color-mix(in srgb, var(--color-bg-primary) 96%, transparent);
     backdrop-filter: blur(12px);
   }
-  #nav-toggle:checked ~ .mobile-menu { display: block; }
+  .site-header[data-open="true"] .mobile-menu { display: block; }
   .mobile-menu ul {
     padding: 1rem 1.5rem 1.25rem;
     display: flex;
@@ -295,14 +313,15 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
       display: flex;
       align-items: center;
       font-size: 0.9rem;
+      padding-left: 0.95rem;
     }
     .mobile-menu .nav-link[aria-current='page'] {
       color: var(--color-text-primary);
-      padding-left: 0.65rem;
-      border-left: 2px solid var(--color-accent);
     }
     .mobile-menu .nav-link[aria-current='page']::before {
-      display: none;
+      left: 0;
+      opacity: 1;
+      transform: scale(1.4);
     }
   }
 
@@ -385,34 +404,68 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
     );
     update();
 
+    const routeReadouts: Record<string, string> = {
+      projects: 'work', consulting: 'consulting', now: 'signal', cv: 'dossier',
+    };
+
     // Live section readout
-    const readout = header.querySelector('[data-readout]');
+    const readout = header.querySelector('[data-readout]') as HTMLElement | null;
     if (readout) {
       const labels: Record<string, string> = {
-        home: 'home', about: 'bio', projects: 'work', news: 'news', contact: 'contact',
+        home: 'home', about: 'bio', projects: 'work', news: 'signal', contact: 'channel',
       };
       const sections = document.querySelectorAll('main section[id]');
       if (window.location.pathname === '/' && sections.length) {
+        let pendingId: string | null = null;
+        let pendingTimer: number | null = null;
+        let lastSwapAt = 0;
+        let scanLock = false;
+        let sectionLabel = 'home';
+        const applySwap = (next: string) => {
+          if (readout.textContent === next) return;
+          const now = performance.now();
+          if (now - lastSwapAt < 120) return;
+          lastSwapAt = now;
+          const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (reduced) {
+            readout.textContent = next;
+            return;
+          }
+          readout.classList.add('swapping');
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            readout.textContent = next;
+            readout.classList.remove('swapping');
+          }));
+        };
+        const atHeroTop = () => window.scrollY < 24;
+        window.addEventListener('hero:model', (e) => {
+          if (!atHeroTop()) return;
+          scanLock = true;
+          if (pendingTimer !== null) { window.clearTimeout(pendingTimer); pendingTimer = null; }
+          applySwap(`scan · ${(e as CustomEvent).detail}`);
+        });
+        window.addEventListener('hero:settled', () => {
+          scanLock = false;
+          applySwap(sectionLabel);
+        });
         const io = new IntersectionObserver(
           (entries) => {
             for (const e of entries) {
               if (e.isIntersecting) {
                 const id = (e.target as HTMLElement).id;
                 const next = labels[id] || id;
-                if (readout.textContent !== next) {
-                  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                  if (reduced) {
-                    readout.textContent = next;
-                  } else {
-                    (readout as HTMLElement).style.opacity = '0.25';
-                    (readout as HTMLElement).style.transform = 'translateX(2px)';
-                    setTimeout(() => {
-                      readout.textContent = next;
-                      (readout as HTMLElement).style.opacity = '';
-                      (readout as HTMLElement).style.transform = '';
-                    }, 90);
-                  }
+                sectionLabel = next;
+                if (scanLock) {
+                  scanLock = false;
+                  if (pendingTimer !== null) { window.clearTimeout(pendingTimer); pendingTimer = null; }
+                  pendingId = next;
+                  applySwap(next);
+                  continue;
                 }
+                if (pendingId === next) continue;
+                pendingId = next;
+                if (pendingTimer !== null) window.clearTimeout(pendingTimer);
+                pendingTimer = window.setTimeout(() => { applySwap(next); }, 400);
               }
             }
           },
@@ -420,59 +473,41 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
         );
         sections.forEach((s) => io.observe(s));
       } else {
-        const routeReadouts: Record<string, string> = {
-          projects: 'work', consulting: 'consulting', now: 'now', cv: 'profile',
-        };
         const seg = window.location.pathname.split('/').filter(Boolean)[0];
         readout.textContent = seg ? (routeReadouts[seg] ?? seg) : 'home';
       }
     }
 
-    // Mobile-menu keyboard support
-    const cb = document.getElementById('nav-toggle') as HTMLInputElement | null;
-    const burger = header.querySelector('label[for="nav-toggle"]');
+    const burger = document.getElementById('nav-toggle-btn') as HTMLButtonElement | null;
     const mobileMenu = document.getElementById('mobile-menu');
     if (mobileMenu) mobileMenu.setAttribute('inert', '');
-    if (cb && burger && mobileMenu) {
-      burger.addEventListener('keydown', (e) => {
-        const ev = e as KeyboardEvent;
-        if (ev.key === 'Enter' || ev.key === ' ') {
-          ev.preventDefault();
-          cb.checked = !cb.checked;
-          cb.dispatchEvent(new Event('change'));
-        }
-      });
+    if (burger && mobileMenu) {
       const backgroundEls = (): HTMLElement[] =>
         Array.from(document.querySelectorAll('main, footer')) as HTMLElement[];
-      cb.addEventListener('change', () => {
-        burger.setAttribute('aria-expanded', String(cb.checked));
-        mobileMenu.toggleAttribute('inert', !cb.checked);
-        for (const el of backgroundEls()) el.toggleAttribute('inert', cb.checked);
-        if (cb.checked) {
+      const setOpen = (open: boolean) => {
+        header!.setAttribute('data-open', String(open));
+        burger.setAttribute('aria-expanded', String(open));
+        mobileMenu.toggleAttribute('inert', !open);
+        for (const el of backgroundEls()) el.toggleAttribute('inert', open);
+        if (open) {
           requestAnimationFrame(() => (mobileMenu.querySelector('a') as HTMLElement | null)?.focus());
         }
-      });
+      };
+      const isOpen = () => header!.getAttribute('data-open') === 'true';
+      burger.addEventListener('click', () => setOpen(!isOpen()));
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && cb.checked) {
-          cb.checked = false;
-          cb.dispatchEvent(new Event('change'));
-          (burger as HTMLElement).focus();
+        if (e.key === 'Escape' && isOpen()) {
+          setOpen(false);
+          burger.focus();
         }
       });
       document.addEventListener('click', (e) => {
-        if (!cb.checked) return;
-        const t = e.target as Node;
-        if (!mobileMenu.contains(t) && !(burger as HTMLElement).contains(t)) {
-          cb.checked = false;
-          cb.dispatchEvent(new Event('change'));
-        }
+        if (!isOpen()) return;
+        if (!header!.contains(e.target as Node)) setOpen(false);
       });
       mobileMenu.addEventListener('click', (e) => {
         const a = (e.target as HTMLElement).closest('a');
-        if (a && mobileMenu.contains(a) && cb.checked) {
-          cb.checked = false;
-          cb.dispatchEvent(new Event('change'));
-        }
+        if (a && mobileMenu.contains(a) && isOpen()) setOpen(false);
       });
     }
   })();

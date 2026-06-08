@@ -1,0 +1,157 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Button from '../components/ui/Button.astro';
+import { author } from '../data/author';
+
+const mailto = `mailto:${author.email}?subject=Consulting%20inquiry`;
+const calLink = 'https://cal.com/theo-hermann-aaa7tm';
+
+const scopes = [
+  {
+    id: 'pipeline-audit',
+    title: 'Perception pipeline audit',
+    duration: '2 weeks',
+    summary:
+      'A focused review of your existing detection / tracking / pose stack. I read the code, trace the latency budget end-to-end, identify the blockers most likely to break in production, and hand back a written report with prioritized fixes.',
+    deliverables: [
+      'Architecture and data-flow walkthrough',
+      'Per-module latency / accuracy breakdown',
+      'Top-N prioritized findings with concrete fix recommendations',
+      'Optional: 1-week implementation pass on the highest-leverage finding',
+    ],
+    evidence:
+      'Roboat camera-first stack — <30 ms inference on Jetson Orin, deployed on canal vessels in Amsterdam. EVIO event-camera VIO at IRI Barcelona.',
+  },
+  {
+    id: 'lidar-bringup',
+    title: 'LiDAR / point-cloud pipeline bring-up',
+    duration: '3–4 weeks',
+    summary:
+      'You have raw LiDAR but no production pipeline. I take you from raw scans to a usable processed product: calibration, registration, segmentation, ground extraction, and the downstream representation you actually need (mesh, occupancy grid, semantic point cloud).',
+    deliverables: [
+      'Sensor calibration + ground-truth alignment',
+      'Registration / SLAM pass',
+      'Semantic segmentation (ground, vegetation, structures)',
+      'Documented Python / ROS pipeline, reproducible from raw',
+    ],
+    evidence:
+      'MIT Senseable City Lab Rio — terrestrial LiDAR of Rio favelas fused with aerial multispectral and DTMs, feeding CFD airflow simulations. Aerial-LiDAR tree inventory work (12,350 trees, with TU Delft).',
+  },
+  {
+    id: 'embodied-mvp',
+    title: 'Embodied AI / robot perception MVP',
+    duration: '6–8 weeks',
+    summary:
+      'End-to-end detection + tracking + state-estimation prototype on real hardware. Targeted at teams who need to move from research code to a robot that runs reliably outside the lab. Scoped tightly: one platform, one task, hard latency budget.',
+    deliverables: [
+      'Hardware integration + sensor calibration on your platform',
+      'Detection + tracking + (optional) ReID / pose primitives wired up',
+      'TensorRT export and latency budget signed off',
+      'Demo loop running on robot + handover documentation',
+    ],
+    evidence:
+      'EPFL VITA Lab — full autonomy stack on Segway Loomo (SLAM + planning + obstacle avoidance + person-following), released open-source. Roboat — first engineering hire, perception lead through deployment.',
+  },
+];
+---
+
+<PageLayout
+  title="Consulting"
+  description="Short, scoped perception and robotics engagements — pipeline audits, LiDAR bring-up, embodied AI MVPs."
+>
+  <section class="py-[var(--space-section)]">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <header class="mb-12">
+        <p class="font-mono text-xs uppercase tracking-[0.18em] text-text-muted mb-3">
+          Available · ~10 hrs/wk while at MIT Senseable Rio
+        </p>
+        <h1 class="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+          Short, scoped engagements in perception &amp; robotics
+        </h1>
+        <p class="text-text-secondary max-w-2xl text-lg leading-relaxed">
+          I take a small number of focused consulting engagements alongside my research line at
+          MIT Senseable City Lab Rio — perception, computer vision, edge deployment, LiDAR
+          pipelines. The scopes below are the engagement shapes I keep coming back to. Anything
+          else, ask.
+        </p>
+      </header>
+
+      <div class="space-y-10">
+        {scopes.map((s) => (
+          <article id={s.id} class="scope-card border border-border rounded-lg p-6 md:p-8 bg-bg-elevated">
+            <div class="flex flex-wrap items-baseline justify-between gap-3 mb-4">
+              <h2 class="text-2xl font-semibold text-text-primary">{s.title}</h2>
+              <span class="font-mono text-xs uppercase tracking-[0.18em] text-accent">
+                {s.duration}
+              </span>
+            </div>
+
+            <p class="text-text-secondary leading-relaxed mb-6">{s.summary}</p>
+
+            <div class="grid gap-6 md:grid-cols-2">
+              <div>
+                <h3 class="font-mono text-xs uppercase tracking-[0.18em] text-text-muted mb-3">
+                  What you get
+                </h3>
+                <ul class="space-y-2 text-sm text-text-secondary">
+                  {s.deliverables.map((d) => (
+                    <li class="flex gap-2"><span class="text-accent mt-0.5">→</span><span>{d}</span></li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 class="font-mono text-xs uppercase tracking-[0.18em] text-text-muted mb-3">
+                  Why me
+                </h3>
+                <p class="text-sm text-text-secondary leading-relaxed" set:html={s.evidence} />
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <section class="mt-16 border-t border-border pt-12">
+        <h2 class="text-2xl font-semibold text-text-primary mb-4">How engagements work</h2>
+        <ul class="space-y-3 text-text-secondary max-w-2xl">
+          <li>
+            <strong class="text-text-primary">Discovery call (free, 20 min)</strong> — we scope the
+            problem and I tell you honestly whether it's a fit.
+          </li>
+          <li>
+            <strong class="text-text-primary">Written proposal</strong> — fixed scope, fixed
+            timeline, fixed price. You see exactly what you're buying before you commit.
+          </li>
+          <li>
+            <strong class="text-text-primary">Weekly written updates</strong> — what shipped, what's
+            next, what's at risk. No status meetings unless you want them.
+          </li>
+          <li>
+            <strong class="text-text-primary">Handover artifact</strong> — running code,
+            documentation, and a written report. Engagements end clean.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-16 border-t border-border pt-12">
+        <h2 class="text-2xl font-semibold text-text-primary mb-4">Start a conversation</h2>
+        <p class="text-text-secondary mb-8 max-w-2xl">
+          Booking is the fastest path. If your project doesn't fit the slot list, email and I'll
+          read it.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <Button href={calLink} external>Book a 20-min intro</Button>
+          <Button href={mailto} variant="secondary">E-mail</Button>
+        </div>
+      </section>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .scope-card {
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .scope-card:hover {
+    border-color: var(--color-border-hover);
+  }
+</style>

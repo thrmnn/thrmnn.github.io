@@ -8,7 +8,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "astro check && node scripts/check-build.mjs"
+    "test": "node scripts/ensure-dist.mjs && astro check && node scripts/check-build.mjs",
+    "preflight": "rm -rf dist && npm run build && npm test",
+    "install-hooks": "node scripts/install-hooks.mjs"
   },
   "type": "module",
   "dependencies": {

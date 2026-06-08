@@ -9,7 +9,7 @@ import { author } from '../../data/author';
       {footerLinks.map((link) => (
         <a
           href={link.href}
-          class="text-sm text-text-muted hover:text-text-secondary transition-colors"
+          class="text-sm text-text-muted hover:text-text-secondary transition-colors underline underline-offset-4 decoration-1 decoration-transparent hover:decoration-text-muted focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4 focus-visible:rounded-sm focus-visible:decoration-transparent"
           {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         >
           {link.label}

@@ -399,13 +399,7 @@
 }
 
 
-/* --- Hero gradient (animated only when motion is allowed) --- */
-@keyframes hero-shift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
+/* --- Hero gradient (static backdrop; the LiDAR scan carries the motion budget) --- */
 .hero-gradient {
   background: linear-gradient(
     135deg,
@@ -417,7 +411,6 @@
     #141230 80%,
     #0c0c1d 100%
   );
-  background-size: 300% 300%;
 }
 
 [data-theme="light"] .hero-gradient {
@@ -431,7 +424,6 @@
     #dce4f5 80%,
     #e8edf5 100%
   );
-  background-size: 300% 300%;
 }
 
 @media (prefers-color-scheme: light) {
@@ -446,13 +438,6 @@
       #dce4f5 80%,
       #e8edf5 100%
     );
-    background-size: 300% 300%;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .hero-gradient {
-    animation: hero-shift 20s ease infinite;
   }
 }
 

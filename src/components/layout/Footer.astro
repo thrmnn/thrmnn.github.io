@@ -1,23 +1,66 @@
 ---
 import { footerLinks } from '../../data/navigation';
 import { author } from '../../data/author';
+
+const year = new Date().getFullYear();
+const monogramLetters = author.monogram.split('');
 ---
 
 <footer class="border-t border-border mt-24">
   <div class="mx-auto max-w-[var(--max-w-content)] px-6 py-12">
-    <nav class="flex justify-center gap-6 flex-wrap mb-6">
-      {footerLinks.map((link) => (
-        <a
-          href={link.href}
-          class="text-sm text-text-muted hover:text-text-secondary transition-colors underline underline-offset-4 decoration-1 decoration-transparent hover:decoration-text-muted focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4 focus-visible:rounded-sm focus-visible:decoration-transparent"
-          {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-        >
-          {link.label}
-        </a>
-      ))}
-    </nav>
-    <p class="text-center text-xs text-text-muted">
-      &copy; {new Date().getFullYear()} {author.name}
-    </p>
+    <div class="flex items-baseline gap-4 flex-wrap mb-6">
+      <a href="/" class="footer-monogram" aria-label="Home">
+        {monogramLetters.map((char) => <span>{char}</span>)}
+      </a>
+      <span class="footer-sep" aria-hidden="true">·</span>
+      <nav class="flex-1 flex justify-center gap-6 flex-wrap min-w-0">
+        {footerLinks.map((link) => (
+          <a
+            href={link.href}
+            class="text-sm text-text-muted hover:text-text-secondary transition-colors underline underline-offset-4 decoration-1 decoration-transparent hover:decoration-text-muted focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4 focus-visible:rounded-sm focus-visible:decoration-transparent"
+            {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+      <p class="footer-copy">&copy; {year} {author.name}</p>
+    </div>
   </div>
 </footer>
+
+<style>
+  .footer-monogram {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .footer-monogram:hover,
+  .footer-monogram:focus-visible {
+    color: var(--color-text-secondary);
+    outline: none;
+  }
+  .footer-monogram > span + span::before {
+    content: '·';
+    margin: 0 0.18em;
+    opacity: 0.55;
+  }
+  .footer-sep {
+    color: var(--color-border);
+    font-family: var(--font-mono);
+  }
+  .footer-copy {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    .footer-sep { display: none; }
+    .footer-copy { width: 100%; text-align: center; }
+  }
+</style>

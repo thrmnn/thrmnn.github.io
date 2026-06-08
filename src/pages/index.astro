@@ -22,14 +22,14 @@ const mailto = `mailto:${author.email}`;
     <div class="absolute inset-0 hero-gradient">
       <canvas class="hero-canvas absolute inset-0" aria-hidden="true"></canvas>
       <div class="hero-spotlight absolute inset-0"></div>
-      <div class="hero-bottom-fade absolute inset-x-0 bottom-0 h-[40%]"></div>
+      <div class="hero-bottom-fade absolute inset-x-0 bottom-0 h-[28%] sm:h-[35%]"></div>
     </div>
     <div class="relative z-10 text-center px-6 max-w-3xl">
       <p class="font-mono text-[0.72rem] tracking-[0.22em] uppercase text-text-secondary mb-4 flex items-center justify-center flex-wrap gap-x-[0.5em]">
         <span data-reveal style="--reveal-d: 0;">robotics</span>
-        <span aria-hidden="true" data-reveal style="--reveal-d: 1;">·</span>
+        <span aria-hidden="true" data-reveal style="--reveal-d: 1;" class="text-text-muted opacity-40">·</span>
         <span data-reveal style="--reveal-d: 2;">urban science</span>
-        <span aria-hidden="true" data-reveal style="--reveal-d: 3;">·</span>
+        <span aria-hidden="true" data-reveal style="--reveal-d: 3;" class="text-text-muted opacity-40">·</span>
         <span data-reveal style="--reveal-d: 4;">what comes next</span>
       </p>
       <h1
@@ -42,9 +42,9 @@ const mailto = `mailto:${author.email}`;
       <p class="mt-6 text-lg text-text-secondary max-w-xl mx-auto" data-reveal style="--reveal-d: 6;">
         Researcher and builder. Urban science at MIT Senseable City Lab Rio — 3D digital twins of favelas for public health. Open-source robotics on the side.
       </p>
-      <div class="mt-10 flex items-center justify-center gap-4 flex-wrap" data-reveal style="--reveal-d: 7;">
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 flex-wrap" data-reveal style="--reveal-d: 7;">
         <Button href="/projects/">View Work</Button>
-        <Button href="/resume.pdf" variant="secondary">Download CV</Button>
+        <Button href="/resume.pdf" variant="secondary" download>Download Résumé</Button>
       </div>
     </div>
   </section>

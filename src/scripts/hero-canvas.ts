@@ -159,6 +159,10 @@
   let raf = 0, running = false, t0 = performance.now();
   let pausedElapsed = 0;
   let settled = false;
+  let lastModelIdx = -1;
+  let settledDispatched = false;
+  const onHome = window.location.pathname === '/';
+  const MODEL_NAMES = ['favela', 'tree', 'pose'];
   let inView = true, visible = true;
   let lastStyle = '';
   const cursor = { x: -9999, y: -9999, active: false };
@@ -283,6 +287,16 @@
         else { phase = 'gap'; }
       }
     }
+    if (onHome && moving && !reduceMotion.matches) {
+      if (modelIdx !== lastModelIdx && !settled) {
+        lastModelIdx = modelIdx;
+        window.dispatchEvent(new CustomEvent('hero:model', { detail: MODEL_NAMES[modelIdx] }));
+      }
+      if (settled && !settledDispatched) {
+        settledDispatched = true;
+        window.dispatchEvent(new CustomEvent('hero:settled'));
+      }
+    }
     const model = MODELS[modelIdx];
     const bx = model.box;
 
@@ -357,6 +371,7 @@
     if (should && !running) {
       running = true;
       t0 = performance.now() - pausedElapsed;
+      if (!settled) { settledDispatched = false; lastModelIdx = -1; }
       raf = requestAnimationFrame(loop);
     } else if (!should && running) {
       running = false;

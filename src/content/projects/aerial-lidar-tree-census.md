@@ -4,6 +4,7 @@ date: '2024-09-01T00:00:00Z'
 featuredOrder: 2
 externalLink: 'https://senseable.mit.edu/'
 github: 'https://github.com/thrmnn/LAI'
+image: '/projects/aerial-lidar-tree-census/hero.webp'
 summary: "Aerial-LiDAR + multispectral ML pipeline estimating Leaf Area Index at individual-tree resolution across Amsterdam, with the city municipality as the operational stakeholder."
 label: "MIT Senseable City Lab Amsterdam · AMS Institute · 2024"
 metric: "Individual-tree LAI · Amsterdam municipality · MSc thesis"

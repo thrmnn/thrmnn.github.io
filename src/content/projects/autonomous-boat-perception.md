@@ -4,6 +4,7 @@ date: '2024-08-01T00:00:00Z'
 featuredOrder: 3
 externalLink: 'https://roboat.ai'
 proprietary: true
+image: '/projects/autonomous-boat-perception/hero.svg'
 summary: "End-to-end perception system for autonomous canal boats achieving <30ms inference on edge hardware, deployed on physical vessels in Amsterdam."
 label: "Roboat (MIT spin-off) · 2024"
 metric: "<30ms inference · 100+ hours on-water data · deployed in Amsterdam"

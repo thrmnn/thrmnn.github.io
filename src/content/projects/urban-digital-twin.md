@@ -4,6 +4,7 @@ date: '2025-01-01T00:00:00Z'
 featuredOrder: 1
 externalLink: 'https://senseablerio.mit.edu/'
 github: 'https://github.com/thrmnn/MorphoFavela'
+image: '/projects/urban-digital-twin/hero.webp'
 summary: "High-fidelity 3D reconstruction of Rio's favelas from terrestrial LiDAR and aerial imagery, driving CFD simulations of airborne pathogen dispersion to identify ventilation risk zones."
 label: "MIT Senseable City Lab Rio · 2025"
 metric: "first 3D twin of Rio favelas at building scale · CFD-ready"

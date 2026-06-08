@@ -154,12 +154,26 @@ npm run dev            # astro dev
 npm run build          # astro build
 npm run preview        # astro preview (serves dist/)
 npm run check          # astro check — typecheck routes + content schemas
-npm test               # astro check && node scripts/check-build.mjs
-                       #   — the project's test suite. Verifies dist/ has
-                       #     expected pages/assets, no forbidden terms or
+npm test               # ensure-dist + astro check + check-build.mjs
+                       #   — the project's test suite. ensure-dist.mjs
+                       #     auto-builds when dist/ is missing or stale so
+                       #     the suite runs cold. check-build.mjs verifies:
+                       #     expected pages/assets, no forbidden terms, no
                        #     removed routes, canonical name on homepage,
-                       #     and every internal link resolves to a built file.
+                       #     every internal link resolves, per-extension
+                       #     asset budgets, and JS bundle budget (80KB
+                       #     across dist/_astro/*.js).
+npm run preflight      # rm -rf dist && build && test — the canonical
+                       #   "is this ready to push?" command. Mirrors CI.
+npm run install-hooks  # one-time per clone: installs an opt-in
+                       #   .git/hooks/pre-push that runs preflight before
+                       #   every `git push`. Bypass with --no-verify.
 ```
+
+**Run `npm run preflight` before every push.** This mirrors the CI gate
+locally and catches the same issues with the same exit code. If you've
+run `npm run install-hooks` once after cloning, this happens
+automatically on `git push`.
 
 ---
 
@@ -169,6 +183,10 @@ Two workflows under `.github/workflows/`:
 
 - **`ci.yml`** — runs on every PR + every push to non-main branches. One `verify` job: `npm ci`, `npm run build`, `npm test`. Concurrency group cancels in-progress runs on the same branch.
 - **`deploy.yml`** — runs only on push to `main`. Build → `npm test` (post-build verify) → upload artifact → `deploy-pages`. If any step fails, the deploy job never executes and the live site stays at the last successful deploy.
+
+The CI command is exactly `npm run preflight` minus the `rm -rf dist`,
+which is why running `npm run preflight` locally before push prevents
+CI noise — same checks, same exit codes.
 
 `main` should only receive merged PRs that passed CI. **Enable branch protection on `main` (manual UI step):** require `verify` to pass + require PR before merge.
 

@@ -2,7 +2,12 @@ export const navLinks = [
   { label: 'Home', href: '/' },
   { label: 'Projects', href: '/projects/' },
   { label: 'Consulting', href: '/consulting/' },
+  { label: 'Now', href: '/now/' },
   { label: 'CV', href: '/cv/' },
+];
+
+export const mobileNavLinks = [
+  ...navLinks,
   { label: 'Contact', href: '/#contact' },
 ];
 

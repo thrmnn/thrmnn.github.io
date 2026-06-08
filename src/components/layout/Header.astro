@@ -1,11 +1,21 @@
 ---
-import { navLinks } from '../../data/navigation';
+import { navLinks, mobileNavLinks } from '../../data/navigation';
 import ThemeToggle from '../ui/ThemeToggle.astro';
 
 const currentPath = Astro.url.pathname;
 const isActive = (href: string) =>
   href === currentPath ||
   (href !== '/' && !href.startsWith('/#') && currentPath.startsWith(href));
+
+const routeReadouts: Record<string, string> = {
+  '/': 'home',
+  '/projects': 'work',
+  '/consulting': 'consulting',
+  '/now': 'now',
+  '/cv': 'profile',
+};
+const seg = '/' + (currentPath.split('/').filter(Boolean)[0] ?? '');
+const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.replace('/', '') || 'home');
 ---
 
 <header class="site-header" data-header>
@@ -26,7 +36,7 @@ const isActive = (href: string) =>
       <span class="header-rule" aria-hidden="true"></span>
       <span class="header-readout" aria-hidden="true">
         <span class="readout-tick">&#9656;</span>
-        <span data-readout>home</span>
+        <span data-readout>{initialReadout}</span>
       </span>
     </div>
 
@@ -75,7 +85,7 @@ const isActive = (href: string) =>
   <!-- Mobile menu -->
   <div id="mobile-menu" class="mobile-menu">
     <ul>
-      {navLinks.map((link) => (
+      {mobileNavLinks.map((link) => (
         <li>
           <a
             href={link.href}
@@ -152,8 +162,9 @@ const isActive = (href: string) =>
     animation: readout-pulse 2.6s ease-in-out infinite;
   }
   [data-readout] {
+    display: inline-block;
     color: var(--color-text-secondary);
-    transition: color var(--dur-1) var(--ease-out);
+    transition: color var(--dur-1) var(--ease-out), opacity 140ms var(--ease-out), transform 140ms var(--ease-out);
   }
   @keyframes readout-pulse {
     0%, 100% { opacity: 0.4; }
@@ -206,6 +217,16 @@ const isActive = (href: string) =>
     opacity: 1;
     transform: scale(1);
   }
+  .nav-link:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+    border-radius: 2px;
+    color: var(--color-text-primary);
+  }
+  .nav-link:focus-visible::before {
+    opacity: 1;
+    transform: scale(1);
+  }
 
   .header-controls {
     display: flex;
@@ -218,10 +239,10 @@ const isActive = (href: string) =>
     position: absolute;
     left: 0;
     bottom: -1px;
-    height: 2px;
+    height: 1px;
     width: calc(var(--progress, 0) * 100%);
-    background: linear-gradient(90deg, var(--color-accent), #8b5cf6);
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.55);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 60%, transparent), var(--color-accent));
+    box-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 45%, transparent);
   }
 
   /* Burger */
@@ -229,9 +250,19 @@ const isActive = (href: string) =>
     display: none;
     cursor: pointer;
     color: var(--color-text-secondary);
-    padding: 0.5rem;
+    padding: 0.65rem;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    margin-right: -0.35rem;
   }
-  .nav-burger svg { width: 1.25rem; height: 1.25rem; display: block; }
+  .nav-burger svg { width: 1.35rem; height: 1.35rem; display: block; }
+  .nav-burger:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
   .burger-close { display: none; }
   #nav-toggle:checked ~ .header-inner .nav-burger .burger-open { display: none; }
   #nav-toggle:checked ~ .header-inner .nav-burger .burger-close { display: block; }
@@ -253,12 +284,26 @@ const isActive = (href: string) =>
 
   /* Responsive */
   @media (max-width: 767px) {
-    .header-nav,
-    .header-rule,
-    .header-readout {
+    .header-nav {
       display: none;
     }
-    .nav-burger { display: block; }
+    .nav-burger { display: flex; }
+    .header-readout { font-size: 0.66rem; gap: 0.3rem; }
+    .header-rule { display: inline-block; height: 0.9rem; }
+    .mobile-menu .nav-link {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+    .mobile-menu .nav-link[aria-current='page'] {
+      color: var(--color-text-primary);
+      padding-left: 0.65rem;
+      border-left: 2px solid var(--color-accent);
+    }
+    .mobile-menu .nav-link[aria-current='page']::before {
+      display: none;
+    }
   }
 
   /* --- T·A·H monogram --- */
@@ -321,12 +366,17 @@ const isActive = (href: string) =>
     if (!header) return;
 
     let ticking = false;
+    let wasCondensed = false;
     function update() {
       ticking = false;
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
-      header!.style.setProperty('--progress', String(p));
-      header!.classList.toggle('condensed', window.scrollY > 32);
+      document.documentElement.style.setProperty('--progress', String(p));
+      const condensed = window.scrollY > 32;
+      if (condensed !== wasCondensed) {
+        header!.classList.toggle('condensed', condensed);
+        wasCondensed = condensed;
+      }
     }
     window.addEventListener(
       'scroll',
@@ -339,7 +389,7 @@ const isActive = (href: string) =>
     const readout = header.querySelector('[data-readout]');
     if (readout) {
       const labels: Record<string, string> = {
-        home: 'home', about: 'profile', projects: 'work', news: 'latest', contact: 'contact',
+        home: 'home', about: 'bio', projects: 'work', news: 'news', contact: 'contact',
       };
       const sections = document.querySelectorAll('main section[id]');
       if (window.location.pathname === '/' && sections.length) {
@@ -348,7 +398,21 @@ const isActive = (href: string) =>
             for (const e of entries) {
               if (e.isIntersecting) {
                 const id = (e.target as HTMLElement).id;
-                readout.textContent = labels[id] || id;
+                const next = labels[id] || id;
+                if (readout.textContent !== next) {
+                  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                  if (reduced) {
+                    readout.textContent = next;
+                  } else {
+                    (readout as HTMLElement).style.opacity = '0.25';
+                    (readout as HTMLElement).style.transform = 'translateX(2px)';
+                    setTimeout(() => {
+                      readout.textContent = next;
+                      (readout as HTMLElement).style.opacity = '';
+                      (readout as HTMLElement).style.transform = '';
+                    }, 90);
+                  }
+                }
               }
             }
           },
@@ -356,15 +420,20 @@ const isActive = (href: string) =>
         );
         sections.forEach((s) => io.observe(s));
       } else {
+        const routeReadouts: Record<string, string> = {
+          projects: 'work', consulting: 'consulting', now: 'now', cv: 'profile',
+        };
         const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        readout.textContent = seg || 'home';
+        readout.textContent = seg ? (routeReadouts[seg] ?? seg) : 'home';
       }
     }
 
     // Mobile-menu keyboard support
     const cb = document.getElementById('nav-toggle') as HTMLInputElement | null;
     const burger = header.querySelector('label[for="nav-toggle"]');
-    if (cb && burger) {
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenu) mobileMenu.setAttribute('inert', '');
+    if (cb && burger && mobileMenu) {
       burger.addEventListener('keydown', (e) => {
         const ev = e as KeyboardEvent;
         if (ev.key === 'Enter' || ev.key === ' ') {
@@ -373,8 +442,37 @@ const isActive = (href: string) =>
           cb.dispatchEvent(new Event('change'));
         }
       });
+      const backgroundEls = (): HTMLElement[] =>
+        Array.from(document.querySelectorAll('main, footer')) as HTMLElement[];
       cb.addEventListener('change', () => {
         burger.setAttribute('aria-expanded', String(cb.checked));
+        mobileMenu.toggleAttribute('inert', !cb.checked);
+        for (const el of backgroundEls()) el.toggleAttribute('inert', cb.checked);
+        if (cb.checked) {
+          requestAnimationFrame(() => (mobileMenu.querySelector('a') as HTMLElement | null)?.focus());
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && cb.checked) {
+          cb.checked = false;
+          cb.dispatchEvent(new Event('change'));
+          (burger as HTMLElement).focus();
+        }
+      });
+      document.addEventListener('click', (e) => {
+        if (!cb.checked) return;
+        const t = e.target as Node;
+        if (!mobileMenu.contains(t) && !(burger as HTMLElement).contains(t)) {
+          cb.checked = false;
+          cb.dispatchEvent(new Event('change'));
+        }
+      });
+      mobileMenu.addEventListener('click', (e) => {
+        const a = (e.target as HTMLElement).closest('a');
+        if (a && mobileMenu.contains(a) && cb.checked) {
+          cb.checked = false;
+          cb.dispatchEvent(new Event('change'));
+        }
       });
     }
   })();

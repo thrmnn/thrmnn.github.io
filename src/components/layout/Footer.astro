@@ -17,7 +17,7 @@ const monogramLetters = author.monogram.split('');
         {footerLinks.map((link) => (
           <a
             href={link.href}
-            class="text-sm text-text-muted hover:text-text-secondary transition-colors underline underline-offset-4 decoration-1 decoration-transparent hover:decoration-text-muted focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4 focus-visible:rounded-sm focus-visible:decoration-transparent"
+            class="footer-link text-sm text-text-muted hover:text-text-secondary transition-colors py-1.5 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4 focus-visible:rounded-sm"
             {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
           >
             {link.label}
@@ -51,6 +51,32 @@ const monogramLetters = author.monogram.split('');
   .footer-sep {
     color: var(--color-border);
     font-family: var(--font-mono);
+  }
+  .footer-link {
+    position: relative;
+  }
+  .footer-link::before {
+    content: "";
+    position: absolute;
+    left: -0.7rem;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    margin-top: -2px;
+    border-radius: 50%;
+    border: 1px solid var(--color-accent);
+    background: transparent;
+    opacity: 0.25;
+    transform: scale(0.6);
+    transition: opacity var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+  }
+  .footer-link:hover::before,
+  .footer-link:focus-visible::before {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .footer-link::before { transition: none; }
   }
   .footer-copy {
     font-family: var(--font-mono);

@@ -7,7 +7,11 @@ export const navLinks = [
 ];
 
 export const mobileNavLinks = [
-  ...navLinks,
+  { label: 'Home', href: '/' },
+  { label: 'Projects', href: '/projects/' },
+  { label: 'Consulting', href: '/consulting/' },
+  { label: 'Now', href: '/now/' },
+  { label: 'CV', href: '/cv/' },
   { label: 'Contact', href: '/#contact' },
 ];
 

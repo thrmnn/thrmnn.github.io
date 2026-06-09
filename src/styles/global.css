@@ -448,29 +448,6 @@
   }
 }
 
-.hero-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin-bottom: 1rem;
-}
-.hero-index {
-  color: var(--color-accent);
-  font-weight: 600;
-}
-.hero-rule {
-  display: block;
-  width: 28px;
-  height: 1px;
-  background: color-mix(in srgb, var(--color-accent) 65%, transparent);
-}
-.hero-eyebrow-tag { color: var(--color-text-secondary); }
-
 .hero-name {
   font-family: var(--font-display);
   font-weight: 700;
@@ -489,24 +466,6 @@
   margin: 0 0 1.75rem;
 }
 .hero-positioning strong { color: var(--color-text-primary); font-weight: 600; }
-.hero-tags {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  flex-wrap: wrap;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin: 0 0 2.25rem;
-}
-.hero-tags-sep { opacity: 0.4; }
-.hero-ctas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
 
 /* --- Right-side artifact: point-cloud scrubber --- */
 .hero-artifact {
@@ -548,20 +507,14 @@
 .artifact-corners > span:nth-child(3) { bottom: -1px; left: -1px; border-right: 0; border-top: 0; }
 .artifact-corners > span:nth-child(4) { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
 .artifact-caption {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
+  text-align: center;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.16em;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-text-muted);
   margin: 0;
 }
-.artifact-sep { opacity: 0.45; }
-.artifact-mono { color: var(--color-text-muted); }
 
 /* --- Avatar ring (static gradient mark; no animation) --- */
 .avatar-ring {

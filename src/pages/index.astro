@@ -21,44 +21,28 @@ const mailto = `mailto:${author.email}`;
   <section id="home" class="hero-section">
     <div class="hero-grid">
       <div class="hero-type">
-        <p class="hero-eyebrow" data-reveal style="--reveal-d: 0;">
-          <span class="hero-index">01</span>
-          <span aria-hidden="true" class="hero-rule"></span>
-          <span class="hero-eyebrow-tag">researcher · builder</span>
-        </p>
         <h1
           class="hero-name"
           data-reveal
-          style="--reveal-d: 1;"
+          style="--reveal-d: 0;"
         >
           {author.name}
         </h1>
-        <p class="hero-positioning" data-reveal style="--reveal-d: 2;">
+        <p class="hero-positioning" data-reveal style="--reveal-d: 1;">
           Researcher and builder. Urban science at <strong>MIT Senseable City Lab Rio</strong> — 3D digital twins of favelas for public health. Open-source robotics on the side.
         </p>
-        <p class="hero-tags" data-reveal style="--reveal-d: 3;">
-          <span>robotics</span>
-          <span aria-hidden="true" class="hero-tags-sep">·</span>
-          <span>urban science</span>
-          <span aria-hidden="true" class="hero-tags-sep">·</span>
-          <span>what comes next</span>
-        </p>
       </div>
-      <div class="hero-artifact" data-reveal style="--reveal-d: 2;">
+      <div class="hero-artifact" data-reveal style="--reveal-d: 1;">
         <div class="artifact-frame">
           <canvas
             class="favela-scrubber"
-            aria-label="3000-point sample of the Vidigal favela rooftop digital terrain model. Drag to rotate."
+            aria-label="Point-cloud sample of Vidigal favela rooftops from MIT Senseable City Lab Rio. Drag to rotate."
           ></canvas>
           <div class="artifact-corners" aria-hidden="true">
             <span></span><span></span><span></span><span></span>
           </div>
         </div>
-        <p class="artifact-caption">
-          <span class="artifact-mono">vidigal · senseable rio · dtm sample</span>
-          <span aria-hidden="true" class="artifact-sep">·</span>
-          <span class="artifact-mono">n=3000</span>
-        </p>
+        <p class="artifact-caption">vidigal · senseable rio</p>
       </div>
     </div>
   </section>

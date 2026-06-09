@@ -133,8 +133,8 @@ const jsonLd = {
           }
           sessionStorage.setItem(KEY, '1');
           var dt = document.documentElement.getAttribute('data-theme');
-          var light = dt === 'light' ||
-            (!dt && window.matchMedia('(prefers-color-scheme: light)').matches);
+          var light = dt !== 'dark' &&
+            !(!dt && window.matchMedia('(prefers-color-scheme: dark)').matches);
           var o = document.createElement('div');
           o.id = 'boot-intro';
           o.setAttribute('aria-hidden', 'true');

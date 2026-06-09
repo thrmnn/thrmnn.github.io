@@ -6,38 +6,21 @@ const currentPath = Astro.url.pathname;
 const isActive = (href: string) =>
   href === currentPath ||
   (href !== '/' && !href.startsWith('/#') && currentPath.startsWith(href));
-
-const routeReadouts: Record<string, string> = {
-  '/': 'home',
-  '/projects': 'work',
-  '/consulting': 'consulting',
-  '/now': 'signal',
-  '/cv': 'dossier',
-};
-const seg = '/' + (currentPath.split('/').filter(Boolean)[0] ?? '');
-const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.replace('/', '') || 'home');
 ---
 
 <header class="site-header" data-header data-open="false">
   <div class="header-pill">
     <div class="header-inner">
-      <!-- Left: monogram + live scan readout -->
-      <div class="header-left">
-        <a href="/" aria-label="Théo Alessandro Hermann — Home" class="monogram-link">
-          <span class="monogram" aria-hidden="true">
-            <span class="mono-ch" style="--i:0">T</span>
-            <span class="mono-ch" style="--i:1">·</span>
-            <span class="mono-ch" style="--i:2">A</span>
-            <span class="mono-ch" style="--i:3">·</span>
-            <span class="mono-ch" style="--i:4">H</span>
-          </span>
-        </a>
-        <span class="header-rule" aria-hidden="true"></span>
-        <span class="header-readout">
-          <span class="readout-tick" aria-hidden="true">&#9656;</span>
-          <span data-readout aria-hidden="true">{initialReadout}</span>
+      <!-- Left: monogram (also the Home affordance) -->
+      <a href="/" aria-label="Théo Alessandro Hermann — Home" class="monogram-link">
+        <span class="monogram" aria-hidden="true">
+          <span class="mono-ch" style="--i:0">T</span>
+          <span class="mono-ch" style="--i:1">·</span>
+          <span class="mono-ch" style="--i:2">A</span>
+          <span class="mono-ch" style="--i:3">·</span>
+          <span class="mono-ch" style="--i:4">H</span>
         </span>
-      </div>
+      </a>
 
       <!-- Desktop nav -->
       <nav class="header-nav" aria-label="Primary">
@@ -115,21 +98,21 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
     pointer-events: auto;
     max-width: 880px;
     margin: 0 auto;
-    border: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
     border-radius: 999px;
-    background-color: color-mix(in srgb, var(--color-bg-primary) 42%, transparent);
+    background-color: color-mix(in srgb, var(--color-bg-primary) 60%, transparent);
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     box-shadow:
-      0 18px 46px -20px rgba(0, 0, 0, 0.7),
-      0 1px 0 0 color-mix(in srgb, #ffffff 6%, transparent) inset,
-      0 0 0 1px color-mix(in srgb, var(--color-accent) 7%, transparent) inset;
+      0 14px 32px -16px rgba(0, 0, 0, 0.18),
+      0 1px 0 0 rgba(255, 255, 255, 0.55) inset,
+      0 0 0 1px color-mix(in srgb, var(--color-accent) 9%, transparent) inset;
     transition:
       background-color var(--dur-2) var(--ease-out),
       border-color var(--dur-2) var(--ease-out),
       box-shadow var(--dur-2) var(--ease-out);
   }
-  /* Faint inner highlight at the top of the pill for "glass" depth. */
+  /* Faint inner top highlight for "glass" depth. */
   .header-pill::before {
     content: "";
     position: absolute;
@@ -138,12 +121,36 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
     border-radius: inherit;
     background: linear-gradient(
       to bottom,
-      color-mix(in srgb, #ffffff 4%, transparent) 0%,
+      rgba(255, 255, 255, 0.35) 0%,
       transparent 100%
     );
     pointer-events: none;
   }
   .site-header.condensed .header-pill {
+    background-color: color-mix(in srgb, var(--color-bg-primary) 82%, transparent);
+    border-color: var(--color-border-hover);
+    box-shadow:
+      0 8px 22px -14px rgba(0, 0, 0, 0.22),
+      0 1px 0 0 rgba(255, 255, 255, 0.5) inset,
+      0 0 0 1px color-mix(in srgb, var(--color-accent) 7%, transparent) inset;
+  }
+  /* Dark-mode tuning — deeper shadow + cooler highlight. */
+  [data-theme="dark"] .header-pill {
+    background-color: color-mix(in srgb, var(--color-bg-primary) 42%, transparent);
+    border-color: color-mix(in srgb, var(--color-border) 65%, transparent);
+    box-shadow:
+      0 18px 46px -20px rgba(0, 0, 0, 0.7),
+      0 1px 0 0 color-mix(in srgb, #ffffff 6%, transparent) inset,
+      0 0 0 1px color-mix(in srgb, var(--color-accent) 7%, transparent) inset;
+  }
+  [data-theme="dark"] .header-pill::before {
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, #ffffff 4%, transparent) 0%,
+      transparent 100%
+    );
+  }
+  [data-theme="dark"] .site-header.condensed .header-pill {
     background-color: color-mix(in srgb, var(--color-bg-primary) 75%, transparent);
     border-color: var(--color-border);
     box-shadow:
@@ -151,27 +158,24 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
       0 1px 0 0 color-mix(in srgb, #ffffff 4%, transparent) inset,
       0 0 0 1px color-mix(in srgb, var(--color-accent) 5%, transparent) inset;
   }
-  /* Light-mode tuning — pure white feels too bright; soften both states. */
-  [data-theme="light"] .header-pill {
-    background-color: color-mix(in srgb, var(--color-bg-primary) 60%, transparent);
-    border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
-    box-shadow:
-      0 14px 32px -16px rgba(0, 0, 0, 0.18),
-      0 0 0 1px color-mix(in srgb, var(--color-accent) 9%, transparent) inset;
-  }
-  [data-theme="light"] .site-header.condensed .header-pill {
-    background-color: color-mix(in srgb, var(--color-bg-primary) 82%, transparent);
-  }
-  @media (prefers-color-scheme: light) {
+  @media (prefers-color-scheme: dark) {
     :root:not([data-theme]) .header-pill {
-      background-color: color-mix(in srgb, var(--color-bg-primary) 60%, transparent);
-      border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
+      background-color: color-mix(in srgb, var(--color-bg-primary) 42%, transparent);
+      border-color: color-mix(in srgb, var(--color-border) 65%, transparent);
       box-shadow:
-        0 14px 32px -16px rgba(0, 0, 0, 0.18),
-        0 0 0 1px color-mix(in srgb, var(--color-accent) 9%, transparent) inset;
+        0 18px 46px -20px rgba(0, 0, 0, 0.7),
+        0 1px 0 0 color-mix(in srgb, #ffffff 6%, transparent) inset,
+        0 0 0 1px color-mix(in srgb, var(--color-accent) 7%, transparent) inset;
+    }
+    :root:not([data-theme]) .header-pill::before {
+      background: linear-gradient(
+        to bottom,
+        color-mix(in srgb, #ffffff 4%, transparent) 0%,
+        transparent 100%
+      );
     }
     :root:not([data-theme]) .site-header.condensed .header-pill {
-      background-color: color-mix(in srgb, var(--color-bg-primary) 82%, transparent);
+      background-color: color-mix(in srgb, var(--color-bg-primary) 75%, transparent);
     }
   }
   /* Fallback for browsers without backdrop-filter — bump the bg up so the
@@ -187,55 +191,6 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
     align-items: center;
     justify-content: space-between;
     gap: 1.25rem;
-  }
-
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    min-width: 0;
-  }
-
-  /* Divider between monogram and readout */
-  .header-rule {
-    width: 1px;
-    height: 1.15rem;
-    background: var(--color-border-hover);
-  }
-
-  /* Live scan readout */
-  .header-readout {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-transform: lowercase;
-    color: var(--color-text-muted);
-    white-space: nowrap;
-  }
-  .readout-tick {
-    color: var(--color-accent);
-    font-size: 0.6rem;
-    animation: readout-pulse 2.6s ease-in-out infinite;
-  }
-  [data-readout] {
-    display: inline-block;
-    color: var(--color-text-secondary);
-    transition: color var(--dur-1) var(--ease-out), opacity 90ms var(--ease-out), transform 90ms var(--ease-out);
-  }
-  .header-readout [data-readout].swapping {
-    opacity: 0.25;
-    transform: translateX(2px);
-    transition: opacity 90ms var(--ease-out), transform 90ms var(--ease-out);
-  }
-  @keyframes readout-pulse {
-    0%, 100% { opacity: 0.4; }
-    50%      { opacity: 1; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .readout-tick { animation: none; opacity: 1; }
   }
 
   /* Nav — monospace instrument list */
@@ -363,8 +318,6 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
       display: none;
     }
     .nav-burger { display: flex; }
-    .header-readout { font-size: 0.66rem; gap: 0.3rem; }
-    .header-rule { display: inline-block; height: 0.9rem; }
     .mobile-menu .nav-link {
       min-height: 44px;
       display: flex;
@@ -460,80 +413,6 @@ const initialReadout = routeReadouts[currentPath] ?? routeReadouts[seg] ?? (seg.
       { passive: true },
     );
     update();
-
-    const routeReadouts: Record<string, string> = {
-      projects: 'work', consulting: 'consulting', now: 'signal', cv: 'dossier',
-    };
-
-    // Live section readout
-    const readout = header.querySelector('[data-readout]') as HTMLElement | null;
-    if (readout) {
-      const labels: Record<string, string> = {
-        home: 'home', about: 'bio', projects: 'work', news: 'signal', contact: 'channel',
-      };
-      const sections = document.querySelectorAll('main section[id]');
-      if (window.location.pathname === '/' && sections.length) {
-        let pendingId: string | null = null;
-        let pendingTimer: number | null = null;
-        let lastSwapAt = 0;
-        let scanLock = false;
-        let sectionLabel = 'home';
-        const applySwap = (next: string) => {
-          if (readout.textContent === next) return;
-          const now = performance.now();
-          if (now - lastSwapAt < 120) return;
-          lastSwapAt = now;
-          const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          if (reduced) {
-            readout.textContent = next;
-            return;
-          }
-          readout.classList.add('swapping');
-          requestAnimationFrame(() => requestAnimationFrame(() => {
-            readout.textContent = next;
-            readout.classList.remove('swapping');
-          }));
-        };
-        const atHeroTop = () => window.scrollY < 24;
-        window.addEventListener('hero:model', (e) => {
-          if (!atHeroTop()) return;
-          scanLock = true;
-          if (pendingTimer !== null) { window.clearTimeout(pendingTimer); pendingTimer = null; }
-          applySwap(`scan · ${(e as CustomEvent).detail}`);
-        });
-        window.addEventListener('hero:settled', () => {
-          scanLock = false;
-          applySwap(sectionLabel);
-        });
-        const io = new IntersectionObserver(
-          (entries) => {
-            for (const e of entries) {
-              if (e.isIntersecting) {
-                const id = (e.target as HTMLElement).id;
-                const next = labels[id] || id;
-                sectionLabel = next;
-                if (scanLock) {
-                  scanLock = false;
-                  if (pendingTimer !== null) { window.clearTimeout(pendingTimer); pendingTimer = null; }
-                  pendingId = next;
-                  applySwap(next);
-                  continue;
-                }
-                if (pendingId === next) continue;
-                pendingId = next;
-                if (pendingTimer !== null) window.clearTimeout(pendingTimer);
-                pendingTimer = window.setTimeout(() => { applySwap(next); }, 400);
-              }
-            }
-          },
-          { rootMargin: '-48% 0px -48% 0px' },
-        );
-        sections.forEach((s) => io.observe(s));
-      } else {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        readout.textContent = seg ? (routeReadouts[seg] ?? seg) : 'home';
-      }
-    }
 
     const burger = document.getElementById('nav-toggle-btn') as HTMLButtonElement | null;
     const mobileMenu = document.getElementById('mobile-menu');

@@ -46,37 +46,37 @@
 </button>
 
 <style>
-  /* Default (dark mode): show sun, hide moon */
+  /* Default (light mode): show moon (click to go dark), hide sun */
   .theme-icon-sun {
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
+    opacity: 0;
+    transform: rotate(45deg) scale(0.75);
     transition: opacity 0.25s ease, transform 0.35s ease;
   }
   .theme-icon-moon {
-    opacity: 0;
-    transform: rotate(-45deg) scale(0.75);
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
     transition: opacity 0.25s ease, transform 0.35s ease;
   }
 
-  /* Light mode: show moon, hide sun */
-  :global([data-theme="light"]) .theme-icon-sun {
-    opacity: 0;
-    transform: rotate(45deg) scale(0.75);
-  }
-  :global([data-theme="light"]) .theme-icon-moon {
+  /* Dark mode: show sun, hide moon */
+  :global([data-theme="dark"]) .theme-icon-sun {
     opacity: 1;
     transform: rotate(0deg) scale(1);
   }
+  :global([data-theme="dark"]) .theme-icon-moon {
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.75);
+  }
 
-  /* Also handle OS-level light preference when no data-theme is set */
-  @media (prefers-color-scheme: light) {
+  /* Handle OS-level dark preference when no data-theme is set */
+  @media (prefers-color-scheme: dark) {
     :global(:root:not([data-theme])) .theme-icon-sun {
-      opacity: 0;
-      transform: rotate(45deg) scale(0.75);
-    }
-    :global(:root:not([data-theme])) .theme-icon-moon {
       opacity: 1;
       transform: rotate(0deg) scale(1);
+    }
+    :global(:root:not([data-theme])) .theme-icon-moon {
+      opacity: 0;
+      transform: rotate(-45deg) scale(0.75);
     }
   }
 </style>
@@ -90,10 +90,10 @@
       const html = document.documentElement;
       const current = html.getAttribute('data-theme');
 
-      // Determine the effective theme right now
+      // Determine the effective theme right now (light is default)
       const isDark =
         current === 'dark' ||
-        (!current && !window.matchMedia('(prefers-color-scheme: light)').matches);
+        (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
       const next = isDark ? 'light' : 'dark';
 

@@ -15,6 +15,14 @@ interface Scrubber {
   lastX: number;
   visible: boolean;
   rafId: number;
+  isDark: boolean;
+}
+
+function detectDark(): boolean {
+  const attr = document.documentElement.getAttribute('data-theme');
+  if (attr === 'dark') return true;
+  if (attr === 'light') return false;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
 async function loadPoints(url: string): Promise<Point[]> {
@@ -68,25 +76,51 @@ function render(s: Scrubber) {
   }
   screen.sort((a, b) => a.depth - b.depth);
 
-  for (let i = 0; i < screen.length; i++) {
-    const pt = screen[i];
-    const tDepth = (pt.depth + 1) * 0.5; // [0,1]
-    if (pt.cat === 1) {
-      // Building voxel — warm accent, slightly brighter, larger dot so structure reads.
-      const alpha = 0.45 + tDepth * 0.5;
-      const r = 255;
-      const g = 210 + Math.round(pt.h * 30);
-      const b = 130 - Math.round(pt.h * 30);
-      s.ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
-      s.ctx.fillRect(pt.sx, pt.sy, 1.9, 1.9);
-    } else {
-      // Terrain — cool blue, faded; lets the buildings sit on top visually.
-      const alpha = 0.16 + tDepth * 0.45;
-      const r = 59 + Math.round(pt.h * 60);
-      const g = 130 + Math.round(pt.h * 80);
-      const b = 246 - Math.round(pt.h * 30);
-      s.ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
-      s.ctx.fillRect(pt.sx, pt.sy, 1.4, 1.4);
+  if (s.isDark) {
+    for (let i = 0; i < screen.length; i++) {
+      const pt = screen[i];
+      const tDepth = (pt.depth + 1) * 0.5;
+      if (pt.cat === 1) {
+        // Building voxel — warm accent on dark; bright + larger dot.
+        const alpha = 0.45 + tDepth * 0.5;
+        const r = 255;
+        const g = 210 + Math.round(pt.h * 30);
+        const b = 130 - Math.round(pt.h * 30);
+        s.ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+        s.ctx.fillRect(pt.sx, pt.sy, 1.9, 1.9);
+      } else {
+        // Terrain — cool blue, faded on dark.
+        const alpha = 0.16 + tDepth * 0.45;
+        const r = 59 + Math.round(pt.h * 60);
+        const g = 130 + Math.round(pt.h * 80);
+        const b = 246 - Math.round(pt.h * 30);
+        s.ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+        s.ctx.fillRect(pt.sx, pt.sy, 1.4, 1.4);
+      }
+    }
+  } else {
+    // Light theme — invert the palette: dark slate terrain, deep amber buildings,
+    // higher alpha so the dots punch through white. Higher elevation reads warmer.
+    for (let i = 0; i < screen.length; i++) {
+      const pt = screen[i];
+      const tDepth = (pt.depth + 1) * 0.5;
+      if (pt.cat === 1) {
+        // Building — burnt-orange / amber to read clearly on near-white.
+        const alpha = 0.65 + tDepth * 0.32;
+        const r = 196 - Math.round(pt.h * 30);   // 196→166
+        const g = 86  + Math.round(pt.h * 30);   // 86→116
+        const b = 30  + Math.round(pt.h * 10);   // 30→40
+        s.ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+        s.ctx.fillRect(pt.sx, pt.sy, 1.9, 1.9);
+      } else {
+        // Terrain — deep blue-grey, lighter where elevation rises (sea→ridge).
+        const alpha = 0.32 + tDepth * 0.45;
+        const r = 60 + Math.round(pt.h * 25);
+        const g = 80 + Math.round(pt.h * 30);
+        const b = 120 - Math.round(pt.h * 20);
+        s.ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+        s.ctx.fillRect(pt.sx, pt.sy, 1.4, 1.4);
+      }
     }
   }
 }
@@ -140,10 +174,24 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
     lastX: 0,
     visible: true,
     rafId: 0,
+    isDark: detectDark(),
   };
 
   reduceMotion.addEventListener?.('change', (e) => {
     s.autoRotate = !e.matches;
+  });
+
+  // Re-read the theme whenever it changes (toggle click or OS-pref flip).
+  const themeObserver = new MutationObserver(() => {
+    s.isDark = detectDark();
+  });
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
+  });
+  const osDarkMq = window.matchMedia('(prefers-color-scheme: dark)');
+  osDarkMq.addEventListener?.('change', () => {
+    s.isDark = detectDark();
   });
 
   attachInteraction(s);

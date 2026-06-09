@@ -105,38 +105,14 @@
 
 @layer base {
 
-  /* --- Dark Mode (default) --- */
-  :root {
-    --bg-primary: #0a0a0a;
-    --bg-secondary: #111111;
-    --bg-elevated: #1a1a1a;
-    --bg-accent: #141414;
-
-    --text-primary: #f5f5f5;
-    --text-secondary: #a1a1a1;
-    --text-muted: #666666;
-
-    --accent: #3b82f6;
-    --accent-hover: #60a5fa;
-    --accent-soft: oklch(0.55 0.15 250 / 0.1);
-
-    --link: #93c5fd;
-    --link-hover: #bfdbfe;
-
-    --border: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(255, 255, 255, 0.16);
-
-    color-scheme: dark;
-  }
-
-  /* --- Light Mode (explicit toggle) ---
+  /* --- Light Mode (default) ---
      Contrast ratios vs bg-primary #fafafa (WCAG AA = 4.5:1 text, 3:1 UI):
-       text-primary  #171717  → 15.8:1 ✓
-       text-secondary #525252  →  7.4:1 ✓
-       text-muted    #6b6b6b  →  5.0:1 ✓  (was #a3a3a3 = 2.3:1 ✗)
-       accent        #2563eb  →  4.8:1 ✓
-       link          #1d4ed8  →  6.0:1 ✓  */
-  [data-theme="light"] {
+       text-primary   #171717 → 15.8:1 ✓
+       text-secondary #525252 →  7.4:1 ✓
+       text-muted     #6b6b6b →  5.0:1 ✓
+       accent         #2563eb →  4.8:1 ✓
+       link           #1d4ed8 →  6.0:1 ✓ */
+  :root {
     --bg-primary: #fafafa;
     --bg-secondary: #f5f5f5;
     --bg-elevated: #ffffff;
@@ -159,29 +135,53 @@
     color-scheme: light;
   }
 
-  /* --- Light Mode (OS preference fallback — only when no data-theme is set) --- */
-  @media (prefers-color-scheme: light) {
+  /* --- Dark Mode (explicit toggle) --- */
+  [data-theme="dark"] {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #111111;
+    --bg-elevated: #1a1a1a;
+    --bg-accent: #141414;
+
+    --text-primary: #f5f5f5;
+    --text-secondary: #a1a1a1;
+    --text-muted: #666666;
+
+    --accent: #3b82f6;
+    --accent-hover: #60a5fa;
+    --accent-soft: oklch(0.55 0.15 250 / 0.1);
+
+    --link: #93c5fd;
+    --link-hover: #bfdbfe;
+
+    --border: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.16);
+
+    color-scheme: dark;
+  }
+
+  /* --- Dark Mode (OS preference fallback — only when no data-theme is set) --- */
+  @media (prefers-color-scheme: dark) {
     :root:not([data-theme]) {
-      --bg-primary: #fafafa;
-      --bg-secondary: #f5f5f5;
-      --bg-elevated: #ffffff;
-      --bg-accent: #f0f0f0;
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #111111;
+      --bg-elevated: #1a1a1a;
+      --bg-accent: #141414;
 
-      --text-primary: #171717;
-      --text-secondary: #525252;
-      --text-muted: #6b6b6b;
+      --text-primary: #f5f5f5;
+      --text-secondary: #a1a1a1;
+      --text-muted: #666666;
 
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --accent-soft: oklch(0.55 0.15 250 / 0.08);
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-soft: oklch(0.55 0.15 250 / 0.1);
 
-      --link: #1d4ed8;
-      --link-hover: #1e40af;
+      --link: #93c5fd;
+      --link-hover: #bfdbfe;
 
-      --border: rgba(0, 0, 0, 0.12);
-      --border-hover: rgba(0, 0, 0, 0.22);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.16);
 
-      color-scheme: light;
+      color-scheme: dark;
     }
   }
 
@@ -409,26 +409,27 @@
   overflow: hidden;
 }
 .hero-section::before {
-  /* Subtle ambient backdrop. No animation; the scrubber owns motion. */
+  /* Ambient backdrop — light by default; dark variants below.
+     Pale azure wash + soft top-right accent, fades into the page background. */
   content: "";
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 50% at 70% 35%, rgba(59, 130, 246, 0.10) 0%, transparent 60%),
-    linear-gradient(180deg, #0e1230 0%, #0c0c1d 65%, var(--color-bg-primary) 100%);
+    radial-gradient(ellipse 60% 50% at 72% 30%, rgba(37, 99, 235, 0.07) 0%, transparent 60%),
+    linear-gradient(180deg, #eef2fb 0%, #f4f6fb 65%, var(--color-bg-primary) 100%);
   z-index: 0;
   pointer-events: none;
 }
-[data-theme="light"] .hero-section::before {
+[data-theme="dark"] .hero-section::before {
   background:
-    radial-gradient(ellipse 60% 50% at 70% 35%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
-    linear-gradient(180deg, #e8edf5 0%, #f0f3f9 70%, var(--color-bg-primary) 100%);
+    radial-gradient(ellipse 60% 50% at 70% 35%, rgba(59, 130, 246, 0.10) 0%, transparent 60%),
+    linear-gradient(180deg, #0e1230 0%, #0c0c1d 65%, var(--color-bg-primary) 100%);
 }
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
   :root:not([data-theme]) .hero-section::before {
     background:
-      radial-gradient(ellipse 60% 50% at 70% 35%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
-      linear-gradient(180deg, #e8edf5 0%, #f0f3f9 70%, var(--color-bg-primary) 100%);
+      radial-gradient(ellipse 60% 50% at 70% 35%, rgba(59, 130, 246, 0.10) 0%, transparent 60%),
+      linear-gradient(180deg, #0e1230 0%, #0c0c1d 65%, var(--color-bg-primary) 100%);
   }
 }
 .hero-grid {
@@ -525,20 +526,20 @@
 /* --- Contact section background --- */
 .contact-bg {
   background:
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(37, 99, 235, 0.08) 0%, transparent 70%),
+    linear-gradient(180deg, var(--color-bg-accent) 0%, #e6ecf6 50%, var(--color-bg-accent) 100%);
+}
+
+[data-theme="dark"] .contact-bg {
+  background:
     radial-gradient(ellipse 80% 60% at 50% 100%, rgba(59, 130, 246, 0.08) 0%, transparent 70%),
     linear-gradient(180deg, var(--color-bg-accent) 0%, #0d1020 50%, var(--color-bg-accent) 100%);
 }
 
-[data-theme="light"] .contact-bg {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(59, 130, 246, 0.1) 0%, transparent 70%),
-    linear-gradient(180deg, var(--color-bg-accent) 0%, #e0e7f5 50%, var(--color-bg-accent) 100%);
-}
-
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
   :root:not([data-theme]) .contact-bg {
     background:
-      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(59, 130, 246, 0.1) 0%, transparent 70%),
-      linear-gradient(180deg, var(--color-bg-accent) 0%, #e0e7f5 50%, var(--color-bg-accent) 100%);
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(59, 130, 246, 0.08) 0%, transparent 70%),
+      linear-gradient(180deg, var(--color-bg-accent) 0%, #0d1020 50%, var(--color-bg-accent) 100%);
   }
 }

@@ -83,51 +83,43 @@ const pages = [
     letter-spacing: -0.04em;
     background: linear-gradient(
       180deg,
-      rgba(245, 245, 245, 0.15) 0%,
-      rgba(59, 130, 246, 0.10) 50%,
-      rgba(245, 245, 245, 0.04) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.12);
-  }
-
-  :global([data-theme="light"]) .not-found-heading {
-    background: linear-gradient(
-      180deg,
       rgba(23, 23, 23, 0.18) 0%,
       rgba(37, 99, 235, 0.15) 50%,
       rgba(23, 23, 23, 0.05) 100%
     );
     -webkit-background-clip: text;
     background-clip: text;
+    color: transparent;
     -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.08);
   }
 
-  @media (prefers-color-scheme: light) {
+  :global([data-theme="dark"]) .not-found-heading {
+    background: linear-gradient(
+      180deg,
+      rgba(245, 245, 245, 0.15) 0%,
+      rgba(59, 130, 246, 0.10) 50%,
+      rgba(245, 245, 245, 0.04) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.12);
+  }
+
+  @media (prefers-color-scheme: dark) {
     :global(:root:not([data-theme])) .not-found-heading {
       background: linear-gradient(
         180deg,
-        rgba(23, 23, 23, 0.18) 0%,
-        rgba(37, 99, 235, 0.15) 50%,
-        rgba(23, 23, 23, 0.05) 100%
+        rgba(245, 245, 245, 0.15) 0%,
+        rgba(59, 130, 246, 0.10) 50%,
+        rgba(245, 245, 245, 0.04) 100%
       );
       -webkit-background-clip: text;
       background-clip: text;
-      -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.08);
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.12);
     }
   }
 
   .not-found-bg {
-    background: radial-gradient(
-      ellipse 60% 50% at 50% 40%,
-      rgba(59, 130, 246, 0.05) 0%,
-      transparent 70%
-    );
-  }
-
-  :global([data-theme="light"]) .not-found-bg {
     background: radial-gradient(
       ellipse 60% 50% at 50% 40%,
       rgba(59, 130, 246, 0.08) 0%,
@@ -135,26 +127,34 @@ const pages = [
     );
   }
 
+  :global([data-theme="dark"]) .not-found-bg {
+    background: radial-gradient(
+      ellipse 60% 50% at 50% 40%,
+      rgba(59, 130, 246, 0.05) 0%,
+      transparent 70%
+    );
+  }
+
   .not-found-grid {
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
     background-size: 48px 48px;
     mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 10%, transparent 60%);
     -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 10%, transparent 60%);
   }
 
-  :global([data-theme="light"]) .not-found-grid {
+  :global([data-theme="dark"]) .not-found-grid {
     background-image:
-      linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   }
 
-  @media (prefers-color-scheme: light) {
+  @media (prefers-color-scheme: dark) {
     :global(:root:not([data-theme])) .not-found-grid {
       background-image:
-        linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     }
   }
 

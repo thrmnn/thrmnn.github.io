@@ -399,94 +399,169 @@
 }
 
 
-/* --- Hero gradient (static backdrop; the LiDAR scan carries the motion budget) --- */
-.hero-gradient {
-  background: linear-gradient(
-    135deg,
-    #0c0c1d 0%,
-    #111638 20%,
-    #16143a 35%,
-    #0e2248 50%,
-    #1a1445 65%,
-    #141230 80%,
-    #0c0c1d 100%
-  );
+/* ==========================================================================
+   Hero — type-first manifesto + Vidigal point-cloud artifact
+   Mobile: type stacks, scrubber below.  ≥lg: two-column grid.
+   ========================================================================== */
+.hero-section {
+  position: relative;
+  padding: clamp(3.5rem, 8vw, 6rem) 1.5rem clamp(2.5rem, 6vw, 5rem);
+  overflow: hidden;
 }
-
-[data-theme="light"] .hero-gradient {
-  background: linear-gradient(
-    135deg,
-    #e8edf5 0%,
-    #dce4f5 20%,
-    #d4ddf2 35%,
-    #cdd8f0 50%,
-    #d4ddf2 65%,
-    #dce4f5 80%,
-    #e8edf5 100%
-  );
+.hero-section::before {
+  /* Subtle ambient backdrop. No animation; the scrubber owns motion. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 35%, rgba(59, 130, 246, 0.10) 0%, transparent 60%),
+    linear-gradient(180deg, #0e1230 0%, #0c0c1d 65%, var(--color-bg-primary) 100%);
+  z-index: 0;
+  pointer-events: none;
 }
-
+[data-theme="light"] .hero-section::before {
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 35%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #e8edf5 0%, #f0f3f9 70%, var(--color-bg-primary) 100%);
+}
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme]) .hero-gradient {
-    background: linear-gradient(
-      135deg,
-      #e8edf5 0%,
-      #dce4f5 20%,
-      #d4ddf2 35%,
-      #cdd8f0 50%,
-      #d4ddf2 65%,
-      #dce4f5 80%,
-      #e8edf5 100%
-    );
+  :root:not([data-theme]) .hero-section::before {
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 35%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
+      linear-gradient(180deg, #e8edf5 0%, #f0f3f9 70%, var(--color-bg-primary) 100%);
+  }
+}
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max-w-wide);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 3.5rem;
   }
 }
 
-/* --- Hero LiDAR canvas (point field + scan sweep + sensor cursor) --- */
-.hero-canvas {
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+.hero-index {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+.hero-rule {
   display: block;
+  width: 28px;
+  height: 1px;
+  background: color-mix(in srgb, var(--color-accent) 65%, transparent);
+}
+.hero-eyebrow-tag { color: var(--color-text-secondary); }
+
+.hero-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 6.2vw, 4.25rem);
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  color: var(--color-text-primary);
+  margin: 0 0 1.5rem;
+  text-wrap: balance;
+}
+.hero-positioning {
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  max-width: 36rem;
+  margin: 0 0 1.75rem;
+}
+.hero-positioning strong { color: var(--color-text-primary); font-weight: 600; }
+.hero-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0 0 2.25rem;
+}
+.hero-tags-sep { opacity: 0.4; }
+.hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* --- Right-side artifact: point-cloud scrubber --- */
+.hero-artifact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-width: 0;
+}
+.artifact-frame {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  max-width: 460px;
+  width: 100%;
+  margin: 0 auto;
+  border: 1px solid var(--color-border);
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 55%, rgba(59, 130, 246, 0.05) 0%, transparent 75%),
+    color-mix(in srgb, var(--color-bg-elevated) 60%, transparent);
+  border-radius: 4px;
+}
+.favela-scrubber {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
-  mask-image: radial-gradient(ellipse 78% 70% at 50% 48%, black 35%, transparent 92%);
-  -webkit-mask-image: radial-gradient(ellipse 78% 70% at 50% 48%, black 35%, transparent 92%);
+  cursor: grab;
+  touch-action: none;
 }
-
-/* --- Hero spotlight behind text (softened so the LiDAR scan owns the visual budget) --- */
-.hero-spotlight {
-  background: radial-gradient(
-    ellipse 45% 35% at 50% 50%,
-    rgba(59, 130, 246, 0.05) 0%,
-    transparent 75%
-  );
+.favela-scrubber.is-dragging { cursor: grabbing; }
+.artifact-corners > span {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--color-accent);
+  opacity: 0.55;
 }
-
-[data-theme="light"] .hero-spotlight {
-  background: radial-gradient(
-    ellipse 45% 35% at 50% 50%,
-    rgba(59, 130, 246, 0.08) 0%,
-    transparent 75%
-  );
+.artifact-corners > span:nth-child(1) { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+.artifact-corners > span:nth-child(2) { top: -1px; right: -1px; border-left: 0; border-bottom: 0; }
+.artifact-corners > span:nth-child(3) { bottom: -1px; left: -1px; border-right: 0; border-top: 0; }
+.artifact-corners > span:nth-child(4) { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+.artifact-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0;
 }
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) .hero-spotlight {
-    background: radial-gradient(
-      ellipse 45% 35% at 50% 50%,
-      rgba(59, 130, 246, 0.08) 0%,
-      transparent 75%
-    );
-  }
-}
-
-/* --- Bottom fade from hero into page background --- */
-.hero-bottom-fade {
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    color-mix(in srgb, var(--color-bg-primary) 50%, transparent) 50%,
-    var(--color-bg-primary) 100%
-  );
-}
+.artifact-sep { opacity: 0.45; }
+.artifact-mono { color: var(--color-text-muted); }
 
 /* --- Avatar ring (static gradient mark; no animation) --- */
 .avatar-ring {

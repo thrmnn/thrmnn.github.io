@@ -33,7 +33,7 @@ OUT_BIN = ROOT / "public" / "data" / "vidigal-rooftops.bin"
 OUT_META = ROOT / "public" / "data" / "vidigal-rooftops.json"
 
 N_TERRAIN = 2500
-N_BUILDING_TARGET = 2500
+N_BUILDING_TARGET = 3500
 RNG = np.random.default_rng(seed=42)
 
 
@@ -70,7 +70,12 @@ def sample_terrain() -> tuple[np.ndarray, np.ndarray, np.ndarray, dict]:
 
 
 def sample_buildings(scene_crs: str) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Return (x_m, y_m, z_m) — voxel samples spread inside each building footprint."""
+    """Return (x_m, y_m, z_m) — building outlines, not blobs.
+
+    Each footprint contributes points along its boundary at *both* the base
+    height (ground line) and top height (rooftop outline) so the structure
+    reads as a wireframe box sitting on the DTM, not a cloud of voxels.
+    """
     g = gpd.read_file(BLDG_PATH)
     if g.crs is None or str(g.crs) != scene_crs:
         try:
@@ -78,49 +83,59 @@ def sample_buildings(scene_crs: str) -> tuple[np.ndarray, np.ndarray, np.ndarray
         except Exception:
             pass
 
-    g = g[(g.geometry.notna()) & (g.geometry.area > 1.0)].copy()
-
-    # Per-building point budget proportional to footprint area, but at least 1
-    # and capped so giant buildings don't dominate. Inflate the target so the
-    # min-1 clamp doesn't force an underflow; trim the overshoot post-sample.
-    areas = g.geometry.area.to_numpy()
-    weights = np.clip(np.sqrt(areas), 1.0, None)
-    weights /= weights.sum()
-    per_building = np.clip(np.round(weights * N_BUILDING_TARGET * 1.5).astype(int), 1, 18)
+    g = g[(g.geometry.notna()) & (g.geometry.area > 4.0)].copy()
+    # Larger footprints get more outline samples — recognisable buildings first.
+    g["__area"] = g.geometry.area
+    g = g.sort_values("__area", ascending=False)
 
     xs: list[float] = []
     ys: list[float] = []
     zs: list[float] = []
-    for geom, base_h, top_h, n in zip(
-        g.geometry, g["base_height"].to_numpy(), g["top_height"].to_numpy(), per_building
+
+    def _polygons(geom):
+        """Yield Polygon parts of a (Multi)Polygon."""
+        if geom.geom_type == "Polygon":
+            yield geom
+        elif geom.geom_type == "MultiPolygon":
+            yield from geom.geoms
+
+    for geom, base_h, top_h in zip(
+        g.geometry, g["base_height"].to_numpy(), g["top_height"].to_numpy()
     ):
         if not np.isfinite(base_h) or not np.isfinite(top_h) or top_h <= base_h:
             continue
-        minx, miny, maxx, maxy = geom.bounds
-        accepted = 0
-        attempts = 0
-        while accepted < n and attempts < n * 12:
-            attempts += 1
-            px = RNG.uniform(minx, maxx)
-            py = RNG.uniform(miny, maxy)
-            if not geom.contains(Point(px, py)):
-                continue
-            # Walls + roof: 70% on the rooftop plane, 30% along the wall column
-            if RNG.random() < 0.7:
-                pz = float(top_h)
-            else:
-                pz = float(RNG.uniform(base_h, top_h))
-            xs.append(px)
-            ys.append(py)
-            zs.append(pz)
-            accepted += 1
+        if len(xs) >= N_BUILDING_TARGET:
+            break
+
+        for poly in _polygons(geom):
+            if len(xs) >= N_BUILDING_TARGET:
+                break
+            ring = poly.exterior
+            perim = ring.length
+            spacing = 2.0
+            n_samples = int(np.clip(np.ceil(perim / spacing), 4, 22))
+            ts = np.linspace(0, perim, n_samples, endpoint=False)
+            for t in ts:
+                pt = ring.interpolate(t)
+                xs.append(float(pt.x))
+                ys.append(float(pt.y))
+                zs.append(float(top_h))     # rooftop outline
+            # Ground line — only for taller buildings (≥ 3 m); otherwise the
+            # base ring overlaps the rooftop and reads as noise.
+            if top_h - base_h >= 3.0:
+                for t in ts[::2]:
+                    pt = ring.interpolate(t)
+                    xs.append(float(pt.x))
+                    ys.append(float(pt.y))
+                    zs.append(float(base_h))
 
     xs_arr = np.asarray(xs)
     ys_arr = np.asarray(ys)
     zs_arr = np.asarray(zs)
     if len(xs_arr) > N_BUILDING_TARGET:
-        idx = RNG.choice(len(xs_arr), size=N_BUILDING_TARGET, replace=False)
-        xs_arr, ys_arr, zs_arr = xs_arr[idx], ys_arr[idx], zs_arr[idx]
+        xs_arr = xs_arr[:N_BUILDING_TARGET]
+        ys_arr = ys_arr[:N_BUILDING_TARGET]
+        zs_arr = zs_arr[:N_BUILDING_TARGET]
     return xs_arr, ys_arr, zs_arr
 
 

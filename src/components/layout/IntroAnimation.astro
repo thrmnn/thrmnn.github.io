@@ -1,0 +1,98 @@
+---
+// Landing-intro overlay. On first paint per session, renders the T·A·H
+// monogram large-centered, animates the per-letter assembly, then translates
+// the whole mark up-left so it appears to dock into the header's monogram
+// slot. View Transitions API where available; CSS fallback otherwise.
+// sessionStorage-gated — costs nothing on revisits within the session.
+---
+
+<div id="intro" class="intro" aria-hidden="true" data-stage="hidden">
+  <div class="intro-mark">
+    <span class="intro-ch" style="--i:0">T</span>
+    <span class="intro-ch" style="--i:1">·</span>
+    <span class="intro-ch" style="--i:2">A</span>
+    <span class="intro-ch" style="--i:3">·</span>
+    <span class="intro-ch" style="--i:4">H</span>
+  </div>
+</div>
+
+<style>
+  .intro {
+    position: fixed;
+    inset: 0;
+    display: none;
+    place-items: center;
+    background: var(--color-bg-primary);
+    z-index: 100;
+    opacity: 1;
+    pointer-events: none;
+  }
+  .intro[data-stage="settle"],
+  .intro[data-stage="dock"],
+  .intro[data-stage="fade"] {
+    display: grid;
+  }
+  .intro[data-stage="fade"] {
+    opacity: 0;
+    transition: opacity 320ms var(--ease-out);
+  }
+
+  .intro-mark {
+    display: inline-flex;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: clamp(2.4rem, 9vw, 5.5rem);
+    font-weight: 500;
+    color: var(--color-text-primary);
+    letter-spacing: 0.06em;
+    transform-origin: center center;
+    transition: transform 520ms var(--ease-out);
+  }
+  .intro[data-stage="dock"] .intro-mark {
+    /* Scaled + translated toward the header monogram landing zone (top-left).
+       Exact value tuned visually; the dock motion is the polish, not the precision. */
+    transform: translate(calc(-44vw), calc(-44vh)) scale(0.18);
+  }
+
+  .intro-ch {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(calc((var(--i, 0) - 2) * 0.4em)) scale(0.92);
+    transition: opacity 360ms var(--ease-out), transform 520ms var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 60ms);
+  }
+  .intro[data-stage="settle"] .intro-ch,
+  .intro[data-stage="dock"] .intro-ch,
+  .intro[data-stage="fade"] .intro-ch {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .intro, .intro[data-stage="settle"], .intro[data-stage="dock"], .intro[data-stage="fade"] {
+      display: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    if (sessionStorage.getItem('intro-played') === '1') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      sessionStorage.setItem('intro-played', '1');
+      return;
+    }
+    const el = document.getElementById('intro');
+    if (!el) return;
+    // Hold while assets paint, then play.
+    requestAnimationFrame(() => {
+      el.setAttribute('data-stage', 'settle');
+      setTimeout(() => el.setAttribute('data-stage', 'dock'), 780);
+      setTimeout(() => el.setAttribute('data-stage', 'fade'), 1280);
+      setTimeout(() => {
+        el.setAttribute('data-stage', 'hidden');
+        sessionStorage.setItem('intro-played', '1');
+      }, 1700);
+    });
+  })();
+</script>

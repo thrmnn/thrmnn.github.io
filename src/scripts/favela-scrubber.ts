@@ -3,7 +3,7 @@
 // Auto-rotates slowly; drag/touch scrubs rotation. IO + tab-hidden gated.
 // prefers-reduced-motion users get a still iso view (no rotation).
 
-type Point = { x: number; y: number; z: number };
+type Point = { x: number; y: number; z: number; cat: number };
 
 interface Scrubber {
   canvas: HTMLCanvasElement;
@@ -20,13 +20,16 @@ interface Scrubber {
 async function loadPoints(url: string): Promise<Point[]> {
   const buf = await fetch(url).then((r) => r.arrayBuffer());
   const view = new DataView(buf);
-  const n = buf.byteLength / 3;
+  const stride = 4; // v2: int8 x, int8 y, uint8 z, uint8 cat
+  const n = buf.byteLength / stride;
   const out: Point[] = new Array(n);
   for (let i = 0; i < n; i++) {
+    const o = i * stride;
     out[i] = {
-      x: view.getInt8(i * 3) / 127,
-      y: view.getInt8(i * 3 + 1) / 127,
-      z: view.getUint8(i * 3 + 2) / 255,
+      x: view.getInt8(o) / 127,
+      y: view.getInt8(o + 1) / 127,
+      z: view.getUint8(o + 2) / 255,
+      cat: view.getUint8(o + 3),
     };
   }
   return out;
@@ -54,26 +57,37 @@ function render(s: Scrubber) {
   const cosR = Math.cos(s.rotation);
   const sinR = Math.sin(s.rotation);
 
-  const screen: Array<{ sx: number; sy: number; depth: number; h: number }> = new Array(s.points.length);
+  const screen: Array<{ sx: number; sy: number; depth: number; h: number; cat: number }> = new Array(s.points.length);
   for (let i = 0; i < s.points.length; i++) {
     const p = s.points[i];
     const rx = p.x * cosR - p.y * sinR;
     const rz = p.x * sinR + p.y * cosR;
     const sy = p.z * cosT - rz * sinT;
     const depth = p.z * sinT + rz * cosT;
-    screen[i] = { sx: cx + rx * scale, sy: cy - sy * scale * 0.7, depth, h: p.z };
+    screen[i] = { sx: cx + rx * scale, sy: cy - sy * scale * 0.7, depth, h: p.z, cat: p.cat };
   }
   screen.sort((a, b) => a.depth - b.depth);
 
   for (let i = 0; i < screen.length; i++) {
     const pt = screen[i];
     const tDepth = (pt.depth + 1) * 0.5; // [0,1]
-    const alpha = 0.18 + tDepth * 0.55;
-    const blue = 246 - Math.round(pt.h * 40);
-    const green = 130 + Math.round(pt.h * 80);
-    const red = 59 + Math.round(pt.h * 90);
-    s.ctx.fillStyle = `rgba(${red},${green},${blue},${alpha})`;
-    s.ctx.fillRect(pt.sx, pt.sy, 1.6, 1.6);
+    if (pt.cat === 1) {
+      // Building voxel — warm accent, slightly brighter, larger dot so structure reads.
+      const alpha = 0.45 + tDepth * 0.5;
+      const r = 255;
+      const g = 210 + Math.round(pt.h * 30);
+      const b = 130 - Math.round(pt.h * 30);
+      s.ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+      s.ctx.fillRect(pt.sx, pt.sy, 1.9, 1.9);
+    } else {
+      // Terrain — cool blue, faded; lets the buildings sit on top visually.
+      const alpha = 0.16 + tDepth * 0.45;
+      const r = 59 + Math.round(pt.h * 60);
+      const g = 130 + Math.round(pt.h * 80);
+      const b = 246 - Math.round(pt.h * 30);
+      s.ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+      s.ctx.fillRect(pt.sx, pt.sy, 1.4, 1.4);
+    }
   }
 }
 

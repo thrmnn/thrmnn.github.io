@@ -1,5 +1,6 @@
+// Home isn't in the link row — the T·A·H monogram routes to /.
+// One affordance per destination, no duplicates.
 export const navLinks = [
-  { label: 'Home', href: '/' },
   { label: 'Projects', href: '/projects/' },
   { label: 'Consulting', href: '/consulting/' },
   { label: 'CV', href: '/cv/' },

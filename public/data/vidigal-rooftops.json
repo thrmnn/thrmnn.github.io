@@ -1,11 +1,13 @@
 {
-  "schema": "vidigal-rooftops-v1",
-  "source": "MIT Senseable City Lab Rio \u2014 Vidigal DTM (extended 300m buffer)",
+  "schema": "vidigal-rooftops-v2",
+  "source": "MIT Senseable City Lab Rio \u2014 Vidigal DTM + building footprints",
   "site": "Vidigal favela, Rio de Janeiro",
-  "encoding": "interleaved int8 x, int8 y, uint8 z; 3 bytes per point",
-  "count": 3000,
+  "encoding": "interleaved int8 x, int8 y, uint8 z, uint8 category (0=terrain, 1=building); 4 bytes/point",
+  "count": 5000,
+  "count_terrain": 2500,
+  "count_buildings": 2500,
   "z_meters": {
-    "min": 37.75767135620117,
-    "max": 517.1470336914062
+    "min": 31.839555740356445,
+    "max": 523.778076171875
   }
 }

@@ -240,6 +240,9 @@ Format: `YYYY-MM-DD — decision — rationale.`
 - 2026-06-12 — Collaboration-first repositioning for networking event: all "open to senior roles" copy stripped (bio, /now ×2, contact); Anduril/Figure/Waymo name-drop removed; audience priority reordered to consulting prospects first.
 - 2026-06-12 — AI-agent infrastructure added as the lead consulting scope; consulting H1/intro/meta now cover both practices. Proof repo: `github.com/thrmnn/agent-harness` (typed tool layer + regression evals).
 - 2026-06-12 — Tag triplet unlocked and replaced: `What Comes Next` → `AI Agents`. Triplet lives in `site.ts` description only; hero displays name + positioning paragraph.
+- 2026-06-12 — Hero artifact is now a rotating set of three scenes (chips switch): Vidigal full-coverage cloud (all 3,610 footprints), Amsterdam per-tree LAI census (real MSc data), and a procedural Loomo person-tracking scene (parametric illustration of the VITA project, not sensor data — labeled as such in code).
+- 2026-06-12 — Council-designed full-bleed "specimen rail" carousel: two-mode model (shelf = native scroller for no-JS/reduced-motion/coarse-pointer/keyboard/paused; drift = CSS marquee over 3 identical sets). Drift velocity locked ≤25.5px/s. No arrows, no edge fades, no card chrome — hard crop is the frame. Persistent pause toggle (WCAG 2.2.2) in the content row. `bg-bg-secondary` dropped from #projects so the pointer field runs behind the rail.
+- 2026-06-12 — Site-wide "latent lattice" pointer field (`src/scripts/pointer-field.ts`): document-anchored 40px hash-derived grid, dots materialize within 120px of a fine pointer with the hero's exact jitter math/palette (shared constants in `src/scripts/excite.ts`). Fine-pointer + motion-OK only; rAF self-terminates; mobile attaches nothing. Tuning rule: adjust A_PEAK only (max 0.65), never radius or amplitude. ProjectCard cursor-sensor deleted — one cursor metaphor per surface.
 
 ---
 

@@ -205,6 +205,13 @@ const jsonLd = {
   <body>
     <slot />
     <script>
+      import { initPointerField } from '../scripts/pointer-field';
+      // Deferred so the field's canvas allocation never competes with LCP.
+      const startField = () => initPointerField();
+      'requestIdleCallback' in window
+        ? requestIdleCallback(startField, { timeout: 2000 })
+        : setTimeout(startField, 1500);
+
       // Scroll-reveal: resolve [data-reveal] elements into place once, as
       // they enter the viewport. Skipped entirely under reduced-motion.
       (() => {

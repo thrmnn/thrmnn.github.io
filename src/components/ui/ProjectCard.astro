@@ -50,9 +50,6 @@ const hoverTags = tags.slice(0, 4);
     {/* Darkening gradient — only as much as the title actually needs */}
     <div class="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-black/90 via-black/55 to-transparent"></div>
 
-    {/* Cursor-tracked sensor accent */}
-    <div class="card-sensor absolute inset-0" aria-hidden="true"></div>
-
     {/* Content — label + title only by default; tags fade in on hover/focus */}
     <div class="absolute inset-0 flex flex-col justify-end p-6 text-white">
       {label && (
@@ -78,8 +75,6 @@ const hoverTags = tags.slice(0, 4);
 
 <style>
   .project-card {
-    --mx: 50%;
-    --my: 50%;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     transition: box-shadow 0.4s ease, border-color 0.4s ease, transform 0.4s ease;
   }
@@ -118,44 +113,9 @@ const hoverTags = tags.slice(0, 4);
     background-size: 128px 128px;
   }
 
-  /* Sensor layer: cursor-tracked spotlight + soft accent halo */
-  .card-sensor {
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    background: radial-gradient(
-      circle 150px at var(--mx) var(--my),
-      rgba(96, 165, 250, 0.13),
-      transparent 72%
-    );
-  }
-  .group:hover .card-sensor { opacity: 1; }
-
   @media (prefers-reduced-motion: reduce) {
-    .project-card, .card-bg, .card-tags, .card-sensor { transition: none; }
+    .project-card, .card-bg, .card-tags { transition: none; }
     .group:hover .project-card { transform: none; }
     .group:hover .card-bg { filter: none; }
   }
 </style>
-
-<script>
-  // Cursor-tracked sensor accent — fine-pointer only, IO-respectful.
-  (() => {
-    if (
-      !window.matchMedia('(pointer: fine)').matches ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ) return;
-
-    for (const card of document.querySelectorAll<HTMLElement>('.project-card')) {
-      let frame = 0;
-      card.addEventListener('pointermove', (e) => {
-        if (frame) return;
-        frame = requestAnimationFrame(() => {
-          frame = 0;
-          const r = card.getBoundingClientRect();
-          card.style.setProperty('--mx', `${e.clientX - r.left}px`);
-          card.style.setProperty('--my', `${e.clientY - r.top}px`);
-        });
-      }, { passive: true });
-    }
-  })();
-</script>

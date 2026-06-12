@@ -1,19 +1,18 @@
 ---
 /**
- * ProjectCarousel — lateral scroll-snap rail of project cards.
- * Native horizontal scroll (drag / swipe / arrow keys when focused) with a
- * gentle auto-advance that pauses on hover, interaction, focus, off-viewport,
- * and under prefers-reduced-motion. Degrades to a plain scrollable row
- * without JS. Next-card peek is the scroll affordance.
+ * ProjectCarousel — full-bleed "specimen rail".
+ * Two modes, set via data-mode:
+ *   shelf (server default) — native horizontal scroller. This single state is
+ *     the no-JS, reduced-motion, coarse-pointer, keyboard, and user-paused
+ *     fallback. Duplicate sets stay display:none.
+ *   drift — JS-applied only on fine-pointer + motion-OK + not user-paused:
+ *     overflow clipped, infinite CSS transform marquee over 3 identical sets.
+ * Because drift is JS-applied, auto-motion can never ship without its pause
+ * control (WCAG 2.2.2), and no-JS users get a working shelf.
  */
-import ProjectCard from './ProjectCard.astro';
-
 interface ProjectData {
   title: string;
   label?: string;
-  metric?: string;
-  tags?: string[];
-  summary?: string;
   gradient?: string;
   image?: string;
 }
@@ -23,137 +22,234 @@ interface Props {
 }
 
 const { projects } = Astro.props;
+
+const FALLBACK_GRADIENT = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)';
+const bgStyle = (data: ProjectData) =>
+  data.image
+    ? `background-image:url('${data.image}');background-size:cover;background-position:center;`
+    : `background:${data.gradient || FALLBACK_GRADIENT};`;
 ---
 
-<div class="carousel-shell relative" data-carousel data-reveal>
-  <div
-    class="carousel-track flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2"
-    tabindex="0"
-    role="group"
-    aria-label="Project cards — scroll horizontally"
-  >
-    {projects.map((project) => (
-      <div class="carousel-item shrink-0 w-[78vw] sm:w-[340px] snap-start">
-        <ProjectCard
-          title={project.data.title}
-          label={project.data.label}
-          tags={project.data.tags}
-          gradient={project.data.gradient}
-          image={project.data.image}
-          href={`/projects/${project.id}/`}
-          reveal={false}
-        />
+<div
+  class="rail"
+  data-rail
+  data-mode="shelf"
+  data-reveal
+  role="group"
+  aria-label="Featured projects"
+  tabindex="0"
+>
+  <div class="rail-track">
+    {[0, 1, 2].map((set) => (
+      <div class="rail-set" {...(set > 0 ? { 'aria-hidden': 'true' } : {})}>
+        {projects.map((p) => (
+          <a class="plate" href={`/projects/${p.id}/`} {...(set > 0 ? { tabindex: '-1' } : {})}>
+            <div class="plate-bg" style={bgStyle(p.data)}></div>
+            <div class="plate-scrim"></div>
+            <div class="plate-text">
+              {p.data.label && <p class="plate-label">{p.data.label}</p>}
+              <p class="plate-title">{p.data.title}</p>
+            </div>
+          </a>
+        ))}
       </div>
     ))}
   </div>
-
-  <div class="carousel-controls" aria-hidden="false">
-    <button type="button" class="carousel-btn" data-dir="-1" aria-label="Previous projects">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-    </button>
-    <button type="button" class="carousel-btn" data-dir="1" aria-label="Next projects">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-    </button>
-  </div>
+</div>
+<div class="mx-auto max-w-[var(--max-w-content)] px-6 mt-8 flex items-baseline justify-between">
+  <a href="/projects/" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">All projects →</a>
+  <button
+    type="button"
+    data-rail-toggle
+    hidden
+    aria-pressed="false"
+    aria-label="Pause carousel motion"
+    class="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-text-muted hover:text-text-primary cursor-pointer"
+  >pause</button>
 </div>
 
 <style>
-  .carousel-track {
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
+  .rail {
+    padding-block: 8px; /* room for focus rings */
   }
-  .carousel-track::-webkit-scrollbar {
+  .rail:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+  .rail[data-mode='shelf'] {
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* first plate aligns to the 1100px column */
+    padding-inline: max(1.5rem, calc((100% - var(--max-w-content)) / 2));
+  }
+  .rail[data-mode='shelf']::-webkit-scrollbar {
     display: none;
   }
-  .carousel-track:focus-visible {
+  .rail[data-mode='shelf'] .rail-set[aria-hidden] {
+    display: none;
+  }
+  /* clip, NOT hidden — hidden lets focus set scrollLeft and permanently
+     desyncs the transform seam */
+  .rail[data-mode='drift'] {
+    overflow: clip;
+  }
+
+  .rail-track {
+    display: flex;
+    width: max-content;
+  }
+  /* set pitch = 7×(w+g) exactly: 6 internal gaps + 1 trailing padding.
+     NO gap on .rail-track — a track gap breaks the -1/3 seam math. */
+  .rail-set {
+    display: flex;
+    gap: var(--plate-gap);
+    padding-right: var(--plate-gap);
+  }
+
+  .rail { --plate-w: 280px; --plate-gap: 16px; --drift-dur: 95s; }
+  @media (min-width: 640px) { .rail { --plate-w: 340px; --plate-gap: 20px; --drift-dur: 105s; } }
+  @media (min-width: 1024px) { .rail { --plate-w: 420px; --plate-gap: 24px; --drift-dur: 125s; } }
+  @media (min-width: 1536px) { .rail { --plate-w: 460px; --plate-gap: 28px; --drift-dur: 135s; } }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .rail[data-mode='drift'] .rail-track {
+      animation: rail-drift var(--drift-dur) linear infinite;
+      will-change: transform;
+    }
+  }
+  @keyframes rail-drift {
+    to {
+      transform: translate3d(calc(-100% / 3), 0, 0); /* exactly one set pitch */
+    }
+  }
+
+  .rail[data-mode='drift']:hover .rail-track,
+  .rail[data-mode='drift']:focus-within .rail-track,
+  .rail.parked .rail-track,
+  .rail.touch-still .rail-track {
+    animation-play-state: paused;
+  }
+
+  /* No border, shadow, lift, zoom, filter, or mask — the dark plates against
+     the page ground define their own edges; the hard crop at the viewport
+     edge is the frame. */
+  .plate {
+    position: relative;
+    display: block;
+    flex-shrink: 0;
+    width: var(--plate-w);
+    aspect-ratio: 3 / 2;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .plate:focus-visible {
     outline: 2px solid var(--color-accent);
-    outline-offset: 6px;
-    border-radius: 8px;
+    outline-offset: 3px;
   }
-  .carousel-controls {
+  .plate-bg {
     position: absolute;
-    top: -3.4rem;
-    right: 0;
-    display: flex;
-    gap: 0.4rem;
+    inset: 0;
   }
-  .carousel-btn {
-    width: 2rem;
-    height: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    border: 1px solid var(--color-border);
-    color: var(--color-text-muted);
-    background: var(--color-bg-elevated);
-    cursor: pointer;
-    transition: color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+  .plate-scrim {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 48%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent);
   }
-  .carousel-btn:hover,
-  .carousel-btn:focus-visible {
-    color: var(--color-text-primary);
-    border-color: var(--color-border-hover);
+  .plate-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+  }
+  .plate-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 6px;
+    transition: color 0.2s var(--ease-out);
+  }
+  .plate:hover .plate-label {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .plate-title {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #fff;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .plate-label {
+      transition: none;
+    }
   }
 </style>
 
 <script>
   (() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const rail = document.querySelector<HTMLElement>('[data-rail]');
+    if (!rail) return;
+    const toggle = document.querySelector<HTMLButtonElement>('[data-rail-toggle]');
+    const fine = matchMedia('(pointer: fine) and (hover: hover)');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    const KEY = 'rail-drift';
+    let paused = false;
+    try {
+      paused = localStorage.getItem(KEY) === 'paused';
+    } catch {}
+    const driftable = () => fine.matches && !reduce.matches;
+    const apply = () => {
+      rail.dataset.mode = driftable() && !paused ? 'drift' : 'shelf';
+      if (toggle) {
+        toggle.hidden = !driftable();
+        toggle.textContent = paused ? 'drift' : 'pause';
+        toggle.setAttribute('aria-pressed', String(paused));
+        toggle.setAttribute('aria-label', paused ? 'Resume carousel motion' : 'Pause carousel motion');
+      }
+    };
+    apply();
+    toggle?.addEventListener('click', () => {
+      paused = !paused;
+      try {
+        paused ? localStorage.setItem(KEY, 'paused') : localStorage.removeItem(KEY);
+      } catch {}
+      apply();
+    });
+    fine.addEventListener?.('change', apply);
+    reduce.addEventListener?.('change', apply);
 
-    for (const shell of document.querySelectorAll<HTMLElement>('[data-carousel]')) {
-      const track = shell.querySelector<HTMLElement>('.carousel-track');
-      if (!track) continue;
+    // Keyboard: switch to shelf while focus is inside, reveal the focused plate.
+    rail.addEventListener('focusin', (e) => {
+      if (rail.dataset.mode === 'drift') rail.dataset.mode = 'shelf';
+      (e.target as HTMLElement).scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    });
+    rail.addEventListener('focusout', (e) => {
+      if (!rail.contains((e as FocusEvent).relatedTarget as Node)) apply();
+    });
 
-      const step = () => {
-        const first = track.firstElementChild as HTMLElement | null;
-        if (!first) return 320;
-        return first.getBoundingClientRect().width + 20;
-      };
+    // Battery: park the compositor animation off-viewport.
+    new IntersectionObserver(
+      ([en]) => rail.classList.toggle('parked', !en!.isIntersecting),
+      { rootMargin: '100px 0px' },
+    ).observe(rail);
 
-      const go = (dir: number) => {
-        const max = track.scrollWidth - track.clientWidth;
-        let next = track.scrollLeft + dir * step();
-        if (next > max + 8) next = 0; // wrap forward
-        if (next < -8) next = max; // wrap backward
-        track.scrollTo({ left: next, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
-      };
-
-      shell.querySelectorAll<HTMLElement>('.carousel-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          pauseFor(8000);
-          go(Number(btn.dataset.dir));
-        });
-      });
-
-      // Auto-advance — every signal of human attention pauses it.
-      let visible = false;
-      let hovering = false;
-      let pausedUntil = 0;
-      const pauseFor = (ms: number) => {
-        pausedUntil = performance.now() + ms;
-      };
-
-      new IntersectionObserver(
-        (entries) => {
-          visible = entries[0]!.isIntersecting;
-        },
-        { threshold: 0.25 },
-      ).observe(shell);
-
-      shell.addEventListener('pointerenter', () => (hovering = true));
-      shell.addEventListener('pointerleave', () => (hovering = false));
-      ['pointerdown', 'wheel', 'touchstart'].forEach((ev) =>
-        track.addEventListener(ev, () => pauseFor(8000), { passive: true }),
-      );
-      shell.addEventListener('focusin', () => pauseFor(10000));
-
-      setInterval(() => {
-        if (reduceMotion.matches) return;
-        if (!visible || hovering || document.hidden) return;
-        if (performance.now() < pausedUntil) return;
-        go(1);
-      }, 4200);
-    }
+    // Hybrid touch-screen laptops in drift mode: a touch holds the bed still.
+    let t = 0;
+    rail.addEventListener(
+      'pointerdown',
+      (e) => {
+        if (e.pointerType !== 'touch' || rail.dataset.mode !== 'drift') return;
+        rail.classList.add('touch-still');
+        clearTimeout(t);
+        t = window.setTimeout(() => rail.classList.remove('touch-still'), 4000);
+      },
+      { passive: true },
+    );
   })();
 </script>

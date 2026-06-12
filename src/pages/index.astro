@@ -40,7 +40,7 @@ const mailto = `mailto:${author.email}`;
         <div class="artifact-frame">
           <canvas
             class="favela-scrubber"
-            aria-label="Rotating point-cloud samples from real research datasets: Vidigal favela, the Amsterdam tree census, and a De Pijp LiDAR tile. Drag to rotate."
+            aria-label="Rotating point-cloud scenes: Vidigal favela LiDAR, the Amsterdam tree census, and a Segway Loomo robot tracking a walking person. Drag to rotate."
           ></canvas>
           <div class="artifact-corners" aria-hidden="true">
             <span></span><span></span><span></span><span></span>
@@ -49,7 +49,7 @@ const mailto = `mailto:${author.email}`;
         <div class="artifact-chips mt-3" role="group" aria-label="Choose a dataset">
           <button type="button" class="artifact-chip is-active" data-artifact-chip data-url="/data/vidigal-rooftops.bin" aria-pressed="true">vidigal · rio</button>
           <button type="button" class="artifact-chip" data-artifact-chip data-url="/data/ams-trees.bin" aria-pressed="false">tree census · ams</button>
-          <button type="button" class="artifact-chip" data-artifact-chip data-url="/data/depijp-lidar.bin" aria-pressed="false">lidar · de pijp</button>
+          <button type="button" class="artifact-chip" data-artifact-chip data-url="proc:loomo" aria-pressed="false">loomo · person tracking</button>
         </div>
       </div>
     </div>
@@ -102,12 +102,13 @@ const mailto = `mailto:${author.email}`;
     </div>
   </section>
 
-  <!-- Featured Work (promoted above Latest for recruiter-first funnel) -->
-  <section id="projects" class="py-[var(--space-section)] bg-bg-secondary">
+  <!-- Featured Work — full-bleed specimen rail; the page ground runs behind it
+       so the site-wide pointer field stays continuous through this band -->
+  <section id="projects" class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="text-3xl font-bold text-text-primary mb-8" data-reveal>Featured Work</h2>
-      <ProjectCarousel projects={carouselProjects} />
+      <h2 class="text-3xl font-bold text-text-primary mb-10" data-reveal>Featured Work</h2>
     </div>
+    <ProjectCarousel projects={carouselProjects} />
   </section>
 
   <!-- Latest -->

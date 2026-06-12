@@ -4,6 +4,7 @@
 // Auto-rotates slowly; drag/touch scrubs rotation; hovering excites nearby
 // points into a LiDAR-scan vibration; datasets cycle slowly (chips pin one).
 // IO + tab-hidden gated. prefers-reduced-motion users get a still iso view.
+import { EXCITE_T_SCALE, EXCITE_AMP, EXCITE_RGB } from './excite';
 
 interface Cloud {
   n: number;
@@ -12,6 +13,8 @@ interface Cloud {
   z: Float32Array;
   cat: Uint8Array;
   phase: Float32Array;
+  // Procedural scenes rewrite their point positions each frame.
+  update?: (tSec: number) => void;
 }
 
 interface Scrubber {
@@ -55,7 +58,175 @@ function detectDark(): boolean {
   return window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
+// Procedural scene: Segway Loomo (EPFL VITA project) tracking a walking
+// person — pose keypoints in green, robot in amber, a scan beam that fires
+// every few seconds and flashes the detected joints. An illustration of the
+// real person-following stack, not sensor data; positions are parametric.
+function buildLoomoScene(): Cloud {
+  const N_GROUND = 320;
+  const BONES = 14;
+  const PTS_PER_BONE = 7;
+  const N_PERSON = BONES * PTS_PER_BONE;
+  const N_ROBOT = 52;
+  const N_BEAM = 24;
+  const N_FLASH = 8;
+  const n = N_GROUND + N_PERSON + N_ROBOT + N_BEAM + N_FLASH;
+
+  const x = new Float32Array(n);
+  const y = new Float32Array(n);
+  const z = new Float32Array(n);
+  const cat = new Uint8Array(n);
+  const phase = new Float32Array(n);
+  for (let i = 0; i < n; i++) phase[i] = Math.random() * Math.PI * 2;
+
+  // Ground disc — golden-angle spiral, static.
+  for (let i = 0; i < N_GROUND; i++) {
+    const r = 0.95 * Math.sqrt((i + 0.5) / N_GROUND);
+    const a = i * 2.39996;
+    x[i] = r * Math.cos(a);
+    y[i] = r * Math.sin(a);
+    z[i] = 0;
+    cat[i] = 0;
+  }
+  cat.fill(2, N_GROUND, N_GROUND + N_PERSON); // person = vegetation green
+  cat.fill(1, N_GROUND + N_PERSON, N_GROUND + N_PERSON + N_ROBOT); // robot = structure amber
+  cat.fill(0, N_GROUND + N_PERSON + N_ROBOT, n - N_FLASH); // beam = ground blue
+  cat.fill(1, n - N_FLASH, n); // joint flashes = amber markers
+
+  // Robot body template (local: f = forward, s = side, z up), written per frame
+  // at the robot's pose. Base ring ×2, stem, head ring.
+  const robotTpl: Array<[number, number, number]> = [];
+  for (let i = 0; i < 18; i++) {
+    const a = (i / 18) * Math.PI * 2;
+    robotTpl.push([Math.cos(a) * 0.075, Math.sin(a) * 0.075, 0.016]);
+  }
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2;
+    robotTpl.push([Math.cos(a) * 0.058, Math.sin(a) * 0.058, 0.07]);
+  }
+  for (let i = 0; i < 6; i++) robotTpl.push([0, 0, 0.09 + (i / 5) * 0.17]);
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2;
+    robotTpl.push([Math.cos(a) * 0.035, Math.sin(a) * 0.035, 0.275]);
+  }
+  for (let i = 0; i < 4; i++) robotTpl.push([(i - 1.5) * 0.018, 0, 0.31]);
+
+  const PATH_R = 0.48;
+  const WALK_W = 0.22; // rad/s around the path
+  const H = 0.62; // person height (normalized scene units)
+  const STRIDE = 0.09;
+  const BEAM_CYCLE = 3.2;
+
+  const update = (t: number) => {
+    const a = t * WALK_W;
+    const px = PATH_R * Math.cos(a);
+    const py = PATH_R * Math.sin(a);
+    const hx = -Math.sin(a); // heading (tangent)
+    const hy = Math.cos(a);
+    const sx = Math.cos(a); // lateral (radial)
+    const sy = Math.sin(a);
+
+    // --- person: parametric gait ---
+    const ph = t * Math.PI * 2 * 1.3;
+    const J: Record<string, [number, number, number]> = {};
+    const set = (name: string, f: number, s: number, zz: number) => {
+      J[name] = [px + hx * f + sx * s, py + hy * f + sy * s, zz];
+    };
+    const bob = Math.abs(Math.sin(ph)) * 0.014;
+    set('pelvis', 0, 0, H * 0.5 + bob);
+    set('neck', 0, 0, H * 0.88 + bob);
+    set('head', 0.012, 0, H * 0.97 + bob);
+    for (const [side, sg] of [['L', 1], ['R', -1]] as const) {
+      const legPh = ph + (sg === 1 ? 0 : Math.PI);
+      const swing = Math.sin(legPh);
+      const lift = Math.max(0, Math.cos(legPh)) * 0.026;
+      set(`hip${side}`, 0, sg * 0.045, H * 0.5 + bob);
+      set(`knee${side}`, swing * STRIDE * 0.5 + 0.016, sg * 0.045, H * 0.27 + lift * 0.6);
+      set(`ankle${side}`, swing * STRIDE, sg * 0.05, 0.014 + lift);
+      const armSwing = -swing;
+      set(`shoulder${side}`, 0, sg * 0.058, H * 0.82 + bob);
+      set(`elbow${side}`, armSwing * STRIDE * 0.45, sg * 0.066, H * 0.66 + bob);
+      set(`wrist${side}`, armSwing * STRIDE * 0.8, sg * 0.066, H * 0.5 + bob);
+    }
+    const bones: Array<[string, string]> = [
+      ['pelvis', 'neck'], ['neck', 'head'],
+      ['pelvis', 'hipL'], ['hipL', 'kneeL'], ['kneeL', 'ankleL'],
+      ['pelvis', 'hipR'], ['hipR', 'kneeR'], ['kneeR', 'ankleR'],
+      ['neck', 'shoulderL'], ['shoulderL', 'elbowL'], ['elbowL', 'wristL'],
+      ['neck', 'shoulderR'], ['shoulderR', 'elbowR'], ['elbowR', 'wristR'],
+    ];
+    let i = N_GROUND;
+    for (const [from, to] of bones) {
+      const A = J[from]!;
+      const B = J[to]!;
+      for (let k = 0; k < PTS_PER_BONE; k++) {
+        const u = k / (PTS_PER_BONE - 1);
+        x[i] = A[0] + (B[0] - A[0]) * u;
+        y[i] = A[1] + (B[1] - A[1]) * u;
+        z[i] = A[2] + (B[2] - A[2]) * u;
+        i++;
+      }
+    }
+
+    // --- robot: same path, trailing behind, facing the person ---
+    const ra = a - 0.62;
+    const rx = PATH_R * Math.cos(ra);
+    const ry = PATH_R * Math.sin(ra);
+    const fx0 = px - rx;
+    const fy0 = py - ry;
+    const fl = Math.hypot(fx0, fy0) || 1;
+    const fx = fx0 / fl;
+    const fy = fy0 / fl;
+    for (const [f, s, zz] of robotTpl) {
+      x[i] = rx + fx * f + -fy * s;
+      y[i] = ry + fy * f + fx * s;
+      z[i] = zz;
+      i++;
+    }
+
+    // --- scan beam + joint flashes ---
+    const tb = (t % BEAM_CYCLE) / BEAM_CYCLE;
+    const headX = rx;
+    const headY = ry;
+    const headZ = 0.28;
+    const torso = J['pelvis']!;
+    for (let k = 0; k < N_BEAM; k++) {
+      if (tb < 0.22) {
+        const u = ((k + 0.5) / N_BEAM) * Math.min(tb / 0.18, 1);
+        const spread = Math.sin(k * 2.7) * 0.012 * u;
+        x[i] = headX + (torso[0] - headX) * u + -fy * spread;
+        y[i] = headY + (torso[1] - headY) * u + fx * spread;
+        z[i] = headZ + (torso[2] * 0.9 - headZ) * u;
+      } else {
+        x[i] = headX;
+        y[i] = headY;
+        z[i] = headZ; // parked inside the head between pulses
+      }
+      i++;
+    }
+    const flashJoints = ['head', 'neck', 'shoulderL', 'shoulderR', 'hipL', 'hipR', 'kneeL', 'kneeR'];
+    for (let k = 0; k < N_FLASH; k++) {
+      if (tb >= 0.22 && tb < 0.55) {
+        const j = J[flashJoints[k]!]!;
+        x[i] = j[0];
+        y[i] = j[1];
+        z[i] = j[2] + 0.012;
+      } else {
+        x[i] = headX;
+        y[i] = headY;
+        z[i] = headZ;
+      }
+      i++;
+    }
+  };
+
+  const cloud: Cloud = { n, x, y, z, cat, phase, update };
+  update(0); // static tableau for reduced-motion users
+  return cloud;
+}
+
 async function loadCloud(url: string): Promise<Cloud> {
+  if (url === 'proc:loomo') return buildLoomoScene();
   const buf = await fetch(url).then((r) => r.arrayBuffer());
   const view = new DataView(buf);
   const stride = 4; // v2: int8 x, int8 y, uint8 z, uint8 cat
@@ -133,9 +304,9 @@ function buildLut(dark: boolean): string[] {
 function applyTheme(s: Scrubber) {
   s.isDark = detectDark();
   s.lut = buildLut(s.isDark);
-  s.exciteStyle = s.isDark
-    ? ['rgba(147,197,253,0.95)', 'rgba(255,236,179,0.98)', 'rgba(110,231,183,0.95)'] // [ground, structure, vegetation]
-    : ['rgba(37,99,235,0.92)', 'rgba(234,88,12,0.95)', 'rgba(5,150,105,0.95)'];
+  const rgb = EXCITE_RGB[s.isDark ? 'dark' : 'light'];
+  const alphas = s.isDark ? [0.95, 0.98, 0.95] : [0.92, 0.95, 0.95];
+  s.exciteStyle = [0, 1, 2].map((c) => `rgba(${rgb[c]},${alphas[c]})`) as [string, string, string];
 }
 
 function render(s: Scrubber, now: number) {
@@ -150,6 +321,8 @@ function render(s: Scrubber, now: number) {
   }
   s.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   s.ctx.clearRect(0, 0, cssW, cssH);
+
+  if (s.cloud.update && s.motionOK) s.cloud.update(now / 1000);
 
   const cx = cssW / 2;
   const cy = cssH * 0.55;
@@ -221,7 +394,7 @@ function render(s: Scrubber, now: number) {
 
   // LiDAR-scan excite pass — points near the pointer vibrate and flash.
   if (nExcite > 0) {
-    const t = now * 0.02;
+    const t = now * EXCITE_T_SCALE;
     const { phase, cat: cats } = s.cloud;
     let prevCat = -1;
     for (let e = 0; e < nExcite; e++) {
@@ -232,7 +405,7 @@ function render(s: Scrubber, now: number) {
         s.ctx.fillStyle = s.exciteStyle[c];
         prevCat = c;
       }
-      const amp = 2.4 * f;
+      const amp = EXCITE_AMP * f;
       const jx = Math.sin(t + phase[i]) * amp;
       const jy = Math.cos(t * 1.13 + phase[i] * 1.7) * amp;
       const size = 1.6 + f * 1.0;

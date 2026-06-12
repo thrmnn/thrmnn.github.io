@@ -151,7 +151,8 @@ def sample_lidar() -> None:
 def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     sample_trees()
-    sample_lidar()
+    # sample_lidar() kept for reference — the De Pijp tile was replaced by the
+    # procedural Loomo scene in the hero (2026-06-12).
     return 0
 
 

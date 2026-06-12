@@ -33,20 +33,24 @@ const mailto = `mailto:${author.email}`;
           {author.name}
         </h1>
         <p class="hero-positioning" data-reveal style="--reveal-d: 1;">
-          Researcher and builder. Urban science at <strong>MIT Senseable City Lab Rio</strong> — 3D digital twins of favelas for public health. Open-source robotics on the side.
+          Researcher at <strong>MIT Senseable City Lab Rio</strong> — 3D digital twins of favelas for public health. Building open-source robotics. Consulting in perception and AI-agent infrastructure.
         </p>
       </div>
       <div class="hero-artifact" data-reveal style="--reveal-d: 1;">
         <div class="artifact-frame">
           <canvas
             class="favela-scrubber"
-            aria-label="Point-cloud sample of Vidigal favela rooftops from MIT Senseable City Lab Rio. Drag to rotate."
+            aria-label="Rotating point-cloud samples from real research datasets: Vidigal favela, the Amsterdam tree census, and a De Pijp LiDAR tile. Drag to rotate."
           ></canvas>
           <div class="artifact-corners" aria-hidden="true">
             <span></span><span></span><span></span><span></span>
           </div>
         </div>
-        <p class="artifact-caption">vidigal · senseable rio</p>
+        <div class="artifact-chips mt-3" role="group" aria-label="Choose a dataset">
+          <button type="button" class="artifact-chip is-active" data-artifact-chip data-url="/data/vidigal-rooftops.bin" aria-pressed="true">vidigal · rio</button>
+          <button type="button" class="artifact-chip" data-artifact-chip data-url="/data/ams-trees.bin" aria-pressed="false">tree census · ams</button>
+          <button type="button" class="artifact-chip" data-artifact-chip data-url="/data/depijp-lidar.bin" aria-pressed="false">lidar · de pijp</button>
+        </div>
       </div>
     </div>
   </section>

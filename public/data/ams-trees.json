@@ -1,0 +1,12 @@
+{
+  "schema": "vidigal-rooftops-v2",
+  "encoding": "interleaved int8 x, int8 y, uint8 z, uint8 category; 4 bytes/point",
+  "count": 1936,
+  "z_meters": {
+    "min": 0.0,
+    "max": 33.0
+  },
+  "source": "MIT Senseable City Lab Amsterdam + AMS Institute \u2014 per-tree LAI census",
+  "site": "Amsterdam, Netherlands",
+  "n_trees": 242
+}

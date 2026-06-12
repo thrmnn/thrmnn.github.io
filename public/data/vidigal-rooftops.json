@@ -3,9 +3,10 @@
   "source": "MIT Senseable City Lab Rio \u2014 Vidigal DTM + building footprints",
   "site": "Vidigal favela, Rio de Janeiro",
   "encoding": "interleaved int8 x, int8 y, uint8 z, uint8 category (0=terrain, 1=building); 4 bytes/point",
-  "count": 6000,
+  "count": 12529,
   "count_terrain": 2500,
-  "count_buildings": 3500,
+  "count_buildings": 10029,
+  "n_building_footprints": 3610,
   "z_meters": {
     "min": 31.839555740356445,
     "max": 523.778076171875

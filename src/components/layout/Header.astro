@@ -249,6 +249,40 @@ const isActive = (href: string) =>
     transform: scale(1);
   }
 
+  /* LiDAR scan-beam: a soft vertical band sweeps the label on hover,
+     echoing the hero point-cloud excite effect. */
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      transparent 42%,
+      color-mix(in srgb, var(--color-accent) 45%, transparent) 50%,
+      transparent 58%
+    );
+    background-size: 250% 100%;
+    background-position: 130% 0;
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .nav-link:hover::after,
+    .nav-link:focus-visible::after {
+      animation: nav-scan 0.55s var(--ease-out) 1;
+    }
+  }
+  @keyframes nav-scan {
+    from {
+      background-position: 130% 0;
+      opacity: 0.95;
+    }
+    to {
+      background-position: -30% 0;
+      opacity: 0;
+    }
+  }
+
   .header-controls {
     display: flex;
     align-items: center;

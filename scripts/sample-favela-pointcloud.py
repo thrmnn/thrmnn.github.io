@@ -33,7 +33,7 @@ OUT_BIN = ROOT / "public" / "data" / "vidigal-rooftops.bin"
 OUT_META = ROOT / "public" / "data" / "vidigal-rooftops.json"
 
 N_TERRAIN = 2500
-N_BUILDING_TARGET = 3500
+N_BUILDING_TARGET = 11500
 RNG = np.random.default_rng(seed=42)
 
 
@@ -69,12 +69,14 @@ def sample_terrain() -> tuple[np.ndarray, np.ndarray, np.ndarray, dict]:
     return x_m, y_m, z_m, {"crs": str(crs)}
 
 
-def sample_buildings(scene_crs: str) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Return (x_m, y_m, z_m) — building outlines, not blobs.
+def sample_buildings(scene_crs: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, int]:
+    """Return (x_m, y_m, z_m, n_buildings) — every building, outline LOD.
 
-    Each footprint contributes points along its boundary at *both* the base
-    height (ground line) and top height (rooftop outline) so the structure
-    reads as a wireframe box sitting on the DTM, not a cloud of voxels.
+    Coverage over detail: every valid footprint contributes at least 2 rooftop
+    points so the dense small-house fabric reads; sample count then scales
+    with perimeter (one global factor solved against the point budget), so
+    larger structures get full outlines. Tall buildings additionally get a
+    sparse base ring so they read as volumes sitting on the DTM.
     """
     g = gpd.read_file(BLDG_PATH)
     if g.crs is None or str(g.crs) != scene_crs:
@@ -84,13 +86,12 @@ def sample_buildings(scene_crs: str) -> tuple[np.ndarray, np.ndarray, np.ndarray
             pass
 
     g = g[(g.geometry.notna()) & (g.geometry.area > 4.0)].copy()
-    # Larger footprints get more outline samples — recognisable buildings first.
-    g["__area"] = g.geometry.area
-    g = g.sort_values("__area", ascending=False)
-
-    xs: list[float] = []
-    ys: list[float] = []
-    zs: list[float] = []
+    valid = (
+        np.isfinite(g["base_height"].to_numpy())
+        & np.isfinite(g["top_height"].to_numpy())
+        & (g["top_height"].to_numpy() > g["base_height"].to_numpy())
+    )
+    g = g[valid]
 
     def _polygons(geom):
         """Yield Polygon parts of a (Multi)Polygon."""
@@ -99,49 +100,52 @@ def sample_buildings(scene_crs: str) -> tuple[np.ndarray, np.ndarray, np.ndarray
         elif geom.geom_type == "MultiPolygon":
             yield from geom.geoms
 
+    rings = []  # (ring, perim, top_h, base_h)
     for geom, base_h, top_h in zip(
         g.geometry, g["base_height"].to_numpy(), g["top_height"].to_numpy()
     ):
-        if not np.isfinite(base_h) or not np.isfinite(top_h) or top_h <= base_h:
-            continue
-        if len(xs) >= N_BUILDING_TARGET:
-            break
-
         for poly in _polygons(geom):
-            if len(xs) >= N_BUILDING_TARGET:
-                break
             ring = poly.exterior
-            perim = ring.length
-            spacing = 2.0
-            n_samples = int(np.clip(np.ceil(perim / spacing), 4, 22))
-            ts = np.linspace(0, perim, n_samples, endpoint=False)
-            for t in ts:
+            rings.append((ring, ring.length, float(top_h), float(base_h)))
+
+    # Base rings (tall buildings) consume roughly 15% of the budget; solve the
+    # per-metre outline factor against the rest. min 2 keeps tiny houses alive.
+    total_perim = sum(r[1] for r in rings)
+    k = (N_BUILDING_TARGET * 0.85) / max(total_perim, 1.0)
+
+    xs: list[float] = []
+    ys: list[float] = []
+    zs: list[float] = []
+
+    for ring, perim, top_h, base_h in rings:
+        n_samples = int(np.clip(round(k * perim), 2, 24))
+        ts = np.linspace(0, perim, n_samples, endpoint=False)
+        for t in ts:
+            pt = ring.interpolate(t)
+            xs.append(float(pt.x))
+            ys.append(float(pt.y))
+            zs.append(top_h)  # rooftop outline
+        if top_h - base_h >= 4.0 and n_samples >= 9:
+            for t in ts[::3]:
                 pt = ring.interpolate(t)
                 xs.append(float(pt.x))
                 ys.append(float(pt.y))
-                zs.append(float(top_h))     # rooftop outline
-            # Ground line — only for taller buildings (≥ 3 m); otherwise the
-            # base ring overlaps the rooftop and reads as noise.
-            if top_h - base_h >= 3.0:
-                for t in ts[::2]:
-                    pt = ring.interpolate(t)
-                    xs.append(float(pt.x))
-                    ys.append(float(pt.y))
-                    zs.append(float(base_h))
+                zs.append(base_h)
 
     xs_arr = np.asarray(xs)
     ys_arr = np.asarray(ys)
     zs_arr = np.asarray(zs)
-    if len(xs_arr) > N_BUILDING_TARGET:
-        xs_arr = xs_arr[:N_BUILDING_TARGET]
-        ys_arr = ys_arr[:N_BUILDING_TARGET]
-        zs_arr = zs_arr[:N_BUILDING_TARGET]
-    return xs_arr, ys_arr, zs_arr
+    if len(xs_arr) > int(N_BUILDING_TARGET * 1.06):
+        # Thin uniformly — preserves coverage instead of dropping small houses.
+        idx = RNG.choice(len(xs_arr), size=N_BUILDING_TARGET, replace=False)
+        idx.sort()
+        xs_arr, ys_arr, zs_arr = xs_arr[idx], ys_arr[idx], zs_arr[idx]
+    return xs_arr, ys_arr, zs_arr, len(rings)
 
 
 def main() -> int:
     tx, ty, tz, meta = sample_terrain()
-    bx, by, bz = sample_buildings(meta["crs"])
+    bx, by, bz, n_buildings = sample_buildings(meta["crs"])
 
     all_x = np.concatenate([tx, bx])
     all_y = np.concatenate([ty, by])
@@ -179,6 +183,7 @@ def main() -> int:
         "count": int(len(qx)),
         "count_terrain": int(len(tx)),
         "count_buildings": int(len(bx)),
+        "n_building_footprints": int(n_buildings),
         "z_meters": {"min": z_min, "max": z_max},
     }
     OUT_META.write_text(json.dumps(out_meta, indent=2))
@@ -186,7 +191,7 @@ def main() -> int:
     print(
         f"✓ {OUT_BIN.relative_to(OUT_BIN.parents[2])} — {OUT_BIN.stat().st_size} bytes, "
         f"{out_meta['count']} pts ({out_meta['count_terrain']} terrain + "
-        f"{out_meta['count_buildings']} bldg)"
+        f"{out_meta['count_buildings']} bldg pts over {n_buildings} footprints)"
     )
     return 0
 

@@ -16,6 +16,7 @@ export const author = {
     'Autonomous Systems',
     '3D Reconstruction & LiDAR',
     'Robot Learning',
+    'AI Agents & Eval Infrastructure',
     'Edge Deployment & MLOps',
   ],
 

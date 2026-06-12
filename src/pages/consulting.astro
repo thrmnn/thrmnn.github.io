@@ -8,6 +8,21 @@ const calLink = 'https://cal.com/theo-hermann-aaa7tm';
 
 const scopes = [
   {
+    id: 'agents-infra',
+    title: 'AI-agent infrastructure',
+    duration: '4–8 weeks',
+    summary:
+      'For teams shipping agentic products and hitting the wall every team hits — flaky tool calls, unobservable failures, no evals, no safe way to ship a prompt change. I build the harness around your agent so it behaves like a production system: typed tool layer, retrieval you can measure, traces you can actually read, and an eval suite that catches regressions before users do.',
+    deliverables: [
+      'Typed, versioned tool layer (testable in isolation)',
+      'Retrieval pipeline with an offline eval harness',
+      'Tracing + observability on every agent run',
+      'Regression eval suite wired into CI',
+    ],
+    evidence:
+      'Author of <a href="https://github.com/thrmnn/agent-harness">agent-harness</a> — open-source typed tool layer + regression evals for agentic systems. Daily driver of multi-agent orchestration for research tooling at MIT Senseable Rio.',
+  },
+  {
     id: 'pipeline-audit',
     title: 'Perception pipeline audit',
     duration: '2 weeks',
@@ -57,22 +72,22 @@ const scopes = [
 
 <PageLayout
   title="Consulting"
-  description="Short, scoped perception and robotics engagements — pipeline audits, LiDAR bring-up, embodied AI MVPs."
+  description="Short, scoped engagements — AI-agent infrastructure, perception pipeline audits, LiDAR bring-up, embodied AI MVPs."
 >
   <section class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
       <header class="mb-12">
         <p class="font-mono text-xs uppercase tracking-[0.18em] text-text-muted mb-3">
-          Available · ~10 hrs/wk while at MIT Senseable Rio
+          Available · limited capacity alongside MIT Senseable Rio
         </p>
         <h1 class="text-3xl md:text-4xl font-bold text-text-primary mb-4">
-          Short, scoped engagements in perception &amp; robotics
+          Short, scoped engagements in perception &amp; AI-agent infrastructure
         </h1>
         <p class="text-text-secondary max-w-2xl text-lg leading-relaxed">
           I take a small number of focused consulting engagements alongside my research line at
-          MIT Senseable City Lab Rio — perception, computer vision, edge deployment, LiDAR
-          pipelines. The scopes below are the engagement shapes I keep coming back to. Anything
-          else, ask.
+          MIT Senseable City Lab Rio — perception, LiDAR, edge deployment, and the
+          infrastructure around agentic products. The scopes below are the engagement shapes I
+          keep coming back to. Anything else, ask.
         </p>
       </header>
 

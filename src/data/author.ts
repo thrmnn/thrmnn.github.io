@@ -8,7 +8,7 @@ export const author = {
   bio: [
     'Researcher and builder. <strong>MSc Robotics, EPFL</strong> · 3 years shipping perception and autonomy systems on edge hardware · Franco-Brazilian, trained in Switzerland.',
     'Founding member of <strong>MIT Senseable City Lab Rio</strong> — researcher on the 3D digital twins of favelas line, reconstructing dense informal settlements from LiDAR for public health work. On the side, building open-source robotics software.',
-    'Previously first engineering hire at <strong>Roboat</strong> (MIT spinoff) — built the full perception stack for autonomous canal vessels, sub-30ms on Jetson Orin, deployed in Amsterdam. Open to senior <strong>perception, computer vision, and robotics</strong> roles at companies pushing physical AI forward.',
+    'Previously at <strong>Roboat</strong> (MIT spinoff) — built the perception stack for autonomous canal vessels deployed in Amsterdam. Taking a small number of consulting engagements in <strong>perception and AI-agent infrastructure</strong>.',
   ],
 
   interests: [

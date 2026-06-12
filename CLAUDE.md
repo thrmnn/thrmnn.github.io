@@ -12,9 +12,10 @@ Personal site for **Théo Alessandro Hermann** — researcher and builder.
 
 - **Primary research line:** MIT Senseable City Lab Rio — 3D digital twins of favelas from LiDAR for public health research.
 - **Side build:** Open-source robotics software.
+- **Consulting practice:** perception + AI-agent infrastructure engagements for businesses (lead audience).
 - **Past marquee credit:** Roboat (MIT spinoff), first engineering hire — past tense.
 
-Tech portfolio first. Researcher-and-builder hybrid identity. The site exists to land senior perception/CV/robotics roles (full-time or freelance) and to anchor research credibility.
+Tech portfolio first. Researcher-and-builder hybrid identity. The site is the front door for collaboration: consulting clients and research collaborators first, with senior perception/CV/robotics credibility anchored but never pitched as job-seeking.
 
 ---
 

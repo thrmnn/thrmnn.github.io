@@ -29,17 +29,17 @@ Tech portfolio first. Researcher-and-builder hybrid identity. The site exists to
 
 ### Positioning (one-liner)
 
-> Researcher and builder. Urban science at MIT Senseable City Lab Rio — 3D digital twins of favelas for public health. Open-source robotics on the side.
+> Researcher and builder. Urban science at MIT Senseable City Lab Rio — 3D digital twins of favelas for public health. Open-source robotics on the side. Consulting in perception and AI-agent infrastructure.
 
-### Hero tag triplet
+### Tag triplet
 
-`Robotics · Urban Science · What Comes Next` (also appears in `site.ts` description verbatim).
+`Robotics · Urban Science · AI Agents` (lives in `site.ts` description only; the hero no longer displays it — removed 2026-06-12). The site is collaboration-first: no "open to roles" job-seeking copy anywhere in rendered HTML, and no prospective-employer name-drops (Anduril/Figure/Waymo were removed deliberately).
 
 ### Audience priority
 
-1. Hiring managers at frontier physical-AI companies (Anduril, Figure AI, Waymo) — perception / CV / robotics roles
-2. Freelance clients in computer vision and robotics consulting
-3. Research collaborators across urban science + perception
+1. Consulting prospects — perception and AI-agent infrastructure engagements for businesses
+2. Research collaborators across urban science + perception
+3. Hiring managers at frontier physical-AI companies — reachable, but never pitched to directly on-site
 
 ### Tenure
 
@@ -236,6 +236,9 @@ Format: `YYYY-MM-DD — decision — rationale.`
 - 2026-05-27 — Scroll-reveal motion system shipped via `[data-reveal]` + `--reveal-d` stagger token. Gated behind prefers-reduced-motion: no-preference.
 - 2026-05-27 — JetBrains Mono self-hosted (woff2 + `@font-face`). The token referenced it for months; the font was missing.
 - 2026-05-27 — CI/CD gated deploys: `npm test` runs as the post-build verifier in both workflows. Branch protection to be enabled manually in GitHub UI.
+- 2026-06-12 — Collaboration-first repositioning for networking event: all "open to senior roles" copy stripped (bio, /now ×2, contact); Anduril/Figure/Waymo name-drop removed; audience priority reordered to consulting prospects first.
+- 2026-06-12 — AI-agent infrastructure added as the lead consulting scope; consulting H1/intro/meta now cover both practices. Proof repo: `github.com/thrmnn/agent-harness` (typed tool layer + regression evals).
+- 2026-06-12 — Tag triplet unlocked and replaced: `What Comes Next` → `AI Agents`. Triplet lives in `site.ts` description only; hero displays name + positioning paragraph.
 
 ---
 

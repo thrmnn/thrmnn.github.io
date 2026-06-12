@@ -1,0 +1,159 @@
+---
+/**
+ * ProjectCarousel — lateral scroll-snap rail of project cards.
+ * Native horizontal scroll (drag / swipe / arrow keys when focused) with a
+ * gentle auto-advance that pauses on hover, interaction, focus, off-viewport,
+ * and under prefers-reduced-motion. Degrades to a plain scrollable row
+ * without JS. Next-card peek is the scroll affordance.
+ */
+import ProjectCard from './ProjectCard.astro';
+
+interface ProjectData {
+  title: string;
+  label?: string;
+  metric?: string;
+  tags?: string[];
+  summary?: string;
+  gradient?: string;
+  image?: string;
+}
+
+interface Props {
+  projects: Array<{ id: string; data: ProjectData }>;
+}
+
+const { projects } = Astro.props;
+---
+
+<div class="carousel-shell relative" data-carousel data-reveal>
+  <div
+    class="carousel-track flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2"
+    tabindex="0"
+    role="group"
+    aria-label="Project cards — scroll horizontally"
+  >
+    {projects.map((project) => (
+      <div class="carousel-item shrink-0 w-[78vw] sm:w-[340px] snap-start">
+        <ProjectCard
+          title={project.data.title}
+          label={project.data.label}
+          tags={project.data.tags}
+          gradient={project.data.gradient}
+          image={project.data.image}
+          href={`/projects/${project.id}/`}
+          reveal={false}
+        />
+      </div>
+    ))}
+  </div>
+
+  <div class="carousel-controls" aria-hidden="false">
+    <button type="button" class="carousel-btn" data-dir="-1" aria-label="Previous projects">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <button type="button" class="carousel-btn" data-dir="1" aria-label="Next projects">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .carousel-track {
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+  .carousel-track:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 6px;
+    border-radius: 8px;
+  }
+  .carousel-controls {
+    position: absolute;
+    top: -3.4rem;
+    right: 0;
+    display: flex;
+    gap: 0.4rem;
+  }
+  .carousel-btn {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    background: var(--color-bg-elevated);
+    cursor: pointer;
+    transition: color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+  }
+  .carousel-btn:hover,
+  .carousel-btn:focus-visible {
+    color: var(--color-text-primary);
+    border-color: var(--color-border-hover);
+  }
+</style>
+
+<script>
+  (() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    for (const shell of document.querySelectorAll<HTMLElement>('[data-carousel]')) {
+      const track = shell.querySelector<HTMLElement>('.carousel-track');
+      if (!track) continue;
+
+      const step = () => {
+        const first = track.firstElementChild as HTMLElement | null;
+        if (!first) return 320;
+        return first.getBoundingClientRect().width + 20;
+      };
+
+      const go = (dir: number) => {
+        const max = track.scrollWidth - track.clientWidth;
+        let next = track.scrollLeft + dir * step();
+        if (next > max + 8) next = 0; // wrap forward
+        if (next < -8) next = max; // wrap backward
+        track.scrollTo({ left: next, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+      };
+
+      shell.querySelectorAll<HTMLElement>('.carousel-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          pauseFor(8000);
+          go(Number(btn.dataset.dir));
+        });
+      });
+
+      // Auto-advance — every signal of human attention pauses it.
+      let visible = false;
+      let hovering = false;
+      let pausedUntil = 0;
+      const pauseFor = (ms: number) => {
+        pausedUntil = performance.now() + ms;
+      };
+
+      new IntersectionObserver(
+        (entries) => {
+          visible = entries[0]!.isIntersecting;
+        },
+        { threshold: 0.25 },
+      ).observe(shell);
+
+      shell.addEventListener('pointerenter', () => (hovering = true));
+      shell.addEventListener('pointerleave', () => (hovering = false));
+      ['pointerdown', 'wheel', 'touchstart'].forEach((ev) =>
+        track.addEventListener(ev, () => pauseFor(8000), { passive: true }),
+      );
+      shell.addEventListener('focusin', () => pauseFor(10000));
+
+      setInterval(() => {
+        if (reduceMotion.matches) return;
+        if (!visible || hovering || document.hidden) return;
+        if (performance.now() < pausedUntil) return;
+        go(1);
+      }, 4200);
+    }
+  })();
+</script>

@@ -3,7 +3,7 @@ import { footerLinks } from '../../data/navigation';
 import { author } from '../../data/author';
 
 const year = new Date().getFullYear();
-const monogramLetters = author.monogram.split('');
+const monogramLetters = author.monogram.replace(/[^A-Za-z]/g, '').split('');
 ---
 
 <footer class="border-t border-border mt-24">

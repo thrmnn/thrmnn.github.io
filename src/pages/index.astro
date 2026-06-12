@@ -1,6 +1,6 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
-import ProjectCard from '../components/ui/ProjectCard.astro';
+import ProjectCarousel from '../components/ui/ProjectCarousel.astro';
 import NewsItem from '../components/ui/NewsItem.astro';
 import Button from '../components/ui/Button.astro';
 import SocialIcon from '../components/ui/SocialIcon.astro';
@@ -8,10 +8,14 @@ import { author } from '../data/author';
 import { newsItems } from '../data/news';
 import { getCollection } from 'astro:content';
 
-const featuredProjects = (await getCollection('projects'))
-  .filter((p) => p.data.featuredOrder !== undefined && !p.data.draft)
-  .sort((a, b) => a.data.featuredOrder! - b.data.featuredOrder!)
-  .slice(0, 4);
+// Featured first, then the rest — the carousel surfaces the whole portfolio.
+const allProjects = (await getCollection('projects')).filter((p) => !p.data.draft);
+const carouselProjects = [
+  ...allProjects
+    .filter((p) => p.data.featuredOrder !== undefined)
+    .sort((a, b) => a.data.featuredOrder! - b.data.featuredOrder!),
+  ...allProjects.filter((p) => p.data.featuredOrder === undefined),
+];
 
 const mailto = `mailto:${author.email}`;
 ---
@@ -98,27 +102,7 @@ const mailto = `mailto:${author.email}`;
   <section id="projects" class="py-[var(--space-section)] bg-bg-secondary">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
       <h2 class="text-3xl font-bold text-text-primary mb-8" data-reveal>Featured Work</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {featuredProjects.map((project, i) => (
-          <ProjectCard
-            title={project.data.title}
-            label={project.data.label}
-            metric={project.data.metric}
-            tags={project.data.tags}
-            detail={project.data.summary}
-            gradient={project.data.gradient}
-            image={project.data.image}
-            href={`/projects/${project.id}/`}
-            number={i + 1}
-            index={i}
-          />
-        ))}
-      </div>
-      <p class="text-center mt-8" data-reveal>
-        <a href="/projects/" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">
-          See all projects →
-        </a>
-      </p>
+      <ProjectCarousel projects={carouselProjects} />
     </div>
   </section>
 
@@ -127,7 +111,7 @@ const mailto = `mailto:${author.email}`;
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
       <h2 class="text-3xl font-bold text-text-primary mb-8" data-reveal>Latest</h2>
       <div class="max-w-xl">
-        {newsItems.map((item, i) => (
+        {newsItems.slice(0, 3).map((item, i) => (
           <NewsItem date={item.date} text={item.text} index={i} />
         ))}
       </div>

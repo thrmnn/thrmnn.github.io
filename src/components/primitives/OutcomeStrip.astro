@@ -1,0 +1,64 @@
+---
+/**
+ * Outcome strip — quantified results stated before any description.
+ * Values in Cartesian display scale, labels in mono caption. Renders
+ * nothing when the project has no outcomes; never pads with placeholders.
+ */
+interface Props {
+  outcomes: { value: string; label: string }[];
+  size?: 'md' | 'lg';
+}
+
+const { outcomes, size = 'lg' } = Astro.props;
+---
+
+{
+  outcomes.length > 0 && (
+    <dl class:list={['outcome-strip', `outcome-strip--${size}`]}>
+      {outcomes.map((o) => (
+        <div class="outcome-cell">
+          <dd class="outcome-value">{o.value}</dd>
+          <dt class="outcome-label mono-caption">{o.label}</dt>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
+<style>
+  .outcome-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    column-gap: var(--s-6);
+    row-gap: var(--s-6);
+    margin: 0;
+    padding: var(--s-6) 0;
+    border-top: 1px solid var(--color-ink);
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .outcome-cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+  /* dd before dt is intentional: the number leads, the label explains. */
+  .outcome-value {
+    font-family: var(--font-cartesian);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--color-ink);
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .outcome-strip--lg .outcome-value {
+    font-size: var(--text-display-md);
+  }
+  .outcome-strip--md .outcome-value {
+    font-size: var(--text-display-sm);
+  }
+  .outcome-label {
+    color: var(--color-ink-muted);
+    max-width: 26ch;
+  }
+</style>

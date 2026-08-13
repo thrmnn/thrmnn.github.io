@@ -7,10 +7,13 @@ import { author } from '../data/author';
 
 <PageLayout title="Contact" description="Email and handles for Théo Alessandro Hermann.">
   <section class="contact grid-cartesian">
-    <h1 class="col-1-8 contact-title">Reach out.</h1>
+    <h1 class="col-1-10 contact-title">
+      One email reaches me.<br />
+      <a href={`mailto:${author.email}`} class="contact-hero-mail">{author.email}</a>
+    </h1>
     <p class="col-3-8 contact-lede">
       For research conversations, consulting at the intersection of built environment and AI
-      infrastructure, or anything that resembles either.
+      infrastructure, or anything that resembles either. Replies within a few days.
     </p>
 
     <div class="col-1-12">
@@ -18,10 +21,6 @@ import { author } from '../data/author';
     </div>
 
     <dl class="col-1-8 contact-grid">
-      <div class="contact-row">
-        <dt class="mono-caption">Email</dt>
-        <dd><a href={`mailto:${author.email}`}>{author.email}</a></dd>
-      </div>
       <div class="contact-row">
         <dt class="mono-caption">Public</dt>
         <dd><a href={author.links.twitter} rel="me noopener">@{author.handles.public}</a></dd>
@@ -41,9 +40,7 @@ import { author } from '../data/author';
     </dl>
 
     <aside class="col-10-12 contact-margin">
-      <Marginalia voice="mono">
-        Replies within a few days. No noisy newsletter.
-      </Marginalia>
+      <Marginalia voice="mono">No noisy newsletter. No scheduling links.</Marginalia>
     </aside>
   </section>
 </PageLayout>
@@ -62,11 +59,31 @@ import { author } from '../data/author';
     font-family: var(--font-cartesian);
     font-size: var(--text-display-lg);
     font-weight: 500;
-    line-height: 1.05;
+    line-height: 1.1;
     letter-spacing: -0.025em;
-    max-width: 16ch;
-    text-wrap: balance;
     margin: 0;
+  }
+  /* The email is the page's one action — it gets the display scale,
+     not a table row. */
+  .contact-hero-mail {
+    color: var(--color-ink);
+    text-decoration: none;
+    border-bottom: 3px solid var(--color-accent);
+    transition: color 200ms ease;
+    overflow-wrap: anywhere;
+  }
+  .contact-hero-mail:hover {
+    color: var(--color-accent);
+  }
+  /* Narrow screens: step the address down one display size so it holds
+     one line instead of breaking mid-domain. */
+  @media (max-width: 520px) {
+    .contact-hero-mail {
+      display: inline-block;
+      font-size: var(--text-display-sm);
+      margin-top: var(--s-2);
+      border-bottom-width: 2px;
+    }
   }
   .contact-lede {
     font-family: var(--font-body);

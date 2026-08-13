@@ -8,6 +8,13 @@ register: cartesian
 featured: true
 featuredOrder: 2
 heroAlt: 'LiDAR point cloud over a Rio favela showing built-form density'
+outcomes:
+  - value: '3 models'
+    label: 'CFD, solar, morphology — over one LiDAR geometry'
+  - value: 'hourly'
+    label: 'solar exposure mapped across the full year'
+  - value: 'per street'
+    label: 'risk resolved where standard models stop at the grid'
 collaborators: []
 links: {}
 tags:

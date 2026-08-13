@@ -138,7 +138,7 @@
   --text-display-md: clamp(30px, 24px + 1.55vw, 44px);
   --text-display-lg: clamp(36px, 5vw, 64px); /* page H1s — Phase 4.7 A1 */
   --text-display-xl: clamp(40px, 6vw, 72px); /* project H1 — Phase 4.7 A1 */
-  --text-hero: clamp(64px, 14vw, 168px); /* homepage wordmark — Phase 4.7 A1 */
+  --text-hero: clamp(52px, 9.5vw, 122px); /* homepage hero statement — sized so the Fraunces line holds one line at 1280 */
 
   /* Spacing scale — 4px baseline (per CLAUDE.md §5.4). */
   --s-1: 4px;

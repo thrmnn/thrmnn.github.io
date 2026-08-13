@@ -8,6 +8,13 @@ register: cartesian
 featured: true
 featuredOrder: 3
 heroAlt: 'lerobot manipulation task running under the benchmark harness'
+outcomes:
+  - value: '1 command'
+    label: 'checkpoint in, scorecard out'
+  - value: '3 metrics'
+    label: 'success rate, time-to-completion, interventions'
+  - value: '0 forks'
+    label: 'consumes lerobot, extends nothing'
 collaborators: []
 links: {}
 tags:

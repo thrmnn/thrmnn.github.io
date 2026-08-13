@@ -40,10 +40,6 @@ const trajectory = [
     </div>
 
     <div class="col-2-6 about-body">
-      <PullQuote citation="Thesis · internal">
-        Cartesian rigor applied to tropical complexity.
-      </PullQuote>
-
       <p>
         The work splits two ways. On one side, urban science: how the geometry of cities — formal
         and informal — produces climate, exposure, and risk at the pedestrian scale. The current
@@ -60,7 +56,9 @@ const trajectory = [
         geometry, measurement, and acting on the world. Both reward building the artifact before
         announcing the result.
       </p>
+    </div>
 
+    <div class="col-1-6 about-quote">
       <PullQuote citation="Working principle">
         Frontier methods, messy systems. The favela is not a problem to be solved — it is a system
         to be understood.
@@ -145,8 +143,23 @@ const trajectory = [
     margin-bottom: 0;
   }
 
-  /* Marginalia — sticky asymmetric aside at col-7-8 (Phase 4.7 D4). */
+  /* Pull quote breaks out of the essay measure — full editorial width
+     (col-1-6) so the Fraunces italic breathes instead of stacking one
+     word per line. */
+  .about-body {
+    grid-row: 2;
+  }
+  .about-quote {
+    grid-row: 3;
+  }
+  .about-quote :global(.pull-quote) {
+    margin-block: var(--s-8) 0;
+  }
+
+  /* Marginalia — sticky asymmetric aside at col-7-8 (Phase 4.7 D4),
+     spanning the body + quote rows. */
   .marginalia {
+    grid-row: 2 / span 2;
     position: sticky;
     top: var(--s-16);
     height: fit-content;

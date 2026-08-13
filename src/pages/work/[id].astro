@@ -9,6 +9,7 @@ import SectionNumber from '../../components/composition/SectionNumber.astro';
 import SectionRule from '../../components/composition/SectionRule.astro';
 import Figure from '../../components/composition/Figure.astro';
 import ExternalLink from '../../components/primitives/ExternalLink.astro';
+import OutcomeStrip from '../../components/primitives/OutcomeStrip.astro';
 import TagPill from '../../components/primitives/TagPill.astro';
 import { statusTone } from '../../utils/statusTone';
 
@@ -93,16 +94,27 @@ const articleJsonLd = {
         {updatedLabel && <p class="updated-line mono-caption">Updated {updatedLabel}</p>}
       </header>
 
-      <div class="col-1-12 project-hero-wrap">
-        <Figure
-          caption={d.title}
-          meta={d.tags.slice(0, 4)}
-          ratio="3/2"
-          src={d.heroImage}
-          alt={d.heroAlt ?? d.title}
-          pending={!d.heroImage}
-        />
-      </div>
+      {
+        d.outcomes.length > 0 && (
+          <div class="col-1-12 project-outcomes">
+            <OutcomeStrip outcomes={d.outcomes} />
+          </div>
+        )
+      }
+
+      {
+        d.heroImage && (
+          <div class="col-1-12 project-hero-wrap">
+            <Figure
+              caption={d.title}
+              meta={d.tags.slice(0, 4)}
+              ratio="3/2"
+              src={d.heroImage}
+              alt={d.heroAlt ?? d.title}
+            />
+          </div>
+        )
+      }
     </section>
 
     <section class="project-section grid-cartesian" id="context">

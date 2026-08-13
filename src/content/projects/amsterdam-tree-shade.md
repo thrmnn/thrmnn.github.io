@@ -8,6 +8,13 @@ register: cartesian
 featured: true
 featuredOrder: 1
 heroAlt: 'Pedestrian shade index map of central Amsterdam at solar noon'
+outcomes:
+  - value: '1 m'
+    label: 'canopy resolution from aerial LiDAR'
+  - value: '30–40 pp'
+    label: 'PSI divergence at solar noon, equal canopy cover'
+  - value: '47'
+    label: 'ground-logger validation sites'
 collaborators: []
 links: {}
 tags:

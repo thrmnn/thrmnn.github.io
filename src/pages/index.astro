@@ -18,24 +18,23 @@ const scrollLabel = `↓ CURRENT WORK · ${String(projectCount).padStart(2, '0')
 <PageLayout description={siteConfig.description}>
   <section class="hero">
     <div class="hero-grid grid-cartesian">
-      <div class="hero-wordmark col-1-8">
-        <h1 class="wordmark-hero">
-          Théo<br />
-          <em>Alessandro</em><br />
-          Hermann
+      <div class="hero-statement-wrap col-1-12">
+        <h1 class="hero-statement">
+          <span class="hs-cartesian">I build AI systems</span>
+          <span class="hs-connective">that survive contact with</span>
+          <em class="hs-tropical">the real world.</em>
         </h1>
       </div>
       <aside class="hero-meta col-10-12">
-        <p class="mono-caption">RIO · 2026</p>
         <hr class="hero-rule" />
         <p class="hero-positioning">
-          Researcher and builder.<br />
-          MIT Senseable Rio.<br />
-          Urban science, robotics,<br />
-          and what comes next.
+          Théo Alessandro Hermann.<br />
+          Robotics &amp; ML engineer —<br />
+          MIT Senseable City Lab, EPFL.<br />
+          Perception and RAG pipelines, in production.
         </p>
         <hr class="hero-rule" />
-        <p class="mono-caption">FR · BR · 4 LANGUAGES</p>
+        <p class="mono-caption"><a href="/work">SEE THE WORK</a> · <a href="/contact">WORK WITH ME</a></p>
       </aside>
     </div>
     <p class="hero-scroll mono-caption">{scrollLabel}</p>
@@ -91,8 +90,9 @@ const scrollLabel = `↓ CURRENT WORK · ${String(projectCount).padStart(2, '0')
     /* Wordmark breathes at top of viewport; no extra padding. */
   }
   .hero-meta {
-    padding-top: var(--s-20);
-    /* Asymmetric offset — meta starts well below the wordmark's baseline. */
+    /* Second grid row, cols 10–12 — sits low-right of the statement,
+       keeping the asymmetric composition. */
+    padding-top: var(--s-8);
   }
   .hero-rule {
     border: 0;
@@ -110,7 +110,13 @@ const scrollLabel = `↓ CURRENT WORK · ${String(projectCount).padStart(2, '0')
     text-align: left;
     color: var(--color-ink-muted);
     padding-bottom: var(--s-4);
+    padding-inline: 1.5rem;
     margin: 0;
+  }
+  @media (min-width: 768px) {
+    .hero-scroll {
+      padding-inline: 2.5rem;
+    }
   }
   @media (max-width: 719px) {
     .hero {
@@ -125,23 +131,47 @@ const scrollLabel = `↓ CURRENT WORK · ${String(projectCount).padStart(2, '0')
     }
   }
 
-  /* Wordmark-hero — THE typographic moment (Phase 4.7 A1).
-     Cartesian display face (Space Grotesk) at --text-hero scale; the
-     <em> middle line is italic and lighter for tension. Aria label on
-     the h1 preserves the spoken name. */
-  .wordmark-hero {
-    font-family: var(--font-cartesian);
+  /* Hero statement — THE typographic moment. The locked thesis (§2) set
+     as the two registers colliding in one sentence: Space Grotesk for the
+     Cartesian half, Fraunces italic for the Tropical half. The name lives
+     in the header wordmark; the statement is what a stranger should leave
+     with. (§6: no big-typography name hero.) */
+  .hero-statement {
     font-size: var(--text-hero);
-    font-weight: 500;
-    line-height: 0.88;
-    letter-spacing: -0.03em;
+    line-height: 0.98;
     color: var(--color-ink);
     margin: 0;
+    font-weight: 500;
   }
-  .wordmark-hero em {
-    font-style: italic;
+  /* Each line is a block so its line box sizes to its own type — an
+     inline connective inherits the h1's ~1em strut and opens a lopsided
+     gap above itself. */
+  .hero-statement > span,
+  .hero-statement > em {
+    display: block;
+  }
+  .hs-cartesian {
+    font-family: var(--font-cartesian);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+  .hs-connective {
+    font-family: var(--font-cartesian);
     font-weight: 300;
-    letter-spacing: -0.04em;
+    font-size: var(--text-display-md);
+    letter-spacing: 0.01em;
+    color: var(--color-ink-muted);
+    margin-block: 0.3em;
+  }
+  .hs-tropical {
+    font-family: var(--font-tropical);
+    font-style: italic;
+    font-weight: 420;
+    letter-spacing: -0.015em;
+    font-variation-settings:
+      'opsz' 144,
+      'SOFT' 100,
+      'WONK' 1;
   }
 
   /* Below-fold sections — sit below the hero, only visible once scrolled. */

@@ -1,0 +1,299 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import SectionRule from '../components/composition/SectionRule.astro';
+import Marginalia from '../components/composition/Marginalia.astro';
+import { author } from '../data/author';
+
+const mailto = `mailto:${author.email}?subject=Knowledge%20base%20setup`;
+---
+
+<PageLayout
+  title="Work with me"
+  description="AI knowledge base setup for growing companies. Fixed price, two-week delivery, full handover."
+>
+  <section class="wwm grid-cartesian">
+    <h1 class="col-1-8 wwm-title">Your company's knowledge is scattered. Your AI should fix that.</h1>
+    <p class="col-3-8 wwm-lede">
+      I build private AI knowledge systems grounded in your company's actual documents and
+      processes — so your team spends less time searching and more time executing. Fixed price,
+      delivered in two weeks, yours to own.
+    </p>
+    <p class="col-3-8">
+      <a class="wwm-cta" href={mailto}>Email me about your setup →</a>
+    </p>
+
+    <div class="col-1-12">
+      <SectionRule align="start">The problem</SectionRule>
+    </div>
+
+    <dl class="col-1-8 wwm-rows">
+      <div class="wwm-row">
+        <dt>The answer exists. Finding it takes an hour.</dt>
+        <dd>
+          Processes, past decisions, client history — spread across six tools and three inboxes.
+          Every search is a small tax on focus.
+        </dd>
+      </div>
+      <div class="wwm-row">
+        <dt>Documents pile up. Knowledge doesn't.</dt>
+        <dd>
+          The documentation is there; when someone new joins, nobody knows where to start. The
+          intelligence isn't.
+        </dd>
+      </div>
+      <div class="wwm-row">
+        <dt>The same questions get answered over and over.</dt>
+        <dd>
+          Senior people field interruptions that could be self-served. Knowledge bottlenecks become
+          people bottlenecks.
+        </dd>
+      </div>
+    </dl>
+
+    <div class="col-1-12">
+      <SectionRule align="start">How it works</SectionRule>
+    </div>
+
+    <ol class="col-1-8 wwm-steps">
+      <li>
+        <span class="mono-caption">01 · Audit</span>
+        I map where your knowledge lives, who owns it, and what's actually used. A few days, no
+        workshops.
+      </li>
+      <li>
+        <span class="mono-caption">02 · Build</span>
+        A private retrieval system (RAG) over your documents, connected to the tools you already
+        use. Zero new habits required.
+      </li>
+      <li>
+        <span class="mono-caption">03 · Handover</span>
+        Documentation, team training, full ownership. It runs without me; ongoing support is
+        optional, never structural.
+      </li>
+    </ol>
+
+    <div class="col-1-12">
+      <SectionRule align="start">The offer</SectionRule>
+    </div>
+
+    <div class="col-1-8 wwm-offer">
+      <h2 class="wwm-offer-title">AI knowledge base setup</h2>
+      <p class="wwm-offer-meta mono-caption">€4,500 · delivered in 2 weeks · fixed scope</p>
+      <p>
+        A working retrieval system over your documents and SOPs — ingestion, hybrid retrieval,
+        grounded answers — integrated where your team already works, handed over completely. If one
+        senior person spends four hours a week on internal search, the setup pays for itself in
+        about three months.
+      </p>
+      <p>
+        <a class="wwm-cta" href={mailto}>Email me — I'll reply with three scoping questions →</a>
+      </p>
+      <p class="wwm-also">
+        Also available: larger document-intelligence pipelines (analysis and extraction at volume)
+        and an optional monthly support retainer — ask if either fits.
+      </p>
+    </div>
+
+    <div class="col-1-12">
+      <SectionRule align="start">Who builds this</SectionRule>
+    </div>
+
+    <div class="col-1-8 wwm-about">
+      <p>
+        I'm {author.shortName} — an AI engineer working on RAG systems, document intelligence, and
+        LLM integration. Background: M.S. Robotics at EPFL; perception engineer at Roboat (MIT
+        spinoff), where I shipped production ML on real hardware; currently research fellow at MIT
+        Senseable City Lab, leading a ten-person technical team. I take a small number of client
+        projects at a time.
+      </p>
+      <p>
+        No testimonials on this page yet — I don't publish social proof I can't stand behind. I'll
+        show you real work on a call, under NDA where needed.
+      </p>
+    </div>
+
+    <div class="col-1-12">
+      <SectionRule align="start">Questions</SectionRule>
+    </div>
+
+    <dl class="col-1-8 wwm-rows">
+      <div class="wwm-row">
+        <dt>We tried AI tools and the team stopped using them.</dt>
+        <dd>
+          Generic tools fail because they aren't built around how your team works. This is grounded
+          in your content, wired into your existing tools, and scoped to your workflows — not
+          another tab.
+        </dd>
+      </div>
+      <div class="wwm-row">
+        <dt>Are we dependent on you afterwards?</dt>
+        <dd>
+          No. Every project ends with documentation, a handover session, and full ownership.
+          Dependency is a design flaw.
+        </dd>
+      </div>
+      <div class="wwm-row">
+        <dt>Is this a ChatGPT wrapper?</dt>
+        <dd>
+          The model matters less than the retrieval architecture, data quality, and integration.
+          You're paying for a system that knows your company, on your data, privately.
+        </dd>
+      </div>
+    </dl>
+
+    <div class="col-1-8 wwm-close">
+      <p class="wwm-close-line">Your knowledge is an asset. Let's make it work.</p>
+      <p><a class="wwm-cta" href={mailto}>{author.email} →</a></p>
+    </div>
+
+    <aside class="col-10-12 wwm-margin">
+      <Marginalia voice="mono">
+        One email is enough to find out whether this fits. I'll tell you honestly if it doesn't.
+      </Marginalia>
+    </aside>
+  </section>
+</PageLayout>
+
+<style>
+  .wwm {
+    padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-section);
+    row-gap: var(--s-6);
+  }
+  .wwm-title {
+    font-family: var(--font-cartesian);
+    font-size: var(--text-display-lg);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    max-width: 20ch;
+    text-wrap: balance;
+    margin: 0;
+  }
+  .wwm-lede {
+    font-family: var(--font-body);
+    color: var(--color-ink-soft);
+    font-size: var(--text-body-lg);
+    line-height: 1.55;
+    margin: 0;
+    margin-top: var(--s-4);
+  }
+  .wwm-cta {
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    color: var(--color-ink);
+    border-bottom: 1px solid var(--color-rule);
+    padding-bottom: 1px;
+    text-decoration: none;
+    transition:
+      color 200ms ease,
+      border-color 200ms ease;
+  }
+  .wwm-cta:hover {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
+  .wwm-rows {
+    border-top: 1px solid var(--color-rule);
+    margin: 0;
+    padding: 0;
+  }
+  .wwm-row {
+    display: grid;
+    grid-template-columns: minmax(12rem, 1fr) 2fr;
+    gap: var(--s-6);
+    align-items: baseline;
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .wwm-row dt {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .wwm-row dd {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+  .wwm-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+  .wwm-steps li {
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    max-width: 56ch;
+  }
+  .wwm-offer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    max-width: 56ch;
+  }
+  .wwm-offer-title {
+    font-family: var(--font-cartesian);
+    font-size: var(--text-display-sm);
+    font-weight: 500;
+    line-height: 1.1;
+    margin: 0;
+  }
+  .wwm-offer-meta {
+    margin: 0;
+  }
+  .wwm-offer p,
+  .wwm-about p {
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    margin: 0;
+  }
+  .wwm-also {
+    font-size: var(--text-body-sm);
+    color: var(--color-ink-muted);
+  }
+  .wwm-about {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    max-width: 56ch;
+  }
+  .wwm-close {
+    margin-top: var(--s-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+  .wwm-close-line {
+    font-family: var(--font-cartesian);
+    font-size: var(--text-display-sm);
+    font-weight: 500;
+    line-height: 1.15;
+    margin: 0;
+    max-width: 24ch;
+    text-wrap: balance;
+  }
+  .wwm-margin {
+    align-self: end;
+    padding-bottom: var(--s-6);
+  }
+  @media (max-width: 520px) {
+    .wwm-row {
+      grid-template-columns: 1fr;
+      gap: var(--s-1);
+    }
+  }
+</style>

@@ -35,10 +35,12 @@ const credit = citation ?? attribution;
     margin: var(--s-16) 0;
     padding: var(--s-4) 0 var(--s-4) var(--s-8);
     border-left: 4px solid var(--color-terra);
-    max-width: 28ch;
   }
   .pull-quote-body {
     margin: 0;
+    /* Measure in ch of the quote's own display size — on the container it
+       computed against body size and stacked two words per line. */
+    max-width: 34ch;
     font-family: var(--font-tropical);
     font-style: italic;
     font-size: var(--text-display-md);

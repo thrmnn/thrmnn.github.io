@@ -4,6 +4,7 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import Breadcrumb from '../../components/nav/Breadcrumb.astro';
 import SectionRule from '../../components/composition/SectionRule.astro';
 import Figure from '../../components/composition/Figure.astro';
+import OutcomeStrip from '../../components/primitives/OutcomeStrip.astro';
 import StatusPill from '../../components/primitives/StatusPill.astro';
 import TagPill from '../../components/primitives/TagPill.astro';
 import { statusTone } from '../../utils/statusTone';
@@ -43,19 +44,21 @@ const fmtYearMonth = (date: Date) =>
         <article class="col-1-12 work-feature grid-cartesian">
           <div class="featured-project col-1-8">
             <a href={`/work/${featured.id}`} class="featured-link">
-              <Figure
-                caption={featured.data.title}
-                meta={featured.data.tags.slice(0, 4)}
-                ratio="3/2"
-                src={featured.data.heroImage}
-                alt={featured.data.heroAlt ?? featured.data.title}
-                pending={!featured.data.heroImage}
-              />
+              {featured.data.heroImage && (
+                <Figure
+                  caption={featured.data.title}
+                  meta={featured.data.tags.slice(0, 4)}
+                  ratio="3/2"
+                  src={featured.data.heroImage}
+                  alt={featured.data.heroAlt ?? featured.data.title}
+                />
+              )}
               <div class="featured-meta">
                 <h2 class="featured-title">{featured.data.title}</h2>
                 {featured.data.subtitle && (
                   <p class="featured-subtitle">{featured.data.subtitle}</p>
                 )}
+                <OutcomeStrip outcomes={featured.data.outcomes} size="md" />
                 <div class="featured-row">
                   {featured.data.status && (
                     <StatusPill tone={statusTone(featured.data.status)}>
@@ -101,7 +104,14 @@ const fmtYearMonth = (date: Date) =>
                 <span class="row-year">{year}</span>
                 <div class="row-body">
                   <h2 class="row-title">{p.data.title}</h2>
-                  {p.data.subtitle && <p class="row-summary">{p.data.subtitle}</p>}
+                  {p.data.outcomes.length > 0 ? (
+                    <p class="row-outcomes mono-caption">
+                      {/* One outcome with its label beats three bare values. */}
+                      {p.data.outcomes[0].value} · {p.data.outcomes[0].label}
+                    </p>
+                  ) : (
+                    p.data.subtitle && <p class="row-summary">{p.data.subtitle}</p>
+                  )}
                   {p.data.tags.length > 0 && (
                     <div class="row-tags tag-row">
                       {p.data.tags.slice(0, 3).map((t) => (
@@ -149,12 +159,12 @@ const fmtYearMonth = (date: Date) =>
     margin-top: var(--s-4);
   }
 
-  /* Featured project — composed, not listed (A4). 60vh+ presence. */
+  /* Featured project — composed, not listed (A4). Height follows content;
+     the old 60vh floor left a dead band above the list. */
   .work-feature {
     margin-top: var(--s-12);
     padding-inline: 0;
     max-width: none;
-    min-height: 60vh;
     align-items: start;
   }
   .featured-project {
@@ -284,6 +294,10 @@ const fmtYearMonth = (date: Date) =>
     margin: 0;
     color: var(--color-ink);
     transition: color 250ms ease;
+  }
+  .row-outcomes {
+    color: var(--color-ink-soft);
+    margin: 0;
   }
   .row-summary {
     font-family: var(--font-body);

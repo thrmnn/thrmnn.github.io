@@ -22,6 +22,15 @@ const projects = defineCollection({
      * scientific imagery rather than photography.
      */
     heroKind: z.enum(['photo', 'technical']).default('technical'),
+    /**
+     * Quantified outcomes — the numbers the work earned, stated up front.
+     * Rendered as the stat strip on project pages and outcome lines on
+     * index rows. Values must already exist in the body copy; no
+     * marketing numbers.
+     */
+    outcomes: z
+      .array(z.object({ value: z.string(), label: z.string() }))
+      .default([]),
     collaborators: z.array(z.string()).default([]),
     links: z
       .object({

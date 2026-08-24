@@ -144,6 +144,11 @@ function buildLoomoScene(): Cloud {
   // cycle covers 2·STRIDE of ground, so v = 2·STRIDE·GAIT_HZ and w = v/R.
   const WALK_W = (2 * STRIDE * GAIT_HZ) / PATH_R; // rad/s around the path
 
+  // Follower path angle: first-order lag toward its offset so tracking
+  // reads as pursuit, not a rigid formation.
+  let ra = -0.62;
+  let tPrev = 0;
+
   const update = (t: number) => {
     const a = t * WALK_W;
     const px = PATH_R * Math.cos(a);
@@ -240,7 +245,9 @@ function buildLoomoScene(): Cloud {
     }
 
     // --- follower sensor: a point of origin, trailing on the same path ---
-    const ra = a - 0.62;
+    const dtu = Math.min(Math.max(t - tPrev, 0), 0.1);
+    tPrev = t;
+    ra += (a - 0.62 - ra) * Math.min(1, dtu * 2.5);
     const rx = PATH_R * Math.cos(ra);
     const ry = PATH_R * Math.sin(ra);
     const headZ = 0.2;
@@ -693,7 +700,8 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
     }
     const dt = Math.min(now - last, 64);
     last = now;
-    if (s.autoRotate && !s.dragging) s.rotation += dt * 0.00016;
+    // Choreographed scenes carry their own motion — damp the idle spin.
+    if (s.autoRotate && !s.dragging) s.rotation += dt * 0.00016 * (s.cloud.update ? 0.25 : 1);
     render(s, now);
     if (
       !pinned &&

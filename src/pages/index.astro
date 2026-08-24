@@ -27,6 +27,7 @@ const mailto = `mailto:${author.email}`;
       <div class="hero-type">
         <h1
           class="hero-name"
+          data-decompose
           data-reveal
           style="--reveal-d: 0;"
         >
@@ -47,9 +48,9 @@ const mailto = `mailto:${author.email}`;
           </div>
         </div>
         <div class="artifact-chips mt-3" role="group" aria-label="Choose a dataset">
-          <button type="button" class="artifact-chip is-active" data-artifact-chip data-url="/data/vidigal-rooftops.bin" aria-pressed="true">vidigal · rio</button>
-          <button type="button" class="artifact-chip" data-artifact-chip data-url="/data/ams-trees.bin" aria-pressed="false">tree census · ams</button>
-          <button type="button" class="artifact-chip" data-artifact-chip data-url="proc:loomo" aria-pressed="false">loomo · person tracking</button>
+          <button type="button" class="artifact-chip is-active" data-artifact-chip data-url="/data/vidigal-rooftops.bin" data-zoom="1.75" aria-pressed="true">vidigal · rio</button>
+          <button type="button" class="artifact-chip" data-artifact-chip data-url="/data/ams-trees.bin" data-zoom="1.7" aria-pressed="false">lai · shading · ams</button>
+          <button type="button" class="artifact-chip" data-artifact-chip data-url="proc:loomo" data-zoom="1.8" aria-pressed="false">loomo · person tracking</button>
         </div>
       </div>
     </div>
@@ -106,7 +107,7 @@ const mailto = `mailto:${author.email}`;
        so the site-wide pointer field stays continuous through this band -->
   <section id="projects" class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="text-3xl font-bold text-text-primary mb-10" data-reveal>Featured Work</h2>
+      <h2 class="text-3xl font-bold text-text-primary mb-10" data-decompose data-reveal>Featured Work</h2>
     </div>
     <ProjectCarousel projects={carouselProjects} />
   </section>
@@ -114,7 +115,7 @@ const mailto = `mailto:${author.email}`;
   <!-- Latest -->
   <section id="news" class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="text-3xl font-bold text-text-primary mb-8" data-reveal>Latest</h2>
+      <h2 class="text-3xl font-bold text-text-primary mb-8" data-decompose data-reveal>Latest</h2>
       <div class="max-w-xl">
         {newsItems.slice(0, 3).map((item, i) => (
           <NewsItem date={item.date} text={item.text} index={i} />
@@ -132,7 +133,7 @@ const mailto = `mailto:${author.email}`;
   <section id="contact" class="contact-section relative py-[var(--space-section)] overflow-hidden">
     <div class="contact-bg absolute inset-0"></div>
     <div class="relative z-10 mx-auto max-w-[var(--max-w-content)] px-6 text-center">
-      <h2 class="text-3xl font-bold text-text-primary mb-4" data-reveal>Let's Talk</h2>
+      <h2 class="text-3xl font-bold text-text-primary mb-4" data-decompose data-reveal>Let's Talk</h2>
       <p class="text-text-secondary mb-10 max-w-lg mx-auto text-lg" data-reveal style="--reveal-d: 2;">
         Consulting in <strong class="text-text-primary">perception</strong> and <strong class="text-text-primary">AI-agent infrastructure</strong>, and research collaboration — <a href="/consulting/" class="text-[var(--color-link)] hover:text-[var(--color-link-hover)] underline-offset-4 underline decoration-1">see engagement scopes →</a>
       </p>

@@ -73,37 +73,82 @@ def quantize_and_write(
 
 
 def sample_trees() -> None:
+    """LAI → shading, made visible.
+
+    Each tree renders as: a trunk column (cat 1), a canopy dome whose POINT
+    DENSITY is proportional to its measured LAI (cat 2), and a shade
+    footprint on the ground (cat 0) offset along the sun direction, again
+    densified by LAI — denser canopy, deeper shade. Sun fixed at 45°
+    elevation from the south-west (afternoon). Trees come from the densest
+    500 m window of the census so individual canopies stay legible.
+    """
     import pandas as pd
 
     df = pd.read_csv(TREES_CSV)
-    df = df[np.isfinite(df["height_max"]) & (df["height_max"] > 2)]
+    df = df[np.isfinite(df["height_max"]) & (df["height_max"] > 2)].copy()
 
-    # Degrees → local metres around the census centroid.
     lat0 = float(df["latitude"].mean())
     mx = 111_320 * np.cos(np.radians(lat0))
     my = 110_540
-    x = (df["longitude"].to_numpy() - df["longitude"].mean()) * mx
-    y = (df["latitude"].to_numpy() - df["latitude"].mean()) * my
+    df["x"] = (df["longitude"] - df["longitude"].mean()) * mx
+    df["y"] = (df["latitude"] - df["latitude"].mean()) * my
+
+    # Densest 280 m window keeps canopies readable at hero scale.
+    best, best_n = (0.0, 0.0), 0
+    for cx in np.arange(df["x"].min(), df["x"].max(), 50):
+        for cy in np.arange(df["y"].min(), df["y"].max(), 50):
+            n = ((df["x"] > cx) & (df["x"] < cx + 280) & (df["y"] > cy) & (df["y"] < cy + 280)).sum()
+            if n > best_n:
+                best_n, best = n, (cx, cy)
+    df = df[
+        (df["x"] > best[0]) & (df["x"] < best[0] + 280)
+        & (df["y"] > best[1]) & (df["y"] < best[1] + 280)
+    ]
+
+    lai = np.nan_to_num(df["lai_mean"].to_numpy(), nan=1.0)
+    lai_n = np.clip(lai / 3.2, 0.05, 1.0)  # census max ≈ 3.2
     h = df["height_max"].to_numpy()
-    d = np.nan_to_num(df["diameters"].to_numpy(), nan=6.0)
+    crown_r = np.clip(np.nan_to_num(df["diameters"].to_numpy(), nan=6.0), 3.0, 30.0) / 2
+
+    sun = np.array([0.707, 0.707])  # shadow cast toward NE (sun in SW), 45° elevation
 
     xs, ys, zs, cs = [], [], [], []
-    for xi, yi, hi, di in zip(x, y, h, d):
-        xs.append(xi); ys.append(yi); zs.append(0.0); cs.append(0)  # ground anchor
-        for f in (0.45, 0.75, 1.0):  # stem + crown
-            xs.append(xi); ys.append(yi); zs.append(hi * f); cs.append(2)
-        r = max(di, 3.0) / 2
-        for dx, dy in ((r, 0), (-r, 0), (0, r), (0, -r)):  # crown spread
-            xs.append(xi + dx); ys.append(yi + dy); zs.append(hi * 0.88); cs.append(2)
+    for xi, yi, hi, ri, li in zip(df["x"], df["y"], h, crown_r, lai_n):
+        # trunk
+        for f in (0.1, 0.4, 0.62):
+            xs.append(xi); ys.append(yi); zs.append(hi * f); cs.append(1)
+        # canopy dome — density ∝ LAI
+        n_canopy = int(round(30 + li * 90))
+        cz = hi * 0.74
+        for _ in range(n_canopy):
+            u, v, w = RNG.uniform(-1, 1, 3)
+            norm = max(np.sqrt(u * u + v * v + w * w), 1e-6)
+            rad = ri * RNG.uniform(0.55, 1.0) ** 0.5
+            xs.append(xi + (u / norm) * rad)
+            ys.append(yi + (v / norm) * rad)
+            zs.append(max(cz + (abs(w) / norm) * hi * 0.26 * np.sign(w), hi * 0.45))
+            cs.append(2)
+        # shade footprint — offset = height (45° sun), density ∝ LAI
+        n_shade = int(round(24 + li * 70))
+        sx, sy = xi + sun[0] * hi * 1.25, yi + sun[1] * hi * 1.25
+        for _ in range(n_shade):
+            a = RNG.uniform(0, 2 * np.pi)
+            rr = ri * 1.15 * np.sqrt(RNG.uniform(0, 1))
+            ex = np.cos(a) * rr * 1.45  # major axis along NE cast
+            ey = np.sin(a) * rr * 0.8
+            xs.append(sx + ex * 0.707 - ey * 0.707)
+            ys.append(sy + ex * 0.707 + ey * 0.707)
+            zs.append(0.0)
+            cs.append(0)
 
     quantize_and_write(
         np.asarray(xs), np.asarray(ys), np.asarray(zs),
         np.asarray(cs, dtype=np.uint8),
         "ams-trees",
         {
-            "source": "MIT Senseable City Lab Amsterdam + AMS Institute — per-tree LAI census",
-            "site": "Amsterdam, Netherlands",
-            "n_trees": int(len(x)),
+            "source": "MIT Senseable City Lab Amsterdam + AMS Institute — per-tree LAI census; shade footprints derived at 45° SW sun",
+            "site": "Amsterdam, Netherlands (densest 500 m census window)",
+            "n_trees": int(len(df)),
         },
     )
 

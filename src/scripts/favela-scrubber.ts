@@ -15,6 +15,8 @@ interface Cloud {
   phase: Float32Array;
   // Procedural scenes rewrite their point positions each frame.
   update?: (tSec: number) => void;
+  // Per-dataset framing: multiplies the base projection scale.
+  zoom?: number;
 }
 
 interface Scrubber {
@@ -49,7 +51,7 @@ const N_BUCKETS = 96; // cat(3) × height(4) × depth(8)
 const EXCITE_R = 64; // px
 const EXCITE_CAP = 800;
 const CYCLE_MS = 14000;
-const SIZES = [1.4, 1.3, 1.7]; // dot size per category
+const SIZES = [1.5, 1.5, 1.9]; // dot size per category
 
 function detectDark(): boolean {
   const attr = document.documentElement.getAttribute('data-theme');
@@ -59,18 +61,21 @@ function detectDark(): boolean {
 }
 
 // Procedural scene: Segway Loomo (EPFL VITA project) tracking a walking
-// person — pose keypoints in green, robot in amber, a scan beam that fires
-// every few seconds and flashes the detected joints. An illustration of the
-// real person-following stack, not sensor data; positions are parametric.
+// person — pose keypoints in green, and a LiDAR cone of light sweeping out
+// of the follower's sensor; the detected joints flash as the cone crosses
+// them. An illustration of the real person-following stack, not sensor
+// data; positions are parametric.
 function buildLoomoScene(): Cloud {
-  const N_GROUND = 320;
+  const N_GROUND = 150;
   const BONES = 14;
-  const PTS_PER_BONE = 7;
+  const PTS_PER_BONE = 9;
   const N_PERSON = BONES * PTS_PER_BONE;
-  const N_ROBOT = 52;
-  const N_BEAM = 24;
+  const N_EMITTER = 12;
+  const CONE_RAYS = 22;
+  const PTS_PER_RAY = 20;
+  const N_CONE = CONE_RAYS * PTS_PER_RAY;
   const N_FLASH = 8;
-  const n = N_GROUND + N_PERSON + N_ROBOT + N_BEAM + N_FLASH;
+  const n = N_GROUND + N_PERSON + N_EMITTER + N_CONE + N_FLASH;
 
   const x = new Float32Array(n);
   const y = new Float32Array(n);
@@ -81,7 +86,7 @@ function buildLoomoScene(): Cloud {
 
   // Ground disc — golden-angle spiral, static.
   for (let i = 0; i < N_GROUND; i++) {
-    const r = 0.95 * Math.sqrt((i + 0.5) / N_GROUND);
+    const r = 0.72 * Math.sqrt((i + 0.5) / N_GROUND);
     const a = i * 2.39996;
     x[i] = r * Math.cos(a);
     y[i] = r * Math.sin(a);
@@ -89,33 +94,14 @@ function buildLoomoScene(): Cloud {
     cat[i] = 0;
   }
   cat.fill(2, N_GROUND, N_GROUND + N_PERSON); // person = vegetation green
-  cat.fill(1, N_GROUND + N_PERSON, N_GROUND + N_PERSON + N_ROBOT); // robot = structure amber
-  cat.fill(0, N_GROUND + N_PERSON + N_ROBOT, n - N_FLASH); // beam = ground blue
+  cat.fill(1, N_GROUND + N_PERSON, N_GROUND + N_PERSON + N_EMITTER); // emitter = amber
+  cat.fill(1, N_GROUND + N_PERSON + N_EMITTER, n - N_FLASH); // cone = amber light
   cat.fill(1, n - N_FLASH, n); // joint flashes = amber markers
-
-  // Robot body template (local: f = forward, s = side, z up), written per frame
-  // at the robot's pose. Base ring ×2, stem, head ring.
-  const robotTpl: Array<[number, number, number]> = [];
-  for (let i = 0; i < 18; i++) {
-    const a = (i / 18) * Math.PI * 2;
-    robotTpl.push([Math.cos(a) * 0.075, Math.sin(a) * 0.075, 0.016]);
-  }
-  for (let i = 0; i < 12; i++) {
-    const a = (i / 12) * Math.PI * 2;
-    robotTpl.push([Math.cos(a) * 0.058, Math.sin(a) * 0.058, 0.07]);
-  }
-  for (let i = 0; i < 6; i++) robotTpl.push([0, 0, 0.09 + (i / 5) * 0.17]);
-  for (let i = 0; i < 12; i++) {
-    const a = (i / 12) * Math.PI * 2;
-    robotTpl.push([Math.cos(a) * 0.035, Math.sin(a) * 0.035, 0.275]);
-  }
-  for (let i = 0; i < 4; i++) robotTpl.push([(i - 1.5) * 0.018, 0, 0.31]);
 
   const PATH_R = 0.48;
   const WALK_W = 0.22; // rad/s around the path
   const H = 0.62; // person height (normalized scene units)
   const STRIDE = 0.09;
-  const BEAM_CYCLE = 3.2;
 
   const update = (t: number) => {
     const a = t * WALK_W;
@@ -168,53 +154,51 @@ function buildLoomoScene(): Cloud {
       }
     }
 
-    // --- robot: same path, trailing behind, facing the person ---
+    // --- follower sensor: a point of origin, trailing on the same path ---
     const ra = a - 0.62;
     const rx = PATH_R * Math.cos(ra);
     const ry = PATH_R * Math.sin(ra);
-    const fx0 = px - rx;
-    const fy0 = py - ry;
-    const fl = Math.hypot(fx0, fy0) || 1;
-    const fx = fx0 / fl;
-    const fy = fy0 / fl;
-    for (const [f, s, zz] of robotTpl) {
-      x[i] = rx + fx * f + -fy * s;
-      y[i] = ry + fy * f + fx * s;
-      z[i] = zz;
+    const headZ = 0.2;
+    for (let k = 0; k < N_EMITTER; k++) {
+      const ea = (k / N_EMITTER) * Math.PI * 2;
+      x[i] = rx + Math.cos(ea) * 0.025;
+      y[i] = ry + Math.sin(ea) * 0.025;
+      z[i] = headZ;
       i++;
     }
 
-    // --- scan beam + joint flashes ---
-    const tb = (t % BEAM_CYCLE) / BEAM_CYCLE;
-    const headX = rx;
-    const headY = ry;
-    const headZ = 0.28;
-    const torso = J['pelvis']!;
-    for (let k = 0; k < N_BEAM; k++) {
-      if (tb < 0.22) {
-        const u = ((k + 0.5) / N_BEAM) * Math.min(tb / 0.18, 1);
-        const spread = Math.sin(k * 2.7) * 0.012 * u;
-        x[i] = headX + (torso[0] - headX) * u + -fy * spread;
-        y[i] = headY + (torso[1] - headY) * u + fx * spread;
-        z[i] = headZ + (torso[2] * 0.9 - headZ) * u;
-      } else {
-        x[i] = headX;
-        y[i] = headY;
-        z[i] = headZ; // parked inside the head between pulses
+    // --- LiDAR cone: a fan of rays sweeping across the person ---
+    const dirToPerson = Math.atan2(py - ry, px - rx);
+    const sweep = Math.sin(t * 1.9) * 0.5; // scanning oscillation (rad)
+    const dist = Math.hypot(px - rx, py - ry);
+    const range = dist + 0.12;
+    for (let ray = 0; ray < CONE_RAYS; ray++) {
+      const rayA = dirToPerson + sweep + ((ray / (CONE_RAYS - 1)) - 0.5) * 0.55;
+      const dx = Math.cos(rayA);
+      const dy = Math.sin(rayA);
+      const vSlope = (((ray * 7) % CONE_RAYS) / (CONE_RAYS - 1) - 0.5) * 0.18; // vertical fan
+      for (let k = 0; k < PTS_PER_RAY; k++) {
+        const u = Math.pow((k + 0.5) / PTS_PER_RAY, 1.6);
+        x[i] = rx + dx * u * range;
+        y[i] = ry + dy * u * range;
+        z[i] = headZ + (H * 0.45 - headZ + vSlope) * u;
+        i++;
       }
-      i++;
     }
+
+    // --- joint flashes: the cone crossing the person = detection ---
+    const hit = Math.abs(sweep) < 0.14;
     const flashJoints = ['head', 'neck', 'shoulderL', 'shoulderR', 'hipL', 'hipR', 'kneeL', 'kneeR'];
     for (let k = 0; k < N_FLASH; k++) {
-      if (tb >= 0.22 && tb < 0.55) {
+      if (hit) {
         const j = J[flashJoints[k]!]!;
         x[i] = j[0];
         y[i] = j[1];
-        z[i] = j[2] + 0.012;
+        z[i] = j[2] + 0.014;
       } else {
-        x[i] = headX;
-        y[i] = headY;
-        z[i] = headZ;
+        x[i] = rx;
+        y[i] = ry;
+        z[i] = headZ; // parked inside the emitter between detections
       }
       i++;
     }
@@ -288,10 +272,10 @@ function buildLut(dark: boolean): string[] {
             g = 122 + Math.round(h * 45);
             b = 61 + Math.round(h * 15);
           } else {
-            a = 0.32 + t * 0.45;
-            r = 60 + Math.round(h * 25);
-            g = 80 + Math.round(h * 30);
-            b = 120 - Math.round(h * 20);
+            a = 0.45 + t * 0.4;
+            r = 52 + Math.round(h * 18);
+            g = 70 + Math.round(h * 24);
+            b = 100 - Math.round(h * 16);
           }
         }
         lut[c * 32 + (hq << 3) + dq] = `rgba(${r},${g},${b},${a.toFixed(3)})`;
@@ -326,7 +310,7 @@ function render(s: Scrubber, now: number) {
 
   const cx = cssW / 2;
   const cy = cssH * 0.55;
-  const scale = Math.min(cssW, cssH) * 0.42;
+  const scale = Math.min(cssW, cssH) * 0.42 * (s.cloud.zoom ?? 1);
   const tilt = 0.62;
   const cosT = Math.cos(tilt);
   const sinT = Math.sin(tilt);
@@ -473,11 +457,18 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
   // own dataUrl is the fallback when no chips exist.
   const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-artifact-chip]'));
   const urls = chips.length ? chips.map((c) => c.dataset.url!) : [dataUrl];
+  const zooms = chips.length ? chips.map((c) => Number(c.dataset.zoom) || 1) : [1];
   const clouds = new Map<string, Cloud>();
+
+  const loadAt = async (idx: number): Promise<Cloud> => {
+    const c = await loadCloud(urls[idx]!);
+    c.zoom = zooms[idx];
+    return c;
+  };
 
   let cloud: Cloud;
   try {
-    cloud = await loadCloud(urls[0]!);
+    cloud = await loadAt(0);
     clouds.set(urls[0]!, cloud);
   } catch {
     return;
@@ -516,11 +507,12 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
   let lastSwitch = performance.now();
   let switching = false;
 
-  const getCloud = async (url: string): Promise<Cloud | null> => {
+  const getCloud = async (idx: number): Promise<Cloud | null> => {
+    const url = urls[idx]!;
     const hit = clouds.get(url);
     if (hit) return hit;
     try {
-      const c = await loadCloud(url);
+      const c = await loadAt(idx);
       clouds.set(url, c);
       return c;
     } catch {
@@ -538,7 +530,7 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
   const switchTo = async (idx: number) => {
     if (switching || idx === active || !urls[idx]) return;
     switching = true;
-    const next = await getCloud(urls[idx]!);
+    const next = await getCloud(idx);
     if (!next) {
       switching = false;
       return;
@@ -565,7 +557,7 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
 
   // Prefetch the rest once the page is idle so the first cycle is seamless.
   if (urls.length > 1) {
-    const prefetch = () => urls.slice(1).forEach((u) => void getCloud(u));
+    const prefetch = () => urls.slice(1).forEach((_, k) => void getCloud(k + 1));
     'requestIdleCallback' in window
       ? (window as any).requestIdleCallback(prefetch, { timeout: 4000 })
       : setTimeout(prefetch, 3000);

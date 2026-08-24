@@ -34,6 +34,9 @@ interface Scrubber {
   cloud: Cloud;
   rotation: number;
   autoRotate: boolean;
+  // WCAG 2.2.2: a deliberate pick-up (drag or chip click) ends auto-rotation
+  // for good — a motion-pref round-trip must not resurrect it.
+  userPaused: boolean;
   motionOK: boolean;
   dragging: boolean;
   lastX: number;
@@ -550,6 +553,8 @@ function attachInteraction(s: Scrubber) {
   };
   const onDown = (e: PointerEvent) => {
     rect = s.canvas.getBoundingClientRect();
+    s.userPaused = true;
+    s.autoRotate = false;
     s.dragging = true;
     s.lastX = e.clientX;
     s.canvas.setPointerCapture(e.pointerId);
@@ -626,6 +631,7 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
     cloud,
     rotation: 0.35,
     autoRotate: !reduceMotion.matches,
+    userPaused: false,
     motionOK: !reduceMotion.matches,
     dragging: false,
     lastX: 0,
@@ -712,6 +718,8 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
   chips.forEach((chip, i) => {
     chip.addEventListener('click', () => {
       pinned = true; // a deliberate pick ends the auto-cycle
+      s.userPaused = true;
+      s.autoRotate = false;
       switchTo(i);
     });
   });
@@ -726,7 +734,7 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
   }
 
   reduceMotion.addEventListener?.('change', (e) => {
-    s.autoRotate = !e.matches;
+    s.autoRotate = !e.matches && !s.userPaused;
     s.motionOK = !e.matches;
     needsRender = true;
   });

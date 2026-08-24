@@ -111,6 +111,7 @@ const ASSET_BUDGETS = {
   woff: [200 * KB, 100 * KB],
   woff2:[200 * KB, 100 * KB],
   pdf:  [2 * MB, 1 * MB],     // academic papers / reports
+  bin:  [150 * KB, 60 * KB],  // point-cloud datasets (largest today ~50KB)
 };
 const assetWarnings = [];
 for (const f of files) {

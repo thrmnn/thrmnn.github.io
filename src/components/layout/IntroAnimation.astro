@@ -3,7 +3,7 @@
 // monogram large-centered, animates the per-letter assembly, then translates
 // the whole mark up-left so it appears to dock into the header's monogram
 // slot. View Transitions API where available; CSS fallback otherwise.
-// sessionStorage-gated — costs nothing on revisits within the session.
+// localStorage-gated — plays once per browser, not once per tab/session.
 ---
 
 <div id="intro" class="intro" aria-hidden="true" data-stage="hidden">
@@ -77,22 +77,24 @@
 
 <script is:inline>
   (() => {
-    if (sessionStorage.getItem('intro-played') === '1') return;
+    if (localStorage.getItem('intro-played') === '1') return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      sessionStorage.setItem('intro-played', '1');
+      localStorage.setItem('intro-played', '1');
       return;
     }
     const el = document.getElementById('intro');
     if (!el) return;
-    // Hold while assets paint, then play.
+    // Hold while assets paint, then play. dock's transform transition is
+    // 520ms (see .intro-mark below); fade is scheduled right as it completes
+    // so there's no dead air. Total settle->hidden stays under 1s.
     requestAnimationFrame(() => {
       el.setAttribute('data-stage', 'settle');
-      setTimeout(() => el.setAttribute('data-stage', 'dock'), 780);
-      setTimeout(() => el.setAttribute('data-stage', 'fade'), 1280);
+      setTimeout(() => el.setAttribute('data-stage', 'dock'), 150);
+      setTimeout(() => el.setAttribute('data-stage', 'fade'), 670);
       setTimeout(() => {
         el.setAttribute('data-stage', 'hidden');
-        sessionStorage.setItem('intro-played', '1');
-      }, 1700);
+        localStorage.setItem('intro-played', '1');
+      }, 990);
     });
   })();
 </script>

@@ -39,6 +39,9 @@ interface Scrubber {
   lastX: number;
   visible: boolean;
   isDark: boolean;
+  // CSS size cached by a ResizeObserver so render never queries layout.
+  cssW: number;
+  cssH: number;
   lut: string[];
   exciteStyle: [string, string, string];
   // pointer-excite state (CSS px, canvas-local)
@@ -416,8 +419,8 @@ function applyTheme(s: Scrubber) {
 
 function render(s: Scrubber, now: number) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const cssW = s.canvas.clientWidth;
-  const cssH = s.canvas.clientHeight;
+  const cssW = s.cssW;
+  const cssH = s.cssH;
   const targetW = Math.max(1, Math.round(cssW * dpr));
   const targetH = Math.max(1, Math.round(cssH * dpr));
   if (s.canvas.width !== targetW || s.canvas.height !== targetH) {
@@ -538,12 +541,15 @@ function render(s: Scrubber, now: number) {
 }
 
 function attachInteraction(s: Scrubber) {
+  // Rect cached per hover/drag gesture instead of per pointermove.
+  let rect: DOMRect | null = null;
   const local = (e: PointerEvent) => {
-    const r = s.canvas.getBoundingClientRect();
-    s.px = e.clientX - r.left;
-    s.py = e.clientY - r.top;
+    if (!rect) rect = s.canvas.getBoundingClientRect();
+    s.px = e.clientX - rect.left;
+    s.py = e.clientY - rect.top;
   };
   const onDown = (e: PointerEvent) => {
+    rect = s.canvas.getBoundingClientRect();
     s.dragging = true;
     s.lastX = e.clientX;
     s.canvas.setPointerCapture(e.pointerId);
@@ -567,6 +573,7 @@ function attachInteraction(s: Scrubber) {
   };
   const onLeave = () => {
     s.hovering = false;
+    rect = null;
   };
   s.canvas.addEventListener('pointerdown', onDown);
   s.canvas.addEventListener('pointermove', onMove);
@@ -624,6 +631,8 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
     lastX: 0,
     visible: false, // stays false until the IO callback proves intersection
     isDark: false,
+    cssW: canvas.clientWidth,
+    cssH: canvas.clientHeight,
     lut: [],
     exciteStyle: ['', '', ''],
     px: -1e4,
@@ -639,6 +648,16 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
     exciteF: new Float32Array(EXCITE_CAP),
   };
   applyTheme(s);
+
+  // Dirty flag: frames render only when something changed the picture.
+  let needsRender = true;
+  const ro = new ResizeObserver((entries) => {
+    const r = entries[0]!.contentRect;
+    s.cssW = r.width;
+    s.cssH = r.height;
+    needsRender = true;
+  });
+  ro.observe(canvas);
 
   // --- dataset switching ---
   let active = 0;
@@ -686,6 +705,7 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
       setActiveChip(idx);
       canvas.classList.remove('is-switching');
       switching = false;
+      needsRender = true;
     }, 220);
   };
 
@@ -708,16 +728,21 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
   reduceMotion.addEventListener?.('change', (e) => {
     s.autoRotate = !e.matches;
     s.motionOK = !e.matches;
+    needsRender = true;
   });
 
   // Re-read the theme whenever it changes (toggle click or OS-pref flip).
-  const themeObserver = new MutationObserver(() => applyTheme(s));
+  const retheme = () => {
+    applyTheme(s);
+    needsRender = true;
+  };
+  const themeObserver = new MutationObserver(retheme);
   themeObserver.observe(document.documentElement, {
     attributes: true,
     attributeFilter: ['data-theme'],
   });
   const osDarkMq = window.matchMedia('(prefers-color-scheme: dark)');
-  osDarkMq.addEventListener?.('change', () => applyTheme(s));
+  osDarkMq.addEventListener?.('change', retheme);
 
   attachInteraction(s);
 
@@ -726,6 +751,7 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
   let ioVisible = false;
   let rafOn = false;
   let last = performance.now();
+  let renderedRotation = NaN;
   const tick = (now: number) => {
     if (!s.visible) {
       rafOn = false; // loop parks off-screen; syncVisible restarts it
@@ -735,7 +761,15 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
     last = now;
     // Choreographed scenes carry their own motion — damp the idle spin.
     if (s.autoRotate && !s.dragging) s.rotation += dt * 0.00016 * (s.cloud.update ? 0.25 : 1);
-    render(s, now);
+    // Time-driven animation (scene choreography, excite jitter) needs every
+    // frame; otherwise render only when something changed the picture.
+    const animating =
+      s.motionOK && (s.cloud.update !== undefined || (s.hovering && !s.dragging));
+    if (needsRender || animating || s.rotation !== renderedRotation) {
+      render(s, now);
+      renderedRotation = s.rotation;
+      needsRender = false;
+    }
     if (
       !pinned &&
       s.motionOK &&
@@ -754,6 +788,7 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
     if (s.visible && !rafOn) {
       rafOn = true;
       last = performance.now(); // dt clamp alone can't absorb a long park
+      needsRender = true; // e.g. a resize while parked
       requestAnimationFrame(tick);
     }
   };

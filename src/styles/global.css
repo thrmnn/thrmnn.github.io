@@ -538,7 +538,7 @@
   border-radius: 999px;
   padding: 0.28rem 0.7rem;
   cursor: pointer;
-  transition: color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+  transition: color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
 }
 .artifact-chip:hover {
   color: var(--color-text-secondary);

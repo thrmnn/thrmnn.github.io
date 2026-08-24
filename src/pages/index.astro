@@ -44,16 +44,17 @@ const mailto = `mailto:${author.email}`;
         <div class="artifact-frame">
           <canvas
             class="favela-scrubber"
-            aria-label="Rotating point-cloud scenes: Vidigal favela LiDAR, the Amsterdam tree census, and a Segway Loomo robot tracking a walking person. Drag to rotate."
+            aria-label="Rotating point-cloud scenes: Vidigal favela LiDAR, the Amsterdam per-tree canopy census, and a parametric illustration of a Segway Loomo robot following a walking person."
           ></canvas>
           <div class="artifact-corners" aria-hidden="true">
             <span></span><span></span><span></span><span></span>
           </div>
         </div>
-        <div class="artifact-chips mt-3" role="group" aria-label="Choose a dataset">
-          <button type="button" class="artifact-chip is-active" data-artifact-chip data-url="/data/vidigal-rooftops.bin" data-zoom="1.75" aria-pressed="true">vidigal · rio</button>
-          <button type="button" class="artifact-chip" data-artifact-chip data-url="/data/ams-trees.bin" data-zoom="1.7" aria-pressed="false">lai · shading · ams</button>
-          <button type="button" class="artifact-chip" data-artifact-chip data-url="proc:loomo" data-zoom="1.8" aria-pressed="false">loomo · person tracking</button>
+        <p class="artifact-caption" data-artifact-caption>3,610 footprints · LiDAR · Vidigal, Rio</p>
+        <div class="artifact-chips" role="group" aria-label="Choose a dataset">
+          <button type="button" class="artifact-chip is-active" data-artifact-chip data-url="/data/vidigal-rooftops.bin" data-zoom="1.75" data-caption="3,610 footprints · LiDAR · Vidigal, Rio" aria-pressed="true">vidigal · rio</button>
+          <button type="button" class="artifact-chip" data-artifact-chip data-url="/data/ams-trees.bin" data-zoom="1.7" data-caption="66 trees · per-tree LAI census · Amsterdam" aria-pressed="false">amsterdam · tree canopy</button>
+          <button type="button" class="artifact-chip" data-artifact-chip data-url="proc:loomo" data-zoom="1.8" data-caption="parametric illustration — not sensor data" aria-pressed="false">perception · person following</button>
         </div>
       </div>
     </div>

@@ -520,11 +520,14 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
     }
   };
 
+  const captionEl = document.querySelector<HTMLElement>('[data-artifact-caption]');
   const setActiveChip = (idx: number) => {
     chips.forEach((c, i) => {
       c.setAttribute('aria-pressed', String(i === idx));
       c.classList.toggle('is-active', i === idx);
     });
+    const caption = chips[idx]?.dataset.caption;
+    if (captionEl && caption) captionEl.textContent = caption;
   };
 
   const switchTo = async (idx: number) => {

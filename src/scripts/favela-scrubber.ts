@@ -99,9 +99,12 @@ function buildLoomoScene(): Cloud {
   cat.fill(1, n - N_FLASH, n); // joint flashes = amber markers
 
   const PATH_R = 0.48;
-  const WALK_W = 0.22; // rad/s around the path
   const H = 0.62; // person height (normalized scene units)
   const STRIDE = 0.09;
+  const GAIT_HZ = 1.3; // step cycles per second
+  // Path speed derived from the gait so the feet can't skate: each gait
+  // cycle covers 2·STRIDE of ground, so v = 2·STRIDE·GAIT_HZ and w = v/R.
+  const WALK_W = (2 * STRIDE * GAIT_HZ) / PATH_R; // rad/s around the path
 
   const update = (t: number) => {
     const a = t * WALK_W;
@@ -113,7 +116,7 @@ function buildLoomoScene(): Cloud {
     const sy = Math.sin(a);
 
     // --- person: parametric gait ---
-    const ph = t * Math.PI * 2 * 1.3;
+    const ph = t * Math.PI * 2 * GAIT_HZ;
     const J: Record<string, [number, number, number]> = {};
     const set = (name: string, f: number, s: number, zz: number) => {
       J[name] = [px + hx * f + sx * s, py + hy * f + sy * s, zz];

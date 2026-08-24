@@ -56,8 +56,11 @@ const bgStyle = (data: ProjectData) =>
     ))}
   </div>
 </div>
-<div class="mx-auto max-w-[var(--max-w-content)] px-6 mt-8 flex items-baseline justify-between">
-  <a href="/projects/" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">All projects →</a>
+<div class="mx-auto max-w-[var(--max-w-content)] px-6 mt-8 flex items-baseline justify-between flex-wrap gap-x-6 gap-y-2">
+  <div class="flex items-baseline gap-x-6 flex-wrap">
+    <a href="/projects/" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">All projects →</a>
+    <a href="/consulting/" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">This is the work behind the engagement scopes →</a>
+  </div>
   <button
     type="button"
     data-rail-toggle

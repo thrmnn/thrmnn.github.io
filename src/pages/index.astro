@@ -110,7 +110,7 @@ const mailto = `mailto:${author.email}`;
        so the site-wide pointer field stays continuous through this band -->
   <section id="projects" class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="text-3xl font-bold text-text-primary mb-10" data-decompose data-reveal>Featured Work</h2>
+      <h2 class="text-3xl font-bold text-text-primary mb-10" data-reveal>Featured Work</h2>
     </div>
     <ProjectCarousel projects={carouselProjects} />
   </section>
@@ -118,15 +118,15 @@ const mailto = `mailto:${author.email}`;
   <!-- Latest -->
   <section id="news" class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="text-3xl font-bold text-text-primary mb-8" data-decompose data-reveal>Latest</h2>
+      <h2 class="text-3xl font-bold text-text-primary mb-8" data-reveal>Latest</h2>
       <div class="max-w-xl">
-        {newsItems.slice(0, 3).map((item, i) => (
+        {newsItems.slice(0, 1).map((item, i) => (
           <NewsItem date={item.date} text={item.text} index={i} />
         ))}
       </div>
       <p class="mt-6" data-reveal>
         <a href="/now/" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">
-          Full timeline & what I'm doing now →
+          See all updates →
         </a>
       </p>
     </div>
@@ -136,7 +136,7 @@ const mailto = `mailto:${author.email}`;
   <section id="contact" class="contact-section relative py-[var(--space-section)] overflow-hidden">
     <div class="contact-bg absolute inset-0"></div>
     <div class="relative z-10 mx-auto max-w-[var(--max-w-content)] px-6 text-center">
-      <h2 class="text-3xl font-bold text-text-primary mb-4" data-decompose data-reveal>Let's Talk</h2>
+      <h2 class="text-4xl md:text-5xl font-bold text-accent mb-4" data-reveal>Let's Talk</h2>
       <p class="text-text-secondary mb-10 max-w-lg mx-auto text-lg" data-reveal style="--reveal-d: 2;">
         Consulting in <strong class="text-text-primary">perception</strong> and <strong class="text-text-primary">AI-agent infrastructure</strong>, and research collaboration — <a href="/consulting/" class="text-[var(--color-link)] hover:text-[var(--color-link-hover)] underline-offset-4 underline decoration-1">see engagement scopes →</a>
       </p>

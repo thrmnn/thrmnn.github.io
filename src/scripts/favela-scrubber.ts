@@ -22,6 +22,10 @@ interface Cloud {
   // theme flips — the scene memoizes it.
   lut?: (dark: boolean) => string[];
   sizes?: number[];
+  // Detection-flash overlay: points [flashFrom, n) skip the bucketed pass
+  // and draw in a bright top pass whose alpha/size follow flashF (0..1).
+  flashFrom?: number;
+  flashF?: number;
 }
 
 interface Scrubber {
@@ -278,19 +282,20 @@ function buildLoomoScene(): Cloud {
       }
     }
 
-    // --- joint flashes: the cone crossing the person = detection ---
-    const hit = Math.abs(sweep) < 0.14;
+    // --- joint flashes: intensity peaks as the sweep crosses the person ---
+    const f = Math.max(0, 1 - Math.abs(sweep) / 0.14);
+    cloud.flashF = f;
     const flashJoints = ['head', 'neck', 'shoulderL', 'shoulderR', 'hipL', 'hipR', 'kneeL', 'kneeR'];
     for (let k = 0; k < N_FLASH; k++) {
-      if (hit) {
+      if (f > 0) {
         const j = J[flashJoints[k]!]!;
         x[i] = j[0];
         y[i] = j[1];
         z[i] = j[2] + 0.014;
       } else {
-        x[i] = rx;
-        y[i] = ry;
-        z[i] = headZ; // parked inside the emitter between detections
+        x[i] = 1e3; // parked off-canvas between detections
+        y[i] = 1e3;
+        z[i] = 0;
       }
       i++;
     }
@@ -307,7 +312,19 @@ function buildLoomoScene(): Cloud {
     }
     return lutCache;
   };
-  const cloud: Cloud = { n, x, y, z, cat, phase, update, lut, sizes: [1.5, 1.5, 2.1] };
+  const cloud: Cloud = {
+    n,
+    x,
+    y,
+    z,
+    cat,
+    phase,
+    update,
+    lut,
+    sizes: [1.5, 1.5, 2.1],
+    flashFrom: n - N_FLASH,
+    flashF: 0,
+  };
   update(0); // static tableau for reduced-motion users
   return cloud;
 }
@@ -423,6 +440,9 @@ function render(s: Scrubber, now: number) {
 
   const { n, x, y, z, cat } = s.cloud;
   const { sx, sy, key, bucketCount, bucketStart, order } = s;
+  // Flash points project like the rest but skip the bucketed pass — they
+  // draw in a dedicated top pass below.
+  const nMain = s.cloud.flashFrom ?? n;
 
   bucketCount.fill(0);
   for (let i = 0; i < n; i++) {
@@ -432,6 +452,7 @@ function render(s: Scrubber, now: number) {
     const depth = z[i] * sinT + rz * cosT;
     sx[i] = cx + rx * scale;
     sy[i] = cy - syw * scale * 0.7;
+    if (i >= nMain) continue;
     let dq = (((depth + 1) * 0.5) * 8) | 0;
     if (dq > 7) dq = 7;
     else if (dq < 0) dq = 0;
@@ -445,7 +466,7 @@ function render(s: Scrubber, now: number) {
   bucketStart[0] = 0;
   for (let k = 0; k < N_BUCKETS; k++) bucketStart[k + 1] = bucketStart[k] + bucketCount[k];
   bucketCount.fill(0);
-  for (let i = 0; i < n; i++) {
+  for (let i = 0; i < nMain; i++) {
     const k = key[i];
     order[bucketStart[k] + bucketCount[k]++] = i;
   }
@@ -501,6 +522,18 @@ function render(s: Scrubber, now: number) {
       const size = 1.6 + f * 1.0;
       s.ctx.fillRect(sx[i] + jx, sy[i] + jy, size, size);
     }
+  }
+
+  // Detection-flash pass: bright-amber excite style on top, intensity
+  // envelope driving both alpha and size so the payoff blooms and fades.
+  const flashF = s.cloud.flashF ?? 0;
+  if (nMain < n && flashF > 0) {
+    s.ctx.fillStyle = s.exciteStyle[1];
+    s.ctx.globalAlpha = flashF;
+    const size = 2.6 * (0.35 + 0.65 * flashF);
+    const half = size * 0.5;
+    for (let i = nMain; i < n; i++) s.ctx.fillRect(sx[i] - half, sy[i] - half, size, size);
+    s.ctx.globalAlpha = 1;
   }
 }
 

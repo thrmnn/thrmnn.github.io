@@ -483,7 +483,7 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
     motionOK: !reduceMotion.matches,
     dragging: false,
     lastX: 0,
-    visible: true,
+    visible: false, // stays false until the IO callback proves intersection
     isDark: false,
     lut: [],
     exciteStyle: ['', '', ''],
@@ -579,37 +579,48 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
 
   attachInteraction(s);
 
+  // IO state and tab visibility tracked separately: IO doesn't re-fire on
+  // tab restore, so visible must be recomputed from both in both handlers.
+  let ioVisible = false;
+  let rafOn = false;
+  let last = performance.now();
+  const tick = (now: number) => {
+    if (!s.visible) {
+      rafOn = false; // loop parks off-screen; syncVisible restarts it
+      return;
+    }
+    const dt = Math.min(now - last, 64);
+    last = now;
+    if (s.autoRotate && !s.dragging) s.rotation += dt * 0.00016;
+    render(s, now);
+    if (
+      !pinned &&
+      s.motionOK &&
+      urls.length > 1 &&
+      !s.hovering &&
+      !s.dragging &&
+      now - lastSwitch > CYCLE_MS
+    ) {
+      void switchTo((active + 1) % urls.length);
+      lastSwitch = now; // debounce while the async swap is in flight
+    }
+    requestAnimationFrame(tick);
+  };
+  const syncVisible = () => {
+    s.visible = ioVisible && !document.hidden;
+    if (s.visible && !rafOn) {
+      rafOn = true;
+      last = performance.now(); // dt clamp alone can't absorb a long park
+      requestAnimationFrame(tick);
+    }
+  };
   const io = new IntersectionObserver(
     (entries) => {
-      s.visible = entries[0]!.isIntersecting;
+      ioVisible = entries[0]!.isIntersecting;
+      syncVisible();
     },
     { threshold: 0.05 },
   );
   io.observe(canvas);
-  document.addEventListener('visibilitychange', () => {
-    s.visible = s.visible && !document.hidden;
-  });
-
-  let last = performance.now();
-  const tick = (now: number) => {
-    const dt = Math.min(now - last, 64);
-    last = now;
-    if (s.visible) {
-      if (s.autoRotate && !s.dragging) s.rotation += dt * 0.00016;
-      render(s, now);
-      if (
-        !pinned &&
-        s.motionOK &&
-        urls.length > 1 &&
-        !s.hovering &&
-        !s.dragging &&
-        now - lastSwitch > CYCLE_MS
-      ) {
-        void switchTo((active + 1) % urls.length);
-        lastSwitch = now; // debounce while the async swap is in flight
-      }
-    }
-    requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
+  document.addEventListener('visibilitychange', syncVisible);
 }

@@ -117,7 +117,8 @@ Tailwind utility classes are the chosen convention on `main`. Don't refactor com
 
 | Path             | Purpose                                                                   |
 | ---------------- | ------------------------------------------------------------------------- |
-| `/`              | Long-page: Hero → Bio → News → Featured Work → Contact (single document) |
+| `/`              | Long-page: Hero → Bio → Featured Work → News → Contact (single document) |
+| `/consulting`    | Consulting engagement scopes                                             |
 | `/projects`      | Project index                                                             |
 | `/projects/[id]` | Project detail                                                            |
 | `/cv`            | Full CV                                                                   |
@@ -243,6 +244,7 @@ Format: `YYYY-MM-DD — decision — rationale.`
 - 2026-06-12 — Hero artifact is now a rotating set of three scenes (chips switch): Vidigal full-coverage cloud (all 3,610 footprints), Amsterdam per-tree LAI census (real MSc data), and a procedural Loomo person-tracking scene (parametric illustration of the VITA project, not sensor data — labeled as such in code).
 - 2026-06-12 — Council-designed full-bleed "specimen rail" carousel: two-mode model (shelf = native scroller for no-JS/reduced-motion/coarse-pointer/keyboard/paused; drift = CSS marquee over 3 identical sets). Drift velocity locked ≤25.5px/s. No arrows, no edge fades, no card chrome — hard crop is the frame. Persistent pause toggle (WCAG 2.2.2) in the content row. `bg-bg-secondary` dropped from #projects so the pointer field runs behind the rail.
 - 2026-06-12 — Site-wide "latent lattice" pointer field (`src/scripts/pointer-field.ts`): document-anchored 40px hash-derived grid, dots materialize within 120px of a fine pointer with the hero's exact jitter math/palette (shared constants in `src/scripts/excite.ts`). Fine-pointer + motion-OK only; rAF self-terminates; mobile attaches nothing. Tuning rule: adjust A_PEAK only (max 0.65), never radius or amplitude. ProjectCard cursor-sensor deleted — one cursor metaphor per surface.
+- 2026-08-24 — Conversion-path redesign (council audit, 4-voice): intro animation shortened to <1s and localStorage-gated (was sessionStorage, replayed every tab); hero gets an additive secondary link to `/consulting`; `.favela-scrubber` touch-action changed `none`→`pan-y` so vertical swipes pass through to page scroll on mobile; homepage `#news` trimmed to latest item + link to `/now`; `data-decompose` restricted to the hero name only (dropped from Featured Work/Latest/Let's Talk headers — identity + the close, not every section header); "Let's Talk" H2 given distinct always-visible emphasis (size + accent color) instead of hover-gated decompose; carousel link row gains a link to `/consulting`; new `agent-harness` project card added (`featuredOrder: 1`, content sourced verbatim from `consulting.astro`'s agents-infra scope); header gains an additive "consult" CTA pill in `.header-controls` (navLinks/burger untouched); skip-link target (`#main-content`) made focusable via `tabindex="-1"`; bio paragraph order moved the consulting-scope clause earlier (into paragraph 2).
 
 ---
 

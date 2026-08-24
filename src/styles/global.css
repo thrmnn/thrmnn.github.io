@@ -493,7 +493,7 @@
   width: 100%;
   height: 100%;
   cursor: grab;
-  touch-action: none;
+  touch-action: pan-y;
 }
 .favela-scrubber.is-dragging { cursor: grabbing; }
 .favela-scrubber {

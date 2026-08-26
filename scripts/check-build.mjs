@@ -153,7 +153,20 @@ if (totalJsBytes > JS_BUDGET_BYTES) {
 //    what makes the scan see real words). If a PDF yields no text at all
 //    (scanned/exotic), warn and move on — never fail blind.
 const PDF_FORBIDDEN = [...new Set([...forbidden, 'theoh-io'])];
-const PHONE_RE = /\+\d{1,3}[\d\s.-]{7,}/;
+const PHONE_RE = /\+\d{1,3}[\d\s.-]{7,}/g;
+// A raw +\d… match can be a decimal from an academic report ("+42.00000…")
+// or wrong-font decode noise ("+000000000000"), not a phone. A phone has
+// 8–15 digits total (E.164 cap), no long digit run right after a decimal
+// point, a country code that never starts with 0, and in practice at
+// least 3 distinct digits.
+const isPhoneLike = (m) => {
+  const digits = m.replace(/\D/g, '');
+  return (
+    digits.length >= 8 && digits.length <= 15 &&
+    !/\.\d{5,}/.test(m) && !/^\+0/.test(m) &&
+    new Set(digits).size >= 3
+  );
+};
 
 function pdfStreams(buf) {
   const out = [];
@@ -265,8 +278,9 @@ for (const f of files.filter((f) => f.endsWith('.pdf'))) {
     for (const term of PDF_FORBIDDEN) {
       if (squashed.includes(term.replace(/\s+/g, '').toLowerCase())) found.add(`"${term}" found in ${f}`);
     }
-    const phone = text.match(PHONE_RE);
-    if (phone) found.add(`phone-number pattern "${phone[0].trim()}" found in ${f}`);
+    for (const m of text.match(PHONE_RE) ?? []) {
+      if (isPhoneLike(m)) found.add(`phone-number pattern "${m.trim()}" found in ${f}`);
+    }
   }
   for (const msg of found) fail('pdf_scan', msg);
 }

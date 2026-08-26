@@ -768,7 +768,7 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement, dataUrl = '/
     const dt = Math.min(now - last, 64);
     last = now;
     // Choreographed scenes carry their own motion — damp the idle spin.
-    if (s.autoRotate && !s.dragging) s.rotation += dt * 0.00016 * (s.cloud.update ? 0.25 : 1);
+    if (s.autoRotate && !s.dragging && !s.hovering) s.rotation += dt * 0.00016 * (s.cloud.update ? 0.25 : 1);
     // Time-driven animation (scene choreography, excite jitter) needs every
     // frame; otherwise render only when something changed the picture.
     const animating =

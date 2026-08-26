@@ -6,21 +6,39 @@ const currentPath = Astro.url.pathname;
 const isActive = (href: string) =>
   href === currentPath ||
   (href !== '/' && !href.startsWith('/#') && currentPath.startsWith(href));
+
+// Live readout initial text: on the homepage this is overwritten by the
+// section IntersectionObserver as the user scrolls; on every other route
+// it's just the route name and stays static.
+const routeLabels: Record<string, string> = {
+  '/': 'home',
+  '/projects/': 'projects',
+  '/consulting/': 'consulting',
+  '/cv/': 'cv',
+  '/now/': 'now',
+};
+const routeLabel =
+  routeLabels[currentPath] ?? currentPath.replace(/^\/|\/$/g, '').split('/')[0] ?? 'page';
 ---
 
 <header class="site-header" data-header data-open="false">
   <div class="header-pill">
     <div class="header-inner">
-      <!-- Left: monogram (also the Home affordance) -->
-      <a href="/" aria-label="Théo Alessandro Hermann — Home" class="monogram-link">
-        <span class="monogram" aria-hidden="true">
-          <span class="mono-ch" style="--i:0">T</span>
-          <span class="mono-ch" style="--i:1">·</span>
-          <span class="mono-ch" style="--i:2">A</span>
-          <span class="mono-ch" style="--i:3">·</span>
-          <span class="mono-ch" style="--i:4">H</span>
-        </span>
-      </a>
+      <!-- Left: monogram (also the Home affordance) + live readout -->
+      <div class="header-brand">
+        <a href="/" aria-label="Théo Alessandro Hermann — Home" class="monogram-link">
+          <span class="monogram" aria-hidden="true">
+            <span class="mono-ch" style="--i:0">T</span>
+            <span class="mono-ch" style="--i:1">·</span>
+            <span class="mono-ch" style="--i:2">A</span>
+            <span class="mono-ch" style="--i:3">·</span>
+            <span class="mono-ch" style="--i:4">H</span>
+          </span>
+        </a>
+        <!-- Names the section/route in view. aria-hidden — purely a chrome
+             instrument, not content; visible only in .condensed. -->
+        <span class="header-readout" aria-hidden="true" data-readout>— {routeLabel}</span>
+      </div>
 
       <!-- Desktop nav -->
       <nav class="header-nav" aria-label="Primary">
@@ -41,7 +59,11 @@ const isActive = (href: string) =>
 
       <!-- Controls -->
       <div class="header-controls">
-        <a href="/consulting/" class="header-cta">consult</a>
+        <a
+          href="/consulting/"
+          class="header-cta"
+          {...(isActive('/consulting/') ? { 'aria-current': 'page' } : {})}
+        >consult</a>
         <ThemeToggle />
         <button
           type="button"
@@ -104,76 +126,54 @@ const isActive = (href: string) =>
     background-color: color-mix(in srgb, var(--color-bg-primary) 60%, transparent);
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
-    box-shadow:
-      0 14px 32px -16px rgba(0, 0, 0, 0.18),
-      0 1px 0 0 rgba(255, 255, 255, 0.55) inset,
-      0 0 0 1px color-mix(in srgb, var(--color-accent) 9%, transparent) inset;
+    box-shadow: 0 14px 32px -16px rgba(0, 0, 0, 0.18);
     transition:
       background-color var(--dur-2) var(--ease-out),
       border-color var(--dur-2) var(--ease-out),
       box-shadow var(--dur-2) var(--ease-out);
   }
-  /* Faint inner top highlight for "glass" depth. */
-  .header-pill::before {
+  /* Scan-progress hairline: consumes --progress (set on scroll, see script
+     below) as a 1px accent line inside the pill's bottom edge. Position
+     tracking itself is ungated (it's a direct reflection of scroll, not an
+     animation); only the smoothing transition is reduced-motion gated. */
+  .header-pill::after {
     content: "";
     position: absolute;
-    inset: 1px 1px auto 1px;
-    height: 50%;
-    border-radius: inherit;
-    background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.35) 0%,
-      transparent 100%
-    );
+    left: 1.1rem;
+    right: 1.1rem;
+    bottom: 0;
+    height: 1px;
+    background: var(--color-accent);
+    transform-origin: left;
+    transform: scaleX(var(--progress, 0));
     pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .header-pill::after {
+      transition: transform 0.15s linear;
+    }
   }
   .site-header.condensed .header-pill {
     background-color: color-mix(in srgb, var(--color-bg-primary) 82%, transparent);
     border-color: var(--color-border-hover);
-    box-shadow:
-      0 8px 22px -14px rgba(0, 0, 0, 0.22),
-      0 1px 0 0 rgba(255, 255, 255, 0.5) inset,
-      0 0 0 1px color-mix(in srgb, var(--color-accent) 7%, transparent) inset;
+    box-shadow: 0 8px 22px -14px rgba(0, 0, 0, 0.22);
   }
-  /* Dark-mode tuning — deeper shadow + cooler highlight. */
+  /* Dark-mode tuning — deeper shadow. */
   [data-theme="dark"] .header-pill {
     background-color: color-mix(in srgb, var(--color-bg-primary) 42%, transparent);
     border-color: color-mix(in srgb, var(--color-border) 65%, transparent);
-    box-shadow:
-      0 18px 46px -20px rgba(0, 0, 0, 0.7),
-      0 1px 0 0 color-mix(in srgb, #ffffff 6%, transparent) inset,
-      0 0 0 1px color-mix(in srgb, var(--color-accent) 7%, transparent) inset;
-  }
-  [data-theme="dark"] .header-pill::before {
-    background: linear-gradient(
-      to bottom,
-      color-mix(in srgb, #ffffff 4%, transparent) 0%,
-      transparent 100%
-    );
+    box-shadow: 0 18px 46px -20px rgba(0, 0, 0, 0.7);
   }
   [data-theme="dark"] .site-header.condensed .header-pill {
     background-color: color-mix(in srgb, var(--color-bg-primary) 75%, transparent);
     border-color: var(--color-border);
-    box-shadow:
-      0 8px 22px -12px rgba(0, 0, 0, 0.6),
-      0 1px 0 0 color-mix(in srgb, #ffffff 4%, transparent) inset,
-      0 0 0 1px color-mix(in srgb, var(--color-accent) 5%, transparent) inset;
+    box-shadow: 0 8px 22px -12px rgba(0, 0, 0, 0.6);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme]) .header-pill {
       background-color: color-mix(in srgb, var(--color-bg-primary) 42%, transparent);
       border-color: color-mix(in srgb, var(--color-border) 65%, transparent);
-      box-shadow:
-        0 18px 46px -20px rgba(0, 0, 0, 0.7),
-        0 1px 0 0 color-mix(in srgb, #ffffff 6%, transparent) inset,
-        0 0 0 1px color-mix(in srgb, var(--color-accent) 7%, transparent) inset;
-    }
-    :root:not([data-theme]) .header-pill::before {
-      background: linear-gradient(
-        to bottom,
-        color-mix(in srgb, #ffffff 4%, transparent) 0%,
-        transparent 100%
-      );
+      box-shadow: 0 18px 46px -20px rgba(0, 0, 0, 0.7);
     }
     :root:not([data-theme]) .site-header.condensed .header-pill {
       background-color: color-mix(in srgb, var(--color-bg-primary) 75%, transparent);
@@ -192,6 +192,37 @@ const isActive = (href: string) =>
     align-items: center;
     justify-content: space-between;
     gap: 1.25rem;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  /* Live readout — quiet at the top of the page, only names the section/
+     route once the pill has condensed. Instrument chrome, not content. */
+  .header-readout {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    opacity: 0;
+  }
+  .site-header.condensed .header-readout {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .header-readout {
+      transition: opacity var(--dur-1) var(--ease-out);
+    }
+  }
+  @media (max-width: 767px) {
+    .header-readout {
+      display: none;
+    }
   }
 
   /* Nav — monospace instrument list */
@@ -306,7 +337,8 @@ const isActive = (href: string) =>
       border-color var(--dur-1) var(--ease-out),
       background-color var(--dur-1) var(--ease-out);
   }
-  .header-cta:hover {
+  .header-cta:hover,
+  .header-cta[aria-current='page'] {
     color: var(--color-text-primary);
     border-color: var(--color-accent);
     background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
@@ -474,6 +506,31 @@ const isActive = (href: string) =>
       { passive: true },
     );
     update();
+
+    // Live readout: on the homepage, swap the static route label for
+    // whichever section is currently in view. Other routes keep the
+    // server-rendered route name as-is (nothing to observe).
+    const readout = document.querySelector('[data-readout]') as HTMLElement | null;
+    if (readout && window.location.pathname === '/' && 'IntersectionObserver' in window) {
+      const sectionLabels: Record<string, string> = {
+        home: 'home',
+        about: 'about',
+        projects: 'work',
+        contact: 'contact',
+      };
+      const sectionIO = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              const id = (entry.target as HTMLElement).id;
+              readout.textContent = `— ${sectionLabels[id] ?? id}`;
+            }
+          }
+        },
+        { rootMargin: '-40% 0px -55% 0px' },
+      );
+      document.querySelectorAll('main section[id]').forEach((s) => sectionIO.observe(s));
+    }
 
     const burger = document.getElementById('nav-toggle-btn') as HTMLButtonElement | null;
     const mobileMenu = document.getElementById('mobile-menu');

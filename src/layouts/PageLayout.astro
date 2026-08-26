@@ -2,7 +2,6 @@
 import BaseLayout from './BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
-import CommandPalette from '../components/layout/CommandPalette.astro';
 import IntroAnimation from '../components/layout/IntroAnimation.astro';
 
 interface Props {
@@ -24,5 +23,4 @@ const { title, description, image, ogType, articleJsonLd } = Astro.props;
     <slot />
   </main>
   <Footer />
-  <CommandPalette />
 </BaseLayout>

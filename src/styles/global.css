@@ -193,7 +193,9 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
   }
 
   body {
@@ -400,53 +402,20 @@
 
 
 /* ==========================================================================
-   Hero — type-first manifesto + Vidigal point-cloud artifact
-   Mobile: type stacks, scrubber below.  ≥lg: two-column grid.
+   Hero — type-first manifesto (viewport 1). The artifact band follows in
+   normal flow, its top corner brackets svh-tuned to crest into view on tall
+   viewports (never a width-based rule — content reflow, not layout mode,
+   handles narrow screens).
    ========================================================================== */
 .hero-section {
-  position: relative;
-  padding: clamp(3.5rem, 8vw, 6rem) 1.5rem clamp(2.5rem, 6vw, 5rem);
-  overflow: hidden;
+  /* svh-clamped, not vw: the min/max rem bounds keep short (mobile) viewports
+     at roughly the old padding, while the svh term grows on tall desktop/
+     laptop viewports so the artifact band's top edge creeps toward the fold. */
+  padding: clamp(3rem, calc(40svh - 8rem), 12rem) 1.5rem clamp(0px, calc(52svh - 364px), 6rem);
 }
-.hero-section::before {
-  /* Ambient backdrop — light by default; dark variants below.
-     Pale azure wash + soft top-right accent, fades into the page background. */
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 72% 30%, rgba(37, 99, 235, 0.07) 0%, transparent 60%),
-    linear-gradient(180deg, #eef2fb 0%, #f4f6fb 65%, var(--color-bg-primary) 100%);
-  z-index: 0;
-  pointer-events: none;
-}
-[data-theme="dark"] .hero-section::before {
-  background:
-    radial-gradient(ellipse 60% 50% at 70% 35%, rgba(59, 130, 246, 0.10) 0%, transparent 60%),
-    linear-gradient(180deg, #0e1230 0%, #0c0c1d 65%, var(--color-bg-primary) 100%);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) .hero-section::before {
-    background:
-      radial-gradient(ellipse 60% 50% at 70% 35%, rgba(59, 130, 246, 0.10) 0%, transparent 60%),
-      linear-gradient(180deg, #0e1230 0%, #0c0c1d 65%, var(--color-bg-primary) 100%);
-  }
-}
-.hero-grid {
-  position: relative;
-  z-index: 1;
-  max-width: var(--max-w-wide);
+.hero-type {
+  max-width: 44rem;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2.5rem;
-  align-items: center;
-}
-@media (min-width: 900px) {
-  .hero-grid {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: 3.5rem;
-  }
 }
 
 .hero-name {
@@ -468,17 +437,23 @@
 }
 .hero-positioning strong { color: var(--color-text-primary); font-weight: 600; }
 
-/* --- Right-side artifact: point-cloud scrubber --- */
+/* --- Artifact band: full-width, centered; point-cloud scrubber as one unit --- */
+.artifact-band {
+  position: relative;
+  z-index: 1;
+  padding: 0 1.5rem clamp(3.5rem, 8vw, 6rem);
+}
 .hero-artifact {
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
   min-width: 0;
+  max-width: 600px;
+  margin: 0 auto;
 }
 .artifact-frame {
   position: relative;
   aspect-ratio: 1 / 1;
-  max-width: 460px;
   width: 100%;
   margin: 0 auto;
   border: 1px solid var(--color-border);
@@ -494,11 +469,9 @@
   height: 100%;
   cursor: grab;
   touch-action: pan-y;
-}
-.favela-scrubber.is-dragging { cursor: grabbing; }
-.favela-scrubber {
   transition: opacity 0.22s var(--ease-out);
 }
+.favela-scrubber.is-dragging { cursor: grabbing; }
 .favela-scrubber.is-switching { opacity: 0; }
 .artifact-corners > span {
   position: absolute;
@@ -519,6 +492,36 @@
   text-transform: uppercase;
   color: var(--color-text-muted);
   margin: 0;
+}
+
+/* --- Now-line: mono vocabulary, left-aligned (not the artifact caption's
+   centered/uppercase treatment) — a one-line status inside #about. --- */
+.now-line {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.6;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-top: 1.5rem;
+}
+.now-line a {
+  color: var(--color-link);
+}
+.now-line a:hover {
+  color: var(--color-link-hover);
+}
+
+/* --- Section label: CSS-only demotion of an interior h2 to instrument
+   vocabulary. Semantics (h2, a11y outline) stay untouched — this is a
+   type-treatment override only. "Let's Talk" keeps its own locked display
+   treatment and does not use this class. --- */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 
 /* Dataset chips — the captions are the switcher */
@@ -553,10 +556,9 @@
   outline-offset: 2px;
 }
 
-/* --- Avatar ring (static gradient mark; no animation) --- */
+/* --- Avatar ring (flat single-accent mark; no animation) --- */
 .avatar-ring {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #3b82f6);
-  background-size: 200% 200%;
+  background: var(--color-accent);
 }
 
 /* --- Contact section background --- */

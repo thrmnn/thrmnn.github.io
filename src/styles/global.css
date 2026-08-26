@@ -511,6 +511,19 @@
   color: var(--color-link-hover);
 }
 
+/* --- Section label: CSS-only demotion of an interior h2 to instrument
+   vocabulary. Semantics (h2, a11y outline) stay untouched — this is a
+   type-treatment override only. "Let's Talk" keeps its own locked display
+   treatment and does not use this class. --- */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
 /* Dataset chips — the captions are the switcher */
 .artifact-chips {
   display: flex;

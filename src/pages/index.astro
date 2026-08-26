@@ -19,41 +19,43 @@ const mailto = `mailto:${author.email}`;
 ---
 
 <PageLayout ogType="profile">
-  <!-- Hero -->
+  <!-- Hero — type-first viewport 1; the artifact band follows below (item 11) -->
   <section id="home" class="hero-section">
-    <div class="hero-grid">
-      <div class="hero-type">
-        <h1
-          class="hero-name"
-          data-decompose
-          data-reveal
-          style="--reveal-d: 0;"
-        >
-          {author.name}
-        </h1>
-        <p class="hero-positioning" data-reveal style="--reveal-d: 1;">
-          Researcher at <strong>MIT Senseable City Lab Rio</strong> — 3D digital twins of favelas for public health. Building open-source robotics. Consulting in perception and AI-agent infrastructure.
-        </p>
-        <p class="text-sm" data-reveal style="--reveal-d: 2;">
-          <a href="/consulting/" class="text-[var(--color-link)] hover:text-[var(--color-link-hover)] underline-offset-4 underline decoration-1">See engagement scopes →</a>
-        </p>
+    <div class="hero-type">
+      <h1
+        class="hero-name"
+        data-decompose
+        data-reveal
+        style="--reveal-d: 0;"
+      >
+        {author.name}
+      </h1>
+      <p class="hero-positioning" data-reveal style="--reveal-d: 1;">
+        Researcher at <strong>MIT Senseable City Lab Rio</strong> — 3D digital twins of favelas for public health. Building open-source robotics. Consulting in perception and AI-agent infrastructure.
+      </p>
+      <p class="text-sm" data-reveal style="--reveal-d: 2;">
+        <a href="/consulting/" class="text-[var(--color-link)] hover:text-[var(--color-link-hover)] underline-offset-4 underline decoration-1">See engagement scopes →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Artifact band — full-width, centered; verbatim unit moved from the hero (item 11) -->
+  <section class="artifact-band">
+    <div class="hero-artifact" data-reveal style="--reveal-d: 1;">
+      <div class="artifact-frame">
+        <canvas
+          class="favela-scrubber"
+          aria-label="Rotating point-cloud scenes: Vidigal favela LiDAR, the Amsterdam per-tree canopy census, and a parametric illustration of a Segway Loomo robot following a walking person."
+        ></canvas>
+        <div class="artifact-corners" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
       </div>
-      <div class="hero-artifact" data-reveal style="--reveal-d: 1;">
-        <div class="artifact-frame">
-          <canvas
-            class="favela-scrubber"
-            aria-label="Rotating point-cloud scenes: Vidigal favela LiDAR, the Amsterdam per-tree canopy census, and a parametric illustration of a Segway Loomo robot following a walking person."
-          ></canvas>
-          <div class="artifact-corners" aria-hidden="true">
-            <span></span><span></span><span></span><span></span>
-          </div>
-        </div>
-        <p class="artifact-caption" data-artifact-caption>3,610 footprints · LiDAR · Vidigal, Rio</p>
-        <div class="artifact-chips" role="group" aria-label="Choose a dataset">
-          <button type="button" class="artifact-chip is-active" data-artifact-chip data-url="/data/vidigal-rooftops.bin" data-zoom="1.75" data-caption="3,610 footprints · LiDAR · Vidigal, Rio" aria-pressed="true">vidigal · rio</button>
-          <button type="button" class="artifact-chip" data-artifact-chip data-url="/data/ams-trees.bin" data-zoom="1.7" data-caption="66 trees · per-tree LAI census · Amsterdam" aria-pressed="false">amsterdam · tree canopy</button>
-          <button type="button" class="artifact-chip" data-artifact-chip data-url="proc:loomo" data-zoom="1.8" data-caption="parametric illustration — not sensor data" aria-pressed="false">perception · person following</button>
-        </div>
+      <p class="artifact-caption" data-artifact-caption>3,610 footprints · LiDAR · Vidigal, Rio</p>
+      <div class="artifact-chips" role="group" aria-label="Choose a dataset">
+        <button type="button" class="artifact-chip is-active" data-artifact-chip data-url="/data/vidigal-rooftops.bin" data-zoom="1.75" data-caption="3,610 footprints · LiDAR · Vidigal, Rio" aria-pressed="true">vidigal · rio</button>
+        <button type="button" class="artifact-chip" data-artifact-chip data-url="/data/ams-trees.bin" data-zoom="1.7" data-caption="66 trees · per-tree LAI census · Amsterdam" aria-pressed="false">amsterdam · tree canopy</button>
+        <button type="button" class="artifact-chip" data-artifact-chip data-url="proc:loomo" data-zoom="1.8" data-caption="parametric illustration — not sensor data" aria-pressed="false">perception · person following</button>
       </div>
     </div>
   </section>

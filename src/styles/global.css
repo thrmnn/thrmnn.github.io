@@ -496,11 +496,9 @@
   height: 100%;
   cursor: grab;
   touch-action: pan-y;
-}
-.favela-scrubber.is-dragging { cursor: grabbing; }
-.favela-scrubber {
   transition: opacity 0.22s var(--ease-out);
 }
+.favela-scrubber.is-dragging { cursor: grabbing; }
 .favela-scrubber.is-switching { opacity: 0; }
 .artifact-corners > span {
   position: absolute;

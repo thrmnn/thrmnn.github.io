@@ -41,7 +41,11 @@ const isActive = (href: string) =>
 
       <!-- Controls -->
       <div class="header-controls">
-        <a href="/consulting/" class="header-cta">consult</a>
+        <a
+          href="/consulting/"
+          class="header-cta"
+          {...(isActive('/consulting/') ? { 'aria-current': 'page' } : {})}
+        >consult</a>
         <ThemeToggle />
         <button
           type="button"
@@ -306,7 +310,8 @@ const isActive = (href: string) =>
       border-color var(--dur-1) var(--ease-out),
       background-color var(--dur-1) var(--ease-out);
   }
-  .header-cta:hover {
+  .header-cta:hover,
+  .header-cta[aria-current='page'] {
     color: var(--color-text-primary);
     border-color: var(--color-accent);
     background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);

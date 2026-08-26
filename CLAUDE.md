@@ -44,7 +44,7 @@ Tech portfolio first. Researcher-and-builder hybrid identity. The site is the fr
 
 ### Tenure
 
-3 years of professional experience (EPFL VITA → IRI → Roboat → Senseable Rio).
+4 years of professional experience (EPFL VITA → IRI → Roboat → Senseable Rio).
 
 ---
 

@@ -13,6 +13,7 @@ credentials/
 chrome/
 lighthouse.*
 monogram-package.zip
+/resume.html
 
 # Raw asset staging — drop originals here; Claude optimizes them into
 # public/projects/<slug>/ and wires the frontmatter. Not committed.

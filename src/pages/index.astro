@@ -1,11 +1,9 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import ProjectCarousel from '../components/ui/ProjectCarousel.astro';
-import NewsItem from '../components/ui/NewsItem.astro';
 import Button from '../components/ui/Button.astro';
 import SocialIcon from '../components/ui/SocialIcon.astro';
 import { author } from '../data/author';
-import { newsItems } from '../data/news';
 import { getCollection } from 'astro:content';
 
 // Featured first, then the rest — the carousel surfaces the whole portfolio.
@@ -99,6 +97,7 @@ const mailto = `mailto:${author.email}`;
         {author.bio.map((paragraph) => (
           <p class="text-text-secondary leading-relaxed mb-4" set:html={paragraph} />
         ))}
+        <p class="now-line">now · aug 2026 — favela digital twins · perception-pipeline · <a href="/now/">/now →</a></p>
         <div class="mt-6">
           <Button href="/cv/" variant="secondary">Full CV</Button>
         </div>
@@ -114,23 +113,6 @@ const mailto = `mailto:${author.email}`;
       <h2 class="text-3xl font-bold text-text-primary mb-10" data-reveal>Featured Work</h2>
     </div>
     <ProjectCarousel projects={carouselProjects} />
-  </section>
-
-  <!-- Latest -->
-  <section id="news" class="py-[var(--space-section)]">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="text-3xl font-bold text-text-primary mb-8" data-reveal>Latest</h2>
-      <div class="max-w-xl">
-        {newsItems.slice(0, 1).map((item, i) => (
-          <NewsItem date={item.date} text={item.text} index={i} />
-        ))}
-      </div>
-      <p class="mt-6" data-reveal>
-        <a href="/now/" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">
-          See all updates →
-        </a>
-      </p>
-    </div>
   </section>
 
   <!-- Contact -->

@@ -523,6 +523,23 @@
   margin: 0;
 }
 
+/* --- Now-line: mono vocabulary, left-aligned (not the artifact caption's
+   centered/uppercase treatment) — a one-line status inside #about. --- */
+.now-line {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.6;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-top: 1.5rem;
+}
+.now-line a {
+  color: var(--color-link);
+}
+.now-line a:hover {
+  color: var(--color-link-hover);
+}
+
 /* Dataset chips — the captions are the switcher */
 .artifact-chips {
   display: flex;

@@ -4,6 +4,7 @@
 // (see the no-publications rule), drops the canonical name, contains a
 // broken internal link, ships an oversized asset, or regresses bundle size.
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { inflateSync } from 'node:zlib';
 import { join } from 'node:path';
 
 const DIST = 'dist';
@@ -19,6 +20,7 @@ const groups = {
   broken_links: [],
   asset_budget: [],
   bundle_budget: [],
+  pdf_scan: [],
 };
 const fail = (group, m) => { groups[group].push(m); };
 const must = (group, cond, m) => { if (!cond) fail(group, m); };
@@ -143,6 +145,132 @@ if (totalJsBytes > JS_BUDGET_BYTES) {
   fail('bundle_budget', `JS bundle is ${(totalJsBytes / 1024).toFixed(1)} KB (budget ${JS_BUDGET_BYTES / 1024} KB)`);
 }
 
+// 9. PDF text scan — forbidden identity terms and phone numbers must not
+//    ship inside any PDF. Best-effort pure-node extraction (no dependency):
+//    inflate FlateDecode streams, read literal + hex text-show strings, and
+//    decode hex strings through any ToUnicode CMaps found in the file
+//    (weasyprint & friends emit glyph-ID hex strings, so the CMap pass is
+//    what makes the scan see real words). If a PDF yields no text at all
+//    (scanned/exotic), warn and move on — never fail blind.
+const PDF_FORBIDDEN = [...new Set([...forbidden, 'theoh-io'])];
+const PHONE_RE = /\+\d{1,3}[\d\s.-]{7,}/;
+
+function pdfStreams(buf) {
+  const out = [];
+  let i = 0;
+  while ((i = buf.indexOf('stream', i)) !== -1) {
+    let start = i + 6;
+    if (buf[start] === 0x0d) start++;
+    if (buf[start] === 0x0a) start++;
+    const end = buf.indexOf('endstream', start);
+    if (end === -1) break;
+    const raw = buf.subarray(start, end);
+    try { out.push(inflateSync(raw).toString('latin1')); }
+    catch { out.push(raw.toString('latin1')); }
+    i = end + 9;
+  }
+  return out;
+}
+
+// One map per ToUnicode stream. Subset fonts reuse the same glyph-ID codes
+// with different meanings, so a single union map would decode text through
+// the wrong font and could garble a forbidden term past the scan. The
+// whole document is instead decoded once per font map and every variant is
+// scanned; the correct decoding is always among the variants (the wrong
+// ones are just noise that can only over-trigger, never hide a term).
+function toUnicodeMaps(streams) {
+  const maps = [];
+  for (const text of streams) {
+    if (!/beginbf(char|range)/.test(text)) continue;
+    const map = new Map(); // hex glyph code (uppercase, fixed width) -> string
+    const addPair = (src, dst) => {
+      let s = '';
+      for (let k = 0; k + 4 <= dst.length; k += 4) {
+        s += String.fromCharCode(parseInt(dst.slice(k, k + 4), 16));
+      }
+      if (s) map.set(src.toUpperCase(), s);
+    };
+    for (const m of text.matchAll(/beginbfchar([\s\S]*?)endbfchar/g)) {
+      for (const p of m[1].matchAll(/<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>/g)) addPair(p[1], p[2]);
+    }
+    for (const m of text.matchAll(/beginbfrange([\s\S]*?)endbfrange/g)) {
+      for (const r of m[1].matchAll(/<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>\s*(?:<([0-9A-Fa-f]+)>|\[([\s\S]*?)\])/g)) {
+        const lo = parseInt(r[1], 16), hi = parseInt(r[2], 16), width = r[1].length;
+        if (hi - lo > 0xffff) continue;
+        if (r[3]) {
+          const base = parseInt(r[3], 16);
+          for (let c = lo; c <= hi; c++) {
+            map.set(c.toString(16).toUpperCase().padStart(width, '0'), String.fromCharCode(base + (c - lo)));
+          }
+        } else if (r[4]) {
+          const dsts = [...r[4].matchAll(/<([0-9A-Fa-f]+)>/g)].map((x) => x[1]);
+          for (let c = lo; c <= hi && c - lo < dsts.length; c++) {
+            addPair(c.toString(16).toUpperCase().padStart(width, '0'), dsts[c - lo]);
+          }
+        }
+      }
+    }
+    if (map.size) maps.push(map);
+  }
+  return maps;
+}
+
+// Returns one text variant per ToUnicode map (plus a literal-strings-only
+// variant when no maps exist). Adjacency of kerned fragments survives only
+// inside the correct font's variant — which is exactly the one scanned.
+function extractPdfTexts(buf) {
+  const allStreams = pdfStreams(buf);
+  const cmaps = toUnicodeMaps(allStreams);
+  const streams = allStreams.filter((s) => /\b(Tj|TJ|Tf|BT)\b/.test(s));
+  const unescapeLit = (s) =>
+    s.replace(/\\([nrtbf()\\]|[0-7]{1,3})/g, (_, c) => {
+      if (/^[0-7]+$/.test(c)) return String.fromCharCode(parseInt(c, 8));
+      return { n: '\n', r: '\r', t: '\t', b: '\b', f: '\f' }[c] ?? c;
+    });
+  const decodeHex = (cmap, h) => {
+    const hex = h.replace(/\s+/g, '').toUpperCase();
+    let best = '', bestOk = -1;
+    for (const width of [4, 2]) {
+      let out = '', ok = 0;
+      for (let k = 0; k + width <= hex.length; k += width) {
+        const mapped = cmap.get(hex.slice(k, k + width));
+        if (mapped !== undefined) { out += mapped; ok++; }
+      }
+      if (ok > bestOk) { best = out; bestOk = ok; }
+    }
+    return best;
+  };
+  return (cmaps.length ? cmaps : [new Map()]).map((cmap) => {
+    let text = '';
+    for (const s of streams) {
+      for (const m of s.matchAll(/\(((?:\\.|[^\\()])*)\)|<([0-9A-Fa-f\s]+)>/g)) {
+        text += m[1] !== undefined ? unescapeLit(m[1]) : decodeHex(cmap, m[2]);
+      }
+      text += '\n';
+    }
+    return text;
+  });
+}
+
+const pdfWarnings = [];
+for (const f of files.filter((f) => f.endsWith('.pdf'))) {
+  const texts = extractPdfTexts(readFileSync(f));
+  if (!texts.some((t) => t.trim().length >= 10)) {
+    pdfWarnings.push(`${f}: no text extracted — scan skipped (scanned/exotic PDF?)`);
+    continue;
+  }
+  const found = new Set();
+  for (const text of texts) {
+    const squashed = text.replace(/\s+/g, '').toLowerCase();
+    for (const term of PDF_FORBIDDEN) {
+      if (squashed.includes(term.replace(/\s+/g, '').toLowerCase())) found.add(`"${term}" found in ${f}`);
+    }
+    const phone = text.match(PHONE_RE);
+    if (phone) found.add(`phone-number pattern "${phone[0].trim()}" found in ${f}`);
+  }
+  for (const msg of found) fail('pdf_scan', msg);
+}
+
 const totalErrors = Object.values(groups).reduce((s, a) => s + a.length, 0);
 if (totalErrors) {
   console.error(`\n✗ ${totalErrors} build check(s) failed:`);
@@ -157,6 +285,11 @@ if (totalErrors) {
 if (assetWarnings.length) {
   console.warn(`\n⚠ ${assetWarnings.length} asset(s) over the 500 KB soft warn:`);
   assetWarnings.forEach((w) => console.warn('    • ' + w));
+}
+
+if (pdfWarnings.length) {
+  console.warn(`\n⚠ ${pdfWarnings.length} PDF(s) not scannable:`);
+  pdfWarnings.forEach((w) => console.warn('    • ' + w));
 }
 
 console.log(

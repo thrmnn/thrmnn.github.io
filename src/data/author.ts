@@ -51,7 +51,6 @@ export const author = {
     {
       role: 'Perception Engineer — First Engineering Hire',
       company: 'Roboat (MIT Spinoff)',
-      url: 'https://roboat.ai',
       period: 'Mar 2024 – Aug 2024',
       location: 'Amsterdam, Netherlands',
       summary:

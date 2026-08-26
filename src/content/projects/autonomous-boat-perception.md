@@ -2,7 +2,6 @@
 title: "Perception Stack for Autonomous Canal Boats"
 date: '2024-08-01T00:00:00Z'
 featuredOrder: 3
-externalLink: 'https://roboat.ai'
 proprietary: true
 image: '/projects/autonomous-boat-perception/hero.svg'
 summary: "End-to-end perception system for autonomous canal boats achieving <30ms inference on edge hardware, deployed on physical vessels in Amsterdam."
@@ -41,7 +40,3 @@ The work spanned the full ML lifecycle. I built a complete **MLOps pipeline with
 ## Outcome
 
 The system was **deployed on physical vessels** operating autonomously in Amsterdam's canal network. This project demonstrated the ability to go from zero to a production perception stack under startup constraints, balancing research-grade accuracy with deployment-ready engineering. The camera-first architecture reduced sensor costs significantly while matching the safety requirements of urban maritime navigation.
-
-## Links
-
-- Company: [roboat.ai](https://roboat.ai)

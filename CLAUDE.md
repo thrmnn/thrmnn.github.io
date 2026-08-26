@@ -67,7 +67,7 @@ When the user writes `/council [topic]`, walk it through these four voices and s
 
 ### 4.1 Color & theme
 
-- **Dark default**, explicit light toggle via `[data-theme]` + anti-FOUC inline script in `BaseLayout.astro`
+- **Follows the OS `prefers-color-scheme` by default; not unconditionally dark.** A visitor with no stored preference on a light-OS system sees the light palette — `:root` (light) is the base, and dark tokens apply either via an explicit `[data-theme="dark"]` toggle or, absent that, a `prefers-color-scheme: dark` media match. The anti-FOUC inline script in `BaseLayout.astro` only stamps `[data-theme]` when a preference is stored in `localStorage`; otherwise it defers to CSS.
 - Tokens in `src/styles/global.css` (`@theme inline` for theme-overridable, `@theme` for static)
 - AA contrast ratios documented inline in the light-mode block
 - Blue accent on near-black (dark) / blue accent on near-white (light). **No third palette.**
@@ -88,14 +88,17 @@ The site ships a deliberate `[data-reveal]` motion layer:
 - Gated behind `@media (prefers-reduced-motion: no-preference)` — no-JS and reduced-motion loads see the static layout
 - Reveal JS lives in `BaseLayout.astro` (small IntersectionObserver, no library)
 
+**Interaction grammar (locked 2026-08-26):** hover = attend (a border or color shift only — no glow, no shadow bloom), scan = confirm (a one-shot accent sweep, e.g. the nav-link/monogram scan animations, the header's scan-progress hairline), click = pin (a persistent state change — `aria-current`, `aria-pressed`, open/closed). This is the gate for any future interaction treatment: it should read as one of these three, not invent a fourth.
+
 ### 4.4 Instrument-console header (`src/components/layout/Header.astro`)
 
-The header is a deliberate "instrument" idiom, not a generic top bar:
+The header is a deliberate "instrument" idiom, not a generic top bar — a floating pill, de-glassed (solid background + one border + one soft shadow; no glass highlight, no triple box-shadow stack):
 
-- Monogram (`T·A·H` per-letter spans) + live readout (named section in view, updated on scroll)
-- Monospace nav with an accent keypoint marker on the active route
+- Monogram (`T·A·H` per-letter spans) + a live readout (`.header-readout`, `aria-hidden`) naming the section in view on the homepage (home / about / work / contact — "work" is `#projects`'s friendly label) or the current route on every other page. Visible only in the `.condensed` state — quiet at the top of the page; hidden below 768px.
+- Monospace nav with a square accent keypoint marker (matches the footer's) on the active route
+- The `.header-cta` consult pill is the desktop route to `/consulting/` — it is deliberately not duplicated in `navLinks`; the mobile flat nav list keeps its own separate Consulting entry
 - Condensed-on-scroll state via `.condensed` class
-- Scan-progress line at the bottom edge, width = scroll position
+- Scan-progress hairline inside the pill's bottom edge: `transform: scaleX(var(--progress))`, `transform-origin: left`, consuming a `--progress` custom property written on scroll. Position tracking is ungated (a direct reflection of scroll, not an animation); only the smoothing transition is `prefers-reduced-motion` gated.
 - Mobile: keyboard-operable burger (Enter/Space toggles aria-expanded)
 
 Treat this as identity, not decoration. Don't replace with a "normal" nav without explicit user direction.
@@ -117,7 +120,7 @@ Tailwind utility classes are the chosen convention on `main`. Don't refactor com
 
 | Path             | Purpose                                                                   |
 | ---------------- | ------------------------------------------------------------------------- |
-| `/`              | Long-page: Hero → Bio → Featured Work → News → Contact (single document) |
+| `/`              | Long-page: Hero → Artifact band → Bio → Featured Work → Contact (single document) |
 | `/consulting`    | Consulting engagement scopes                                             |
 | `/projects`      | Project index                                                             |
 | `/projects/[id]` | Project detail                                                            |
@@ -246,6 +249,7 @@ Format: `YYYY-MM-DD — decision — rationale.`
 - 2026-06-12 — Site-wide "latent lattice" pointer field (`src/scripts/pointer-field.ts`): document-anchored 40px hash-derived grid, dots materialize within 120px of a fine pointer with the hero's exact jitter math/palette (shared constants in `src/scripts/excite.ts`). Fine-pointer + motion-OK only; rAF self-terminates; mobile attaches nothing. Tuning rule: adjust A_PEAK only (max 0.65), never radius or amplitude. ProjectCard cursor-sensor deleted — one cursor metaphor per surface.
 - 2026-08-24 — Conversion-path redesign (council audit, 4-voice): intro animation shortened to <1s and localStorage-gated (was sessionStorage, replayed every tab); hero gets an additive secondary link to `/consulting`; `.favela-scrubber` touch-action changed `none`→`pan-y` so vertical swipes pass through to page scroll on mobile; homepage `#news` trimmed to latest item + link to `/now`; `data-decompose` restricted to the hero name only (dropped from Featured Work/Latest/Let's Talk headers — identity + the close, not every section header); "Let's Talk" H2 given distinct always-visible emphasis (size + accent color) instead of hover-gated decompose; carousel link row gains a link to `/consulting`; new `agent-harness` project card added (`featuredOrder: 1`, content sourced verbatim from `consulting.astro`'s agents-infra scope); header gains an additive "consult" CTA pill in `.header-controls` (navLinks/burger untouched); skip-link target (`#main-content`) made focusable via `tabindex="-1"`; bio paragraph order moved the consulting-scope clause earlier (into paragraph 2).
 - 2026-08-24 — Hero-scrubber cycle 2: fix-and-label (council audit, 4-voice + synthesis). Narrative call: all three scenes stay; the artifact's job is craft-and-honesty proof, conversion stays with the CTAs. A procedural agent-infra scene was explicitly vetoed — an agent scene may only ever be a replay of a genuine recorded run. Shipped: per-scene `.artifact-caption` mounted (counts sourced from the sidecar JSONs: 3,610 Vidigal footprints, 66 Amsterdam trees; Loomo labeled "parametric illustration — not sensor data" in user-facing copy); chips renamed (`amsterdam · tree canopy`, `perception · person following`) and canvas aria-label synced (drag promise dropped); Loomo reworked (scan-ring ground, volumetric limbs + head/torso shells, per-scene lut/sizes render hints, gait-locked path speed, follower pursuit lag, detection flashes as a dedicated envelope-driven pass); tab hide/show freeze fixed and rAF parked off-screen; dirty-flag rendering (reduced-motion users no longer pay 60fps for a static tableau); deliberate interaction (drag or chip click) stops auto-rotation (WCAG 2.2.2, carousel precedent); `.bin` added to `check-build.mjs` asset budgets (150KB hard / 60KB warn).
+- 2026-08-26 — Cycle 4: Editorial Broadsheet (Direction A, chosen from live mockups) + shared-ground cleanup. Supersessions (user-approved): nav dedupe — `Consulting` dropped from desktop `navLinks`, the `.header-cta` consult pill is now the sole desktop route to it (mobile keeps its own entry); carousel bridge link to `/consulting` removed (the artifact band now sits directly above Featured Work — homepage consulting entries are header pill, hero scopes link, contact close); homepage `#news` cut entirely, replaced by one mono now-line inside `#about`; contact CTA row 3→2 buttons (LinkedIn dropped, stays in the bio social row). Deleted: the boot-intro overlay (IntroAnimation's monogram dock is the single intro) and the `⌘K` command palette (user ruled: delete, no replacement). Hero rebuilt type-first: the two-column `.hero-grid` is gone, viewport 1 is a single left-aligned column, and the full artifact unit (canvas/corners/caption/chips, untouched internally) moved to its own full-width band directly below, its top corner brackets svh-clamped to crest into view at 1280×800 and stay partially visible at ~700px-tall laptops; artifact-frame max-width 460px → 600px. The hero's ambient gradient backdrop (`::before`, 4 off-token hex colors) is gone — one continuous ground runs hero-through-work; `.contact-bg` is the only tinted band left. `#8b5cf6` purged site-wide (avatar ring is now flat single-accent); smooth-scroll gated behind `prefers-reduced-motion`. Header de-glassed (no glass highlight, one shadow instead of a triple stack) and gained a scan-progress hairline + a condensed-only live readout (see §4.4). One exception to the closed cycle-2 scrubber file: hovering now also pauses idle auto-rotation (`favela-scrubber.ts`, one line).
 
 ---
 

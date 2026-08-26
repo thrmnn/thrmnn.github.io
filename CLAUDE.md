@@ -167,6 +167,9 @@ npm test               # ensure-dist + astro check + check-build.mjs
                        #     across dist/_astro/*.js).
 npm run preflight      # rm -rf dist && build && test — the canonical
                        #   "is this ready to push?" command. Mirrors CI.
+npm run check:external # on-demand audit: HEAD/GET every external link in
+                       #   dist/ HTML, report dead ones. Never in CI —
+                       #   network flakiness must not block deploy.
 npm run install-hooks  # one-time per clone: installs an opt-in
                        #   .git/hooks/pre-push that runs preflight before
                        #   every `git push`. Bypass with --no-verify.

@@ -1,7 +1,7 @@
 ---
 title: "Perception Stack for Autonomous Canal Boats"
 date: '2024-08-01T00:00:00Z'
-featuredOrder: 3
+featuredOrder: 4
 proprietary: true
 image: '/projects/autonomous-boat-perception/hero.svg'
 summary: "End-to-end perception system for autonomous canal boats achieving <30ms inference on edge hardware, deployed on physical vessels in Amsterdam."

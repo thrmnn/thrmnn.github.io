@@ -1,7 +1,7 @@
 ---
 title: "Urban Digital Twin for Airborne Disease Modeling"
 date: '2025-01-01T00:00:00Z'
-featuredOrder: 1
+featuredOrder: 2
 externalLink: 'https://senseablerio.mit.edu/'
 github: 'https://github.com/thrmnn/MorphoFavela'
 image: '/projects/urban-digital-twin/hero.webp'

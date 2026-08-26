@@ -1,7 +1,7 @@
 ---
 title: "Urban Tree LAI at Individual-Tree Scale: Aerial LiDAR + ML"
 date: '2024-09-01T00:00:00Z'
-featuredOrder: 2
+featuredOrder: 3
 externalLink: 'https://senseable.mit.edu/'
 github: 'https://github.com/thrmnn/LAI'
 image: '/projects/aerial-lidar-tree-census/hero.webp'

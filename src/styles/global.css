@@ -408,42 +408,12 @@
    handles narrow screens).
    ========================================================================== */
 .hero-section {
-  position: relative;
   /* svh-clamped, not vw: the min/max rem bounds keep short (mobile) viewports
      at roughly the old padding, while the svh term grows on tall desktop/
      laptop viewports so the artifact band's top edge creeps toward the fold. */
   padding: clamp(3rem, calc(40svh - 8rem), 12rem) 1.5rem clamp(0px, calc(52svh - 364px), 6rem);
-  /* No overflow:hidden — at tight svh-driven bottom padding it would clip a
-     still-hidden [data-reveal] element (translateY offset) out of the
-     IntersectionObserver root before it ever gets the chance to reveal. */
-}
-.hero-section::before {
-  /* Ambient backdrop — light by default; dark variants below.
-     Pale azure wash + soft top-right accent, fades into the page background. */
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 72% 30%, rgba(37, 99, 235, 0.07) 0%, transparent 60%),
-    linear-gradient(180deg, #eef2fb 0%, #f4f6fb 65%, var(--color-bg-primary) 100%);
-  z-index: 0;
-  pointer-events: none;
-}
-[data-theme="dark"] .hero-section::before {
-  background:
-    radial-gradient(ellipse 60% 50% at 70% 35%, rgba(59, 130, 246, 0.10) 0%, transparent 60%),
-    linear-gradient(180deg, #0e1230 0%, #0c0c1d 65%, var(--color-bg-primary) 100%);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) .hero-section::before {
-    background:
-      radial-gradient(ellipse 60% 50% at 70% 35%, rgba(59, 130, 246, 0.10) 0%, transparent 60%),
-      linear-gradient(180deg, #0e1230 0%, #0c0c1d 65%, var(--color-bg-primary) 100%);
-  }
 }
 .hero-type {
-  position: relative;
-  z-index: 1;
   max-width: 44rem;
   margin: 0 auto;
 }

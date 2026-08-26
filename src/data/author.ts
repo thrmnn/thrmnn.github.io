@@ -24,7 +24,7 @@ export const author = {
     {
       degree: "Master's degree (M.Sc), Robotics",
       institution: 'EPFL',
-      years: '2021–2023',
+      years: '2021–2024',
     },
     {
       degree: 'Exchange (B.Sc 3rd year), Embedded Systems',

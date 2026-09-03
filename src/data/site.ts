@@ -5,10 +5,4 @@ export const siteConfig = {
   url: 'https://theoalessandro.com',
   author: 'Théo Alessandro Hermann',
   ogImage: '/og-default.png',
-  analytics: {
-    plausible: {
-      domain: 'thrmnn.github.io',
-      enabled: true,
-    },
-  },
 };

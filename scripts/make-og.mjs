@@ -31,6 +31,7 @@ const OUT = join(ROOT, 'public/og-default.png');
 
 const { author } = await import(join(ROOT, 'src/data/author.ts'));
 const { siteConfig } = await import(join(ROOT, 'src/data/site.ts'));
+const tagline = siteConfig.description.replace(new RegExp(`^${author.role}\\s*—\\s*`, 'i'), '').replace(/^\w/, (c) => c.toUpperCase());
 
 const WIDTH = 1200;
 const HEIGHT = 630;
@@ -176,9 +177,9 @@ function buildTree() {
                     fontSize: 23,
                     lineHeight: 1.45,
                     color: PALETTE.textSecondary,
-                    maxWidth: '880px',
+                    maxWidth: '760px',
                   },
-                  children: siteConfig.description,
+                  children: tagline,
                 },
               },
             ],

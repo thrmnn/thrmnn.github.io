@@ -6,6 +6,7 @@ github: 'https://github.com/thrmnn/perception-pipeline'
 image: '/projects/perception-pipeline/hero.webp'
 imageWidth: 1200
 imageHeight: 630
+featuredOrder: 3
 summary: 'Consolidated, modernized perception stack — detection, multi-object tracking, ReID, pose — replacing four years of one-off prototypes with a single modular, latency-budget-aware pipeline.'
 label: 'Open-source · v0.1 shipped · 2026'
 metric: 'YOLOv8 + ByteTrack · modular · MIT-licensed'

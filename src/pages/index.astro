@@ -24,8 +24,16 @@ const stataMeta = JSON.parse(
   dataset: string;
   duration_s: number;
   events: number;
+  events_by_detector: { tf_jump: number; covariance_spike: number; pose_divergence: number };
 };
-const artifactCaption = `${stataMeta.platform} · ${stataMeta.dataset} · ${stataMeta.duration_s} s AMCL replay · ${stataMeta.events} detector events`;
+const { tf_jump, covariance_spike, pose_divergence } = stataMeta.events_by_detector;
+if (tf_jump + covariance_spike + pose_divergence !== stataMeta.events) {
+  throw new Error(
+    `stata-replay.meta.json: events_by_detector (${tf_jump}+${covariance_spike}+${pose_divergence}) does not sum to events (${stataMeta.events})`,
+  );
+}
+const artifactCaption = `${stataMeta.platform} · ${stataMeta.duration_s} s AMCL replay · ${stataMeta.events} detector events`;
+const artifactLegend = `Green — AMCL's estimated path. Amber — the robot's current position, and the moments a fault detector fired: ${tf_jump} transform jumps, ${covariance_spike} covariance spikes, ${pose_divergence} pose divergences.`;
 ---
 
 <PageLayout ogType="profile">
@@ -67,15 +75,16 @@ const artifactCaption = `${stataMeta.platform} · ${stataMeta.dataset} · ${stat
           class="favela-scrubber"
           data-walls="/data/stata-walls.bin"
           data-replay="/data/stata-replay.json"
-          aria-label="Replay of a recorded PR2 localization run in the MIT Stata Center: wall map, robot trajectory, and the moments a fault detector fired."
+          aria-label="Replay of a recorded PR2 localization run in the MIT Stata Center: wall map, AMCL's estimated trajectory, and the moments one of three fault detectors fired."
         ></canvas>
         <div class="artifact-corners" aria-hidden="true">
           <span></span><span></span><span></span><span></span>
         </div>
       </div>
       <p class="artifact-caption">{artifactCaption}</p>
+      <p class="artifact-legend">{artifactLegend}</p>
       <p class="artifact-provenance">
-        recorded data: MIT Stata Center dataset (CC BY 3.0) · detections: <a href="https://github.com/thrmnn/ros2-localization-triage">ros2-localization-triage</a>
+        recorded data: MIT Stata Center dataset (CC BY 3.0) · detections: <a href="https://github.com/thrmnn/ros2-localization-triage">ros2-localization-triage</a> — open source, every number recomputable
       </p>
     </div>
   </section>

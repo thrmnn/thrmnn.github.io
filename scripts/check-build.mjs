@@ -93,6 +93,22 @@ if (existsSync(STATA_META)) {
     home.includes(`${meta.events} detector events`),
     `stata caption missing "${meta.events} detector events" (from ${STATA_META})`,
   );
+  const { tf_jump, covariance_spike, pose_divergence } = meta.events_by_detector ?? {};
+  must(
+    'stata_caption',
+    home.includes(`${tf_jump} transform jumps`),
+    `hero legend missing "${tf_jump} transform jumps" (from ${STATA_META})`,
+  );
+  must(
+    'stata_caption',
+    home.includes(`${covariance_spike} covariance spikes`),
+    `hero legend missing "${covariance_spike} covariance spikes" (from ${STATA_META})`,
+  );
+  must(
+    'stata_caption',
+    home.includes(`${pose_divergence} pose divergences`),
+    `hero legend missing "${pose_divergence} pose divergences" (from ${STATA_META})`,
+  );
 }
 
 // 6. internal links resolve to a built file

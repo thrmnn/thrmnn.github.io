@@ -1,9 +1,12 @@
 ---
 title: 'Real-Time Hybrid Control: RL + MPC for Autonomous Systems'
 date: '2023-01-13T00:00:00Z'
+draft: true
 externalLink: 'https://www.epfl.ch/labs/biorob/'
 proprietary: true
 image: '/projects/hybrid-mpc-rl-racing/tracks-snapshot.png'
+imageWidth: 743
+imageHeight: 620
 summary: 'Semester project at EPFL BioRob (Ijspeert lab) under G. Bellegarda — a switching hybrid controller that combines Reinforcement Learning and Model Predictive Control to drive a car through learned tracks faster than either approach alone.'
 label: 'EPFL BioRob · Bellegarda / Ijspeert · MA3, Fall 2022'
 metric: 'PPO + MPC switching · car dynamics · OpenAI Gym tracks'

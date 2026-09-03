@@ -1,6 +1,7 @@
 ---
 title: "AI-agent infrastructure"
 date: '2026-06-12T00:00:00Z'
+draft: true
 github: 'https://github.com/thrmnn/agent-harness'
 summary: "For teams shipping agentic products and hitting the wall every team hits — flaky tool calls, unobservable failures, no evals, no safe way to ship a prompt change. I build the harness around your agent so it behaves like a production system: typed tool layer, retrieval you can measure, traces you can actually read, and an eval suite that catches regressions before users do."
 label: "Open-source · v0.1"

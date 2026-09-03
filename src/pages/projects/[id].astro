@@ -74,9 +74,9 @@ const articleJsonLd = {
         <div class="mb-10 rounded-lg overflow-hidden border border-border">
           <img
             src={project.data.image}
-            alt={project.data.title}
-            width="1200"
-            height="630"
+            alt={project.data.imageAlt ?? project.data.title}
+            width={project.data.imageWidth ?? 1200}
+            height={project.data.imageHeight ?? 630}
             loading="eager"
             fetchpriority="high"
             class="w-full h-auto block"

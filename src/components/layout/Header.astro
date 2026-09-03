@@ -515,8 +515,10 @@ const routeLabel =
     if (readout && window.location.pathname === '/' && 'IntersectionObserver' in window) {
       const sectionLabels: Record<string, string> = {
         home: 'home',
-        about: 'about',
         projects: 'work',
+        offer: 'offer',
+        direction: 'direction',
+        about: 'about',
         contact: 'contact',
       };
       const sectionIO = new IntersectionObserver(

@@ -2,6 +2,7 @@
 title: 'Real-Time Hybrid Control: RL + MPC for Autonomous Systems'
 date: '2023-01-13T00:00:00Z'
 draft: true
+# assets parked in drafts/public/projects/hybrid-mpc-rl-racing/ while draft: true
 externalLink: 'https://www.epfl.ch/labs/biorob/'
 proprietary: true
 image: '/projects/hybrid-mpc-rl-racing/tracks-snapshot.png'

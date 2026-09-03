@@ -2,6 +2,7 @@
 title: "Urban Tree LAI at Individual-Tree Scale: Aerial LiDAR + ML"
 date: '2024-09-01T00:00:00Z'
 draft: true
+# assets parked in drafts/public/projects/aerial-lidar-tree-census/ while draft: true
 externalLink: 'https://senseable.mit.edu/'
 github: 'https://github.com/thrmnn/LAI'
 image: '/projects/aerial-lidar-tree-census/hero.webp'

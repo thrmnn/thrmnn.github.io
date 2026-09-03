@@ -8,14 +8,14 @@ A parallel rebrand exploration lives on `design-sprint-2026-05-14` (Astro + Frau
 
 ## 1. Project north star
 
-Personal site for **Théo Alessandro Hermann** — researcher and builder.
+Personal site for **Théo Alessandro Hermann** — independent robotics engineer.
 
-- **Primary research line:** MIT Senseable City Lab Rio — 3D digital twins of favelas from LiDAR for public health research.
-- **Side build:** Open-source robotics software.
-- **Consulting practice:** perception + AI-agent infrastructure engagements for businesses (lead audience).
+- **Primary:** independent robotics consulting — perception, autonomy, robot operational data — for teams running real robots.
+- **Credential:** research fellow at MIT Senseable City Lab Rio — LiDAR reconstruction of dense informal settlements.
+- **Open-source robotics:** `perception-pipeline`, `ros2-localization-triage`.
 - **Past marquee credit:** Roboat (MIT spinoff), first engineering hire — past tense.
 
-Tech portfolio first. Researcher-and-builder hybrid identity. The site is the front door for collaboration: consulting clients and research collaborators first, with senior perception/CV/robotics credibility anchored but never pitched as job-seeking.
+The site is an outbound-funnel front door: a cold-outbound reader (CTO, head of autonomy, technical founder) decides in 20-90 seconds whether a call is worth it. Robotics-engineer-for-hire first; MIT is a credential, not the lead identity.
 
 ---
 
@@ -30,16 +30,16 @@ Tech portfolio first. Researcher-and-builder hybrid identity. The site is the fr
 
 ### Positioning (one-liner)
 
-> Researcher and builder. Urban science at MIT Senseable City Lab Rio — 3D digital twins of favelas for public health. Open-source robotics on the side. Consulting in perception and AI-agent infrastructure.
+> Independent robotics engineer. Perception, autonomy, and robot operational data for teams running real robots — investigate, prototype, improve. Research fellow at MIT Senseable City Lab Rio.
 
 ### Tag triplet
 
-`Robotics · Urban Science · AI Agents` (lives in `site.ts` description only; the hero no longer displays it — removed 2026-06-12). The site is collaboration-first: no "open to roles" job-seeking copy anywhere in rendered HTML, and no prospective-employer name-drops (Anduril/Figure/Waymo were removed deliberately).
+Superseded 2026-09-03: `site.ts` `description` is now the site description sentence itself — "Independent robotics engineer — perception, autonomy, and robot operational data for teams running real robots." No triplet, no "Urban Science" anywhere in rendered HTML (`check-build.mjs` forbids the string). The site is collaboration-first: no "open to roles" / "senior perception roles" job-seeking copy anywhere in rendered HTML (both strings are gated by `check-build.mjs`), and no prospective-employer name-drops (Anduril/Figure/Waymo were removed deliberately).
 
 ### Audience priority
 
-1. Consulting prospects — perception and AI-agent infrastructure engagements for businesses
-2. Research collaborators across urban science + perception
+1. Robotics CTOs, heads of autonomy, technical founders — consulting prospects at companies running real robots
+2. Research collaborators across robotics + perception
 3. Hiring managers at frontier physical-AI companies — reachable, but never pitched to directly on-site
 
 ### Tenure
@@ -116,23 +116,25 @@ Tailwind utility classes are the chosen convention on `main`. Don't refactor com
 
 ---
 
-## 5. Site architecture (current — 2026-05-27)
+## 5. Site architecture (current — 2026-09-03)
 
 | Path             | Purpose                                                                   |
 | ---------------- | ------------------------------------------------------------------------- |
-| `/`              | Long-page: Hero → Artifact band → Bio → Featured Work → Contact (single document) |
-| `/consulting`    | Consulting engagement scopes                                             |
-| `/projects`      | Project index                                                             |
+| `/`              | Hero → Artifact band (real AMCL replay) → Proof grid → Offer → Territory strip → Where this is going → About → Contact (single document) |
+| `/consulting`    | Consulting engagement scopes — lead scope ROS 2 fleet log triage          |
+| `/projects`      | Project index (all published projects)                                    |
 | `/projects/[id]` | Project detail                                                            |
-| `/cv`            | Full CV                                                                   |
-| `/now`           | Sivers-style current state + timeline                                     |
+| `/cv`            | Full CV — unlinked from nav/footer, linked once from About ("Full CV →")  |
+| `/now`           | Sivers-style current state + timeline — unlinked from nav/footer, buildable only |
 | `/404`           | Not found                                                                 |
-| `/rss.xml`       | Projects feed                                                             |
+| `/rss.xml`       | Projects feed (drafts excluded)                                           |
+
+Drafted (unpublished, `draft: true`; files stay in git, routes don't build): `agent-harness`, `urban-digital-twin`, `aerial-lidar-tree-census`, `hybrid-mpc-rl-racing`.
 
 ### Deliberately removed
 
 - `/research` route and `publications` collection were removed before 2026-05-27. **`scripts/check-build.mjs` actively forbids `/research` from coming back and forbids the strings `Nature Cities` and `AGU Fall` from appearing in rendered HTML.** Anything referencing those terms — copy, project markdown summaries, navigation, JSON-LD — will fail `npm test` and block deploy.
-
+- The homepage carousel (`ProjectCarousel.astro`) — replaced 2026-09-03 by a static 2×2 proof grid, no images, no drift/marquee.
 ---
 
 ## 6. Code conventions
@@ -254,11 +256,14 @@ Format: `YYYY-MM-DD — decision — rationale.`
 - 2026-08-24 — Hero-scrubber cycle 2: fix-and-label (council audit, 4-voice + synthesis). Narrative call: all three scenes stay; the artifact's job is craft-and-honesty proof, conversion stays with the CTAs. A procedural agent-infra scene was explicitly vetoed — an agent scene may only ever be a replay of a genuine recorded run. Shipped: per-scene `.artifact-caption` mounted (counts sourced from the sidecar JSONs: 3,610 Vidigal footprints, 66 Amsterdam trees; Loomo labeled "parametric illustration — not sensor data" in user-facing copy); chips renamed (`amsterdam · tree canopy`, `perception · person following`) and canvas aria-label synced (drag promise dropped); Loomo reworked (scan-ring ground, volumetric limbs + head/torso shells, per-scene lut/sizes render hints, gait-locked path speed, follower pursuit lag, detection flashes as a dedicated envelope-driven pass); tab hide/show freeze fixed and rAF parked off-screen; dirty-flag rendering (reduced-motion users no longer pay 60fps for a static tableau); deliberate interaction (drag or chip click) stops auto-rotation (WCAG 2.2.2, carousel precedent); `.bin` added to `check-build.mjs` asset budgets (150KB hard / 60KB warn).
 - 2026-08-26 — Trust-repair cycle (hotfix b263117 + this branch): every public claim must resolve for a stranger today. User decisions (AskUserQuestion): tenure 3→4 years (locked-§2 change, user-approved), MSc EPFL dates corrected to 2021–2024 (thesis defended Sept 2024). Cadence promises cut ("weekly progress notes" / "weekly build-in-public" in /now + news — they resolved nowhere; the ETH Robot Learning course fact stays). resume.pdf regenerated from `author.ts` via `scripts/make-resume.mjs` + host weasyprint (manual step, never CI; @thrmnn only, no phone). New gates: `check-build.mjs` scans dist PDFs for forbidden terms + phone patterns (pure node, per-font ToUnicode decoding); `check:external` on-demand link-liveness audit (never in CI). featuredOrder deduped — agent-harness leads (per 2026-08-24 decision), rest renumbered 2–6 preserving order.
 - 2026-08-26 — Cycle 4: Editorial Broadsheet (Direction A, chosen from live mockups) + shared-ground cleanup. Supersessions (user-approved): nav dedupe — `Consulting` dropped from desktop `navLinks`, the `.header-cta` consult pill is now the sole desktop route to it (mobile keeps its own entry); carousel bridge link to `/consulting` removed (the artifact band now sits directly above Featured Work — homepage consulting entries are header pill, hero scopes link, contact close); homepage `#news` cut entirely, replaced by one mono now-line inside `#about`; contact CTA row 3→2 buttons (LinkedIn dropped, stays in the bio social row). Deleted: the boot-intro overlay (IntroAnimation's monogram dock is the single intro) and the `⌘K` command palette (user ruled: delete, no replacement). Hero rebuilt type-first: the two-column `.hero-grid` is gone, viewport 1 is a single left-aligned column, and the full artifact unit (canvas/corners/caption/chips, untouched internally) moved to its own full-width band directly below, its top corner brackets svh-clamped to crest into view at 1280×800 and stay partially visible at ~700px-tall laptops; artifact-frame max-width 460px → 600px. The hero's ambient gradient backdrop (`::before`, 4 off-token hex colors) is gone — one continuous ground runs hero-through-work; `.contact-bg` is the only tinted band left. `#8b5cf6` purged site-wide (avatar ring is now flat single-accent); smooth-scroll gated behind `prefers-reduced-motion`. Header de-glassed (no glass highlight, one shadow instead of a triple stack) and gained a scan-progress hairline + a condensed-only live readout (see §4.4). One exception to the closed cycle-2 scrubber file: hovering now also pauses idle auto-rotation (`favela-scrubber.ts`, one line).
+- 2026-09-03 — Cycle 6: outbound-funnel rework (robotics consulting, Massif unnamed). (a) Identity re-anchored to independent robotics engineer per the owner's brief; MIT Senseable City Lab Rio kept as a credential clause, not the lead identity. (b) A future venture direction is described unnamed in "Where this is going" (trademark pending) — `check-build.mjs` forbids the string `Massif` in rendered HTML/PDFs. (c) Contact email moved off `thermann@mit.edu` to the owner's personal Gmail (`thermann.ai@gmail.com`, single source `author.ts`), pending a future swap to an owned domain address. (d) Client-data line ("Analysis runs on your infrastructure or under NDA on mine; nothing is retained after handover.") shipped verbatim at Contact and on the ROS 2 log-triage consulting scope. (e) No pricing anywhere; no availability/capacity line (old consulting eyebrow removed, no replacement); the ROS 2 log-triage scope is offline bag/log analysis only, no real-time/on-robot deliverable. (f) Four project pages unpublished via `draft: true` (files stay in git, routes don't build): `agent-harness`, `urban-digital-twin`, `aerial-lidar-tree-census`, `hybrid-mpc-rl-racing`; new case `ros2-localization-triage` added (`featuredOrder: 2`); the homepage carousel (`ProjectCarousel.astro`) replaced by a static 2×2 proof grid (no images, no drift); the four live case bodies rewritten to a Problem/Built/Why hard/What happened shape. (g) Job-seeking line removed from `perception-pipeline.md`'s "Why open" section. Also shipped: the hero artifact band's chip picker removed — the canvas now replays one real recorded AMCL run (PR2, MIT Stata Center dataset, CC BY 3.0) via `scripts/sample-stata-replay.py` + `buildStataReplay` in `favela-scrubber.ts`; the procedural Loomo scene moved to `src/scripts/scenes/loomo.ts` (kept, unimported, not bundled). `og-default.png` still renders the pre-cycle-6 tag triplet as baked-in pixels — flagged, not regenerated (manual host step).
 ---
 
 ## 11. Out of scope (deliberately)
 
 - Everything from `design-sprint-2026-05-14`: Fraunces, Tropical/Cartesian registers, Marginalia, VerticalLabel, PullQuote, SectionRule, anti-performative copy rules, TAH monogram pack, `theoalessandro.com` domain
+- `theoalessandro.com` as the site domain (out of scope; only the contact-email address is in scope for a future swap — the site stays at `thrmnn.github.io`)
+- Naming the future venture direction ("Massif") publicly anywhere on the site until trademark clears — `check-build.mjs` forbids the string
 - The `/research` route and `publications` collection — actively forbidden by `check-build.mjs`
 - Removing dark mode
 - Removing the instrument-console header

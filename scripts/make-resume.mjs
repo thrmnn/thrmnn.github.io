@@ -27,7 +27,7 @@ const contacts = [
   '<a href="mailto:thermann.ai@gmail.com">thermann.ai@gmail.com</a>',
   '<a href="https://github.com/thrmnn">github.com/thrmnn</a>',
   '<a href="https://www.linkedin.com/in/theohermann-epfl/">linkedin.com/in/theohermann-epfl</a>',
-  '<a href="https://thrmnn.github.io">thrmnn.github.io</a>',
+  '<a href="https://theoalessandro.com">theoalessandro.com</a>',
 ];
 
 const html = `<!doctype html>

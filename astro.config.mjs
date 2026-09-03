@@ -4,7 +4,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://thrmnn.github.io',
+  site: 'https://theoalessandro.com',
   integrations: [mdx(), sitemap()],
   output: 'static',
   vite: {

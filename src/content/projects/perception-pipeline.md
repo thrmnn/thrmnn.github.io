@@ -4,6 +4,8 @@ date: '2026-06-08T00:00:00Z'
 externalLink: 'https://github.com/thrmnn/perception-pipeline'
 github: 'https://github.com/thrmnn/perception-pipeline'
 image: '/projects/perception-pipeline/hero.webp'
+imageWidth: 1200
+imageHeight: 630
 summary: 'Consolidated, modernized perception stack — detection, multi-object tracking, ReID, pose — replacing four years of one-off prototypes with a single modular, latency-budget-aware pipeline.'
 label: 'Open-source · v0.1 shipped · 2026'
 metric: 'YOLOv8 + ByteTrack · modular · MIT-licensed'
@@ -64,4 +66,4 @@ The historical record — these still run on their original dependency stacks:
 
 ## Why open
 
-Side build at the intersection of the main MIT Senseable Rio research line and active interest in senior perception roles. Public, MIT-licensed, modular — designed to be useful to whoever picks it up and an honest demonstration of how I think about real-time vision systems.
+Public, MIT-licensed, modular — designed to be useful to whoever picks it up and an honest demonstration of how I think about real-time vision systems.

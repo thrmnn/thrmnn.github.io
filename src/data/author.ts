@@ -1,23 +1,15 @@
+const email = 'thermann.ai@gmail.com';
+
 export const author = {
   name: 'Théo Alessandro Hermann',
   monogram: 'T.A.H',
-  role: 'Researcher & Perception Engineer',
+  role: 'Independent robotics engineer',
   affiliation: 'MIT Senseable City Lab Rio',
-  email: 'thermann@mit.edu',
+  email,
 
   bio: [
-    '<strong>MSc Robotics, EPFL</strong> · 4 years shipping perception and autonomy systems on edge hardware · Franco-Brazilian, trained in Switzerland.',
-    'Founding member of <strong>MIT Senseable City Lab Rio</strong> — researcher on the 3D digital twins of favelas line, reconstructing dense informal settlements from LiDAR for public health work. On the side, building open-source robotics software. Taking a small number of consulting engagements in <strong>perception and AI-agent infrastructure</strong>.',
-    'Previously at <strong>Roboat</strong> (MIT spinoff) — built the perception stack for autonomous canal vessels deployed in Amsterdam.',
-  ],
-
-  interests: [
-    'Perception & Sensor Fusion',
-    'Autonomous Systems',
-    '3D Reconstruction & LiDAR',
-    'Robot Learning',
-    'AI Agents & Eval Infrastructure',
-    'Edge Deployment & MLOps',
+    '<strong>MSc Robotics, EPFL.</strong> Four years shipping perception and autonomy systems on edge hardware. Franco-Brazilian, trained in Switzerland. French · English · Portuguese · Spanish.',
+    'First engineering hire (perception) at <strong>Roboat</strong> (MIT spinoff), through deployment on Amsterdam\'s canals. Research fellow at <strong>MIT Senseable City Lab Rio</strong> — terrestrial LiDAR-based 3D reconstruction of dense informal settlements. Research assistant at EPFL VITA Lab; visiting researcher at IRI (CSIC-UPC), Barcelona.',
   ],
 
   education: [
@@ -77,7 +69,7 @@ export const author = {
   ],
 
   social: [
-    { label: 'Email', href: 'mailto:thermann@mit.edu', icon: 'email' },
+    { label: 'Email', href: `mailto:${email}`, icon: 'email' },
     { label: 'GitHub', href: 'https://github.com/thrmnn', icon: 'github' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/theohermann-epfl/', icon: 'linkedin' },
   ],

@@ -1,7 +1,7 @@
 export const siteConfig = {
   title: 'Théo Alessandro Hermann',
   description:
-    'Robotics · Urban Science · AI Agents — MIT Senseable City Lab Rio. Perception, 3D digital twins, and AI-agent infrastructure consulting.',
+    'Independent robotics engineer — perception, autonomy, and robot operational data for teams running real robots.',
   url: 'https://theoalessandro.com',
   author: 'Théo Alessandro Hermann',
   ogImage: '/og-default.png',

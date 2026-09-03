@@ -152,6 +152,10 @@ const jsonLd = {
       // they enter the viewport. Skipped entirely under reduced-motion.
       (() => {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (!('IntersectionObserver' in window)) {
+          document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('in-view'));
+          return;
+        }
         const io = new IntersectionObserver(
           (entries) => {
             for (const e of entries) {

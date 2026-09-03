@@ -635,13 +635,18 @@ export async function initFavelaScrubber(canvas: HTMLCanvasElement) {
       requestAnimationFrame(tick);
     }
   };
-  const io = new IntersectionObserver(
-    (entries) => {
-      ioVisible = entries[0]!.isIntersecting;
-      syncVisible();
-    },
-    { threshold: 0.05 },
-  );
-  io.observe(canvas);
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        ioVisible = entries[0]!.isIntersecting;
+        syncVisible();
+      },
+      { threshold: 0.05 },
+    );
+    io.observe(canvas);
+  } else {
+    ioVisible = true;
+    syncVisible();
+  }
   document.addEventListener('visibilitychange', syncVisible);
 }

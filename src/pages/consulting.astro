@@ -22,7 +22,7 @@ const scopes = [
       'Analysis runs on your infrastructure or under NDA on mine; nothing is retained after handover.',
     ],
     evidence:
-      'The method is public in <a href="https://github.com/thrmnn/ros2-localization-triage">ros2-localization-triage</a>: four localization-failure detectors run against 108 minutes of real recordings from five robot platforms — Cartographer backpack rigs, a Tiago, a MiR100 AGV, a PR2, and a handheld 3D rig, all third-party public benchmark data, not a live customer fleet — with a self-graded case log whose rubric was committed before the results existed, and wrong results published as wrong. Against failure labels written by the Cartographer dataset\'s own authors more than a decade before this tool existed, the gap detector found 16 of 16 labelled laser gaps and nothing else. A zero-false-positive prediction was written down and committed before a separate benchmark run — and held, across 1,013 seconds of matched-control data. One candidate dataset was rejected outright because its license didn\'t clear for commercial, paid work. Don\'t take any of this on faith — clone the repo and run python3 scripts/check_numbers.py; it recomputes every headline figure from committed data. The same frozen thresholds produce false-alarm rates from 9 per robot-hour on one platform to 1,880 on another — that gap is why per-fleet calibration, not detection, is the work a live engagement would do.',
+      'The method is public in <a href="https://github.com/thrmnn/ros2-localization-triage">ros2-localization-triage</a>: four localization-failure detectors run against 108 minutes of real recordings from five robot platforms — Cartographer backpack rigs, a Tiago, a MiR100 AGV, a PR2, a handheld 3D rig — all public benchmark data, not a live customer fleet. Every headline number recomputes from committed data: clone the repo and run python3 scripts/check_numbers.py. Against failure labels the Cartographer dataset\'s own authors wrote more than a decade before this tool existed, the gap detector found 16 of 16 labelled laser gaps and nothing else. The case log is self-graded against a rubric committed before the results existed, and wrong results are published as wrong.',
   },
   {
     id: 'pipeline-audit',
@@ -37,7 +37,7 @@ const scopes = [
       'Optional: 1-week implementation pass on the highest-leverage finding',
     ],
     evidence:
-      'Roboat camera-first stack — <30 ms inference on Jetson Orin, deployed on canal vessels in Amsterdam. EVIO event-camera VIO at IRI Barcelona.',
+      'Roboat camera-first stack — <30 ms inference on Jetson Orin, deployed on canal vessels in Amsterdam. The same detection / tracking / pose shape in the open: <a href="https://github.com/thrmnn/perception-pipeline">perception-pipeline</a> — modular, MIT-licensed, v0.1 shipped June 2026.',
   },
   {
     id: 'lidar-bringup',
@@ -98,9 +98,7 @@ const scopes = [
           Short, scoped engagements in robot perception, autonomy, and data.
         </h1>
         <p class="text-text-secondary max-w-2xl text-lg leading-relaxed">
-          I take on focused engagements in perception, autonomy, LiDAR/3D, and robot operational
-          data — logs, bags, telemetry, failures. The scopes below are the shapes I keep coming
-          back to. Anything else, ask.
+          The five scopes below are the shapes this work keeps taking. Anything else, ask.
         </p>
       </header>
 

@@ -22,6 +22,7 @@ const groups = {
   bundle_budget: [],
   pdf_scan: [],
   stata_caption: [],
+  contrast: [],
 };
 const fail = (group, m) => { groups[group].push(m); };
 const must = (group, cond, m) => { if (!cond) fail(group, m); };
@@ -306,6 +307,78 @@ for (const f of files.filter((f) => f.endsWith('.pdf'))) {
     }
   }
   for (const msg of found) fail('pdf_scan', msg);
+}
+
+// 10. WCAG contrast gate — parse --text-*/--bg-* hex tokens for both color
+//     modes out of global.css and fail any text/bg pair below 4.5:1 (AA).
+//     Pure regex/brace-matching parser; source file, not dist (tokens don't
+//     survive to dist as literal hex strings once Tailwind compiles them).
+const GLOBAL_CSS = 'src/styles/global.css';
+function srgbToLinear(c) {
+  c /= 255;
+  return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+}
+function relLuminance(hex) {
+  const n = parseInt(hex, 16);
+  return (
+    0.2126 * srgbToLinear((n >> 16) & 255) +
+    0.7152 * srgbToLinear((n >> 8) & 255) +
+    0.0722 * srgbToLinear(n & 255)
+  );
+}
+function contrastRatio(hexA, hexB) {
+  const [a, b] = [relLuminance(hexA), relLuminance(hexB)].sort((x, y) => y - x);
+  return (a + 0.05) / (b + 0.05);
+}
+function extractBraceBlock(css, selector) {
+  const start = css.indexOf(selector);
+  if (start === -1) return null;
+  const braceStart = css.indexOf('{', start);
+  let depth = 1, i = braceStart + 1;
+  while (depth > 0 && i < css.length) {
+    if (css[i] === '{') depth++;
+    else if (css[i] === '}') depth--;
+    i++;
+  }
+  return css.slice(braceStart + 1, i - 1);
+}
+function extractHexTokens(block, names) {
+  const out = {};
+  for (const name of names) {
+    const m = block.match(new RegExp(`--${name}:\\s*#([0-9a-fA-F]{6})`));
+    if (m) out[name] = m[1];
+  }
+  return out;
+}
+if (existsSync(GLOBAL_CSS)) {
+  const css = readFileSync(GLOBAL_CSS, 'utf8');
+  const textNames = ['text-primary', 'text-secondary', 'text-muted'];
+  const bgNames = ['bg-primary', 'bg-secondary', 'bg-elevated', 'bg-accent'];
+  const modes = [
+    ['light', extractBraceBlock(css, ':root {')],
+    ['dark', extractBraceBlock(css, '[data-theme="dark"] {')],
+  ];
+  for (const [mode, block] of modes) {
+    if (!block) {
+      fail('contrast', `could not locate the ${mode}-mode token block in ${GLOBAL_CSS}`);
+      continue;
+    }
+    const text = extractHexTokens(block, textNames);
+    const bg = extractHexTokens(block, bgNames);
+    for (const [tname, thex] of Object.entries(text)) {
+      for (const [bname, bhex] of Object.entries(bg)) {
+        const ratio = contrastRatio(thex, bhex);
+        if (ratio < 4.5) {
+          fail(
+            'contrast',
+            `${mode} --${tname} (#${thex}) vs --${bname} (#${bhex}) = ${ratio.toFixed(2)}:1 (< 4.5:1 WCAG AA)`,
+          );
+        }
+      }
+    }
+  }
+} else {
+  fail('contrast', `${GLOBAL_CSS} not found — cannot run the WCAG contrast gate`);
 }
 
 const totalErrors = Object.values(groups).reduce((s, a) => s + a.length, 0);

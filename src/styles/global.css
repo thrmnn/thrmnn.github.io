@@ -493,22 +493,86 @@
   color: var(--color-text-muted);
   margin: 0;
 }
-
-/* --- Now-line: mono vocabulary, left-aligned (not the artifact caption's
-   centered/uppercase treatment) — a one-line status inside #about. --- */
-.now-line {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  line-height: 1.6;
-  letter-spacing: 0.08em;
+.artifact-provenance {
+  text-align: center;
+  font-size: 0.7rem;
   color: var(--color-text-muted);
-  margin-top: 1.5rem;
+  margin: 0;
 }
-.now-line a {
+.artifact-provenance a {
   color: var(--color-link);
 }
-.now-line a:hover {
+.artifact-provenance a:hover {
   color: var(--color-link-hover);
+}
+
+/* --- Hero caption + CTA row (compressed risk-reversal line, then the
+   primary/secondary buttons) --- */
+.hero-caption {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+  margin: 0 0 1.25rem;
+}
+.hero-cta-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* --- Proof grid: hard-edged plates, no images, no rounding --- */
+.proof-plate {
+  display: block;
+  border: 1px solid var(--color-border);
+  padding: 1.5rem;
+  transition: border-color var(--dur-1) var(--ease-out);
+}
+.proof-plate:hover,
+.proof-plate:focus-visible {
+  border-color: var(--color-border-hover);
+}
+.proof-plate:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.proof-plate-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--color-text-muted);
+  margin: 0 0 0.5rem;
+}
+.proof-plate-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 0.6rem;
+}
+.proof-plate-hook {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* --- Offer: bold lead + one sentence, three across --- */
+.offer-lead {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 0.5rem;
+}
+
+/* --- Territory strip: one wrapping mono line --- */
+.territory-strip {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
 }
 
 /* --- Section label: CSS-only demotion of an interior h2 to instrument
@@ -522,38 +586,6 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-text-muted);
-}
-
-/* Dataset chips — the captions are the switcher */
-.artifact-chips {
-  display: flex;
-  justify-content: center;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-}
-.artifact-chip {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  border: 1px solid transparent;
-  border-radius: 999px;
-  padding: 0.28rem 0.7rem;
-  cursor: pointer;
-  transition: color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
-}
-.artifact-chip:hover {
-  color: var(--color-text-secondary);
-}
-.artifact-chip.is-active {
-  color: var(--color-text-primary);
-  border-color: var(--color-border);
-  background: var(--color-bg-elevated);
-}
-.artifact-chip:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
 }
 
 /* --- Avatar ring (flat single-accent mark; no animation) --- */

@@ -1,0 +1,15 @@
+{
+  "platform": "PR2",
+  "dataset": "MIT Stata Center dataset",
+  "license": "CC BY 3.0",
+  "duration_s": 400,
+  "poses": 647,
+  "wall_points": 6265,
+  "events": 80,
+  "events_by_detector": {
+    "tf_jump": 41,
+    "covariance_spike": 16,
+    "pose_divergence": 23
+  },
+  "source": "https://github.com/thrmnn/ros2-localization-triage/tree/main/results/stata"
+}

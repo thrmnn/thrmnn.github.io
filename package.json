@@ -9,7 +9,9 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "node scripts/ensure-dist.mjs && astro check && node scripts/check-build.mjs",
-    "preflight": "rm -rf dist && npm run build && npm test",
+    "preflight": "rm -rf dist && npm run build && npm test && npm run check:og",
+    "make:og": "node scripts/make-og.mjs",
+    "check:og": "node scripts/make-og.mjs --check",
     "check:external": "node scripts/check-external.mjs",
     "install-hooks": "node scripts/install-hooks.mjs"
   },
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "satori": "^0.33.4",
     "typescript": "^5.9.3"
   }
 }

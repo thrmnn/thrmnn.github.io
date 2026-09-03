@@ -23,6 +23,7 @@ const groups = {
   pdf_scan: [],
   stata_caption: [],
   contrast: [],
+  og_dimensions: [],
 };
 const fail = (group, m) => { groups[group].push(m); };
 const must = (group, cond, m) => { if (!cond) fail(group, m); };
@@ -379,6 +380,20 @@ if (existsSync(GLOBAL_CSS)) {
   }
 } else {
   fail('contrast', `${GLOBAL_CSS} not found — cannot run the WCAG contrast gate`);
+}
+
+// 11. Social card dimensions — a corrupted/regenerated-wrong og-default.png
+//     silently breaks every cold-outbound link preview.
+const ogPath = join(DIST, 'og-default.png');
+if (existsSync(ogPath)) {
+  const ogBuf = readFileSync(ogPath);
+  const ogWidth = ogBuf.readUInt32BE(16);
+  const ogHeight = ogBuf.readUInt32BE(20);
+  must(
+    'og_dimensions',
+    ogWidth === 1200 && ogHeight === 630,
+    `dist/og-default.png is ${ogWidth}x${ogHeight}, expected 1200x630`,
+  );
 }
 
 const totalErrors = Object.values(groups).reduce((s, a) => s + a.length, 0);

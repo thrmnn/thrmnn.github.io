@@ -8,19 +8,21 @@ const calLink = 'https://cal.com/theo-hermann-aaa7tm';
 
 const scopes = [
   {
-    id: 'agents-infra',
-    title: 'AI-agent infrastructure',
-    duration: '4–8 weeks',
+    id: 'ros2-log-triage',
+    title: 'ROS 2 fleet log triage',
+    duration: '2–4 weeks',
+    repoLine: 'Method public: github.com/thrmnn/ros2-localization-triage',
     summary:
-      'For teams shipping agentic products and hitting the wall every team hits — flaky tool calls, unobservable failures, no evals, no safe way to ship a prompt change. I build the harness around your agent so it behaves like a production system: typed tool layer, retrieval you can measure, traces you can actually read, and an eval suite that catches regressions before users do.',
+      "A robot misbehaves at a customer site and someone has to comb the bag files and logs to find out why. I do that investigation: reconstruct the timeline, isolate the failure, and write up what happened with the evidence attached. Then I calibrate detectors to your fleet's failure classes — sensor dropout, transform jumps, covariance spikes, pose divergence — run against your recorded bags and logs. Calibration is not optional: the same frozen thresholds that stay quiet on one platform false-alarm from 9 to 1,880 times an hour on another.",
     deliverables: [
-      'Typed, versioned tool layer (testable in isolation)',
-      'Retrieval pipeline with an offline eval harness',
-      'Tracing + observability on every agent run',
-      'Regression eval suite wired into CI',
+      'Incident report: timeline, root cause, supporting evidence from your bags and logs',
+      "Detectors for your fleet's failure classes (sensor dropout, transform jumps, covariance spikes, pose divergence), run against your recorded bags and logs",
+      'Thresholds calibrated to your fleet, with measured false-alarm rates',
+      'Analysis scripts you can rerun on new recordings',
+      'Analysis runs on your infrastructure or under NDA on mine; nothing is retained after handover.',
     ],
     evidence:
-      'Author of <a href="https://github.com/thrmnn/agent-harness">agent-harness</a> — open-source typed tool layer + regression evals for agentic systems.',
+      'The method is public in <a href="https://github.com/thrmnn/ros2-localization-triage">ros2-localization-triage</a>: four localization-failure detectors run against 108 minutes of real recordings from five robot platforms — Cartographer backpack rigs, a Tiago, a MiR100 AGV, a PR2, and a handheld 3D rig, all third-party public benchmark data, not a live customer fleet — with a self-graded case log whose rubric was committed before the results existed, and wrong results published as wrong. Against failure labels written by the Cartographer dataset\'s own authors more than a decade before this tool existed, the gap detector found 16 of 16 labelled laser gaps and nothing else. A zero-false-positive prediction was written down and committed before a separate benchmark run — and held, across 1,013 seconds of matched-control data. One candidate dataset was rejected outright because its license didn\'t clear for commercial, paid work. Don\'t take any of this on faith — clone the repo and run python3 scripts/check_numbers.py; it recomputes every headline figure from committed data. The same frozen thresholds produce false-alarm rates from 9 per robot-hour on one platform to 1,880 on another — that gap is why per-fleet calibration, not detection, is the work a live engagement would do.',
   },
   {
     id: 'pipeline-audit',
@@ -54,7 +56,7 @@ const scopes = [
   },
   {
     id: 'embodied-mvp',
-    title: 'Embodied AI / robot perception MVP',
+    title: 'Robot-perception MVP',
     duration: '6–8 weeks',
     summary:
       'End-to-end detection + tracking + state-estimation prototype on real hardware. Targeted at teams who need to move from research code to a robot that runs reliably outside the lab. Scoped tightly: one platform, one task, hard latency budget.',
@@ -67,27 +69,38 @@ const scopes = [
     evidence:
       'EPFL VITA Lab — full autonomy stack on Segway Loomo (SLAM + planning + obstacle avoidance + person-following), released open-source. Roboat — first engineering hire, perception lead through deployment.',
   },
+  {
+    id: 'agents-infra',
+    title: 'AI-agent infrastructure',
+    duration: '4–8 weeks',
+    summary:
+      'For teams shipping agentic products and hitting the wall every team hits — flaky tool calls, unobservable failures, no evals, no safe way to ship a prompt change. I build the harness around your agent so it behaves like a production system: typed tool layer, retrieval you can measure, traces you can actually read, and an eval suite that catches regressions before users do.',
+    deliverables: [
+      'Typed, versioned tool layer (testable in isolation)',
+      'Retrieval pipeline with an offline eval harness',
+      'Tracing + observability on every agent run',
+      'Regression eval suite wired into CI',
+    ],
+    evidence:
+      'Early open-source scaffold (<a href="https://github.com/thrmnn/agent-harness">agent-harness</a>): typed tool layer and eval-suite structure, started June 2026. The same engineering discipline demonstrated in <a href="https://github.com/thrmnn/ros2-localization-triage">ros2-localization-triage</a> — typed interfaces, tests, reproducible mechanical checks — is what an engagement in this scope would bring to your agent stack.',
+  },
 ];
 ---
 
 <PageLayout
   title="Consulting"
-  description="Short, scoped engagements — AI-agent infrastructure, perception pipeline audits, LiDAR bring-up, embodied AI MVPs."
+  description="Short, scoped engagements: ROS 2 fleet log triage, perception pipeline audits, LiDAR bring-up, robot-perception MVPs, AI-agent infrastructure."
 >
   <section class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
       <header class="mb-12">
-        <p class="font-mono text-xs uppercase tracking-[0.18em] text-text-muted mb-3">
-          Available · limited capacity alongside MIT Senseable Rio
-        </p>
         <h1 class="text-3xl md:text-4xl font-bold text-text-primary mb-4">
-          Short, scoped engagements in perception &amp; AI-agent infrastructure
+          Short, scoped engagements in robot perception, autonomy, and data.
         </h1>
         <p class="text-text-secondary max-w-2xl text-lg leading-relaxed">
-          I take a small number of focused consulting engagements alongside my research line at
-          MIT Senseable City Lab Rio — perception, LiDAR, edge deployment, and the
-          infrastructure around agentic products. The scopes below are the engagement shapes I
-          keep coming back to. Anything else, ask.
+          I take on focused engagements in perception, autonomy, LiDAR/3D, and robot operational
+          data — logs, bags, telemetry, failures. The scopes below are the shapes I keep coming
+          back to. Anything else, ask.
         </p>
       </header>
 
@@ -100,6 +113,10 @@ const scopes = [
                 {s.duration}
               </span>
             </div>
+
+            {s.repoLine && (
+              <p class="font-mono text-xs text-text-muted mb-4">{s.repoLine}</p>
+            )}
 
             <p class="text-text-secondary leading-relaxed mb-6">{s.summary}</p>
 

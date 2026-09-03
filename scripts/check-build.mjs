@@ -21,6 +21,7 @@ const groups = {
   asset_budget: [],
   bundle_budget: [],
   pdf_scan: [],
+  stata_caption: [],
 };
 const fail = (group, m) => { groups[group].push(m); };
 const must = (group, cond, m) => { if (!cond) fail(group, m); };
@@ -59,7 +60,10 @@ must('removed_routes', !existsSync(join(DIST, 'research')), 'research/ route mus
 
 // 4. no publication leakage (enforces the no-publications rule)
 //    Also catches the old @theoh-io handle so it can't slip back in.
-const forbidden = ['Nature Cities', 'AGU Fall', 'href="/research', '@theoh-io', 'theoh-io/'];
+const forbidden = [
+  'Nature Cities', 'AGU Fall', 'href="/research', '@theoh-io', 'theoh-io/',
+  'Massif', 'senior perception roles', 'open to roles', 'Urban Science',
+];
 for (const f of htmlFiles) {
   const html = readFileSync(f, 'utf8');
   for (const term of forbidden) {
@@ -71,6 +75,24 @@ for (const f of htmlFiles) {
 const home = readFileSync(join(DIST, 'index.html'), 'utf8');
 must('identity', home.includes('Théo Alessandro Hermann'), 'canonical name missing from homepage');
 
+// 5b. stata replay caption must match the sidecar meta exactly — the numbers
+//     in the caption are rendered at build time from this file, so a drift
+//     between them means the copy stopped tracking the data.
+const STATA_META = 'public/data/stata-replay.meta.json';
+if (existsSync(STATA_META)) {
+  const meta = JSON.parse(readFileSync(STATA_META, 'utf8'));
+  must(
+    'stata_caption',
+    home.includes(`${meta.duration_s} s`),
+    `stata caption missing "${meta.duration_s} s" (from ${STATA_META})`,
+  );
+  must(
+    'stata_caption',
+    home.includes(`${meta.events} detector events`),
+    `stata caption missing "${meta.events} detector events" (from ${STATA_META})`,
+  );
+}
+
 // 6. internal links resolve to a built file
 function resolveLink(href) {
   let path = href.split('#')[0].split('?')[0];
@@ -80,7 +102,7 @@ function resolveLink(href) {
   else if (!/\.[a-z0-9]+$/i.test(path.slice(path.lastIndexOf('/') + 1))) path += '/index.html';
   return path.replace(/^\//, '');
 }
-const linkRe = /(?:href|src)="([^"]+)"/g;
+const linkRe = /(?:href|src|data-url)="([^"]+)"/g;
 let linkCount = 0;
 for (const f of htmlFiles) {
   const html = readFileSync(f, 'utf8');
@@ -114,6 +136,7 @@ const ASSET_BUDGETS = {
   woff2:[200 * KB, 100 * KB],
   pdf:  [2 * MB, 1 * MB],     // academic papers / reports
   bin:  [150 * KB, 60 * KB],  // point-cloud datasets (largest today ~50KB)
+  json: [200 * KB, 60 * KB],  // replay/sidecar data (stata-replay.json etc.)
 };
 const assetWarnings = [];
 for (const f of files) {

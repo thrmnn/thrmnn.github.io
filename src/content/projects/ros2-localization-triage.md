@@ -21,6 +21,8 @@ imageHeight: 1025
 
 Method public: [github.com/thrmnn/ros2-localization-triage](https://github.com/thrmnn/ros2-localization-triage)
 
+Consulting on this work: [theohermann.ch](https://theohermann.ch)
+
 ## Problem
 
 A robot misbehaves at a customer site and someone has to comb the bag files and logs to find out why.

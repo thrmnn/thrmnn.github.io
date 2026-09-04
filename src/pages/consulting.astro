@@ -96,6 +96,9 @@ const scopes = [
         <h1 class="text-3xl md:text-4xl font-bold text-text-primary mb-4">
           Short, scoped engagements in robot perception, autonomy, and data.
         </h1>
+        <p class="font-mono text-xs text-text-muted mb-4">
+          Robot navigation log triage now lives at <a href="https://theohermann.ch">theohermann.ch</a>; the scopes below are the rest of the practice.
+        </p>
         <p class="text-text-secondary max-w-2xl text-lg leading-relaxed">
           The five scopes below are the shapes this work keeps taking. Anything else, ask.
         </p>
@@ -112,6 +115,12 @@ const scopes = [
                 </span>
               )}
             </div>
+
+            {s.id === 'ros2-log-triage' && (
+              <p class="font-mono text-xs text-text-muted mb-2">
+                Own page: <a href="https://theohermann.ch">theohermann.ch</a>
+              </p>
+            )}
 
             {s.repoLine && (
               <p class="font-mono text-xs text-text-muted mb-4">{s.repoLine}</p>

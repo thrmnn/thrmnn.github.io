@@ -25,10 +25,10 @@ For teams shipping agentic products and hitting the wall every team hits — fla
 - One structured trace line per tool call, small enough to grep
 - Regression eval suite wired into CI
 
+Status: v0.1, deliberately minimal. A reference implementation of the pattern, plain enough to copy into your own codebase rather than depend on.
+
 ## Evidence
 
 Author of [agent-harness](https://github.com/thrmnn/agent-harness) — open-source typed tool layer + regression evals for agentic systems.
 
 This is one of the scoped consulting engagements available — see [engagement scopes](/consulting/) for duration, deliverables, and how engagements work.
-
-Status: v0.1, deliberately minimal. A reference implementation of the pattern, plain enough to copy into your own codebase rather than depend on.

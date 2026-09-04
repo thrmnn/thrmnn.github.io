@@ -12,7 +12,7 @@ const scopes = [
     title: 'ROS 2 fleet log triage',
     repoLine: 'Method public: github.com/thrmnn/ros2-localization-triage',
     summary:
-      "A robot misbehaves at a customer site and someone has to comb the bag files and logs to find out why. I do that investigation: reconstruct the timeline, isolate the failure, and write up what happened with the evidence attached. Then I calibrate detectors to your fleet's failure classes — sensor dropout, transform jumps, covariance spikes, pose divergence — run against your recorded bags and logs. Calibration is not optional: the same frozen thresholds produced 9 to 36 flags per robot-hour on one platform, every one a real dropout, and 1,880 on another, none of which look real.",
+      "A robot misbehaves at a customer site and someone has to comb the bag files and logs to find out why. I do that investigation: reconstruct the timeline, isolate the failure, and write up what happened with the evidence attached. Then I calibrate detectors to your fleet's failure classes — sensor dropout, transform jumps, covariance spikes, pose divergence — run against your recorded bags and logs. Calibration is not optional: a covariance threshold set on a simulated TurtleBot3 sits inside a real Tiago's healthy yaw noise and fired five times on a recording with nothing wrong.",
     deliverables: [
       'Incident report: timeline, root cause, supporting evidence from your bags and logs',
       "Detectors for your fleet's failure classes (sensor dropout, transform jumps, covariance spikes, pose divergence), run against your recorded bags and logs",

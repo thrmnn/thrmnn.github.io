@@ -67,6 +67,18 @@ def read_events(path: Path) -> list[dict]:
     return json.loads(path.read_text())
 
 
+def read_lost_window(path: Path) -> dict:
+    gt = json.loads(path.read_text())
+    for w in gt["windows"]:
+        if w["window"] == "part3_after_floor_change":
+            return {
+                "window": w["window"],
+                "position_error_median_m": w["position_error_median_m"],
+                "amcl_reported_sigma_median_m": w["amcl_reported_sigma_median_m"],
+            }
+    sys.exit("✗ part3_after_floor_change window not found in gt_comparison.json")
+
+
 def main() -> int:
     if len(sys.argv) < 2:
         sys.exit("usage: sample-stata-replay.py <path to ros2-localization-triage clone>")
@@ -76,6 +88,7 @@ def main() -> int:
     walls = read_walls(stata_dir / "walls.csv")
     poses = read_poses(stata_dir / "amcl_poses.csv")
     events_raw = read_events(stata_dir / "detections.json")
+    lost_window = read_lost_window(stata_dir / "gt_comparison.json")
 
     if not walls or not poses:
         sys.exit("✗ empty walls or poses — check the clone path")
@@ -145,6 +158,7 @@ def main() -> int:
         "wall_points": len(walls),
         "events": len(events_raw),
         "events_by_detector": events_by_detector,
+        "lost_window": lost_window,
         "source": "https://github.com/thrmnn/ros2-localization-triage/tree/main/results/stata",
     }
     OUT_META.write_text(json.dumps(meta, indent=2))

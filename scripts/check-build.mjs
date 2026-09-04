@@ -93,22 +93,19 @@ if (existsSync(STATA_META)) {
     home.includes(`${meta.events} detector events`),
     `stata caption missing "${meta.events} detector events" (from ${STATA_META})`,
   );
-  const { tf_jump, covariance_spike, pose_divergence } = meta.events_by_detector ?? {};
+  const lostMetres = Number(meta.lost_window.position_error_median_m).toFixed(1);
+  const lostCm = Math.round(meta.lost_window.amcl_reported_sigma_median_m * 100);
   must(
     'stata_caption',
-    home.includes(`${tf_jump} transform jumps`),
-    `hero legend missing "${tf_jump} transform jumps" (from ${STATA_META})`,
+    home.includes(`${lostMetres} metres`),
+    `hero legend missing "${lostMetres} metres" (from ${STATA_META})`,
   );
   must(
     'stata_caption',
-    home.includes(`${covariance_spike} covariance spikes`),
-    `hero legend missing "${covariance_spike} covariance spikes" (from ${STATA_META})`,
+    home.includes(`${lostCm} centimetres`),
+    `hero legend missing "${lostCm} centimetres" (from ${STATA_META})`,
   );
-  must(
-    'stata_caption',
-    home.includes(`${pose_divergence} pose divergences`),
-    `hero legend missing "${pose_divergence} pose divergences" (from ${STATA_META})`,
-  );
+  must('stata_caption', !home.includes('AMCL'), 'hero band must not render "AMCL"');
 }
 
 // 6. internal links resolve to a built file

@@ -25,6 +25,7 @@ const stataMeta = JSON.parse(
   duration_s: number;
   events: number;
   events_by_detector: { tf_jump: number; covariance_spike: number; pose_divergence: number };
+  lost_window: { window: string; position_error_median_m: number; amcl_reported_sigma_median_m: number };
 };
 const { tf_jump, covariance_spike, pose_divergence } = stataMeta.events_by_detector;
 if (tf_jump + covariance_spike + pose_divergence !== stataMeta.events) {
@@ -32,8 +33,10 @@ if (tf_jump + covariance_spike + pose_divergence !== stataMeta.events) {
     `stata-replay.meta.json: events_by_detector (${tf_jump}+${covariance_spike}+${pose_divergence}) does not sum to events (${stataMeta.events})`,
   );
 }
-const artifactCaption = `${stataMeta.platform} · ${stataMeta.duration_s} s AMCL replay · ${stataMeta.events} detector events`;
-const artifactLegend = `Green — AMCL's estimated path. Amber — the robot's current position, and the moments a fault detector fired: ${tf_jump} transform jumps, ${covariance_spike} covariance spikes, ${pose_divergence} pose divergences.`;
+const lostMetres = stataMeta.lost_window.position_error_median_m.toFixed(1);
+const lostCm = Math.round(stataMeta.lost_window.amcl_reported_sigma_median_m * 100);
+const artifactCaption = `${stataMeta.platform} · ${stataMeta.duration_s} s of a recorded run · ${stataMeta.events} detector events`;
+const artifactLegend = `A real robot, replayed from its own logs. Green: where it believed it was. Amber: where my detectors flagged trouble. After a floor change it was ${lostMetres} metres off while reporting ${lostCm} centimetres of uncertainty. Finding that quiet kind of failure is the work.`;
 ---
 
 <PageLayout ogType="profile">
@@ -75,7 +78,7 @@ const artifactLegend = `Green — AMCL's estimated path. Amber — the robot's c
           class="favela-scrubber"
           data-walls="/data/stata-walls.bin"
           data-replay="/data/stata-replay.json"
-          aria-label="Replay of a recorded PR2 localization run in the MIT Stata Center: wall map, AMCL's estimated trajectory, and the moments one of three fault detectors fired."
+          aria-label="Replay of a recorded PR2 run in the MIT Stata Center: wall map, the robot's estimated path, and the moments a fault detector fired."
         ></canvas>
         <div class="artifact-corners" aria-hidden="true">
           <span></span><span></span><span></span><span></span>

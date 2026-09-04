@@ -10,10 +10,9 @@ const scopes = [
   {
     id: 'ros2-log-triage',
     title: 'ROS 2 fleet log triage',
-    duration: '2–4 weeks',
     repoLine: 'Method public: github.com/thrmnn/ros2-localization-triage',
     summary:
-      "A robot misbehaves at a customer site and someone has to comb the bag files and logs to find out why. I do that investigation: reconstruct the timeline, isolate the failure, and write up what happened with the evidence attached. Then I calibrate detectors to your fleet's failure classes — sensor dropout, transform jumps, covariance spikes, pose divergence — run against your recorded bags and logs. Calibration is not optional: the same frozen thresholds that stay quiet on one platform false-alarm from 9 to 1,880 times an hour on another.",
+      "A robot misbehaves at a customer site and someone has to comb the bag files and logs to find out why. I do that investigation: reconstruct the timeline, isolate the failure, and write up what happened with the evidence attached. Then I calibrate detectors to your fleet's failure classes — sensor dropout, transform jumps, covariance spikes, pose divergence — run against your recorded bags and logs. Calibration is not optional: the same frozen thresholds produced 9 to 36 flags per robot-hour on one platform, every one a real dropout, and 1,880 on another, none of which look real.",
     deliverables: [
       'Incident report: timeline, root cause, supporting evidence from your bags and logs',
       "Detectors for your fleet's failure classes (sensor dropout, transform jumps, covariance spikes, pose divergence), run against your recorded bags and logs",
@@ -22,7 +21,7 @@ const scopes = [
       'Analysis runs on your infrastructure or under NDA on mine; nothing is retained after handover.',
     ],
     evidence:
-      'The method is public in <a href="https://github.com/thrmnn/ros2-localization-triage">ros2-localization-triage</a>: four localization-failure detectors run against 108 minutes of real recordings from five robot platforms — Cartographer backpack rigs, a Tiago, a MiR100 AGV, a PR2, a handheld 3D rig — all public benchmark data, not a live customer fleet. Every headline number recomputes from committed data: clone the repo and run python3 scripts/check_numbers.py. Against failure labels the Cartographer dataset\'s own authors wrote more than a decade before this tool existed, the gap detector found 16 of 16 labelled laser gaps and nothing else. The case log is self-graded against a rubric committed before the results existed, and wrong results are published as wrong.',
+      'The method is public in <a href="https://github.com/thrmnn/ros2-localization-triage">ros2-localization-triage</a>: four localization-failure detectors run against 108 minutes of real recordings from five robot platforms — Cartographer backpack rigs, a Tiago, a MiR100 AGV, a PR2, a handheld 3D rig — all public benchmark data, not a live customer fleet. Every graded figure recomputes from a committed artifact: clone the repo and run python3 scripts/check_numbers.py. Against failure labels the Cartographer dataset\'s own authors wrote more than a decade before this tool existed, the gap detector found 16 of 16 labelled laser gaps and nothing else. The case log is self-graded against a rubric committed before the results existed, and wrong results are published as wrong.',
   },
   {
     id: 'pipeline-audit',
@@ -107,9 +106,11 @@ const scopes = [
           <article id={s.id} class="scope-card border border-border rounded-lg p-6 md:p-8 bg-bg-elevated">
             <div class="flex flex-wrap items-baseline justify-between gap-3 mb-4">
               <h2 class="text-2xl font-semibold text-text-primary">{s.title}</h2>
-              <span class="font-mono text-xs uppercase tracking-[0.18em] text-accent">
-                {s.duration}
-              </span>
+              {s.duration && (
+                <span class="font-mono text-xs uppercase tracking-[0.18em] text-accent">
+                  {s.duration}
+                </span>
+              )}
             </div>
 
             {s.repoLine && (

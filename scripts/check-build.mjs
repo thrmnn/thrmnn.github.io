@@ -62,9 +62,11 @@ must('removed_routes', !existsSync(join(DIST, 'research')), 'research/ route mus
 
 // 4. no publication leakage (enforces the no-publications rule)
 //    Also catches the old @theoh-io handle so it can't slip back in.
+// One private name the site must never carry; encoded so this public list is not itself the leak.
+const privateName = Buffer.from('TWFzc2lm', 'base64').toString();
 const forbidden = [
   'Nature Cities', 'AGU Fall', 'href="/research', '@theoh-io', 'theoh-io/',
-  'Massif', 'senior perception roles', 'open to roles', 'Urban Science',
+  privateName, 'senior perception roles', 'open to roles', 'Urban Science',
 ];
 for (const f of htmlFiles) {
   const html = readFileSync(f, 'utf8');

@@ -184,8 +184,8 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     if (readout) {
       readout.textContent =
         pinned >= 0
-          ? `this rooftop: ${Math.round(litFraction(pts.sun[pinned]!) * 100)}% of the day in sun (this page's sun model, not a study result)`
-          : `${Math.round(pts.litByStep[currentStep]! * 100)}% of the built fabric in sun (this page's sun model, not a study result)`;
+          ? `this page's sun model, not a study result: this rooftop is in sun ${Math.round(litFraction(pts.sun[pinned]!) * 100)}% of the day`
+          : `this page's sun model, not a study result: ${Math.round(pts.litByStep[currentStep]! * 100)}% of the built fabric is in sun`;
     }
   }
 
@@ -248,7 +248,8 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     const my = clientY - rect.top;
     const { n, x, y, z, cat } = pts;
     let best = -1;
-    let bestD = 24 * 24;
+    const reach = cssW < 520 ? 34 : 24;
+    let bestD = reach * reach;
     for (let i = 0; i < n; i++) {
       if (cat[i] !== 1) continue; // only the built fabric carries a useful number
       const sx = lastCx + (x[i]! * COS_R - y[i]! * SIN_R) * lastScale;

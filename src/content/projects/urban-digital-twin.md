@@ -1,51 +1,46 @@
 ---
-title: "Urban Digital Twin for Airborne Disease Modeling"
+title: 'Morphometrics of informal urban form'
 date: '2025-01-01T00:00:00Z'
-draft: true
-# assets parked in drafts/public/projects/urban-digital-twin/ while draft: true
+featuredOrder: 1
 externalLink: 'https://senseablerio.mit.edu/'
-github: 'https://github.com/thrmnn/MorphoFavela'
-image: '/projects/urban-digital-twin/hero.webp'
-imageWidth: 1120
-imageHeight: 1087
-summary: "High-fidelity 3D reconstruction of Rio's favelas from terrestrial LiDAR and aerial imagery, driving CFD simulations of airborne pathogen dispersion to identify ventilation risk zones."
-label: "MIT Senseable City Lab Rio · 2025"
-metric: "3D twin of Rio favelas at building scale · CFD-ready"
-gradient: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)"
+summary: 'Favelas are built without plans, and the measurements urban analysis relies on assume a street grid that is not there. I build the ones that work on this fabric, from terrain models and building footprints, at a resolution fine enough to describe a single alley.'
+label: 'MIT Senseable City Lab Rio · ongoing'
+metric: 'Method, on five Rio sites'
+gradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)'
 tags:
-  - 3D Reconstruction
-  - Point Cloud Processing
+  - Urban morphometrics
+  - Point clouds
   - LiDAR
-  - Sensor Fusion
-  - Digital Twin
-  - OpenFOAM
+  - Terrain models
   - Python
-  - Blender
 ---
 
-## Overview
+## The problem
 
-Founding member of **MIT Senseable City Lab Rio** — researcher on the digital-twin line. The project — **Brisa+** — fuses terrestrial LiDAR scans, aerial multispectral imagery, and digital terrain models into physics-ready 3D meshes of densely built informal settlements where conventional mapping fails. These reconstructions feed CFD simulations that model ventilation, pollutant dispersion, and pathogen spread at neighborhood scale.
+Most ways of describing a city assume that someone drew it first: streets with
+names, plots with edges, blocks that repeat. Informal settlements are not built
+that way, so the standard descriptors either fail outright or quietly measure
+the wrong thing. Anything you want to say afterwards about how air, light or
+heat move through that fabric depends on describing its geometry first.
 
-## Technical Pipeline
+## What I build
 
-The reconstruction and simulation pipeline spans multiple data sources and processing stages:
+A Python pipeline that turns building footprints and a digital terrain model
+into a grid of morphometric indicators, fine enough that a single alley is
+resolved rather than averaged away. The indicators are the standard vocabulary
+of urban physics, computed so they hold on a fabric they were not designed for:
+sky openness, frontal area density, height variation, slope, aspect, porosity.
 
-- **Terrestrial LiDAR scanning** — Ground-level point cloud acquisition of narrow alleyways and building facades inaccessible to aerial sensors
-- **Aerial imagery fusion** — Aligning overhead multispectral data with ground-level scans using georeferenced control points
-- **3D mesh generation** — Converting fused point clouds into watertight meshes in Blender, suitable for physics simulation
-- **CFD simulation** — OpenFOAM-based airflow modeling at neighborhood scale, simulating wind patterns through the complex geometry of informal settlements
-- **Risk zone identification** — Mapping ventilation dead zones where airborne pathogen concentrations accumulate, informing targeted public health interventions
-- **Vegetation modeling** — Integrating Leaf Area Index (LAI) estimates from the aerial LiDAR tree census project to quantify how urban canopy affects local airflow
+On top of that sits a sampling design that decides where a computational fluid
+dynamics campaign should actually look, rather than simulating everywhere at
+uniform cost, and an ingestion layer that turns public meteorological records
+into the boundary conditions those simulations need. The simulations themselves
+run elsewhere; this work defines what they receive and how their output is read
+back.
 
-## Role
+## What is shown here
 
-I work on the **3D reconstruction pipeline and CFD integration**. Beyond the computational work, the project includes deploying a network of custom-built air quality sensors across target communities for ground-truth validation of the simulations.
-
-## Outcome
-
-The project operates in close coordination with **Rio's city government and community stakeholders**, ensuring the research translates into real-world impact. The digital twin framework connects 3D urban geometry, vegetation, and airflow to public health outcomes — **informing targeted interventions in underserved communities** where airborne disease risk is highest. This work demonstrates how computational tools developed in robotics and remote sensing can address pressing public health challenges.
-
-## Links
-
-- Lab: [MIT Senseable City Lab Rio](https://senseablerio.mit.edu/)
+The geometry of one site, Vidigal, is published on this site's front page and
+you can download it. Nothing else from this work appears here. It is unpublished
+research with co-authors, so this page describes the method and stops there: no
+indicators, no findings, no figures from the study.

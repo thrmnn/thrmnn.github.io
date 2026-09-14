@@ -1,7 +1,7 @@
 ---
 title: "Perception Stack for Autonomous Canal Boats"
 date: '2024-08-01T00:00:00Z'
-featuredOrder: 1
+featuredOrder: 4
 proprietary: true
 image: '/projects/autonomous-boat-perception/hero.svg'
 summary: "First engineering hire at Roboat: a camera-first perception stack running inside a real-time budget on Jetson Orin, deployed on canal vessels in Amsterdam. The performance figures belong to Roboat and are not mine to publish."

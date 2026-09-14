@@ -1,51 +1,45 @@
 ---
-title: "Urban Tree LAI at Individual-Tree Scale: Aerial LiDAR + ML"
+title: 'Leaf area from an aerial scan'
 date: '2024-09-01T00:00:00Z'
-draft: true
-# assets parked in drafts/public/projects/aerial-lidar-tree-census/ while draft: true
-externalLink: 'https://senseable.mit.edu/'
-github: 'https://github.com/thrmnn/LAI'
-image: '/projects/aerial-lidar-tree-census/hero.webp'
-imageWidth: 974
-imageHeight: 854
-summary: "Aerial-LiDAR + multispectral ML pipeline estimating Leaf Area Index at individual-tree resolution across Amsterdam, with the city municipality as the operational stakeholder."
-label: "MIT Senseable City Lab Amsterdam · AMS Institute · 2024"
-metric: "Individual-tree LAI · Amsterdam municipality · MSc thesis"
-gradient: "linear-gradient(135deg, #0d3b0d 0%, #1a472a 50%, #2d6a4f 100%)"
+featuredOrder: 2
+externalLink: 'https://www.ams-institute.org/'
+summary: 'A city knows where its trees are, not how much leaf they carry. I estimate leaf area per tree by inverting how much sky the canopy blocks in an aerial LiDAR scan, which turns a routine municipal survey into a physical measurement.'
+label: 'Senseable City Lab, MIT · AMS Institute · ongoing'
+metric: 'Method, city-scale aerial LiDAR'
+gradient: 'linear-gradient(135deg, #0d3b0d 0%, #1a472a 50%, #2d6a4f 100%)'
 tags:
+  - Remote sensing
   - LiDAR
-  - Point Cloud Processing
-  - 3D Segmentation
-  - Sensor Fusion
-  - XGBoost
-  - scikit-learn
-  - GeoPandas
-  - Remote Sensing
+  - Canopy
+  - Beer-Lambert inversion
+  - Python
 ---
 
-## Overview
+## The problem
 
-Master's thesis at **MIT Senseable City Lab Amsterdam** with **AMS Institute**, in collaboration with the **City of Amsterdam**. The municipality maintains a registry of street trees but lacks per-tree estimates of **Leaf Area Index (LAI)** — the metric that drives canopy density, shading, evapotranspiration, and air-quality modelling. I designed and built the pipeline that closes that gap by estimating LAI at individual-tree resolution from aerial LiDAR and multispectral imagery, with the city as the operational stakeholder.
+Municipal tree registers are good at the things a register is for: species,
+location, trunk diameter, when it was last inspected. They do not record how
+much leaf a tree actually carries, which is the quantity that matters for
+shade, cooling and interception. Measuring it directly, tree by tree, across a
+city is not something anyone is going to fund.
 
-## Technical Approach
+## What I build
 
-The ML pipeline extracts individual tree morphological features — crown diameter, height, canopy volume — from airborne LiDAR point clouds and fuses them with spectral vegetation indices derived from multispectral aerial imagery. I trained an ensemble of **XGBoost and Random Forest** classifiers to predict LAI per tree, a key metric for quantifying canopy density and its influence on urban microclimate, air quality, and stormwater management. The geospatial stack is built on **GeoPandas** and scikit-learn, handling point clouds with tens of millions of points across the survey area.
+Cities already fly aerial LiDAR surveys on a regular cycle for entirely
+unrelated reasons. Those scans contain the information: a pulse that passes
+through a canopy and a pulse that is intercepted by it are distinguishable, so
+the fraction of sky visible through the crown can be recovered from data that
+already exists.
 
-Key pipeline stages:
-- **Point cloud segmentation** — isolating individual tree crowns from ground, building, and vegetation returns
-- **Feature extraction** — computing morphological descriptors (height, crown area, volume) per tree
-- **Spectral fusion** — aligning LiDAR-derived geometry with multispectral vegetation indices (NDVI, NDRE)
-- **LAI regression** — ensemble ML models predicting per-tree LAI calibrated against ground reference
+From that gap fraction, leaf area follows by a physical inversion rather than a
+fitted model, which is the part I care about most. The relationship between how
+much light a canopy blocks and how much leaf it carries is classical physics
+with known assumptions, so the estimate can be argued about on its own terms
+instead of defended as the output of a regressor nobody can inspect. An earlier
+version of this work did use machine learning; the current method does not.
 
-## Role
+## What is shown here
 
-**Lead researcher** — responsible for the full ML pipeline design, data acquisition workflow with the municipality, model training, and analysis. End-to-end ownership of the thesis line.
-
-## Outcome
-
-The pipeline established the methodological foundation later carried into the **urban digital twin** work in Rio — LAI estimation feeds CFD simulations of urban ventilation, connecting per-tree canopy density to airflow at neighbourhood scale. The Amsterdam line demonstrated that tree morphology extracted from remote sensing can predict LAI reliably at city scale, giving municipalities a tool for green-infrastructure planning without costly ground-level surveys.
-
-## Links
-
-- Lab: [MIT Senseable City Lab](https://senseable.mit.edu/)
-- Partner: [AMS Institute](https://www.ams-institute.org/)
+Nothing but the method. This is a multi-author manuscript in preparation, so
+there are no numbers, figures or findings on this page, and there will not be
+until it is published.

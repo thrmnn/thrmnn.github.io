@@ -16,25 +16,15 @@ const rooftopsMeta = JSON.parse(readFileSync(join(dataDir, 'vidigal-rooftops.jso
   n_building_footprints: number;
   z_meters: { min: number; max: number };
 };
-// Read for completeness/future validation; the sun-step copy below is fixed
-// verbatim and carries no numbers sourced from this file.
-JSON.parse(readFileSync(join(dataDir, 'vidigal-sun.json'), 'utf8'));
-
 const rooftopsBinBytes = readFileSync(join(dataDir, 'vidigal-rooftops.bin')).length;
 if (rooftopsMeta.count * 4 !== rooftopsBinBytes) {
   throw new Error(
     `vidigal-rooftops.json: count (${rooftopsMeta.count}) × 4 does not match vidigal-rooftops.bin size (${rooftopsBinBytes} bytes)`,
   );
 }
-const sunBinBytes = readFileSync(join(dataDir, 'vidigal-sun.bin')).length;
-if (rooftopsMeta.count * 2 !== sunBinBytes) {
-  throw new Error(
-    `vidigal-sun.bin size (${sunBinBytes} bytes) does not match vidigal-rooftops.json count (${rooftopsMeta.count}) × 2`,
-  );
-}
 
 const artifactCaption = `Vidigal, Rio de Janeiro · terrain and ${rooftopsMeta.n_building_footprints.toLocaleString('en-US')} building footprints`;
-const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidigal · light: a simple sun-path calculation over that public geometry, computed for this page · no findings from the in-progress study are shown here.`;
+const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidigal · no findings from the in-progress study are shown here.`;
 ---
 
 <section class="artifact-band">
@@ -43,28 +33,15 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
       <canvas
         class="vidigal-panel"
         data-rooftops="/data/vidigal-rooftops.bin"
-        data-sun="/data/vidigal-sun.bin"
-        aria-label="Oblique point cloud of Vidigal, Rio de Janeiro: terrain and building footprints, shown at rest in raking light before the sweep runs."
+        aria-label="Oblique point cloud of Vidigal, Rio de Janeiro: a digital terrain model and building footprints."
       ></canvas>
       <div class="artifact-corners" aria-hidden="true">
         <span></span><span></span><span></span><span></span>
       </div>
-      <p class="sun-hint">Tap a rooftop for its own share of the day.</p>
-      <div class="sun-legend" aria-hidden="true">
-        <span class="sun-key sun-key-lit"></span>in sun
-        <span class="sun-key sun-key-shade"></span>in shadow
-      </div>
-      <p class="sun-readout" aria-live="polite">&nbsp;</p>
-      <div class="sun-track" aria-hidden="true">
-        <span class="sun-track-label">sunrise</span>
-        <span class="sun-track-rail"><span class="sun-track-dot"></span></span>
-        <span class="sun-track-label">sunset</span>
-        <button type="button" class="sun-run">run the day</button>
-      </div>
     </div>
     <p class="artifact-caption">{artifactCaption}</p>
     <p class="artifact-provenance">{artifactProvenance}</p>
-    <p class="artifact-sources">Check it yourself: <a href="/data/vidigal-rooftops.json">the geometry this draws</a> · <a href="/data/vidigal-sun.json">the sun path it assumes</a></p>
+    <p class="artifact-sources"><a href="/data/vidigal-rooftops.json">The geometry this draws</a></p>
   </div>
 </section>
 
@@ -75,20 +52,11 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
     max-width: 920px;
   }
   .vidigal-frame {
-    --rail-safe: 66px;
-    --top-safe: 0px;
     aspect-ratio: 2.24 / 1;
-    cursor: pointer;
-  }
-  .vidigal-artifact :global(.artifact-legend) {
-    max-width: 58ch;
   }
   .vidigal-artifact :global(.artifact-provenance) {
     max-width: 76ch;
     margin-inline: auto;
-  }
-  .vidigal-frame:focus-visible {
-    outline-offset: 4px;
   }
   .vidigal-panel {
     position: absolute;
@@ -96,8 +64,6 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
     width: 100%;
     height: 100%;
   }
-  /* The resting frame has to say it can be run. The rail doubles as the
-     sweep's position, so the affordance and the readout are one element. */
   .artifact-sources {
     margin: 0.7rem auto 0;
     text-align: center;
@@ -111,157 +77,8 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
     text-decoration: underline;
     text-underline-offset: 3px;
   }
-  .sun-legend {
-    position: absolute;
-    top: 0.8rem;
-    left: 1rem;
-    padding: 0.22rem 0.5rem;
-    border-radius: 3px;
-    background: color-mix(in srgb, var(--color-bg-elevated) 82%, transparent);
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-family: var(--font-mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-    pointer-events: none;
-  }
-  .sun-key {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-  }
-  .sun-key-lit { background: var(--color-accent); }
-  /* must track readColors() in vidigal-panel.ts: accent 30% into text-secondary */
-  .sun-key-shade { background: color-mix(in srgb, var(--color-accent) 30%, var(--color-text-secondary)); }
-  .sun-key-shade { margin-left: 0.7rem; }
-  .sun-readout {
-    position: absolute;
-    top: 0.72rem;
-    right: 1rem;
-    max-width: 34ch;
-    padding: 0.22rem 0.5rem;
-    border-radius: 3px;
-    background: color-mix(in srgb, var(--color-bg-elevated) 82%, transparent);
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    line-height: 1.45;
-    letter-spacing: 0.06em;
-    text-align: right;
-    color: var(--color-text-muted);
-    pointer-events: none;
-  }
-  .sun-track {
-    --sun-t: 0.77;
-    gap: 0.85rem;
-    pointer-events: auto;
-    cursor: pointer;
-    min-height: 34px;
-    position: absolute;
-    left: 1rem;
-    right: 1rem;
-    bottom: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    pointer-events: none;
-  }
-  .sun-track-label {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    color: var(--color-text-muted);
-    transition: color var(--dur-1) var(--ease-out);
-  }
-  .sun-track-rail {
-    position: relative;
-    flex: 1;
-    height: 1px;
-    background: repeating-linear-gradient(
-      to right,
-      var(--color-border) 0 1px,
-      transparent 1px calc(100% / 13)
-    );
-  }
-  .sun-track-dot {
-    position: absolute;
-    top: 50%;
-    left: calc(var(--sun-t) * 100%);
-    width: 9px;
-    height: 9px;
-    margin: -4.5px 0 0 -4.5px;
-    border-radius: 50%;
-    background: var(--color-accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 22%, transparent);
-  }
-  /* the rail plus sunrise/sunset still signal the control once the cue is gone */
   @media (max-width: 560px) {
-    .sun-track { left: 0.7rem; right: 0.7rem; gap: 0.5rem; }
-    .sun-track-cue, .sun-hint { display: none; }
-    .artifact-sources {
-    margin: 0.7rem auto 0;
-    text-align: center;
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.04em;
-    color: var(--color-text-secondary);
-  }
-  .artifact-sources a {
-    color: var(--color-link);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .sun-legend { font-size: 0.52rem; gap: 0.3rem; left: 0.7rem; }
-    .sun-readout { top: auto; bottom: 4.9rem; left: 0.7rem; right: 0.7rem; max-width: none; text-align: left; }
-    .sun-track { bottom: 0.9rem; flex-wrap: wrap; }
-    .sun-run { min-height: 44px; padding: 0.5rem 1rem; width: 100%; order: 3; margin-top: 0.15rem; }
-    .vidigal-frame { --rail-safe: 116px; --top-safe: 26px; aspect-ratio: 1.08 / 1; }
-  }
-  .sun-run {
-    margin-left: 0.35rem;
-    font-family: var(--font-mono);
-    appearance: none;
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--color-bg-elevated) 86%, transparent);
-    padding: 0.42rem 0.8rem;
-    min-height: 34px;
-    cursor: pointer;
-    pointer-events: auto;
-    transition: border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out);
-  }
-  .sun-run:hover { border-color: var(--color-accent); }
-  .sun-run:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
-  .sun-hint {
-    position: absolute;
-    left: 1rem;
-    bottom: 2.6rem;
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-    pointer-events: none;
-  }
-  .sun-track-cue {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    color: var(--color-accent);
-    opacity: 0.75;
-  }
-  .vidigal-frame:hover .sun-track-label,
-  .vidigal-frame:focus-visible .sun-track-label {
-    color: var(--color-text-primary);
+    .vidigal-frame { aspect-ratio: 1.25 / 1; }
   }
 </style>
 

@@ -4,7 +4,7 @@ date: '2026-06-12T00:00:00Z'
 github: 'https://github.com/thrmnn/agent-harness'
 summary: "Agentic systems fail the way robots do: a tool call breaks, nothing traces it, and nobody notices until a user does. I built a typed tool layer with one structured trace line per call and a regression eval suite wired into CI, so a bad prompt change fails the build instead of the user."
 label: "Open-source · v0.1"
-featuredOrder: 1
+featuredOrder: 6
 gradient: "linear-gradient(135deg, #1e1b2e 0%, #2d1b4e 50%, #3a1f6e 100%)"
 tags:
   - AI Agents

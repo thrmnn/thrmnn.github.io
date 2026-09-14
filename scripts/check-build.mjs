@@ -83,7 +83,6 @@ must('identity', home.includes('Théo Alessandro Hermann'), 'canonical name miss
 //     so a drift between the two means the copy stopped tracking the data.
 //     The stata replay moved to theohermann.ch, which gates it there.
 const VIDIGAL_META = 'public/data/vidigal-rooftops.json';
-const SUN_META = 'public/data/vidigal-sun.json';
 if (existsSync(VIDIGAL_META)) {
   const meta = JSON.parse(readFileSync(VIDIGAL_META, 'utf8'));
   must(
@@ -104,20 +103,12 @@ if (existsSync(VIDIGAL_META)) {
     binBytes === meta.count * 4,
     `vidigal-rooftops.bin is ${binBytes} B, sidecar count implies ${meta.count * 4} B`,
   );
-  const sunBytes = existsSync('public/data/vidigal-sun.bin')
-    ? statSync('public/data/vidigal-sun.bin').size
-    : 0;
+  // the geometry belongs to an unpublished study; the page must keep saying
+  // that it shows none of that study's findings.
   must(
     'artifact_caption',
-    sunBytes === meta.count * 2,
-    `vidigal-sun.bin is ${sunBytes} B, one uint16 per point implies ${meta.count * 2} B`,
-  );
-  // the light field is computed for the page; the page must say so, and must
-  // never present it as an output of the unpublished study.
-  must(
-    'artifact_caption',
-    home.includes('computed for this page'),
-    'vidigal provenance must state the light is computed for this page',
+    home.includes('no findings from the in-progress study'),
+    'vidigal provenance must state that no findings from the study are shown',
   );
 }
 // The artifact prints a live percentage computed from this page's own toy sun
@@ -138,10 +129,6 @@ if (existsSync(VIDIGAL_META)) {
   );
 }
 
-if (existsSync(SUN_META)) {
-  const sun = JSON.parse(readFileSync(SUN_META, 'utf8'));
-  must('artifact_caption', sun.schema === 'vidigal-sun-v1', `unexpected sun sidecar schema ${sun.schema}`);
-}
 
 // 6. internal links resolve to a built file
 function resolveLink(href) {

@@ -59,12 +59,6 @@ const routeLabel =
 
       <!-- Controls -->
       <div class="header-controls">
-        <a
-          href="https://cal.com/theo-hermann-aaa7tm"
-          class="header-cta"
-          target="_blank"
-          rel="noopener noreferrer"
-        >Book a call</a>
         <ThemeToggle />
         <button
           type="button"
@@ -320,33 +314,6 @@ const routeLabel =
     display: flex;
     align-items: center;
     gap: 0.6rem;
-  }
-
-  /* Instrument-idiom CTA pill — additive, not part of navLinks. */
-  .header-cta {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-    text-transform: lowercase;
-    color: var(--color-text-secondary);
-    padding: 0.32rem 0.65rem;
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    white-space: nowrap;
-    transition:
-      color var(--dur-1) var(--ease-out),
-      border-color var(--dur-1) var(--ease-out),
-      background-color var(--dur-1) var(--ease-out);
-  }
-  .header-cta:hover,
-  .header-cta[aria-current='page'] {
-    color: var(--color-text-primary);
-    border-color: var(--color-accent);
-    background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
-  }
-  .header-cta:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
   }
 
   /* Burger */

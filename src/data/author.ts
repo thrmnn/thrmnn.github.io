@@ -17,6 +17,7 @@ export const author = {
       degree: "Master's degree (M.Sc), Robotics",
       institution: 'EPFL',
       years: '2021–2024',
+      note: 'Thesis on urban tree canopy from aerial LiDAR, with Senseable City Lab, MIT and the AMS Institute.',
     },
     {
       degree: 'Exchange (B.Sc 3rd year), Embedded Systems',

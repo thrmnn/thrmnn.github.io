@@ -42,6 +42,7 @@ import { skills } from '../data/skills';
             <div>
               <p class="font-medium text-text-primary">{edu.degree}</p>
               <p class="text-sm text-text-muted">{edu.institution}</p>
+              {'note' in edu && <p class="text-sm text-text-secondary mt-1">{(edu as { note: string }).note}</p>}
             </div>
             <span class="text-xs text-text-muted shrink-0">{edu.years}</span>
           </div>

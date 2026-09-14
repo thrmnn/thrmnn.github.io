@@ -666,3 +666,28 @@
   color: var(--color-text-secondary);
   margin: 0 0 2.25rem;
 }
+.research-lead-title {
+  max-width: var(--max-w-prose);
+  font-size: clamp(1.5rem, 3.2vw, 2.15rem);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  color: var(--color-text-primary);
+  margin: 0 0 1rem;
+  text-wrap: balance;
+}
+.research-lead-body {
+  max-width: var(--max-w-prose);
+  font-size: 1.02rem;
+  line-height: 1.72;
+  color: var(--color-text-secondary);
+  margin: 0 0 2.5rem;
+}
+.research-also {
+  margin: 3.25rem 0 1.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}

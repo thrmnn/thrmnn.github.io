@@ -39,33 +39,32 @@ const mailto = `mailto:${author.email}`;
     </div>
   </section>
 
-  <!-- Research axes — method and affiliation only; the studies are unpublished
-       and multi-author, so no result, figure or finding appears here. -->
+  <!-- Research — one lead strand carried by the artifact, two named after it.
+       Method and affiliation only: the studies are unpublished and multi-author,
+       so no result, figure or finding appears here. -->
   <section id="research" class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="section-label mb-6" data-reveal>Research</h2>
-      <p class="research-frame" data-reveal style="--reveal-d: 1;">Two of these measure the built and natural environment from remote sensing. The third watches for the moment a robot's own sensors start lying to it. First, Vidigal, Rio de Janeiro.</p>
+      <h2 class="section-label mb-8" data-reveal>Research</h2>
+      <p class="research-place" data-reveal style="--reveal-d: 1;">Rio de Janeiro</p>
+      <h3 class="research-lead-title" data-reveal style="--reveal-d: 2;">How do you measure a city that was never drawn?</h3>
+      <p class="research-lead-body" data-reveal style="--reveal-d: 3;">Favelas are built without plans, and the usual urban measurements assume a street grid that is not there. I build morphometrics for that fabric from terrain models and building footprints: sky openness, frontal area, slope, porosity, on a grid fine enough to describe a single alley. Those measurements are what the wind and sunlight simulations run on.</p>
     </div>
-    <VidigalPanel revealDelay={2} />
+    <VidigalPanel revealDelay={4} />
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <p class="research-also" data-reveal>Two further strands, at method level.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div data-reveal style="--reveal-d: 1;">
-          <p class="research-place">Rio de Janeiro</p>
-          <h3 class="research-title">The form of dense informal settlements</h3>
-          <p class="research-body">How do you measure a city that was never drawn? I build morphometrics for favela fabric from terrain models and building footprints: sky openness, frontal area, slope, porosity, on a grid fine enough to describe an alley. Those measurements set up the wind and sunlight simulations that follow.</p>
-        </div>
-        <div data-reveal style="--reveal-d: 2;">
           <p class="research-place">Amsterdam</p>
           <h3 class="research-title">Tree canopy from the air</h3>
           <p class="research-body">A city knows where its trees are, not how much leaf they carry. I estimate leaf area per tree from aerial LiDAR by inverting how much of the sky the canopy blocks, which turns a routine municipal scan into a physical measurement. With <strong>Senseable City Lab</strong> and the <strong>AMS Institute</strong>.</p>
         </div>
-        <div data-reveal style="--reveal-d: 3;">
+        <div data-reveal style="--reveal-d: 2;">
           <p class="research-place">On the robot</p>
           <h3 class="research-title">Knowing when perception is wrong</h3>
           <p class="research-body">Robots that navigate from their own sensors fail quietly: the estimate drifts while the confidence stays high. I work on detecting that gap from the logs a fleet already records.</p>
         </div>
       </div>
-      <p class="research-note" data-reveal style="--reveal-d: 4;">Two of these are unpublished work with co-authors, so this page describes the methods and not the results.</p>
+      <p class="research-note" data-reveal style="--reveal-d: 3;">Two of these are unpublished work with co-authors, so this page describes the methods and not the results.</p>
     </div>
   </section>
 

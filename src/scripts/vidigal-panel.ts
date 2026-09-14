@@ -94,11 +94,30 @@ async function loadPoints(rooftopsUrl: string, sunUrl: string): Promise<Points> 
   return { n, x, y, z, cat, sun, order, ax0, ax1, ay0, ay1 };
 }
 
-function readColors(canvas: HTMLCanvasElement): { accent: string; muted: string } {
+function toRgb(c: string): [number, number, number] {
+  const h = c.replace('#', '').trim();
+  const f = h.length === 3 ? h.split('').map((x) => x + x).join('') : h;
+  return [parseInt(f.slice(0, 2), 16), parseInt(f.slice(2, 4), 16), parseInt(f.slice(4, 6), 16)];
+}
+
+// Shadowed ground is the same surface under less light, not a different kind of
+// thing. Drawing it in a second hue read as two categories of dot; drawing it in
+// a pale tint read as absent. A desaturated, dimmed accent reads as shadow in
+// both themes, because the muted token is mid-tone in both.
+function readColors(canvas: HTMLCanvasElement): { accent: string; shadow: string } {
   const cs = getComputedStyle(canvas);
-  const accent = cs.getPropertyValue('--color-accent').trim();
-  const muted = cs.getPropertyValue('--color-text-muted').trim();
-  return { accent: accent || '#3b82f6', muted: muted || '#6b6b6b' };
+  const accent = cs.getPropertyValue('--color-accent').trim() || '#3b82f6';
+  const muted = cs.getPropertyValue('--color-text-muted').trim() || '#6b6b6b';
+  let shadow = muted;
+  try {
+    const a = toRgb(accent);
+    const m = toRgb(muted);
+    const mix = a.map((v, i) => Math.round(v * 0.3 + m[i]! * 0.7));
+    shadow = `rgb(${mix[0]}, ${mix[1]}, ${mix[2]})`;
+  } catch {
+    /* keep the muted token if either value is not a plain hex */
+  }
+  return { accent, shadow };
 }
 
 export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void> {
@@ -120,7 +139,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
 
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let motionOK = !reduceMotion.matches;
-  let { accent, muted } = readColors(canvas);
+  let { accent, shadow } = readColors(canvas);
 
   let cssW = canvas.clientWidth;
   let cssH = canvas.clientHeight;
@@ -167,8 +186,8 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       const sy = cy - vy * scale;
       const lit = (sun[i]! & bit) !== 0;
       const isBuilding = cat[i] === 1;
-      ctx!.fillStyle = lit ? accent : muted;
-      ctx!.globalAlpha = isBuilding ? (lit ? 0.95 : 0.2) : lit ? 0.3 : 0.08;
+      ctx!.fillStyle = lit ? accent : shadow;
+      ctx!.globalAlpha = isBuilding ? (lit ? 0.95 : 0.72) : lit ? 0.3 : 0.2;
       const size = (isBuilding ? 1.8 : 0.9) * dotScale;
       ctx!.fillRect(sx - size / 2, sy - size / 2, size, size);
     }
@@ -240,7 +259,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   });
 
   const retheme = () => {
-    ({ accent, muted } = readColors(canvas));
+    ({ accent, shadow } = readColors(canvas));
     needsRender = true;
     kick();
   };

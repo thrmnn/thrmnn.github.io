@@ -85,11 +85,10 @@ must('identity', home.includes('Théo Alessandro Hermann'), 'canonical name miss
 const VIDIGAL_META = 'public/data/vidigal-rooftops.json';
 if (existsSync(VIDIGAL_META)) {
   const meta = JSON.parse(readFileSync(VIDIGAL_META, 'utf8'));
-  must(
-    'artifact_caption',
-    home.includes(meta.n_building_footprints.toLocaleString('en-US')),
-    `vidigal caption missing "${meta.n_building_footprints.toLocaleString('en-US')}" footprints (from ${VIDIGAL_META})`,
-  );
+  // The caption deliberately carries no counts: a precise figure is a claim a
+  // stranger cannot check now that the sidecar link is gone. The sidecar is
+  // still validated against the binary below, so the data cannot drift even
+  // though nothing quotes it.
   must(
     'artifact_caption',
     home.includes('Vidigal'),

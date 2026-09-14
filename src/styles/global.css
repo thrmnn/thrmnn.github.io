@@ -710,3 +710,12 @@
   height: 100%;
   display: block;
 }
+/* How each project can be checked, or what state it is in. */
+.proof-plate-metric {
+  margin: 1rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}

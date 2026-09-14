@@ -68,6 +68,7 @@ const mailto = `mailto:${author.email}`;
             {p.data.label && <p class="proof-plate-label">{p.data.label}</p>}
             <p class="proof-plate-title">{p.data.title}</p>
             <p class="proof-plate-hook">{p.data.summary}</p>
+            {p.data.metric && <p class="proof-plate-metric">{p.data.metric}</p>}
           </a>
         ))}
       </div>

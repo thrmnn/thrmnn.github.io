@@ -59,7 +59,7 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
         <span class="sun-track-label">sunrise</span>
         <span class="sun-track-rail"><span class="sun-track-dot"></span></span>
         <span class="sun-track-label">sunset</span>
-        <span class="sun-track-cue">click to run the day</span>
+        <span class="sun-track-cue">run the day</span>
       </div>
     </div>
     <p class="artifact-caption">{artifactCaption}</p>
@@ -137,6 +137,11 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
     border-radius: 50%;
     background: var(--color-accent);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 22%, transparent);
+  }
+  /* the rail plus sunrise/sunset still signal the control once the cue is gone */
+  @media (max-width: 560px) {
+    .sun-track { left: 0.7rem; right: 0.7rem; gap: 0.5rem; }
+    .sun-track-cue { display: none; }
   }
   .sun-track-cue {
     font-family: var(--font-mono);

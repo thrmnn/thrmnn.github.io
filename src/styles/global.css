@@ -691,3 +691,9 @@
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
+.hero-credentials {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-size: 0.94em;
+  color: var(--color-text-muted);
+}

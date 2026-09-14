@@ -9,7 +9,7 @@ export const author = {
 
   bio: [
     'Four years shipping perception and autonomy systems on edge hardware. Franco-Brazilian, trained in Switzerland. French · English · Portuguese · Spanish.',
-    'First engineering hire (perception) at <strong>Roboat</strong>, through deployment on Amsterdam\'s canals. Research fellow at <strong>MIT Senseable City Lab Rio</strong> — 3D reconstruction of dense informal settlements from terrestrial LiDAR, terrain models and building footprints. Research assistant at EPFL VITA Lab; visiting researcher at IRI (CSIC-UPC), Barcelona.',
+    'First engineering hire (perception) at <strong>Roboat</strong>, through deployment on Amsterdam\'s canals. Research fellow at <strong><a href="https://senseablerio.mit.edu/">MIT Senseable City Lab Rio</a></strong> — 3D reconstruction of dense informal settlements from terrestrial LiDAR, terrain models and building footprints. Research assistant at <a href="https://www.epfl.ch/labs/vita/">EPFL VITA Lab</a>; visiting researcher at <a href="https://www.iri.upc.edu/">IRI (CSIC-UPC)</a>, Barcelona.',
   ],
 
   education: [

@@ -71,16 +71,22 @@ async function loadPoints(rooftopsUrl: string, sunUrl: string): Promise<Points> 
 
   // The projection is fixed, so its extent can be measured once and used to
   // fit the cloud to whatever box the frame gives us.
-  let ax0 = Infinity, ax1 = -Infinity, ay0 = Infinity, ay1 = -Infinity;
+  const pxs = new Float64Array(n);
+  const pys = new Float64Array(n);
   for (let i = 0; i < n; i++) {
     const rx = x[i]! * COS_R - y[i]! * SIN_R;
     const rz = x[i]! * SIN_R + y[i]! * COS_R;
-    const vy = (z[i]! * COS_T - rz * SIN_T) * Y_SQUASH;
-    if (rx < ax0) ax0 = rx;
-    if (rx > ax1) ax1 = rx;
-    if (vy < ay0) ay0 = vy;
-    if (vy > ay1) ay1 = vy;
+    pxs[i] = rx;
+    pys[i] = (z[i]! * COS_T - rz * SIN_T) * Y_SQUASH;
   }
+  // Frame the fabric, not the dust: a few hundred scattered terrain samples
+  // otherwise set the extent and shrink the settlement to a smudge.
+  const pct = (arr: Float64Array, q: number) => {
+    const c = Array.from(arr).sort((a, b) => a - b);
+    return c[Math.min(c.length - 1, Math.max(0, Math.round(q * (c.length - 1))))]!;
+  };
+  const ax0 = pct(pxs, 0.01), ax1 = pct(pxs, 0.99);
+  const ay0 = pct(pys, 0.01), ay1 = pct(pys, 0.99);
 
   return { n, x, y, z, cat, sun, order, ax0, ax1, ay0, ay1 };
 }
@@ -122,7 +128,15 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   let visible = false;
   let rafOn = false;
 
+  const track = canvas.closest('.artifact-frame')?.querySelector('.sun-track') as HTMLElement | null;
+  function publishProgress() {
+    if (!track) return;
+    const t = (currentStep - SWEEP_FIRST) / (SWEEP_LAST - SWEEP_FIRST);
+    track.style.setProperty('--sun-t', String(Math.max(0, Math.min(1, t))));
+  }
+
   function render() {
+    publishProgress();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const w = Math.max(1, Math.round(cssW * dpr));
     const h = Math.max(1, Math.round(cssH * dpr));
@@ -150,8 +164,8 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       const lit = (sun[i]! & bit) !== 0;
       const isBuilding = cat[i] === 1;
       ctx!.fillStyle = lit ? accent : muted;
-      ctx!.globalAlpha = isBuilding ? (lit ? 0.88 : 0.5) : lit ? 0.42 : 0.26;
-      const size = (isBuilding ? 1.7 : 1.1) * dotScale;
+      ctx!.globalAlpha = isBuilding ? (lit ? 0.9 : 0.52) : lit ? 0.26 : 0.16;
+      const size = (isBuilding ? 1.8 : 0.9) * dotScale;
       ctx!.fillRect(sx - size / 2, sy - size / 2, size, size);
     }
     ctx!.globalAlpha = 1;

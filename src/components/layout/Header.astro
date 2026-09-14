@@ -44,7 +44,7 @@ const routeLabel =
       <nav class="header-nav" aria-label="Primary">
         <ul>
           {navLinks.map((link) => (
-            <li>
+            <li class={link.label === 'Contact' ? 'nav-keep' : undefined}>
               <a
                 href={link.href}
                 class="nav-link"
@@ -375,9 +375,12 @@ const routeLabel =
 
   /* Responsive */
   @media (max-width: 767px) {
-    .header-nav {
+    /* Work collapses into the burger; Contact stays visible, because the
+       one-handed reader is the one least likely to go hunting for it. */
+    .header-nav li:not(.nav-keep) {
       display: none;
     }
+    .header-nav ul { gap: 0; }
     .nav-burger { display: flex; }
     .mobile-menu .nav-link {
       min-height: 44px;

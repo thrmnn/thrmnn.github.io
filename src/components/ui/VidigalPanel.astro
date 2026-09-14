@@ -1,0 +1,97 @@
+---
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+interface Props {
+  revealDelay?: number;
+}
+const { revealDelay = 1 } = Astro.props;
+
+const dataDir = join(process.cwd(), 'public/data');
+
+// Caption is built from the sidecar at build time so the building-footprint
+// count can never drift from the data, per scripts/sample-favela-pointcloud.py.
+const rooftopsMeta = JSON.parse(readFileSync(join(dataDir, 'vidigal-rooftops.json'), 'utf8')) as {
+  count: number;
+  n_building_footprints: number;
+  z_meters: { min: number; max: number };
+};
+// Read for completeness/future validation; the sun-step copy below is fixed
+// verbatim and carries no numbers sourced from this file.
+JSON.parse(readFileSync(join(dataDir, 'vidigal-sun.json'), 'utf8'));
+
+const rooftopsBinBytes = readFileSync(join(dataDir, 'vidigal-rooftops.bin')).length;
+if (rooftopsMeta.count * 4 !== rooftopsBinBytes) {
+  throw new Error(
+    `vidigal-rooftops.json: count (${rooftopsMeta.count}) × 4 does not match vidigal-rooftops.bin size (${rooftopsBinBytes} bytes)`,
+  );
+}
+const sunBinBytes = readFileSync(join(dataDir, 'vidigal-sun.bin')).length;
+if (rooftopsMeta.count * 2 !== sunBinBytes) {
+  throw new Error(
+    `vidigal-sun.bin size (${sunBinBytes} bytes) does not match vidigal-rooftops.json count (${rooftopsMeta.count}) × 2`,
+  );
+}
+
+const artifactCaption = `Vidigal, Rio de Janeiro · terrain and ${rooftopsMeta.n_building_footprints.toLocaleString('en-US')} building footprints`;
+const artifactLegend = `Dense informal fabric, drawn from a digital terrain model and building footprints. Separating those two is the first step of the morphometric method. Run the sweep to see where a day's sunlight reaches, and where it does not.`;
+const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidigal · light: a simple sun-path calculation over that public geometry, computed for this page · no findings from the in-progress study are shown here.`;
+---
+
+<section class="artifact-band">
+  <div class="hero-artifact vidigal-artifact" data-reveal style={`--reveal-d: ${revealDelay};`}>
+    <div
+      class="artifact-frame vidigal-frame"
+      role="button"
+      tabindex="0"
+      aria-label="Run the sun sweep over the Vidigal point cloud: it animates a full day's sunlight across the terrain and building footprints once, then returns to the midday view."
+    >
+      <canvas
+        class="vidigal-panel"
+        data-rooftops="/data/vidigal-rooftops.bin"
+        data-sun="/data/vidigal-sun.bin"
+        aria-label="Oblique point cloud of Vidigal, Rio de Janeiro: terrain and building footprints, shown under midday sun."
+      ></canvas>
+      <div class="artifact-corners" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+    <p class="artifact-caption">{artifactCaption}</p>
+    <p class="artifact-legend">{artifactLegend}</p>
+    <p class="artifact-provenance">{artifactProvenance}</p>
+  </div>
+</section>
+
+<style>
+  /* The projected cloud is a 2.24:1 diagonal band; a square frame leaves half
+     the box empty, so this panel overrides the shared 1:1 artifact frame. */
+  .vidigal-artifact {
+    max-width: 920px;
+  }
+  .vidigal-frame {
+    aspect-ratio: 2.24 / 1;
+    cursor: pointer;
+  }
+  .vidigal-artifact :global(.artifact-legend) {
+    max-width: 58ch;
+  }
+  .vidigal-artifact :global(.artifact-provenance) {
+    max-width: 76ch;
+    margin-inline: auto;
+  }
+  .vidigal-frame:focus-visible {
+    outline-offset: 4px;
+  }
+  .vidigal-panel {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<script>
+  import { initVidigalPanel } from '../../scripts/vidigal-panel.ts';
+  const canvas = document.querySelector('.vidigal-panel') as HTMLCanvasElement | null;
+  if (canvas) initVidigalPanel(canvas);
+</script>

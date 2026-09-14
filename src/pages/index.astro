@@ -2,10 +2,9 @@
 import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/ui/Button.astro';
 import SocialIcon from '../components/ui/SocialIcon.astro';
+import VidigalPanel from '../components/ui/VidigalPanel.astro';
 import { author } from '../data/author';
 import { getCollection } from 'astro:content';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 
 const allProjects = (await getCollection('projects')).filter((p) => !p.data.draft);
 const proofProjects = allProjects
@@ -14,32 +13,10 @@ const proofProjects = allProjects
 
 const mailto = `mailto:${author.email}`;
 
-// Caption is built from the sidecar at build time so it can never drift from
-// the replay data — see scripts/sample-stata-replay.py.
-const stataMeta = JSON.parse(
-  readFileSync(join(process.cwd(), 'public/data/stata-replay.meta.json'), 'utf8'),
-) as {
-  platform: string;
-  dataset: string;
-  duration_s: number;
-  events: number;
-  events_by_detector: { tf_jump: number; covariance_spike: number; pose_divergence: number };
-  lost_window: { window: string; position_error_median_m: number; amcl_reported_sigma_median_m: number };
-};
-const { tf_jump, covariance_spike, pose_divergence } = stataMeta.events_by_detector;
-if (tf_jump + covariance_spike + pose_divergence !== stataMeta.events) {
-  throw new Error(
-    `stata-replay.meta.json: events_by_detector (${tf_jump}+${covariance_spike}+${pose_divergence}) does not sum to events (${stataMeta.events})`,
-  );
-}
-const lostMetres = stataMeta.lost_window.position_error_median_m.toFixed(1);
-const lostCm = Math.round(stataMeta.lost_window.amcl_reported_sigma_median_m * 100);
-const artifactCaption = `${stataMeta.platform} · ${stataMeta.duration_s} s of a recorded run · ${stataMeta.events} detector events`;
-const artifactLegend = `A real robot, replayed from its own logs. Green: where it believed it was. Amber: where my detectors flagged trouble. After a floor change it was ${lostMetres} metres off while reporting ${lostCm} centimetres of uncertainty. Finding that quiet kind of failure is the work.`;
 ---
 
 <PageLayout ogType="profile">
-  <!-- Hero — type-first viewport 1; the artifact band follows below -->
+  <!-- Hero — type-first viewport 1; the research artifact follows below -->
   <section id="home" class="hero-section">
     <div class="hero-type">
       <h1
@@ -51,7 +28,7 @@ const artifactLegend = `A real robot, replayed from its own logs. Green: where i
         {author.name}
       </h1>
       <p class="hero-positioning" data-reveal style="--reveal-d: 1;">
-        Robotics engineer. I ship perception and autonomy on real robots, reconstruct dense cities from terrestrial LiDAR, and measure tree canopy from the air. Four years on real hardware: first engineering hire and perception lead through deployment at <strong>Roboat</strong>.
+        Researcher and engineer. I measure dense urban form in Rio's favelas with <strong>MIT Senseable City Lab</strong>, tree canopy from aerial LiDAR over Amsterdam, and build perception and autonomy for robots that work outside the lab. MSc Robotics, EPFL; first engineering hire and perception lead at <strong>Roboat</strong>.
       </p>
       <p class="hero-caption" data-reveal style="--reveal-d: 2;">
         Robot navigation log triage for fleets has its own page: <a href="https://theohermann.ch">theohermann.ch</a>.
@@ -65,25 +42,32 @@ const artifactLegend = `A real robot, replayed from its own logs. Green: where i
     </div>
   </section>
 
-  <!-- Artifact band — full-width, centered; replay of a real recorded robot run -->
-  <section class="artifact-band">
-    <div class="hero-artifact" data-reveal style="--reveal-d: 1;">
-      <div class="artifact-frame">
-        <canvas
-          class="favela-scrubber"
-          data-walls="/data/stata-walls.bin"
-          data-replay="/data/stata-replay.json"
-          aria-label="Replay of a recorded PR2 run in the MIT Stata Center: wall map, the robot's estimated path, and the moments a fault detector fired."
-        ></canvas>
-        <div class="artifact-corners" aria-hidden="true">
-          <span></span><span></span><span></span><span></span>
+  <!-- Artifact band — the research artifact this site leads with -->
+  <VidigalPanel />
+
+  <!-- Research axes — method and affiliation only; the studies are unpublished
+       and multi-author, so no result, figure or finding appears here. -->
+  <section id="research" class="py-[var(--space-section)]">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <h2 class="section-label mb-10" data-reveal>Research</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div data-reveal style="--reveal-d: 1;">
+          <p class="research-place">Rio de Janeiro</p>
+          <h3 class="research-title">The form of dense informal settlements</h3>
+          <p class="research-body">How do you measure a city that was never drawn? I build morphometrics for favela fabric from terrain models and building footprints: sky openness, frontal area, slope, porosity, on a grid fine enough to describe an alley. Those measurements set up the wind and sunlight simulations that follow. With <strong>MIT Senseable City Lab</strong>.</p>
+        </div>
+        <div data-reveal style="--reveal-d: 2;">
+          <p class="research-place">Amsterdam</p>
+          <h3 class="research-title">Tree canopy from the air</h3>
+          <p class="research-body">A city knows where its trees are, not how much leaf they carry. I estimate leaf area per tree from aerial LiDAR by inverting how much of the sky the canopy blocks, which turns a routine municipal scan into a physical measurement. With <strong>Senseable City Lab</strong> and the <strong>AMS Institute</strong>.</p>
+        </div>
+        <div data-reveal style="--reveal-d: 3;">
+          <p class="research-place">On the robot</p>
+          <h3 class="research-title">Knowing when perception is wrong</h3>
+          <p class="research-body">Robots that navigate from their own sensors fail quietly: the estimate drifts while the confidence stays high. I work on detecting that gap from the logs a fleet already records. The consulting side of this lives at <a href="https://theohermann.ch">theohermann.ch</a>.</p>
         </div>
       </div>
-      <p class="artifact-caption">{artifactCaption}</p>
-      <p class="artifact-legend">{artifactLegend}</p>
-      <p class="artifact-provenance">
-        recorded data: MIT Stata Center dataset (CC BY 3.0) · detections: <a href="https://github.com/thrmnn/ros2-localization-triage">ros2-localization-triage</a> — open source, every number recomputable · the consulting practice built on it: <a href="https://theohermann.ch">theohermann.ch</a>
-      </p>
+      <p class="research-note" data-reveal style="--reveal-d: 4;">Two of these are unpublished work with co-authors, so this page describes the methods and not the results.</p>
     </div>
   </section>
 
@@ -183,9 +167,4 @@ const artifactLegend = `A real robot, replayed from its own logs. Green: where i
     </div>
   </section>
 
-  <script>
-    import { initFavelaScrubber } from '../scripts/favela-scrubber.ts';
-    const canvas = document.querySelector('.favela-scrubber') as HTMLCanvasElement | null;
-    if (canvas) initFavelaScrubber(canvas);
-  </script>
 </PageLayout>

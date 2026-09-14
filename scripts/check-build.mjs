@@ -21,7 +21,7 @@ const groups = {
   asset_budget: [],
   bundle_budget: [],
   pdf_scan: [],
-  stata_caption: [],
+  artifact_caption: [],
   contrast: [],
   og_dimensions: [],
 };
@@ -79,35 +79,50 @@ for (const f of htmlFiles) {
 const home = readFileSync(join(DIST, 'index.html'), 'utf8');
 must('identity', home.includes('Théo Alessandro Hermann'), 'canonical name missing from homepage');
 
-// 5b. stata replay caption must match the sidecar meta exactly — the numbers
-//     in the caption are rendered at build time from this file, so a drift
-//     between them means the copy stopped tracking the data.
-const STATA_META = 'public/data/stata-replay.meta.json';
-if (existsSync(STATA_META)) {
-  const meta = JSON.parse(readFileSync(STATA_META, 'utf8'));
+// 5b. the hero artifact's caption is generated from its sidecar at build time,
+//     so a drift between the two means the copy stopped tracking the data.
+//     The stata replay moved to theohermann.ch, which gates it there.
+const VIDIGAL_META = 'public/data/vidigal-rooftops.json';
+const SUN_META = 'public/data/vidigal-sun.json';
+if (existsSync(VIDIGAL_META)) {
+  const meta = JSON.parse(readFileSync(VIDIGAL_META, 'utf8'));
   must(
-    'stata_caption',
-    home.includes(`${meta.duration_s} s`),
-    `stata caption missing "${meta.duration_s} s" (from ${STATA_META})`,
+    'artifact_caption',
+    home.includes(meta.n_building_footprints.toLocaleString('en-US')),
+    `vidigal caption missing "${meta.n_building_footprints.toLocaleString('en-US')}" footprints (from ${VIDIGAL_META})`,
   );
   must(
-    'stata_caption',
-    home.includes(`${meta.events} detector events`),
-    `stata caption missing "${meta.events} detector events" (from ${STATA_META})`,
+    'artifact_caption',
+    home.includes('Vidigal'),
+    'vidigal caption missing the site name',
   );
-  const lostMetres = Number(meta.lost_window.position_error_median_m).toFixed(1);
-  const lostCm = Math.round(meta.lost_window.amcl_reported_sigma_median_m * 100);
+  const binBytes = existsSync('public/data/vidigal-rooftops.bin')
+    ? statSync('public/data/vidigal-rooftops.bin').size
+    : 0;
   must(
-    'stata_caption',
-    home.includes(`${lostMetres} metres`),
-    `hero legend missing "${lostMetres} metres" (from ${STATA_META})`,
+    'artifact_caption',
+    binBytes === meta.count * 4,
+    `vidigal-rooftops.bin is ${binBytes} B, sidecar count implies ${meta.count * 4} B`,
   );
+  const sunBytes = existsSync('public/data/vidigal-sun.bin')
+    ? statSync('public/data/vidigal-sun.bin').size
+    : 0;
   must(
-    'stata_caption',
-    home.includes(`${lostCm} centimetres`),
-    `hero legend missing "${lostCm} centimetres" (from ${STATA_META})`,
+    'artifact_caption',
+    sunBytes === meta.count * 2,
+    `vidigal-sun.bin is ${sunBytes} B, one uint16 per point implies ${meta.count * 2} B`,
   );
-  must('stata_caption', !home.includes('AMCL'), 'hero band must not render "AMCL"');
+  // the light field is computed for the page; the page must say so, and must
+  // never present it as an output of the unpublished study.
+  must(
+    'artifact_caption',
+    home.includes('computed for this page'),
+    'vidigal provenance must state the light is computed for this page',
+  );
+}
+if (existsSync(SUN_META)) {
+  const sun = JSON.parse(readFileSync(SUN_META, 'utf8'));
+  must('artifact_caption', sun.schema === 'vidigal-sun-v1', `unexpected sun sidecar schema ${sun.schema}`);
 }
 
 // 6. internal links resolve to a built file

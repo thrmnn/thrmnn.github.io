@@ -3,7 +3,7 @@ const email = 'thermann.ai@gmail.com';
 export const author = {
   name: 'Théo Alessandro Hermann',
   monogram: 'T.A.H',
-  role: 'Independent robotics engineer',
+  role: 'Researcher and robotics engineer',
   affiliation: 'MIT Senseable City Lab Rio',
   email,
 

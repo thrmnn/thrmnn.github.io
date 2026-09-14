@@ -103,13 +103,28 @@ if (existsSync(VIDIGAL_META)) {
     binBytes === meta.count * 4,
     `vidigal-rooftops.bin is ${binBytes} B, sidecar count implies ${meta.count * 4} B`,
   );
-  // the geometry belongs to an unpublished study; the page must keep saying
-  // that it shows none of that study's findings.
-  must(
-    'artifact_caption',
-    home.includes('no findings from the in-progress study'),
-    'vidigal provenance must state that no findings from the study are shown',
-  );
+  // The research is unpublished and multi-author, so the pages carry method
+  // only. This used to assert that a disclaimer sentence was present; asserting
+  // the absence of results is the stronger invariant, and it does not depend on
+  // any particular wording surviving an edit.
+  const RESULT_MARKERS = [
+    /\bAUC(?:-PR)?\b/i,
+    /\bp\s*[<=]\s*0\.\d/,
+    /\bR\^?2\s*=\s*0?\.\d/,
+    /statistically significant/i,
+    /\bour (?:results|findings)\b/i,
+    /\bwe (?:find|show|demonstrate)\b/i,
+  ];
+  const researchPages = ['index.html', 'projects/urban-digital-twin/index.html',
+    'projects/aerial-lidar-tree-census/index.html'];
+  for (const rel of researchPages) {
+    const f = join(DIST, rel);
+    if (!existsSync(f)) continue;
+    const text = readFileSync(f, 'utf8');
+    for (const re of RESULT_MARKERS) {
+      must('artifact_caption', !re.test(text), `${rel} carries a research result marker ${re}`);
+    }
+  }
 }
 // The artifact prints a live percentage computed from this page's own toy sun
 // model, and it must never travel without saying so: a screenshot of the frame

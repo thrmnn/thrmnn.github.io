@@ -1,12 +1,12 @@
 ---
-title: "Perception Stack for Autonomous Canal Boats"
+title: "Camera perception for canal boats"
 date: '2024-08-01T00:00:00Z'
 featuredOrder: 4
 proprietary: true
 image: '/projects/autonomous-boat-perception/hero.svg'
-summary: "First engineering hire at Roboat: a camera-first perception stack running inside a real-time budget on Jetson Orin, deployed on canal vessels in Amsterdam. The performance figures belong to Roboat and are not mine to publish."
-label: "Roboat (MIT spin-off) · 2024"
-metric: "<30ms inference · 100+ hours on-water data · deployed in Amsterdam"
+summary: "Roboat's autonomy ran on LiDAR. As its first intern I added the camera side: detection and tracking on the vessel's own edge hardware, and the MLOps to keep models and data versioned as the recordings grew."
+label: "Roboat, MIT spinoff · 2024"
+metric: "Camera perception on a LiDAR stack"
 gradient: "linear-gradient(135deg, #1a1a3e 0%, #2a2a5e 50%, #3a3a7e 100%)"
 tags:
   - Object Detection
@@ -19,18 +19,28 @@ tags:
   - Edge Deployment
 ---
 
-## Problem
+## The problem
 
-As the first engineering hire (perception) at Roboat, a startup spun out of MIT's Senseable City Lab, the challenge was replacing an expensive LiDAR-only pipeline with a cost-effective, camera-first architecture for autonomous vessels navigating Amsterdam's canals — while keeping the reliability real-world maritime operations require.
+Roboat's autonomy already worked, and it worked on LiDAR. LiDAR is precise and
+expensive, and on water it reports a great deal that is not an obstacle:
+reflection, wake, chop. The open question when I arrived was how much of the
+perception job a camera could take on instead, on hardware that fits on a small
+vessel and inside a real-time budget.
 
-## Built
+## What I did
 
-A vision-based detection and tracking system on NVIDIA Jetson Orin edge hardware — custom-trained YOLO models robust to glare, reflections, and dynamic water surfaces; persistent multi-object tracking across frames; a full MLOps pipeline with DVC for reproducible model and dataset versioning, built over 100+ hours of on-water recordings.
+I joined as the first intern and built the camera side of the stack: detection
+and multi-object tracking running on the vessel's own edge hardware, trained on
+the recordings the boats had been collecting from the canals. Water is an
+awkward subject for a detector, because the same object looks different under
+glare, reflection and weather, and the things you most need to catch are the
+things you have least footage of.
 
-## Why hard
+The second half of the work was the part that outlives any particular model.
+Datasets and model versions went under DVC so a result could be traced back to
+the exact data that produced it, and retraining stopped being a thing one
+person could do on one laptop.
 
-Maritime data carries heavy class imbalance (common obstacles vs. rare events like swimmers or kayaks) and extreme appearance variation from water reflections and weather.
+## What is not here
 
-## What happened
-
-Sub-30ms inference latency on Jetson Orin; the system was deployed on physical vessels operating autonomously in Amsterdam's canal network.
+The performance figures belong to Roboat and are not mine to publish.

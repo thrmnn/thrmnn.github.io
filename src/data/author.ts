@@ -9,7 +9,7 @@ export const author = {
 
   bio: [
     'Four years shipping perception and autonomy systems on edge hardware. Franco-Brazilian, trained in Switzerland. French · English · Portuguese · Spanish.',
-    'First engineering hire (perception) at <strong>Roboat</strong>, through deployment on Amsterdam\'s canals. Research fellow at <strong><a href="https://senseablerio.mit.edu/">MIT Senseable City Lab Rio</a></strong> — 3D reconstruction of dense informal settlements from terrestrial LiDAR, terrain models and building footprints. Research assistant at <a href="https://www.epfl.ch/labs/vita/">EPFL VITA Lab</a>; visiting researcher at <a href="https://www.iri.upc.edu/">IRI (CSIC-UPC)</a>, Barcelona.',
+    'Computer vision and MLOps at <strong>Roboat</strong> (MIT spinoff) as its first intern, adding camera perception to a stack built on LiDAR. Research fellow at <strong><a href="https://senseablerio.mit.edu/">MIT Senseable City Lab Rio</a></strong> — 3D reconstruction of dense informal settlements from terrestrial LiDAR, terrain models and building footprints. Research assistant at <a href="https://www.epfl.ch/labs/vita/">EPFL VITA Lab</a>; visiting researcher at <a href="https://www.iri.upc.edu/">IRI (CSIC-UPC)</a>, Barcelona.',
   ],
 
   education: [
@@ -38,15 +38,15 @@ export const author = {
       period: 'Jan 2025 – Present',
       location: 'Rio de Janeiro, Brazil',
       summary:
-        'Researcher on the urban-digital-twin line — high-fidelity 3D reconstructions of favelas from terrestrial LiDAR and aerial imagery, feeding OpenFOAM CFD simulations of airborne disease transmission. Tech: Python, Blender, GeoPandas, Google Earth Engine.',
+        'Founding member of the Rio branch, there from the first week. I work on morphometrics of informal urban form: describing favela fabric from terrain models and building footprints so that wind and sunlight simulation has something defensible to run on. Tech: Python, GeoPandas, point-cloud tooling.',
     },
     {
-      role: 'Perception Engineer — First Engineering Hire',
+      role: 'Computer Vision and MLOps Intern (first intern)',
       company: 'Roboat (MIT Spinoff)',
       period: 'Mar 2024 – Aug 2024',
       location: 'Amsterdam, Netherlands',
       summary:
-        'Designed and shipped end-to-end perception stack for autonomous canal vessels. YOLO-based detection + multi-object tracking at <30ms on Jetson Orin. Built full MLOps pipeline with DVC over 100+ hours of maritime data. LiDAR point cloud segmentation for dynamic water filtering. Tech: PyTorch, ROS2, Docker, DVC.',
+        'Brought camera-based perception to a stack that until then ran on LiDAR: detection and multi-object tracking for autonomous canal vessels on Jetson Orin, and the MLOps around it, with DVC versioning over the on-water recordings the models were trained on. Tech: PyTorch, ROS 2, Docker, DVC.',
     },
     {
       role: 'Visiting Research Fellow',

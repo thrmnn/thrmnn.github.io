@@ -4,26 +4,24 @@
 // every number on a personal page is a claim someone can contest, and the
 // study this geometry comes from is unpublished.
 //
-// The only motion is a one-shot reveal, back to front, when the panel first
-// comes into view.
+// It reveals back to front on first view and then turns slowly, so a reader
+// can read the ridge and the valley rather than one flat silhouette.
 const STRIDE = 4; // int8 x, int8 y, uint8 z, uint8 category (0=terrain, 1=building)
-const ROT = 0.5;
+const ROT0 = 0.5;
+const SPIN_RAD_PER_S = 0.055; // one turn in roughly two minutes
 const TILT = 0.62;
-const COS_R = Math.cos(ROT);
-const SIN_R = Math.sin(ROT);
 const COS_T = Math.cos(TILT);
 const SIN_T = Math.sin(TILT);
 const Y_SQUASH = 0.7;
-const FILL = 0.94;
+const FILL = 0.92; // a little air around the envelope, no more
 const REVEAL_MS = 1600;
 
 interface Cloud {
   n: number;
-  px: Float32Array; // projected, before scale
-  py: Float32Array;
-  depth: Float32Array; // 0 at the back, 1 at the front
+  x: Float32Array;
+  y: Float32Array;
+  z: Float32Array;
   cat: Uint8Array;
-  order: Uint32Array;
   ax0: number;
   ax1: number;
   ay0: number;
@@ -42,64 +40,83 @@ async function load(url: string): Promise<Cloud> {
   const view = new DataView(buf);
   const n = Math.floor(buf.byteLength / STRIDE);
 
-  const px = new Float32Array(n);
-  const py = new Float32Array(n);
-  const depth = new Float32Array(n);
+  const x = new Float32Array(n);
+  const y = new Float32Array(n);
+  const z = new Float32Array(n);
   const cat = new Uint8Array(n);
 
   for (let i = 0; i < n; i++) {
     const o = i * STRIDE;
-    const x = view.getInt8(o) / 127;
-    const y = view.getInt8(o + 1) / 127;
-    const z = view.getUint8(o + 2) / 255;
-    const rz = x * SIN_R + y * COS_R;
-    px[i] = x * COS_R - y * SIN_R;
-    py[i] = (z * COS_T - rz * SIN_T) * Y_SQUASH;
-    depth[i] = z * SIN_T + rz * COS_T;
+    x[i] = view.getInt8(o) / 127;
+    y[i] = view.getInt8(o + 1) / 127;
+    z[i] = view.getUint8(o + 2) / 255;
     cat[i] = view.getUint8(o + 3);
   }
 
-  const idx: number[] = new Array(n);
-  for (let i = 0; i < n; i++) idx[i] = i;
-  idx.sort((a, b) => depth[a]! - depth[b]!);
-  const order = Uint32Array.from(idx);
+  // The view turns, so the frame has to hold the cloud at every angle without
+  // breathing. The bounding radius is far too generous for an elongated ridge,
+  // so take the actual envelope: project at a ring of angles and keep the 1st
+  // and 99th percentile extremes across all of them.
+  const ANGLES = 24;
+  let ax0 = Infinity;
+  let ax1 = -Infinity;
+  let ay0 = Infinity;
+  let ay1 = -Infinity;
+  const bufX = new Float64Array(n);
+  const bufY = new Float64Array(n);
+  for (let a = 0; a < ANGLES; a++) {
+    const th = (a / ANGLES) * Math.PI * 2;
+    const c = Math.cos(th);
+    const si = Math.sin(th);
+    for (let i = 0; i < n; i++) {
+      const rz = x[i]! * si + y[i]! * c;
+      bufX[i] = x[i]! * c - y[i]! * si;
+      bufY[i] = (z[i]! * COS_T - rz * SIN_T) * Y_SQUASH;
+    }
+    const sxs = Float64Array.from(bufX).sort();
+    const sys = Float64Array.from(bufY).sort();
+    ax0 = Math.min(ax0, pct(sxs, 0.01));
+    ax1 = Math.max(ax1, pct(sxs, 0.99));
+    ay0 = Math.min(ay0, pct(sys, 0.01));
+    ay1 = Math.max(ay1, pct(sys, 0.99));
+  }
 
-  // normalise depth to 0..1 so nearer points can carry a little more weight
-  const dmin = depth[order[0]!]!;
-  const dmax = depth[order[n - 1]!]!;
-  const dspan = dmax - dmin || 1;
-  for (let i = 0; i < n; i++) depth[i] = (depth[i]! - dmin) / dspan;
-
-  // Frame the fabric, not the dust: a few hundred scattered terrain samples
-  // otherwise set the extent and shrink the settlement to a smudge.
-  const sx = Float64Array.from(px).sort();
-  const sy = Float64Array.from(py).sort();
-
-  return {
-    n,
-    px,
-    py,
-    depth,
-    cat,
-    order,
-    ax0: pct(sx, 0.01),
-    ax1: pct(sx, 0.99),
-    ay0: pct(sy, 0.01),
-    ay1: pct(sy, 0.99),
-  };
+  return { n, x, y, z, cat, ax0, ax1, ay0, ay1 };
 }
 
-function toRgb(c: string): [number, number, number] {
-  const h = c.replace('#', '').trim();
-  const f = h.length === 3 ? h.split('').map((x) => x + x).join('') : h;
-  return [parseInt(f.slice(0, 2), 16), parseInt(f.slice(2, 4), 16), parseInt(f.slice(4, 6), 16)];
+// getComputedStyle returns unregistered custom properties as the token stream
+// they were declared with, so --color-accent comes back as the literal string
+// "var(--accent)" rather than a colour. Resolve by asking the canvas to parse
+// each candidate and keeping the first one it accepts.
+function resolveColor(ctx: CanvasRenderingContext2D, candidates: string[], fallback: string): string {
+  for (const c of candidates) {
+    const v = c.trim();
+    if (!v || v.startsWith('var(')) continue;
+    ctx.fillStyle = '#000000';
+    ctx.fillStyle = v;
+    if (ctx.fillStyle !== '#000000' || v === '#000000' || v === 'black') return ctx.fillStyle as string;
+  }
+  return fallback;
 }
 
-function readColors(canvas: HTMLCanvasElement) {
+function withAlpha(rgbHex: string, a: number): string {
+  const h = rgbHex.replace('#', '');
+  const f = h.length === 3 ? h.split('').map((x) => x + x).join('') : h.slice(0, 6);
+  const r = parseInt(f.slice(0, 2), 16);
+  const g = parseInt(f.slice(2, 4), 16);
+  const b = parseInt(f.slice(4, 6), 16);
+  if ([r, g, b].some(Number.isNaN)) return rgbHex;
+  return `rgba(${r}, ${g}, ${b}, ${a.toFixed(3)})`;
+}
+
+function readColors(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
   const cs = getComputedStyle(canvas);
-  const accent = cs.getPropertyValue('--color-accent').trim() || '#3b82f6';
-  const ground = cs.getPropertyValue('--color-text-muted').trim() || '#6b6b6b';
-  return { accent: toRgb(accent), ground: toRgb(ground) };
+  const pick = (names: string[], fallback: string) =>
+    resolveColor(ctx, names.map((n) => cs.getPropertyValue(n)), fallback);
+  return {
+    accent: pick(['--color-accent', '--accent'], '#3b82f6'),
+    ground: pick(['--color-text-muted', '--text-muted'], '#6b6b6b'),
+  };
 }
 
 export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void> {
@@ -116,18 +133,27 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   }
   if (cloud.n === 0) return;
 
-  let { accent, ground } = readColors(canvas);
+  let { accent, ground } = readColors(canvas, ctx);
   let cssW = canvas.clientWidth || 1;
   let cssH = canvas.clientHeight || 1;
-  let revealStart = 0;
+  let t0 = 0;
   let reveal = 0; // 0..1
-  let running = false;
-  let seen = false;
+  let rafOn = false;
   let visible = false;
 
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
-  function render() {
+  // Painter's order changes every frame while the view turns. A bucket sort is
+  // O(n) and visually identical to a comparison sort at this point count.
+  const BUCKETS = 384;
+  const { n } = cloud;
+  const sxArr = new Float32Array(n);
+  const syArr = new Float32Array(n);
+  const dArr = new Float32Array(n);
+  const counts = new Uint32Array(BUCKETS + 1);
+  const order = new Uint32Array(n);
+
+  function render(elapsed: number) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const w = Math.max(1, Math.round(cssW * dpr));
     const h = Math.max(1, Math.round(cssH * dpr));
@@ -138,49 +164,73 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx!.clearRect(0, 0, cssW, cssH);
 
-    const { n, px, py, depth, cat, order, ax0, ax1, ay0, ay1 } = cloud;
+    const { x, y, z, cat, ax0, ax1, ay0, ay1 } = cloud;
+    const rot = ROT0 + (reduceMotion.matches ? 0 : elapsed * SPIN_RAD_PER_S);
+    const cosR = Math.cos(rot);
+    const sinR = Math.sin(rot);
+
     const scale = Math.min(cssW / (ax1 - ax0), cssH / (ay1 - ay0)) * FILL;
     const cx = cssW / 2 - ((ax0 + ax1) / 2) * scale;
     const cy = cssH / 2 + ((ay0 + ay1) / 2) * scale;
     const dot = Math.max(0.85, Math.min(2.1, scale / 260));
-    const shown = Math.round(reveal * n);
 
+    let dmin = Infinity;
+    let dmax = -Infinity;
+    for (let i = 0; i < n; i++) {
+      const rz = x[i]! * sinR + y[i]! * cosR;
+      sxArr[i] = cx + (x[i]! * cosR - y[i]! * sinR) * scale;
+      syArr[i] = cy - (z[i]! * COS_T - rz * SIN_T) * Y_SQUASH * scale;
+      const d = z[i]! * SIN_T + rz * COS_T;
+      dArr[i] = d;
+      if (d < dmin) dmin = d;
+      if (d > dmax) dmax = d;
+    }
+    const span = dmax - dmin || 1;
+
+    counts.fill(0);
+    for (let i = 0; i < n; i++) {
+      const b = Math.min(BUCKETS - 1, ((dArr[i]! - dmin) / span * BUCKETS) | 0);
+      counts[b + 1]!++;
+    }
+    for (let b = 1; b <= BUCKETS; b++) counts[b]! += counts[b - 1]!;
+    const cursor = counts.slice();
+    for (let i = 0; i < n; i++) {
+      const b = Math.min(BUCKETS - 1, ((dArr[i]! - dmin) / span * BUCKETS) | 0);
+      order[cursor[b]!++] = i;
+    }
+
+    const shown = Math.round(reveal * n);
     for (let k = 0; k < shown; k++) {
       const i = order[k]!;
-      const d = depth[i]!;
+      const d = (dArr[i]! - dmin) / span;
       const building = cat[i] === 1;
-      const [r, g, b] = building ? accent : ground;
       // nearer points sit slightly stronger, which gives the cloud its form
       const a = building ? 0.42 + 0.5 * d : 0.16 + 0.2 * d;
-      ctx!.fillStyle = `rgba(${r}, ${g}, ${b}, ${a.toFixed(3)})`;
+      ctx!.fillStyle = withAlpha(building ? accent : ground, a);
       const size = (building ? 1.75 : 0.95) * dot;
-      ctx!.fillRect(cx + px[i]! * scale - size / 2, cy - py[i]! * scale - size / 2, size, size);
+      ctx!.fillRect(sxArr[i]! - size / 2, syArr[i]! - size / 2, size, size);
     }
   }
 
   function frame(now: number) {
-    const t = Math.min((now - revealStart) / REVEAL_MS, 1);
-    // ease out, so the last points settle rather than stop
-    reveal = 1 - Math.pow(1 - t, 3);
-    render();
-    if (t < 1 && visible) requestAnimationFrame(frame);
-    else {
-      reveal = 1;
-      running = false;
-      render();
-    }
+    if (!t0) t0 = now;
+    const elapsed = (now - t0) / 1000;
+    const rt = Math.min((now - t0) / REVEAL_MS, 1);
+    reveal = 1 - Math.pow(1 - rt, 3);
+    render(elapsed);
+    if (visible && !reduceMotion.matches) requestAnimationFrame(frame);
+    else rafOn = false;
   }
 
-  function start() {
-    if (seen) return;
-    seen = true;
+  function kick() {
+    if (rafOn || !visible) return;
     if (reduceMotion.matches) {
+      // no reveal animation, but the cloud must still be fully drawn
       reveal = 1;
-      render();
+      render(0);
       return;
     }
-    revealStart = performance.now();
-    running = true;
+    rafOn = true;
     requestAnimationFrame(frame);
   }
 
@@ -192,12 +242,15 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
 
   new ResizeObserver(() => {
     measure();
-    if (seen && !running) render();
+    if (!rafOn) {
+      reveal = reveal || 1;
+      render(0);
+    }
   }).observe(canvas);
 
   const retheme = () => {
-    ({ accent, ground } = readColors(canvas));
-    if (seen && !running) render();
+    ({ accent, ground } = readColors(canvas, ctx));
+    if (!rafOn) render(0);
   };
   new MutationObserver(retheme).observe(document.documentElement, {
     attributes: true,
@@ -205,14 +258,32 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', retheme);
 
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      rafOn = false;
+    } else {
+      kick();
+    }
+  });
+
   new IntersectionObserver(
     (entries) => {
+      // document.hidden gates the animation loop, never whether we draw:
+      // a headless or background render must still paint the cloud
       visible = entries[0]!.isIntersecting;
       if (visible) {
         measure();
-        start();
+        kick();
       }
     },
     { threshold: 0.15 },
   ).observe(canvas);
+
+  // Paint once, immediately, without waiting for any observer. The reveal and
+  // the rotation are enhancements on top of a frame that is already correct;
+  // making the first paint depend on an observer firing meant a reduced-motion
+  // or headless render could show an empty frame.
+  measure();
+  if (reduceMotion.matches) reveal = 1;
+  render(0);
 }

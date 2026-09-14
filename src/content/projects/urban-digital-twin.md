@@ -1,11 +1,11 @@
 ---
-title: 'Morphometrics of informal urban form'
+title: "Morphometrics of informal urban form"
 date: '2025-01-01T00:00:00Z'
 featuredOrder: 1
 externalLink: 'https://senseablerio.mit.edu/'
-summary: 'Favelas are built without plans, and the measurements urban analysis relies on assume a street grid that is not there. I build the ones that work on this fabric, from terrain models and building footprints, at a resolution fine enough to describe a single alley.'
-label: 'MIT Senseable City Lab Rio · ongoing'
-metric: 'Method, on five Rio sites'
+summary: "Favelas are built without plans, and the descriptors urban analysis relies on assume a street grid that is not there. I build the ones that hold on this fabric, from terrain models and building footprints, fine enough to resolve a single alley."
+label: "MIT Senseable City Lab Rio · since 2025"
+metric: "Geometry published on this site"
 gradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)'
 tags:
   - Urban morphometrics

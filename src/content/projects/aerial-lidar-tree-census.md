@@ -1,11 +1,11 @@
 ---
-title: 'Leaf area from an aerial scan'
+title: "Leaf area from an aerial scan"
 date: '2024-09-01T00:00:00Z'
 featuredOrder: 2
 externalLink: 'https://www.ams-institute.org/'
-summary: 'A city knows where its trees are, not how much leaf they carry. I estimate leaf area per tree by inverting how much sky the canopy blocks in an aerial LiDAR scan, which turns a routine municipal survey into a physical measurement.'
-label: 'Senseable City Lab, MIT · AMS Institute · ongoing'
-metric: 'Method, city-scale aerial LiDAR'
+summary: "A city knows where its trees are, not how much leaf they carry. I recover leaf area per tree by inverting how much sky the canopy blocks in an aerial LiDAR survey the city already flies for other reasons."
+label: "Senseable City Lab, MIT and AMS Institute · since 2024"
+metric: "Manuscript in preparation"
 gradient: 'linear-gradient(135deg, #0d3b0d 0%, #1a472a 50%, #2d6a4f 100%)'
 tags:
   - Remote sensing

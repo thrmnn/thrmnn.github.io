@@ -1,5 +1,5 @@
 ---
-title: 'Perception Pipeline — Modern Real-Time Vision Stack'
+title: "A real-time vision pipeline"
 date: '2026-06-08T00:00:00Z'
 externalLink: 'https://github.com/thrmnn/perception-pipeline'
 github: 'https://github.com/thrmnn/perception-pipeline'
@@ -7,9 +7,9 @@ image: '/projects/perception-pipeline/hero.webp'
 imageWidth: 1200
 imageHeight: 630
 featuredOrder: 5
-summary: 'Consolidated, modernized perception stack — detection, multi-object tracking, ReID, pose — replacing four years of one-off prototypes with a single modular, latency-budget-aware pipeline.'
-label: 'Open-source · v0.1 shipped · 2026'
-metric: 'YOLOv8 + ByteTrack · modular · MIT-licensed'
+summary: "Four years of one-off perception prototypes, consolidated into one modular stack: detection, multi-object tracking, re-identification and pose, each swappable, with a latency budget the whole thing is held to."
+label: "Open source · 2026"
+metric: "Open source, MIT licensed"
 gradient: 'linear-gradient(135deg, #1a3a3a 0%, #2d5a5a 50%, #3a7a7a 100%)'
 tags:
   - Object Detection

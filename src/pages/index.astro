@@ -28,7 +28,7 @@ const mailto = `mailto:${author.email}`;
         {author.name}
       </h1>
       <p class="hero-positioning" data-reveal style="--reveal-d: 1;">
-        Researcher and engineer. I measure environments that resist measurement: cities built without plans, tree canopy across a whole city, robots that have to know where they are. Different fields, one problem. Turning raw sensing into a number someone can defend.<br /><span class="hero-credentials">MSc Robotics, EPFL. Research fellow at <strong>MIT Senseable City Lab Rio</strong>; first engineering hire and perception lead at <strong>Roboat</strong>.</span>
+        Researcher and engineer. I measure environments that resist measurement: cities built without plans, tree canopy across a whole city, robots that have to know where they are. Different fields, one problem. Turning raw sensing into a number someone can defend.<br /><span class="hero-credentials">MSc Robotics, EPFL. Founding member of <strong>MIT Senseable City Lab Rio</strong>; computer vision and MLOps at <strong>Roboat</strong>.</span>
       </p>
       <div class="hero-cta-row" data-reveal style="--reveal-d: 2;">
         <Button href={mailto}>
@@ -44,14 +44,12 @@ const mailto = `mailto:${author.email}`;
        so no result, figure or finding appears here. -->
   <section id="research" class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="section-label mb-8" data-reveal>One of them, up close</h2>
       <p class="research-place" data-reveal style="--reveal-d: 1;">Rio de Janeiro</p>
       <h3 class="research-lead-title" data-reveal style="--reveal-d: 2;">How do you measure a city that was never drawn?</h3>
       <p class="research-lead-body" data-reveal style="--reveal-d: 3;">Favelas are built without plans, and the usual urban measurements assume a street grid that is not there. I build morphometrics for that fabric from terrain models and building footprints: sky openness, frontal area, slope, porosity, on a grid fine enough to describe a single alley. Those measurements are what the wind and sunlight simulations run on.</p>
     </div>
     <VidigalPanel revealDelay={4} />
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <p class="research-note" data-reveal style="--reveal-d: 3;">This is unpublished work with co-authors, so the page describes the method and not the results.</p>
     </div>
   </section>
 
@@ -85,16 +83,14 @@ const mailto = `mailto:${author.email}`;
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
       <div class="flex flex-col md:flex-row gap-12 items-start">
       <div class="shrink-0 mx-auto md:mx-0" data-reveal style="--reveal-d: 1;">
-        <div class="avatar-ring rounded-full p-[3px]">
-          <img
-            src="/avatar.webp"
-            alt={author.name}
+        <div class="avatar-mark">
+          <canvas
+            class="monogram-avatar"
+            data-monogram={author.monogram.replace(/[^A-Za-z]/g, '')}
             width="180"
             height="180"
-            loading="eager"
-            decoding="async"
-            class="rounded-full block"
-          />
+            aria-hidden="true"
+          ></canvas>
         </div>
         <div class="mt-4 text-center md:text-left">
           <p class="text-xl font-bold text-text-primary">{author.name}</p>
@@ -143,4 +139,10 @@ const mailto = `mailto:${author.email}`;
     </div>
   </section>
 
+
+  <script>
+    import { initMonogramAvatar } from '../scripts/monogram-avatar.ts';
+    const avatar = document.querySelector('.monogram-avatar') as HTMLCanvasElement | null;
+    if (avatar) initMonogramAvatar(avatar);
+  </script>
 </PageLayout>

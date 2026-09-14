@@ -21,7 +21,6 @@ imageHeight: 1025
 
 Method public: [github.com/thrmnn/ros2-localization-triage](https://github.com/thrmnn/ros2-localization-triage)
 
-Consulting on this work: [theohermann.ch](https://theohermann.ch)
 
 ## Problem
 

@@ -17,11 +17,14 @@ const COS_T = Math.cos(TILT);
 const SIN_T = Math.sin(TILT);
 const Y_SQUASH = 0.7;
 const FILL = 0.94;
-// the rail and its sunrise/sunset labels own the bottom of the frame; the
-// cloud must never draw into them or the labels become unreadable
-const RAIL_SAFE_PX = 34;
+// The control stack owns the bottom of the frame and its height differs between
+// the desktop and phone layouts, so the reserved band is declared in CSS as
+// --rail-safe and read here. Hardcoding it let the cloud cover the sunset label
+// on phones twice.
+const RAIL_SAFE_FALLBACK = 34;
 
 interface Points {
+  litByStep: Float32Array;
   ax0: number;
   ax1: number;
   ay0: number;
@@ -91,7 +94,17 @@ async function loadPoints(rooftopsUrl: string, sunUrl: string): Promise<Points> 
   const ax0 = pct(pxs, 0.01), ax1 = pct(pxs, 0.99);
   const ay0 = pct(pys, 0.01), ay1 = pct(pys, 0.99);
 
-  return { n, x, y, z, cat, sun, order, ax0, ax1, ay0, ay1 };
+  const litByStep = new Float32Array(16);
+  let nBuild = 0;
+  for (let i = 0; i < n; i++) if (cat[i] === 1) nBuild++;
+  for (let st = 0; st < 16; st++) {
+    const bit = 1 << st;
+    let c = 0;
+    for (let i = 0; i < n; i++) if (cat[i] === 1 && (sun[i]! & bit) !== 0) c++;
+    litByStep[st] = nBuild ? c / nBuild : 0;
+  }
+
+  return { n, x, y, z, cat, sun, order, ax0, ax1, ay0, ay1, litByStep };
 }
 
 function toRgb(c: string): [number, number, number] {
@@ -151,10 +164,15 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   let rafOn = false;
 
   const track = canvas.closest('.artifact-frame')?.querySelector('.sun-track') as HTMLElement | null;
+  const readout = canvas.closest('.artifact-frame')?.querySelector('.sun-readout') as HTMLElement | null;
   function publishProgress() {
-    if (!track) return;
-    const t = (currentStep - SWEEP_FIRST) / (SWEEP_LAST - SWEEP_FIRST);
-    track.style.setProperty('--sun-t', String(Math.max(0, Math.min(1, t))));
+    if (track) {
+      const t = (currentStep - SWEEP_FIRST) / (SWEEP_LAST - SWEEP_FIRST);
+      track.style.setProperty('--sun-t', String(Math.max(0, Math.min(1, t))));
+    }
+    if (readout) {
+      readout.textContent = `${Math.round(pts.litByStep[currentStep]! * 100)}% of the built fabric in sun`;
+    }
   }
 
   function render() {
@@ -170,7 +188,8 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     ctx!.clearRect(0, 0, cssW, cssH);
 
     const { n, x, y, z, cat, sun, order, ax0, ax1, ay0, ay1 } = pts;
-    const drawH = Math.max(40, cssH - RAIL_SAFE_PX);
+    const safe = parseFloat(getComputedStyle(canvas).getPropertyValue('--rail-safe')) || RAIL_SAFE_FALLBACK;
+    const drawH = Math.max(40, cssH - safe);
     const scale = Math.min(cssW / (ax1 - ax0), drawH / (ay1 - ay0)) * FILL;
     const cx = cssW / 2 - ((ax0 + ax1) / 2) * scale;
     const cy = drawH / 2 + ((ay0 + ay1) / 2) * scale;

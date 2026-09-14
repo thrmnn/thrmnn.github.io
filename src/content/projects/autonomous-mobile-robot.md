@@ -9,7 +9,6 @@ imageHeight: 338
 summary: "A full autonomy stack — SLAM, planning, obstacle avoidance, person-following — validated end-to-end on a physical robot (Segway Loomo, EPFL VITA Lab research platform)."
 label: "EPFL VITA Lab · 2023"
 metric: "End-to-end on physical robots · open-sourced on GitHub"
-featuredOrder: 4
 gradient: "linear-gradient(135deg, #1a3a3a 0%, #2d5a5a 50%, #3a7a7a 100%)"
 tags:
   - SLAM

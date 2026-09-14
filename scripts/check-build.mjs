@@ -120,20 +120,22 @@ if (existsSync(VIDIGAL_META)) {
     'vidigal provenance must state the light is computed for this page',
   );
 }
-// The artifact prints a live percentage. It is computed from this page's own
-// toy sun model, and it must never travel without saying so: a screenshot of
-// the frame alone would otherwise read as a result of the unpublished study.
+// The artifact prints a live percentage computed from this page's own toy sun
+// model, and it must never travel without saying so: a screenshot of the frame
+// alone would otherwise read as a result of the unpublished study.
+// Keyed on the panel script's existence, NOT on the sentence's wording: an
+// earlier version matched an exact phrase, that phrase was later reworded, and
+// the guard silently stopped guarding.
 {
-  const js = files.filter((f) => f.endsWith('.js')).map((f) => readFileSync(f, 'utf8')).join('\n');
+  const panel = files.filter((f) => /VidigalPanel.*\.js$/.test(f));
   const inline = home.match(/<script type="module">[\s\S]*?<\/script>/g)?.join('\n') ?? '';
-  const all = js + inline;
-  if (all.includes('of the built fabric in sun')) {
-    must(
-      'artifact_caption',
-      all.includes('not a study result'),
-      'the live lit-fraction readout ships without its "not a study result" caveat',
-    );
-  }
+  const src = panel.map((f) => readFileSync(f, 'utf8')).join('\n') + inline;
+  const rendersFigure = /litByStep|litFraction/.test(src);
+  must(
+    'artifact_caption',
+    !rendersFigure || src.includes('not a study result'),
+    'the artifact computes a live figure but never says it is not a study result',
+  );
 }
 
 if (existsSync(SUN_META)) {

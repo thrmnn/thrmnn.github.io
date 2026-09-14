@@ -8,16 +8,34 @@ A parallel rebrand exploration lives on `design-sprint-2026-05-14` (Astro + Frau
 
 ## 1. Project north star
 
-Personal site for **Théo Alessandro Hermann** — independent robotics engineer.
+**RESEARCH PORTFOLIO** for **Théo Alessandro Hermann**. Repositioned in cycle 10
+(2026-09-14) by the owner's direction. The full vision is written up at
+`~/Perso/site-review/docs/vision-com.md` and that document, not this section,
+is the thing to read before changing the site.
 
-- **Primary:** independent robotics consulting — perception, autonomy, robot operational data — for teams running real robots.
-- **Credential:** research fellow at MIT Senseable City Lab Rio — LiDAR reconstruction of dense informal settlements.
-- **Open-source robotics:** `perception-pipeline`, `ros2-localization-triage`.
-- **Past marquee credit:** Roboat (MIT spinoff), first engineering hire — past tense.
+- **Audience:** peers and collaborators. Researchers who might cite him,
+  co-author with him, or invite him somewhere. Nothing on this site is sold.
+- **Positioning:** the axes are one problem seen in three places. Measuring
+  environments that resist measurement, and turning raw sensing into a number
+  someone can defend. The first paragraph carries that unification; credentials
+  come after it.
+- **Disclosure, and it governs everything:** method and affiliation only. No
+  results, no numbers that are findings, no paper titles, no venues. A derived
+  quantity is itself a claim and therefore a discredit risk. This is what "less
+  is more" means on this site.
+- **Roles, stated correctly:** founding member of MIT Senseable City Lab Rio,
+  NOT its lead. First **intern** at Roboat, on computer vision and MLOps,
+  adding camera perception to a stack that ran on LiDAR — NOT an engineering
+  hire and not a perception lead. Both errors were live on the site until
+  2026-09-14; do not reintroduce them.
+- **Open source:** `perception-pipeline`, `ros2-localization-triage`,
+  `agent-harness`.
 
 **Domain split (decided 2026-09-03):** `theohermann.ch` (bought 2026-09-03, not yet delegated) will become the sharp, client-facing robotics-consulting landing; `theoalessandro.com` becomes the personal site bridging all professional axes plus experimentation. Cycle 7 still lands here as the seed material for the .ch site; from cycle 8 the consulting funnel moves to .ch and this site re-widens. `theoalessandro.com` is the personal multi-axis site; the robotics consulting landing is `theohermann.ch` (its own repo).
 
-The site is an outbound-funnel front door: a cold-outbound reader (CTO, head of autonomy, technical founder) decides in 20-90 seconds whether a call is worth it. Robotics-engineer-for-hire first; MIT is a credential, not the lead identity.
+A peer lands with about thirty seconds and decides whether this person is worth
+an email, a citation, or a session slot. The research leads; the engineering
+work supports it.
 
 ---
 
@@ -32,17 +50,20 @@ The site is an outbound-funnel front door: a cold-outbound reader (CTO, head of 
 
 ### Positioning (one-liner)
 
-> Independent robotics engineer. Perception, autonomy, and robot operational data for teams running real robots — investigate, prototype, improve. Research fellow at MIT Senseable City Lab Rio.
+> Researcher and engineer. I measure environments that resist measurement: cities built without plans, tree canopy across a whole city, robots that have to know where they are. Different fields, one problem. Turning raw sensing into a number someone can defend.
 
 ### Tag triplet
 
-Superseded 2026-09-03: `site.ts` `description` is now the site description sentence itself — "Independent robotics engineer — perception, autonomy, and robot operational data for teams running real robots." No triplet, no "Urban Science" anywhere in rendered HTML (`check-build.mjs` forbids the string). The site is collaboration-first: no "open to roles" / "senior perception roles" job-seeking copy anywhere in rendered HTML (both strings are gated by `check-build.mjs`), and no prospective-employer name-drops (Anduril/Figure/Waymo were removed deliberately).
+Superseded 2026-09-14: `site.ts` `description` is the research-portfolio sentence — "Researcher and engineer. Measuring environments that resist measurement: informal urban form in Rio, tree canopy from aerial LiDAR, and perception on real robots." No triplet, no "Urban Science" anywhere in rendered HTML (`check-build.mjs` forbids the string). The site is collaboration-first: no "open to roles" / "senior perception roles" job-seeking copy anywhere in rendered HTML (both strings are gated by `check-build.mjs`), and no prospective-employer name-drops (Anduril/Figure/Waymo were removed deliberately).
 
 ### Audience priority
 
-1. Robotics CTOs, heads of autonomy, technical founders — consulting prospects at companies running real robots
-2. Research collaborators across robotics + perception
-3. Hiring managers at frontier physical-AI companies — reachable, but never pitched to directly on-site
+1. Peer researchers and potential collaborators (urban analytics, remote sensing, robotics perception)
+2. Labs and organisers who might invite or co-author
+3. Anyone assessing the engineering behind the research
+
+Consulting prospects are NOT an audience here. That funnel is theohermann.ch,
+and this site links to it from nowhere a peer will reach (cycle-10 ruling).
 
 ### Tenure
 
@@ -122,8 +143,8 @@ Tailwind utility classes are the chosen convention on `main`. Don't refactor com
 
 | Path             | Purpose                                                                   |
 | ---------------- | ------------------------------------------------------------------------- |
-| `/`              | Hero → Artifact band (real AMCL replay) → Proof grid → Offer → Territory strip → About → Contact (single document) |
-| `/consulting`    | Consulting engagement scopes — lead scope ROS 2 fleet log triage          |
+| `/`              | Hero → Research (lead thread + Vidigal point-cloud artifact) → Selected work (6 cards) → About → Contact |
+| `/consulting`    | Orphaned: live, but unreachable from nav or any link on this site. Four of its five scopes exist nowhere else yet. |
 | `/projects`      | Project index (all published projects)                                    |
 | `/projects/[id]` | Project detail                                                            |
 | `/cv`            | Full CV — unlinked from nav/footer, linked once from About ("Full CV →")  |
@@ -131,7 +152,7 @@ Tailwind utility classes are the chosen convention on `main`. Don't refactor com
 | `/404`           | Not found                                                                 |
 | `/rss.xml`       | Projects feed (drafts excluded)                                           |
 
-Drafted (unpublished, `draft: true`; files stay in git, routes don't build): `agent-harness`, `urban-digital-twin`, `aerial-lidar-tree-census`, `hybrid-mpc-rl-racing`.
+Drafted (unpublished, `draft: true`): `hybrid-mpc-rl-racing` only. `urban-digital-twin` and `aerial-lidar-tree-census` were rewritten method-only from their repos and published in cycle 10; `agent-harness` was published in cycle 9.
 
 ### Deliberately removed
 
@@ -218,7 +239,9 @@ CI noise — same checks, same exit codes.
 
 - Use `@theoh-io` anywhere on the site
 - Re-introduce `/research`, `publications`, `Nature Cities`, or `AGU Fall` to rendered HTML — `npm test` will block
-- Surface "Roboat" as currently-active work — it's past
+- Surface "Roboat" as currently-active work — it's past, and it was an internship (CV + MLOps), never an engineering hire or a perception lead
+- Describe the Rio role as leading the lab — he is a founding member of the branch
+- Put a result, a finding, or a derived quantity on any research surface
 - Add Fraunces, Tropical/Cartesian registers, monogram swaps, or any rebrand-branch element without explicit direction
 - Push to `main` without `npm test` green
 - Skip the `prefers-reduced-motion` gate when adding new animations
@@ -281,3 +304,5 @@ Format: `YYYY-MM-DD — decision — rationale.`
 - CRM, newsletter, analytics of any kind (the Plausible snippet shipped since the 2026-03-20 scaffold was removed 2026-09-03 — no account ever existed behind it; add analytics only when the owner opens an account)
 - Comments, reactions, social sharing widgets
 - Prettier (not adopted on `main`; the codebase formats by hand-convention)
+
+- 2026-09-14 — Cycle 10: the site is a RESEARCH PORTFOLIO. (a) Audience is peers and collaborators; the consulting funnel is gone from this domain (cal.com removed everywhere, the "How I work" triptych deleted, "Consulting" off both nav arrays, zero links to theohermann.ch from any page a peer reaches; /consulting stays live but orphaned because four of its five scopes exist nowhere else). (b) The hero unifies the three axes into one problem instead of listing them; credentials follow. (c) FACTS CORRECTED, both were live and wrong: Roboat was a first **internship** on computer vision and MLOps against an existing LiDAR stack, not an engineering hire or a perception lead (seven surfaces); the Rio role is founding member of the branch, not lab lead; and the CV's Rio summary still claimed "CFD simulations of airborne disease transmission", the claim a cycle-9 audit had rejected on the project page only. (d) The artifact is the Vidigal point cloud and nothing else: the computed sun model, the lit-fraction readout, the per-rooftop figure, the legend and the controls were all built and then removed at the owner's direction, because a derived quantity is a claim. It is pulled back, turns slowly, and is framed from the cloud's true envelope over sampled angles. (e) The photograph is replaced by the monogram rasterised into a rotating point cloud. (f) `urban-digital-twin` and `aerial-lidar-tree-census` rewritten method-only from their repos and published; all six featured cards normalised to one scheme (sentence-case title, `where · when` label, a metric line saying how the claim can be checked, two-sentence first-person summary). (g) check-build: the `stata_caption` group became `artifact_caption`; it asserts sidecar-vs-binary lengths and, instead of requiring a disclaimer sentence, now asserts the ABSENCE of result markers on the research pages, and `DIST` is overridable so the gate can be poison-tested. (h) Vision doc: `~/Perso/site-review/docs/vision-com.md`.

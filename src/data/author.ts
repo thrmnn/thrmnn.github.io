@@ -9,7 +9,7 @@ export const author = {
 
   bio: [
     'Four years building perception and autonomy systems on edge hardware. Franco-Brazilian, trained in Switzerland. French · English · Portuguese · Spanish.',
-    'Computer vision and MLOps at <strong>Roboat</strong> (MIT spinoff) as its first intern, adding camera perception to a stack built on LiDAR. Founding member and research fellow at <strong><a href="https://senseablerio.mit.edu/">MIT Senseable City Lab Rio</a></strong> — 3D reconstruction of dense informal settlements from terrestrial LiDAR, terrain models and building footprints. Research assistant at <a href="https://www.epfl.ch/labs/vita/">EPFL VITA Lab</a>; visiting researcher at <a href="https://www.iri.upc.edu/">IRI (CSIC-UPC)</a>, Barcelona.',
+    'Computer vision and MLOps at <strong>Roboat</strong> (MIT spinoff) as its first intern, adding camera perception to a stack built on LiDAR. Research fellow at <strong><a href="https://senseablerio.mit.edu/">MIT Senseable City Lab Rio</a></strong> — 3D reconstruction of dense informal settlements from terrestrial LiDAR, terrain models and building footprints. Research assistant at <a href="https://www.epfl.ch/labs/vita/">EPFL VITA Lab</a>; visiting researcher at <a href="https://www.iri.upc.edu/">IRI (CSIC-UPC)</a>, Barcelona.',
   ],
 
   education: [
@@ -33,13 +33,13 @@ export const author = {
 
   experience: [
     {
-      role: 'Research Fellow — Founding Member, Rio branch',
+      role: 'Research Fellow',
       company: 'MIT Senseable City Lab Rio',
       url: 'https://senseablerio.mit.edu/',
       period: 'Jan 2025 – Present',
       location: 'Rio de Janeiro, Brazil',
       summary:
-        'Founding member of the Rio branch, there from the first week. I work on morphometrics of informal urban form: describing favela fabric from terrain models and building footprints so that wind and sunlight simulation has something defensible to run on. Tech: Python, GeoPandas, point-cloud tooling.',
+        'There from the first week of the Rio branch. I work on morphometrics of informal urban form: describing favela fabric from terrain models and building footprints so that wind and sunlight simulation has something defensible to run on. Tech: Python, GeoPandas, point-cloud tooling.',
     },
     {
       role: 'Computer Vision and MLOps Intern (first intern)',

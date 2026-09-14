@@ -171,7 +171,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       track.style.setProperty('--sun-t', String(Math.max(0, Math.min(1, t))));
     }
     if (readout) {
-      readout.textContent = `${Math.round(pts.litByStep[currentStep]! * 100)}% of the built fabric in sun`;
+      readout.textContent = `${Math.round(pts.litByStep[currentStep]! * 100)}% of the built fabric in sun (this page's sun model, not a study result)`;
     }
   }
 

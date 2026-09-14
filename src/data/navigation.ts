@@ -3,6 +3,7 @@ import { author } from './author';
 // Home isn't in the link row — the T·A·H monogram routes to /.
 export const navLinks = [
   { label: 'Work', href: '/projects/' },
+  { label: 'Contact', href: '/#contact' },
 ];
 
 export const mobileNavLinks = [

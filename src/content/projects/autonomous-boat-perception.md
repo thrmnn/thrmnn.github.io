@@ -4,7 +4,7 @@ date: '2024-08-01T00:00:00Z'
 featuredOrder: 1
 proprietary: true
 image: '/projects/autonomous-boat-perception/hero.svg'
-summary: "First engineering hire at Roboat (MIT spinoff): a camera-first perception stack running inside a real-time budget on Jetson Orin, deployed on canal vessels in Amsterdam. The performance figures belong to Roboat and are not mine to publish."
+summary: "First engineering hire at Roboat: a camera-first perception stack running inside a real-time budget on Jetson Orin, deployed on canal vessels in Amsterdam. The performance figures belong to Roboat and are not mine to publish."
 label: "Roboat (MIT spin-off) · 2024"
 metric: "<30ms inference · 100+ hours on-water data · deployed in Amsterdam"
 gradient: "linear-gradient(135deg, #1a1a3e 0%, #2a2a5e 50%, #3a3a7e 100%)"

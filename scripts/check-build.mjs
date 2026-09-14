@@ -7,7 +7,7 @@ import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { inflateSync } from 'node:zlib';
 import { join } from 'node:path';
 
-const DIST = 'dist';
+const DIST = process.env.DIST || 'dist';
 
 // Group errors by category so the failure output triages itself instead of
 // dumping a flat list. CI logs become much easier to scan.
@@ -120,6 +120,22 @@ if (existsSync(VIDIGAL_META)) {
     'vidigal provenance must state the light is computed for this page',
   );
 }
+// The artifact prints a live percentage. It is computed from this page's own
+// toy sun model, and it must never travel without saying so: a screenshot of
+// the frame alone would otherwise read as a result of the unpublished study.
+{
+  const js = files.filter((f) => f.endsWith('.js')).map((f) => readFileSync(f, 'utf8')).join('\n');
+  const inline = home.match(/<script type="module">[\s\S]*?<\/script>/g)?.join('\n') ?? '';
+  const all = js + inline;
+  if (all.includes('of the built fabric in sun')) {
+    must(
+      'artifact_caption',
+      all.includes('not a study result'),
+      'the live lit-fraction readout ships without its "not a study result" caveat',
+    );
+  }
+}
+
 if (existsSync(SUN_META)) {
   const sun = JSON.parse(readFileSync(SUN_META, 'utf8'));
   must('artifact_caption', sun.schema === 'vidigal-sun-v1', `unexpected sun sidecar schema ${sun.schema}`);

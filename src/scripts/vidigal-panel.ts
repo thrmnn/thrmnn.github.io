@@ -224,7 +224,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       const lit = (sun[i]! & bit) !== 0;
       const isBuilding = cat[i] === 1;
       ctx!.fillStyle = lit ? accent : shadow;
-      ctx!.globalAlpha = isBuilding ? (lit ? 0.95 : 0.82) : lit ? 0.3 : 0.22;
+      ctx!.globalAlpha = isBuilding ? (lit ? 0.95 : 0.82) : lit ? 0.42 : 0.32;
       const size = (isBuilding ? 1.8 : 0.9) * dotScale;
       ctx!.fillRect(sx - size / 2, sy - size / 2, size, size);
     }

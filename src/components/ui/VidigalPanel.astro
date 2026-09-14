@@ -63,7 +63,8 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
       </div>
     </div>
     <p class="artifact-caption">{artifactCaption}</p>
-    <p class="artifact-provenance">{artifactProvenance} Every number here is read from the data the page loads: <a href="/data/vidigal-rooftops.json">geometry</a>, <a href="/data/vidigal-sun.json">sun path</a>.</p>
+    <p class="artifact-provenance">{artifactProvenance}</p>
+    <p class="artifact-sources">Check it yourself: <a href="/data/vidigal-rooftops.json">the geometry this draws</a> · <a href="/data/vidigal-sun.json">the sun path it assumes</a></p>
   </div>
 </section>
 
@@ -97,6 +98,19 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
   }
   /* The resting frame has to say it can be run. The rail doubles as the
      sweep's position, so the affordance and the readout are one element. */
+  .artifact-sources {
+    margin: 0.7rem auto 0;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+  }
+  .artifact-sources a {
+    color: var(--color-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
   .sun-legend {
     position: absolute;
     top: 0.8rem;
@@ -121,7 +135,8 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
     display: inline-block;
   }
   .sun-key-lit { background: var(--color-accent); }
-  .sun-key-shade { background: color-mix(in srgb, var(--color-accent) 30%, var(--color-text-muted)); }
+  /* must track readColors() in vidigal-panel.ts: accent 30% into text-secondary */
+  .sun-key-shade { background: color-mix(in srgb, var(--color-accent) 30%, var(--color-text-secondary)); }
   .sun-key-shade { margin-left: 0.7rem; }
   .sun-readout {
     position: absolute;
@@ -189,7 +204,20 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
   @media (max-width: 560px) {
     .sun-track { left: 0.7rem; right: 0.7rem; gap: 0.5rem; }
     .sun-track-cue, .sun-hint { display: none; }
-    .sun-legend { font-size: 0.52rem; gap: 0.3rem; left: 0.7rem; }
+    .artifact-sources {
+    margin: 0.7rem auto 0;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+  }
+  .artifact-sources a {
+    color: var(--color-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .sun-legend { font-size: 0.52rem; gap: 0.3rem; left: 0.7rem; }
     .sun-readout { top: auto; bottom: 4.9rem; left: 0.7rem; right: 0.7rem; max-width: none; text-align: left; }
     .sun-track { bottom: 0.9rem; flex-wrap: wrap; }
     .sun-run { min-height: 44px; padding: 0.5rem 1rem; width: 100%; order: 3; margin-top: 0.15rem; }

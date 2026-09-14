@@ -75,6 +75,7 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
   }
   .vidigal-frame {
     --rail-safe: 66px;
+    --top-safe: 0px;
     aspect-ratio: 2.24 / 1;
     cursor: pointer;
   }
@@ -142,6 +143,9 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
   .sun-track {
     --sun-t: 0.77;
     gap: 0.85rem;
+    pointer-events: auto;
+    cursor: pointer;
+    min-height: 34px;
     position: absolute;
     left: 1rem;
     right: 1rem;
@@ -189,7 +193,7 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
     .sun-readout { top: auto; bottom: 4.9rem; left: 0.7rem; right: 0.7rem; max-width: none; text-align: left; }
     .sun-track { bottom: 0.9rem; flex-wrap: wrap; }
     .sun-run { min-height: 44px; padding: 0.5rem 1rem; width: 100%; order: 3; margin-top: 0.15rem; }
-    .vidigal-frame { --rail-safe: 116px; aspect-ratio: 1.35 / 1; }
+    .vidigal-frame { --rail-safe: 116px; --top-safe: 26px; aspect-ratio: 1.08 / 1; }
   }
   .sun-run {
     margin-left: 0.35rem;

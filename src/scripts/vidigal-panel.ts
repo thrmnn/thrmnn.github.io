@@ -127,7 +127,7 @@ function toRgb(c: string): [number, number, number] {
 function readColors(canvas: HTMLCanvasElement): { accent: string; shadow: string } {
   const cs = getComputedStyle(canvas);
   const accent = cs.getPropertyValue('--color-accent').trim() || '#3b82f6';
-  const muted = cs.getPropertyValue('--color-text-muted').trim() || '#6b6b6b';
+  const muted = cs.getPropertyValue('--color-text-secondary').trim() || '#525252';
   let shadow = muted;
   try {
     const a = toRgb(accent);
@@ -203,10 +203,11 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
 
     const { n, x, y, z, cat, sun, order, ax0, ax1, ay0, ay1 } = pts;
     const safe = parseFloat(getComputedStyle(canvas).getPropertyValue('--rail-safe')) || RAIL_SAFE_FALLBACK;
-    const drawH = Math.max(40, cssH - safe);
+    const topSafe = parseFloat(getComputedStyle(canvas).getPropertyValue('--top-safe')) || 0;
+    const drawH = Math.max(40, cssH - safe - topSafe);
     const scale = Math.min(cssW / (ax1 - ax0), drawH / (ay1 - ay0)) * FILL;
     const cx = cssW / 2 - ((ax0 + ax1) / 2) * scale;
-    const cy = drawH / 2 + ((ay0 + ay1) / 2) * scale;
+    const cy = topSafe + drawH / 2 + ((ay0 + ay1) / 2) * scale;
     const bit = 1 << currentStep;
     const dotScale = Math.max(0.85, Math.min(2.1, scale / 260));
 
@@ -223,7 +224,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       const lit = (sun[i]! & bit) !== 0;
       const isBuilding = cat[i] === 1;
       ctx!.fillStyle = lit ? accent : shadow;
-      ctx!.globalAlpha = isBuilding ? (lit ? 0.95 : 0.72) : lit ? 0.3 : 0.2;
+      ctx!.globalAlpha = isBuilding ? (lit ? 0.95 : 0.82) : lit ? 0.3 : 0.22;
       const size = (isBuilding ? 1.8 : 0.9) * dotScale;
       ctx!.fillRect(sx - size / 2, sy - size / 2, size, size);
     }
@@ -313,6 +314,12 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   const frame = canvas.closest('.artifact-frame') as HTMLElement | null;
   const runBtn = frame?.querySelector('.sun-run') as HTMLButtonElement | null;
   runBtn?.addEventListener('click', activate);
+  // the rail looks like a slider but is a position readout; making the whole
+  // strip run the day means a thumb never has to land on the dot
+  (frame?.querySelector('.sun-track') as HTMLElement | null)?.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('.sun-run')) return;
+    activate();
+  });
   canvas.addEventListener('click', (e) => {
     const hit = pinAt(e.clientX, e.clientY);
     if (hit < 0 && readout) needsRender = true;

@@ -56,13 +56,16 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
         <span></span><span></span><span></span><span></span>
       </div>
       <div class="sun-track" aria-hidden="true">
-        <span class="sun-track-label">run the sun path</span>
+        <span class="sun-track-label">sunrise</span>
         <span class="sun-track-rail"><span class="sun-track-dot"></span></span>
+        <span class="sun-track-label">sunset</span>
+        <span class="sun-track-cue">click to run the day</span>
       </div>
     </div>
     <p class="artifact-caption">{artifactCaption}</p>
     <p class="artifact-legend">{artifactLegend}</p>
     <p class="artifact-provenance">{artifactProvenance}</p>
+    <p class="artifact-provenance">every number in this caption comes from the data the page loads: <a href="/data/vidigal-rooftops.json">the geometry sidecar</a> and <a href="/data/vidigal-sun.json">the sun-path sidecar</a>, which records the latitude, the equinox and the compass convention it assumed.</p>
   </div>
 </section>
 
@@ -118,17 +121,31 @@ const artifactProvenance = `geometry: measured, MIT Senseable City Lab Rio, Vidi
     position: relative;
     flex: 1;
     height: 1px;
-    background: var(--color-border);
+    background: repeating-linear-gradient(
+      to right,
+      var(--color-border) 0 1px,
+      transparent 1px calc(100% / 13)
+    );
   }
   .sun-track-dot {
     position: absolute;
     top: 50%;
     left: calc(var(--sun-t) * 100%);
-    width: 7px;
-    height: 7px;
-    margin: -3.5px 0 0 -3.5px;
+    width: 9px;
+    height: 9px;
+    margin: -4.5px 0 0 -4.5px;
     border-radius: 50%;
     background: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 22%, transparent);
+  }
+  .sun-track-cue {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-accent);
+    opacity: 0.75;
   }
   .vidigal-frame:hover .sun-track-label,
   .vidigal-frame:focus-visible .sun-track-label {

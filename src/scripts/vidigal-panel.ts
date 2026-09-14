@@ -17,6 +17,9 @@ const COS_T = Math.cos(TILT);
 const SIN_T = Math.sin(TILT);
 const Y_SQUASH = 0.7;
 const FILL = 0.94;
+// the rail and its sunrise/sunset labels own the bottom of the frame; the
+// cloud must never draw into them or the labels become unreadable
+const RAIL_SAFE_PX = 34;
 
 interface Points {
   ax0: number;
@@ -148,9 +151,10 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     ctx!.clearRect(0, 0, cssW, cssH);
 
     const { n, x, y, z, cat, sun, order, ax0, ax1, ay0, ay1 } = pts;
-    const scale = Math.min(cssW / (ax1 - ax0), cssH / (ay1 - ay0)) * FILL;
+    const drawH = Math.max(40, cssH - RAIL_SAFE_PX);
+    const scale = Math.min(cssW / (ax1 - ax0), drawH / (ay1 - ay0)) * FILL;
     const cx = cssW / 2 - ((ax0 + ax1) / 2) * scale;
-    const cy = cssH / 2 + ((ay0 + ay1) / 2) * scale;
+    const cy = drawH / 2 + ((ay0 + ay1) / 2) * scale;
     const bit = 1 << currentStep;
     const dotScale = Math.max(0.85, Math.min(2.1, scale / 260));
 

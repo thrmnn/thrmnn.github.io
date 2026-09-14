@@ -8,8 +8,8 @@ export const author = {
   email,
 
   bio: [
-    'Four years shipping perception and autonomy systems on edge hardware. Franco-Brazilian, trained in Switzerland. French · English · Portuguese · Spanish.',
-    'Computer vision and MLOps at <strong>Roboat</strong> (MIT spinoff) as its first intern, adding camera perception to a stack built on LiDAR. Research fellow at <strong><a href="https://senseablerio.mit.edu/">MIT Senseable City Lab Rio</a></strong> — 3D reconstruction of dense informal settlements from terrestrial LiDAR, terrain models and building footprints. Research assistant at <a href="https://www.epfl.ch/labs/vita/">EPFL VITA Lab</a>; visiting researcher at <a href="https://www.iri.upc.edu/">IRI (CSIC-UPC)</a>, Barcelona.',
+    'Four years building perception and autonomy systems on edge hardware. Franco-Brazilian, trained in Switzerland. French · English · Portuguese · Spanish.',
+    'Computer vision and MLOps at <strong>Roboat</strong> (MIT spinoff) as its first intern, adding camera perception to a stack built on LiDAR. Founding member and research fellow at <strong><a href="https://senseablerio.mit.edu/">MIT Senseable City Lab Rio</a></strong> — 3D reconstruction of dense informal settlements from terrestrial LiDAR, terrain models and building footprints. Research assistant at <a href="https://www.epfl.ch/labs/vita/">EPFL VITA Lab</a>; visiting researcher at <a href="https://www.iri.upc.edu/">IRI (CSIC-UPC)</a>, Barcelona.',
   ],
 
   education: [

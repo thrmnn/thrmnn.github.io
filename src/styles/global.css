@@ -659,3 +659,10 @@
   line-height: 1.6;
   color: var(--color-text-muted);
 }
+.research-frame {
+  max-width: var(--max-w-prose);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  margin: 0 0 2.25rem;
+}

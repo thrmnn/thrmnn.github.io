@@ -22,6 +22,13 @@ const FILL = 0.94;
 // --rail-safe and read here. Hardcoding it let the cloud cover the sunset label
 // on phones twice.
 const RAIL_SAFE_FALLBACK = 34;
+const LIT_STEPS = SWEEP_LAST - SWEEP_FIRST + 1;
+
+function litFraction(word: number): number {
+  let c = 0;
+  for (let i = SWEEP_FIRST; i <= SWEEP_LAST; i++) if (word & (1 << i)) c++;
+  return c / LIT_STEPS;
+}
 
 interface Points {
   litByStep: Float32Array;
@@ -157,6 +164,10 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   let cssW = canvas.clientWidth;
   let cssH = canvas.clientHeight;
   let currentStep = REST_STEP;
+  let lastScale = 1;
+  let lastCx = 0;
+  let lastCy = 0;
+  let pinned = -1;
   let sweeping = false;
   let sweepStart = 0;
   let needsRender = true;
@@ -171,7 +182,10 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       track.style.setProperty('--sun-t', String(Math.max(0, Math.min(1, t))));
     }
     if (readout) {
-      readout.textContent = `${Math.round(pts.litByStep[currentStep]! * 100)}% of the built fabric in sun (this page's sun model, not a study result)`;
+      readout.textContent =
+        pinned >= 0
+          ? `this rooftop: ${Math.round(litFraction(pts.sun[pinned]!) * 100)}% of the day in sun (this page's sun model, not a study result)`
+          : `${Math.round(pts.litByStep[currentStep]! * 100)}% of the built fabric in sun (this page's sun model, not a study result)`;
     }
   }
 
@@ -196,6 +210,9 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     const bit = 1 << currentStep;
     const dotScale = Math.max(0.85, Math.min(2.1, scale / 260));
 
+    lastScale = scale;
+    lastCx = cx;
+    lastCy = cy;
     for (let k = 0; k < n; k++) {
       const i = order[k]!;
       const rx = x[i]! * COS_R - y[i]! * SIN_R;
@@ -211,6 +228,41 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       ctx!.fillRect(sx - size / 2, sy - size / 2, size, size);
     }
     ctx!.globalAlpha = 1;
+
+    if (pinned >= 0) {
+      const px = cx + (x[pinned]! * COS_R - y[pinned]! * SIN_R) * scale;
+      const rzp = x[pinned]! * SIN_R + y[pinned]! * COS_R;
+      const py = cy - (z[pinned]! * COS_T - rzp * SIN_T) * Y_SQUASH * scale;
+      ctx!.strokeStyle = accent;
+      ctx!.lineWidth = 1.5;
+      ctx!.beginPath();
+      ctx!.arc(px, py, 9, 0, Math.PI * 2);
+      ctx!.stroke();
+    }
+  }
+
+  function pinAt(clientX: number, clientY: number) {
+    const rect = canvas.getBoundingClientRect();
+    const mx = clientX - rect.left;
+    const my = clientY - rect.top;
+    const { n, x, y, z, cat } = pts;
+    let best = -1;
+    let bestD = 24 * 24;
+    for (let i = 0; i < n; i++) {
+      if (cat[i] !== 1) continue; // only the built fabric carries a useful number
+      const sx = lastCx + (x[i]! * COS_R - y[i]! * SIN_R) * lastScale;
+      const rz = x[i]! * SIN_R + y[i]! * COS_R;
+      const sy = lastCy - (z[i]! * COS_T - rz * SIN_T) * Y_SQUASH * lastScale;
+      const d = (sx - mx) * (sx - mx) + (sy - my) * (sy - my);
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    }
+    pinned = best;
+    needsRender = true;
+    kick();
+    return best;
   }
 
   function kick() {
@@ -259,15 +311,12 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   }
 
   const frame = canvas.closest('.artifact-frame') as HTMLElement | null;
-  if (frame) {
-    frame.addEventListener('click', activate);
-    frame.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-        e.preventDefault();
-        activate();
-      }
-    });
-  }
+  const runBtn = frame?.querySelector('.sun-run') as HTMLButtonElement | null;
+  runBtn?.addEventListener('click', activate);
+  canvas.addEventListener('click', (e) => {
+    const hit = pinAt(e.clientX, e.clientY);
+    if (hit < 0 && readout) needsRender = true;
+  });
 
   reduceMotion.addEventListener?.('change', (e) => {
     motionOK = !e.matches;

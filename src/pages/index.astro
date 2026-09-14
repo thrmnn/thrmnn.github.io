@@ -28,7 +28,7 @@ const mailto = `mailto:${author.email}`;
         {author.name}
       </h1>
       <p class="hero-positioning" data-reveal style="--reveal-d: 1;">
-        Researcher and engineer. I measure things that are hard to measure: the form of Rio's favelas, the leaf area of Amsterdam's trees, and the moment a robot stops knowing where it is.<br /><span class="hero-credentials">MSc Robotics, EPFL. Research fellow at <strong>MIT Senseable City Lab Rio</strong>; first engineering hire and perception lead at <strong>Roboat</strong>.</span>
+        Researcher and engineer. I measure things that are hard to measure. Right now that means the form of Rio's favelas: cities built without plans, where the usual way of measuring a city does not apply.<br /><span class="hero-credentials">MSc Robotics, EPFL. Research fellow at <strong>MIT Senseable City Lab Rio</strong>; first engineering hire and perception lead at <strong>Roboat</strong>.</span>
       </p>
       <div class="hero-cta-row" data-reveal style="--reveal-d: 2;">
         <Button href={mailto}>
@@ -51,20 +51,7 @@ const mailto = `mailto:${author.email}`;
     </div>
     <VidigalPanel revealDelay={4} />
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <p class="research-also" data-reveal>Two further strands, at method level.</p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-        <div data-reveal style="--reveal-d: 1;">
-          <p class="research-place">Amsterdam</p>
-          <h3 class="research-title">Tree canopy from the air</h3>
-          <p class="research-body">A city knows where its trees are, not how much leaf they carry. I estimate leaf area per tree from aerial LiDAR by inverting how much of the sky the canopy blocks, which turns a routine municipal scan into a physical measurement. With <strong>Senseable City Lab</strong> and the <strong><a href="https://www.ams-institute.org/">AMS Institute</a></strong>.</p>
-        </div>
-        <div data-reveal style="--reveal-d: 2;">
-          <p class="research-place">On the robot</p>
-          <h3 class="research-title">Knowing when perception is wrong</h3>
-          <p class="research-body">Robots that navigate from their own sensors fail quietly: the estimate drifts while the confidence stays high. I work on detecting that gap from the logs a fleet already records.</p>
-        </div>
-      </div>
-      <p class="research-note" data-reveal style="--reveal-d: 3;">Two of these are unpublished work with co-authors, so this page describes the methods and not the results.</p>
+      <p class="research-note" data-reveal style="--reveal-d: 3;">This is unpublished work with co-authors, so the page describes the method and not the results.</p>
     </div>
   </section>
 

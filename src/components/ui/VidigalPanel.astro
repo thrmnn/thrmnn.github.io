@@ -2,56 +2,57 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+// One component for every point-cloud panel on the site. The data file and
+// its sidecar are validated against each other at build time so a caption can
+// never describe a file that changed underneath it.
 interface Props {
   revealDelay?: number;
+  data?: string;
+  caption?: string;
+  provenance?: string;
+  ariaLabel?: string;
+  aspect?: string;
+  mobileAspect?: string;
 }
-const { revealDelay = 1 } = Astro.props;
+const {
+  revealDelay = 1,
+  data = 'vidigal-rooftops',
+  caption = 'Vidigal, Rio de Janeiro · terrain and building footprints',
+  provenance = 'MIT Senseable City Lab Rio',
+  ariaLabel = 'Oblique point cloud of Vidigal, Rio de Janeiro: a digital terrain model and building footprints.',
+  aspect = '1.85 / 1',
+  mobileAspect = '1.25 / 1',
+} = Astro.props;
 
 const dataDir = join(process.cwd(), 'public/data');
-
-// Caption is built from the sidecar at build time so the building-footprint
-// count can never drift from the data, per scripts/sample-favela-pointcloud.py.
-const rooftopsMeta = JSON.parse(readFileSync(join(dataDir, 'vidigal-rooftops.json'), 'utf8')) as {
-  count: number;
-  n_building_footprints: number;
-  z_meters: { min: number; max: number };
-};
-const rooftopsBinBytes = readFileSync(join(dataDir, 'vidigal-rooftops.bin')).length;
-if (rooftopsMeta.count * 4 !== rooftopsBinBytes) {
-  throw new Error(
-    `vidigal-rooftops.json: count (${rooftopsMeta.count}) × 4 does not match vidigal-rooftops.bin size (${rooftopsBinBytes} bytes)`,
-  );
+const meta = JSON.parse(readFileSync(join(dataDir, `${data}.json`), 'utf8')) as { count: number };
+const binBytes = readFileSync(join(dataDir, `${data}.bin`)).length;
+if (meta.count * 4 !== binBytes) {
+  throw new Error(`${data}.json: count (${meta.count}) × 4 does not match ${data}.bin size (${binBytes} bytes)`);
 }
-
-const artifactCaption = `Vidigal, Rio de Janeiro · terrain and building footprints`;
-const artifactProvenance = `MIT Senseable City Lab Rio`;
 ---
 
 <section class="artifact-band">
-  <div class="hero-artifact vidigal-artifact" data-reveal style={`--reveal-d: ${revealDelay};`}>
+  <div class="hero-artifact vidigal-artifact" data-reveal style={`--reveal-d: ${revealDelay}; --frame-aspect: ${aspect}; --frame-aspect-mobile: ${mobileAspect};`}>
     <div class="artifact-frame vidigal-frame">
-      <canvas
-        class="vidigal-panel"
-        data-rooftops="/data/vidigal-rooftops.bin"
-        aria-label="Oblique point cloud of Vidigal, Rio de Janeiro: a digital terrain model and building footprints."
-      ></canvas>
+      <canvas class="vidigal-panel" data-rooftops={`/data/${data}.bin`} aria-label={ariaLabel}></canvas>
       <div class="artifact-corners" aria-hidden="true">
         <span></span><span></span><span></span><span></span>
       </div>
     </div>
-    <p class="artifact-caption">{artifactCaption}</p>
-    <p class="artifact-provenance">{artifactProvenance}</p>
+    <p class="artifact-caption">{caption}</p>
+    <p class="artifact-provenance">{provenance}</p>
   </div>
 </section>
 
 <style>
-  /* The projected cloud is a 2.24:1 diagonal band; a square frame leaves half
-     the box empty, so this panel overrides the shared 1:1 artifact frame. */
+  /* A projected cloud is a diagonal band; a square frame leaves half the box
+     empty, so each panel carries its own aspect. */
   .vidigal-artifact {
     max-width: 920px;
   }
   .vidigal-frame {
-    aspect-ratio: 1.85 / 1;
+    aspect-ratio: var(--frame-aspect);
   }
   .vidigal-artifact :global(.artifact-provenance) {
     max-width: 76ch;
@@ -64,12 +65,16 @@ const artifactProvenance = `MIT Senseable City Lab Rio`;
     height: 100%;
   }
   @media (max-width: 560px) {
-    .vidigal-frame { aspect-ratio: 1.25 / 1; }
+    .vidigal-frame { aspect-ratio: var(--frame-aspect-mobile); }
   }
 </style>
 
 <script>
   import { initVidigalPanel } from '../../scripts/vidigal-panel.ts';
-  const canvas = document.querySelector('.vidigal-panel') as HTMLCanvasElement | null;
-  if (canvas) initVidigalPanel(canvas);
+  document.querySelectorAll<HTMLCanvasElement>('.vidigal-panel').forEach((c) => {
+    if (!c.dataset.init) {
+      c.dataset.init = '1';
+      initVidigalPanel(c);
+    }
+  });
 </script>

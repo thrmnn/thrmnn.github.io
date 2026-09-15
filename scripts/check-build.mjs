@@ -94,14 +94,20 @@ if (existsSync(VIDIGAL_META)) {
     home.includes('Vidigal'),
     'vidigal caption missing the site name',
   );
-  const binBytes = existsSync('public/data/vidigal-rooftops.bin')
-    ? statSync('public/data/vidigal-rooftops.bin').size
-    : 0;
-  must(
-    'artifact_caption',
-    binBytes === meta.count * 4,
-    `vidigal-rooftops.bin is ${binBytes} B, sidecar count implies ${meta.count * 4} B`,
-  );
+  // Every point-cloud panel: the sidecar count must match the binary it
+  // describes, and the homepage must name the site the sidecar names.
+  for (const [stem, site] of [['vidigal-rooftops', 'Vidigal'], ['amsterdam-canopy', 'Vondelpark']]) {
+    const metaPath = `public/data/${stem}.json`;
+    if (!existsSync(metaPath)) continue;
+    const m = JSON.parse(readFileSync(metaPath, 'utf8'));
+    const binBytes = existsSync(`public/data/${stem}.bin`) ? statSync(`public/data/${stem}.bin`).size : 0;
+    must(
+      'artifact_caption',
+      binBytes === m.count * 4,
+      `${stem}.bin is ${binBytes} B, sidecar count implies ${m.count * 4} B`,
+    );
+    must('artifact_caption', home.includes(site), `${stem} caption missing the site name ${site}`);
+  }
   // The research is unpublished and multi-author, so the pages carry method
   // only. This used to assert that a disclaimer sentence was present; asserting
   // the absence of results is the stronger invariant, and it does not depend on

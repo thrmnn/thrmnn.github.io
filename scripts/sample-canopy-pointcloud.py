@@ -34,7 +34,7 @@ OUT_META = ROOT / "public" / "data" / "amsterdam-canopy.json"
 # Western Jordaan, EPSG:28992 (RD New): a canal running north to south with
 # houses on both banks and trees along the quays. Water gives the laser no
 # return, so the canal is the gap in the ground.
-X0, X1, Y0, Y1 = 120640.0, 120800.0, 487380.0, 487540.0
+X0, X1, Y0, Y1 = 120590.0, 120750.0, 487390.0, 487550.0
 GROUND_CELL = 2.0      # metres; one ground point per cell (median z)
 Z_CAP_M = 45.0         # NAP; one spire in the clip would otherwise flatten every house
 CANOPY_CELL = 1.5      # metres; one canopy point per cell (highest return)

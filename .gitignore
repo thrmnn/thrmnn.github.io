@@ -32,3 +32,6 @@ Thumbs.db
 .vscode/
 .idea/
 .claude/worktrees/
+
+# Python host tooling
+__pycache__/

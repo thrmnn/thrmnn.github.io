@@ -12,7 +12,6 @@ const monogramLetters = author.monogram.replace(/[^A-Za-z]/g, '').split('');
       <a href="/" class="footer-monogram" aria-label="Home">
         {monogramLetters.map((char) => <span>{char}</span>)}
       </a>
-      <span class="footer-sep" aria-hidden="true">·</span>
       <nav class="flex-1 flex justify-center gap-6 flex-wrap min-w-0">
         {footerLinks.map((link) => (
           <a

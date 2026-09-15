@@ -120,7 +120,7 @@ if (existsSync(VIDIGAL_META)) {
     /\bour (?:results|findings)\b/i,
     /\bwe (?:find|show|demonstrate)\b/i,
   ];
-  const researchPages = ['index.html', 'projects/urban-digital-twin/index.html',
+  const researchPages = ['index.html', 'projects/urban-morphometrics/index.html',
     'projects/aerial-lidar-tree-census/index.html'];
   for (const rel of researchPages) {
     const f = join(DIST, rel);

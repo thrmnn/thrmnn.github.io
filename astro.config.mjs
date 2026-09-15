@@ -4,6 +4,10 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
+  redirects: {
+    // slug renamed 2026-09-15: the page never described a digital twin
+    '/projects/urban-digital-twin/': '/projects/urban-morphometrics/',
+  },
   site: 'https://theoalessandro.com',
   integrations: [mdx(), sitemap()],
   output: 'static',

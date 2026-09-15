@@ -697,6 +697,16 @@
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
+.hero-credentials-link {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--color-border);
+  text-underline-offset: 0.2em;
+}
+.hero-credentials-link:hover {
+  text-decoration-color: currentColor;
+}
 .hero-credentials {
   display: inline-block;
   margin-top: 0.85rem;

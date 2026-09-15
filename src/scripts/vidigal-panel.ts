@@ -250,6 +250,9 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   // Splat mode: the subject's points are drawn as soft discs of this radius
   // (scene units) that accumulate into one blob per crown.
   const splatR = parseFloat(canvas.dataset.splat || '0') || 0;
+  // viewing angle: a settlement on a slope wants an oblique view; a canal
+  // between overhanging quay trees wants a steeper one or the gap closes
+  const tilt0 = parseFloat(canvas.dataset.tilt || '') || TILT;
 
   // Painter's order changes every frame while the view turns. A bucket sort is
   // O(n) and visually identical to a comparison sort at this point count.
@@ -279,7 +282,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     const sinR = Math.sin(rot);
     const cam = flying ? camera(elapsed) : { zoom: 1, along: 0, tiltOff: 0 };
     cam.zoom = 1 + (cam.zoom - 1) * (zoomMax - 1) / 0.8;
-    const tilt = TILT + cam.tiltOff;
+    const tilt = tilt0 + cam.tiltOff;
     const cosT = Math.cos(tilt);
     const sinT = Math.sin(tilt);
     const zoom = cam.zoom;
@@ -375,7 +378,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       // footprints instead of flooding into one fill
       // built context (2) sits heavier than bare ground (0) in the same grey,
       // so roofs read as houses rather than as pavement
-      const a = c === 1 ? Math.min(1, (quads.length ? 0.5 : 1) * (0.26 + 0.36 * d + 0.2 * z[i]!) * emphasis / (0.75 + 0.25 * zoom)) : c === 2 ? 0.4 + 0.4 * d : 0.2 + 0.24 * d;
+      const a = c === 1 ? Math.min(1, (quads.length ? 0.5 : 1) * (0.26 + 0.36 * d + 0.2 * z[i]!) * emphasis / (0.75 + 0.25 * zoom)) : c === 2 ? 0.55 + 0.35 * d : 0.2 + 0.24 * d;
       ctx!.fillStyle = withAlpha(c === 1 ? accent : ground, a);
       if (c === 1 && splatR > 0) {
         const rr = splatR * scale;
@@ -385,7 +388,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
         ctx!.fill();
         continue;
       }
-      const size = (c === 1 ? (quads.length ? 0.7 : 1.35) * emphasis * Math.sqrt(zoom) : c === 2 ? 1.45 : 1.05) * dot;
+      const size = (c === 1 ? (quads.length ? 0.7 : 1.35) * emphasis * Math.sqrt(zoom) : c === 2 ? 2.1 : 1.05) * dot;
       ctx!.fillRect(sxArr[i]! - size / 2, syArr[i]! - size / 2, size, size);
     }
   }

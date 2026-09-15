@@ -23,8 +23,8 @@ const REVEAL_MS = 1600;
 const SHOT: [number, number, number, number][] = [
   [0, 1, 0, 0],
   [9, 1, 0, 0],
-  [16, 1.8, -0.8, -0.18],
-  [34, 1.8, 0.8, -0.18],
+  [16, 1.8, -0.8, -0.12],
+  [34, 1.8, 0.8, -0.12],
   [42, 1, 0, 0],
 ];
 const SHOT_PERIOD_S = 42;
@@ -180,41 +180,34 @@ function readColors(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
   };
 }
 
-function buildEdges(cloud: Cloud, r: number): Uint32Array {
+// Optional surface over the subject category: points sampled on a grid are
+// stitched into quads with their right, up and diagonal neighbours when all
+// four sit at nearly the same height, so a crown reads as a solid dome and
+// the gap between two crowns stays a gap. Returns quads as index quadruples.
+function buildQuads(cloud: Cloud, cell: number): Uint32Array {
   const { n, x, y, z, cat } = cloud;
-  // a wire only joins points at nearly the same height, so a crown's edge
-  // falls away as a gap instead of a curtain of lines down to the next cell
-  const ZR = 0.09;
-  const cell = r;
-  const key = (i: number, j: number) => `${i},${j}`;
-  const grid = new Map<string, number[]>();
+  const ZR = 0.11;
+  const key = (i: number, j: number) => i * 65536 + j;
+  const grid = new Map<number, number>();
+  const gx = new Int32Array(n);
+  const gy = new Int32Array(n);
   for (let i = 0; i < n; i++) {
     if (cat[i] !== 1) continue;
-    const k = key(Math.floor(x[i]! / cell), Math.floor(y[i]! / cell));
-    const b = grid.get(k);
-    if (b) b.push(i);
-    else grid.set(k, [i]);
+    // cell centres sit at half-integers of the cell, so floor lands each
+    // point in its own cell despite the int8 quantisation noise
+    gx[i] = Math.floor(x[i]! / cell);
+    gy[i] = Math.floor(y[i]! / cell);
+    grid.set(key(gx[i]! + 32768, gy[i]! + 32768), i);
   }
   const out: number[] = [];
+  const near = (a: number, b: number) => Math.abs(z[a]! - z[b]!) <= ZR;
   for (let i = 0; i < n; i++) {
     if (cat[i] !== 1) continue;
-    const gx = Math.floor(x[i]! / cell);
-    const gy = Math.floor(y[i]! / cell);
-    for (let dx = -1; dx <= 1; dx++) {
-      for (let dy = -1; dy <= 1; dy++) {
-        const b = grid.get(key(gx + dx, gy + dy));
-        if (!b) continue;
-        for (const j of b) {
-          if (j <= i) continue;
-          const ex = x[j]! - x[i]!;
-          const ey = y[j]! - y[i]!;
-          // axis-aligned neighbours only: a quad mesh reads as a surface,
-          // diagonals on top of it read as a tangle
-          const axisAligned = (Math.abs(ex) <= r && Math.abs(ey) <= 0.35 * r) || (Math.abs(ey) <= r && Math.abs(ex) <= 0.35 * r);
-          if (axisAligned && Math.abs(z[j]! - z[i]!) <= ZR) out.push(i, j);
-        }
-      }
-    }
+    const r = grid.get(key(gx[i]! + 1 + 32768, gy[i]! + 32768));
+    const u = grid.get(key(gx[i]! + 32768, gy[i]! + 1 + 32768));
+    const d = grid.get(key(gx[i]! + 1 + 32768, gy[i]! + 1 + 32768));
+    if (r === undefined || u === undefined || d === undefined) continue;
+    if (near(i, r) && near(i, u) && near(i, d) && near(r, d) && near(u, d)) out.push(i, r, d, u);
   }
   return Uint32Array.from(out);
 }
@@ -252,8 +245,8 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   const wireR = parseFloat(canvas.dataset.wire || '0') || 0;
   // how close the flight comes: a settlement on a ridge takes a deeper dive
   // than a 120 m clip, which is already close
-  const zoomMax = parseFloat(canvas.dataset.zoom || '') || 1.8;
-  const edges = wireR > 0 ? buildEdges(cloud, wireR) : new Uint32Array(0);
+  const zoomMax = parseFloat(canvas.dataset.zoom || '') || 1.45;
+  const quads = wireR > 0 ? buildQuads(cloud, wireR) : new Uint32Array(0);
 
   // Painter's order changes every frame while the view turns. A bucket sort is
   // O(n) and visually identical to a comparison sort at this point count.
@@ -334,21 +327,36 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       order[cursor[b]!++] = i;
     }
 
-    // wire surface first, under the dots; alpha by mean depth so the far
-    // side of a crown sits paler than the near side
-    if (edges.length) {
-      ctx!.lineWidth = Math.max(0.5, dot * 0.45);
+    // surface first, under the dots: back to front by mean depth, shaded
+    // by height so the top of a crown sits lighter than its flank
+    if (quads.length) {
       const lim = Math.round(reveal * n);
-      for (let e = 0; e < edges.length; e += 2) {
-        const i = edges[e]!;
-        const j = edges[e + 1]!;
-        if (i >= lim || j >= lim) continue;
-        const d = ((dArr[i]! + dArr[j]!) / 2 - dmin) / span;
-        ctx!.strokeStyle = withAlpha(accent, (0.14 + 0.3 * d) * Math.min(1, emphasis));
+      const nq = quads.length / 4;
+      const qd = new Float32Array(nq);
+      const qi = new Uint32Array(nq);
+      for (let q = 0; q < nq; q++) {
+        const o = q * 4;
+        qd[q] = (dArr[quads[o]!]! + dArr[quads[o + 2]!]!) / 2;
+        qi[q] = q;
+      }
+      qi.sort((a, b) => qd[a]! - qd[b]!);
+      for (let k = 0; k < nq; k++) {
+        const o = qi[k]! * 4;
+        const a = quads[o]!;
+        const b = quads[o + 1]!;
+        const c2 = quads[o + 2]!;
+        const dd = quads[o + 3]!;
+        if (a >= lim || b >= lim || c2 >= lim || dd >= lim) continue;
+        const depth = (qd[qi[k]!]! - dmin) / span;
+        const zt = (z[a]! + z[c2]!) / 2;
+        ctx!.fillStyle = withAlpha(accent, Math.min(0.9, (0.18 + 0.3 * depth + 0.3 * zt) * emphasis));
         ctx!.beginPath();
-        ctx!.moveTo(sxArr[i]!, syArr[i]!);
-        ctx!.lineTo(sxArr[j]!, syArr[j]!);
-        ctx!.stroke();
+        ctx!.moveTo(sxArr[a]!, syArr[a]!);
+        ctx!.lineTo(sxArr[b]!, syArr[b]!);
+        ctx!.lineTo(sxArr[c2]!, syArr[c2]!);
+        ctx!.lineTo(sxArr[dd]!, syArr[dd]!);
+        ctx!.closePath();
+        ctx!.fill();
       }
     }
     const shown = Math.round(reveal * n);
@@ -364,9 +372,9 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       // footprints instead of flooding into one fill
       // built context (2) sits heavier than bare ground (0) in the same grey,
       // so roofs read as houses rather than as pavement
-      const a = c === 1 ? Math.min(1, (0.26 + 0.36 * d + 0.2 * z[i]!) * emphasis / (0.75 + 0.25 * zoom)) : c === 2 ? 0.4 + 0.4 * d : 0.16 + 0.22 * d;
+      const a = c === 1 ? Math.min(1, (quads.length ? 0.5 : 1) * (0.26 + 0.36 * d + 0.2 * z[i]!) * emphasis / (0.75 + 0.25 * zoom)) : c === 2 ? 0.4 + 0.4 * d : 0.2 + 0.24 * d;
       ctx!.fillStyle = withAlpha(c === 1 ? accent : ground, a);
-      const size = (c === 1 ? (edges.length ? 0.9 : 1.35) * emphasis * Math.sqrt(zoom) : c === 2 ? 1.45 : 1.05) * dot;
+      const size = (c === 1 ? (quads.length ? 0.7 : 1.35) * emphasis * Math.sqrt(zoom) : c === 2 ? 1.45 : 1.05) * dot;
       ctx!.fillRect(sxArr[i]! - size / 2, syArr[i]! - size / 2, size, size);
     }
   }

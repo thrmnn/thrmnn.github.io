@@ -272,9 +272,12 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       // nearer points sit slightly stronger, which gives the cloud its form;
       // category 1 is the subject (rooftops, or crowns) in the accent, 0 is
       // the ground as a surface, 2 is built context in the ground's colour
-      const a = c === 1 ? Math.min(1, (0.36 + 0.42 * d) * emphasis) : c === 2 ? 0.24 + 0.3 * d : 0.3 + 0.3 * d;
+      // the subject's dots grow with the square root of the zoom, and fade a
+      // little as the camera comes in, so a close view resolves into
+      // footprints instead of flooding into one fill
+      const a = c === 1 ? Math.min(1, (0.26 + 0.36 * d) * emphasis / (0.75 + 0.25 * zoom)) : c === 2 ? 0.24 + 0.3 * d : 0.3 + 0.3 * d;
       ctx!.fillStyle = withAlpha(c === 1 ? accent : ground, a);
-      const size = (c === 1 ? 1.35 * emphasis : c === 2 ? 1.1 : 1.15) * dot;
+      const size = (c === 1 ? 1.35 * emphasis * Math.sqrt(zoom) / zoom : c === 2 ? 1.1 : 1.15) * dot;
       ctx!.fillRect(sxArr[i]! - size / 2, syArr[i]! - size / 2, size, size);
     }
   }

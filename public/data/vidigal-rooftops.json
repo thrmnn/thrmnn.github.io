@@ -3,13 +3,13 @@
   "source": "MIT Senseable City Lab Rio \u2014 Vidigal DTM + building footprints",
   "site": "Vidigal favela, Rio de Janeiro",
   "encoding": "interleaved int8 x, int8 y, uint8 z, uint8 category (0=terrain, 1=building); 4 bytes/point",
-  "count": 14122,
+  "count": 12469,
   "count_terrain": 7868,
-  "count_buildings": 6254,
+  "count_buildings": 4601,
   "n_building_footprints": 3610,
   "z_meters": {
     "min": 31.839555740356445,
     "max": 523.778076171875
   },
-  "terrain_display": "terrain re-sampled on a regular grid (7868 points) by linear interpolation of the 2500 sampled DTM cells this file previously carried; rooftop outline points thinned to 62% (6254 of 10029); no new source data"
+  "terrain_display": "terrain re-sampled on a regular grid (7868 points) by linear interpolation of the 2500 sampled DTM cells this file previously carried; rooftop outline points thinned to 45% (4601 of 10029); no new source data"
 }

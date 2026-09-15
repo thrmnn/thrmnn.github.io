@@ -22,15 +22,18 @@ from scipy.spatial import Delaunay
 ROOT = Path(__file__).parent.parent
 BIN = ROOT / "public/data/vidigal-rooftops.bin"
 META = ROOT / "public/data/vidigal-rooftops.json"
+# The un-densified file, as the sampler wrote it (git: f85947c), so the step can be re-run.
+SRC_BIN = Path(__import__("os").environ.get("SRC_BIN", BIN))
+SRC_META = Path(__import__("os").environ.get("SRC_META", META))
 GRID_STEP = 2          # in int8 units (of 254 across the scene, so about 8 m)
-BUILDING_KEEP = 0.62   # fraction of rooftop outline points kept
+BUILDING_KEEP = 0.45   # fraction of rooftop outline points kept
 RNG = np.random.default_rng(seed=11)
 
-raw = BIN.read_bytes()
+raw = SRC_BIN.read_bytes()
 pts = np.array([struct.unpack_from("bbBB", raw, i * 4) for i in range(len(raw) // 4)], dtype=np.int16)
 terrain = pts[pts[:, 3] == 0]
 buildings = pts[pts[:, 3] == 1]
-meta = json.loads(META.read_text())
+meta = json.loads(SRC_META.read_text())
 if meta.get("terrain_display"):
     raise SystemExit("already densified; regenerate from the sampler first")
 

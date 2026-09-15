@@ -31,18 +31,19 @@ LAZS = [Path("/home/theo/SCL/SCA/ShadyBusiness2/data/tiles/25GN1/lidar/25GN1_01.
 OUT_BIN = ROOT / "public" / "data" / "amsterdam-canopy.bin"
 OUT_META = ROOT / "public" / "data" / "amsterdam-canopy.json"
 
-# Western Jordaan, EPSG:28992 (RD New): a canal running north to south with
-# houses on both banks and trees along the quays. Water gives the laser no
+# Western Jordaan, EPSG:28992 (RD New): a canal running north to south, a row
+# of quay trees on the west bank, an open quay with a few trees and the
+# houses beyond it on the east. Water gives the laser no
 # return, so the canal is the gap in the ground.
-X0, X1, Y0, Y1 = 120590.0, 120750.0, 487390.0, 487550.0
-GROUND_CELL = 2.0      # metres; one ground point per cell (median z)
+X0, X1, Y0, Y1 = 120635.0, 120755.0, 487425.0, 487515.0
+GROUND_CELL = 1.5      # metres; one ground point per cell (median z)
 Z_CAP_M = 45.0         # NAP; one spire in the clip would otherwise flatten every house
-CANOPY_CELL = 1.5      # metres; one canopy point per cell (highest return)
-BUILDING_CELL = 1.5    # metres; one roof point per cell (highest return)
+CANOPY_CELL = 1.0      # metres; one canopy point per cell (highest return)
+BUILDING_CELL = 1.2    # metres; one roof point per cell (highest return)
 CANOPY_MIN_HAG = 2.0   # metres above the local ground median
-N_GROUND = 3500
-N_CANOPY = 5500
-N_BUILDING = 5000
+N_GROUND = 3800
+N_CANOPY = 4500
+N_BUILDING = 4200
 RNG = np.random.default_rng(seed=7)
 
 

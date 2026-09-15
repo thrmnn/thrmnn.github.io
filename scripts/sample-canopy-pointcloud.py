@@ -100,6 +100,17 @@ def main() -> int:
     hag = vz - grid[((vy - Y0) // GROUND_CELL).astype(np.int64), ((vx - X0) // GROUND_CELL).astype(np.int64)]
     keep = hag >= CANOPY_MIN_HAG
     cx, cy, cz = per_cell(vx[keep], vy[keep], vz[keep], CANOPY_CELL, np.max)
+    # A crown's top from single returns is spiky; a 3 x 3 mean over occupied
+    # cells (empties ignored) gives the smooth upper surface a crown has,
+    # without inventing canopy where there is none.
+    nx, ny = int((X1 - X0) // CANOPY_CELL) + 1, int((Y1 - Y0) // CANOPY_CELL) + 1
+    chm = np.full((ny, nx), np.nan)
+    ci = ((cx - X0) // CANOPY_CELL).astype(int); cj = ((cy - Y0) // CANOPY_CELL).astype(int)
+    chm[cj, ci] = cz
+    pad = np.pad(chm, 1, constant_values=np.nan)
+    stack = np.stack([pad[a:a + ny, b:b + nx] for a in range(3) for b in range(3)])
+    smooth = np.nanmean(stack, axis=0)
+    cz = smooth[cj, ci]
 
     bm = c == 6
     bx, by, bz = per_cell(x[bm], y[bm], z[bm], BUILDING_CELL, np.max)
@@ -147,7 +158,7 @@ def main() -> int:
         "z_meters": {"min": round(z_min, 2), "max": round(z_max, 2), "datum": "NAP"},
         "assumptions": [
             f"ground = median z of classification 2 per {GROUND_CELL:g} m cell",
-            f"canopy = highest classification-1 return per {CANOPY_CELL:g} m cell, at least {CANOPY_MIN_HAG:g} m above the local ground median; AHN does not label vegetation, so this is height above ground, not a species or leaf attribute",
+            f"canopy = highest classification-1 return per {CANOPY_CELL:g} m cell, at least {CANOPY_MIN_HAG:g} m above the local ground median, then a 3 x 3 mean over occupied cells; AHN does not label vegetation, so this is height above ground, not a species or leaf attribute",
             f"building = highest classification-6 return per {BUILDING_CELL:g} m cell",
             "water gives the laser no return, so the canal is the gap in the ground; bridges (26) excluded",
             f"{n_capped} returns above {Z_CAP_M:g} m NAP dropped (a single spire), so the houses keep their proportions",

@@ -16,6 +16,7 @@ interface Props {
   emphasis?: number;
   wire?: number;
   zoom?: number;
+  splat?: number;
 }
 const {
   revealDelay = 1,
@@ -27,7 +28,8 @@ const {
   mobileAspect = '1.25 / 1',
   emphasis = 1,
   wire = 0,
-  zoom = 1.8,
+  zoom = 1.3,
+  splat = 0,
 } = Astro.props;
 
 const dataDir = join(process.cwd(), 'public/data');
@@ -41,7 +43,7 @@ if (meta.count * 4 !== binBytes) {
 <section class="artifact-band">
   <div class="hero-artifact vidigal-artifact" data-reveal style={`--reveal-d: ${revealDelay}; --frame-aspect: ${aspect}; --frame-aspect-mobile: ${mobileAspect};`}>
     <div class="artifact-frame vidigal-frame">
-      <canvas class="vidigal-panel" data-rooftops={`/data/${data}.bin`} data-emphasis={emphasis} data-wire={wire} data-zoom={zoom} aria-label={ariaLabel}></canvas>
+      <canvas class="vidigal-panel" data-rooftops={`/data/${data}.bin`} data-emphasis={emphasis} data-wire={wire} data-zoom={zoom} data-splat={splat} aria-label={ariaLabel}></canvas>
       <div class="artifact-corners" aria-hidden="true">
         <span></span><span></span><span></span><span></span>
       </div>

@@ -31,7 +31,7 @@
   },
   "assumptions": [
     "ground = median z of classification 2 per 1.5 m cell",
-    "canopy = highest classification-1 return per 1 m cell, at least 2 m above the local ground median; AHN does not label vegetation, so this is height above ground, not a species or leaf attribute",
+    "canopy = highest classification-1 return per 1 m cell, at least 2 m above the local ground median, then a 3 x 3 mean over occupied cells; AHN does not label vegetation, so this is height above ground, not a species or leaf attribute",
     "building = highest classification-6 return per 1.2 m cell",
     "water gives the laser no return, so the canal is the gap in the ground; bridges (26) excluded",
     "0 returns above 45 m NAP dropped (a single spire), so the houses keep their proportions",

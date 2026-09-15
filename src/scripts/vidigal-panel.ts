@@ -245,8 +245,11 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   const wireR = parseFloat(canvas.dataset.wire || '0') || 0;
   // how close the flight comes: a settlement on a ridge takes a deeper dive
   // than a 120 m clip, which is already close
-  const zoomMax = parseFloat(canvas.dataset.zoom || '') || 1.45;
+  const zoomMax = parseFloat(canvas.dataset.zoom || '') || 1.3;
   const quads = wireR > 0 ? buildQuads(cloud, wireR) : new Uint32Array(0);
+  // Splat mode: the subject's points are drawn as soft discs of this radius
+  // (scene units) that accumulate into one blob per crown.
+  const splatR = parseFloat(canvas.dataset.splat || '0') || 0;
 
   // Painter's order changes every frame while the view turns. A bucket sort is
   // O(n) and visually identical to a comparison sort at this point count.
@@ -374,6 +377,14 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       // so roofs read as houses rather than as pavement
       const a = c === 1 ? Math.min(1, (quads.length ? 0.5 : 1) * (0.26 + 0.36 * d + 0.2 * z[i]!) * emphasis / (0.75 + 0.25 * zoom)) : c === 2 ? 0.4 + 0.4 * d : 0.2 + 0.24 * d;
       ctx!.fillStyle = withAlpha(c === 1 ? accent : ground, a);
+      if (c === 1 && splatR > 0) {
+        const rr = splatR * scale;
+        ctx!.fillStyle = withAlpha(accent, Math.min(0.4, (0.06 + 0.08 * d + 0.1 * z[i]!) * emphasis));
+        ctx!.beginPath();
+        ctx!.arc(sxArr[i]!, syArr[i]!, rr, 0, 6.2832);
+        ctx!.fill();
+        continue;
+      }
       const size = (c === 1 ? (quads.length ? 0.7 : 1.35) * emphasis * Math.sqrt(zoom) : c === 2 ? 1.45 : 1.05) * dot;
       ctx!.fillRect(sxArr[i]! - size / 2, syArr[i]! - size / 2, size, size);
     }

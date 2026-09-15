@@ -40,7 +40,7 @@ back.
 
 ## What is shown here
 
-The geometry of one site, Vidigal, is published on this site's front page and
-you can download it. Nothing else from this work appears here. It is unpublished
+The geometry of one site, Vidigal, is drawn on this site's front page. Nothing
+else from this work appears here. It is unpublished
 research with co-authors, so this page describes the method and stops there: no
 indicators, no findings, no figures from the study.

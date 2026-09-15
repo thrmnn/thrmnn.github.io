@@ -13,6 +13,7 @@ const projects = defineCollection({
     github: z.url().optional(),
     proprietary: z.boolean().default(false),
     image: z.string().optional(),
+    cardImage: z.string().optional(),
     imageAlt: z.string().optional(),
     imageWidth: z.number().optional(),
     imageHeight: z.number().optional(),

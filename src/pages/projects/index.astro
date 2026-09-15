@@ -30,7 +30,7 @@ const ordered = [...featured, ...rest];
             detail={project.data.summary}
             href={`/projects/${project.id}/`}
             gradient={project.data.gradient}
-            image={project.data.image}
+            image={project.data.cardImage ?? project.data.image}
             index={i}
           />
         ))}

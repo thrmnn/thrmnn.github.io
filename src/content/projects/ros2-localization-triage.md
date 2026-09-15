@@ -14,6 +14,7 @@ github: 'https://github.com/thrmnn/ros2-localization-triage'
 externalLink: 'https://github.com/thrmnn/ros2-localization-triage'
 featuredOrder: 3
 image: '/projects/ros2-localization-triage/threshold-transfer.webp'
+cardImage: '/projects/ros2-localization-triage/stata-plate.webp'
 imageAlt: 'The same yaw-uncertainty threshold on two robots: set on a simulated TurtleBot3 where injected faults cross it, then applied to a real Tiago with no faults, where the signal rides the line for much of the recording.'
 imageWidth: 1489
 imageHeight: 1025

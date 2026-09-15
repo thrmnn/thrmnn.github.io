@@ -496,7 +496,7 @@
 .artifact-caption {
   text-align: center;
   font-family: var(--font-mono);
-  font-size: 0.66rem;
+  font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-text-muted);
@@ -628,6 +628,11 @@
 }
 
 /* Research axes — the .com's own section; method-level descriptions only. */
+/* The last artifact band already sits on the section's own bottom padding;
+   its own padding on top of that opened a gap three times the one above it. */
+#research .artifact-band:last-child {
+  padding-bottom: 0;
+}
 .research-place {
   font-family: var(--font-mono);
   font-size: 0.62rem;

@@ -99,7 +99,7 @@ const articleJsonLd = {
               rel="noopener"
               class="inline-flex items-center gap-2"
             >
-              Visit project →
+              {new URL(project.data.externalLink).hostname.replace(/^www\./, '')} →
             </a>
           )}
           {project.data.github && (

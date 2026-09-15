@@ -633,6 +633,9 @@
 #research .artifact-band:last-child {
   padding-bottom: 0;
 }
+.research-second {
+  padding-top: 3rem;
+}
 .research-place {
   font-family: var(--font-mono);
   font-size: 0.62rem;

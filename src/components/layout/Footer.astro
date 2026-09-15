@@ -64,7 +64,8 @@ const monogramLetters = author.monogram.replace(/[^A-Za-z]/g, '').split('');
     margin-top: -2px;
     border: 1px solid var(--color-accent);
     background: transparent;
-    opacity: 0.25;
+    /* invisible at rest: two readers took the faint dot for a stray bullet */
+    opacity: 0;
     transform: scale(0.6);
     transition: opacity var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
   }

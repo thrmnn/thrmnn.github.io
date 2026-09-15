@@ -8,7 +8,7 @@ proprietary: true
 image: '/projects/hybrid-mpc-rl-racing/tracks-snapshot.png'
 imageWidth: 743
 imageHeight: 620
-summary: 'Semester project at EPFL BioRob (Ijspeert lab) under G. Bellegarda — a switching hybrid controller that combines Reinforcement Learning and Model Predictive Control to drive a car through learned tracks faster than either approach alone.'
+summary: 'Semester project at EPFL BioRob (Ijspeert lab) under G. Bellegarda: a switching controller that combines Reinforcement Learning and Model Predictive Control to drive a car through learned tracks.'
 label: 'EPFL BioRob · Bellegarda / Ijspeert · MA3, Fall 2022'
 metric: 'PPO + MPC switching · car dynamics · OpenAI Gym tracks'
 gradient: 'linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 50%, #8b3a3a 100%)'
@@ -33,9 +33,9 @@ or final presentation and are reproduced here.
 
 ## Overview
 
-Semester project at **EPFL BioRob Lab** under [G. Bellegarda](https://gbellegarda.github.io/) and Prof. [Auke Ijspeert](https://www.epfl.ch/labs/biorob/), Fall 2022 (MA3, 10 ECTS). Title: **_Real-Time Hybrid Control: Combining Reinforcement Learning and Model Predictive Control for Autonomous Systems_**.
+Semester project at **EPFL BioRob Lab** under G. Bellegarda and Prof. [Auke Ijspeert](https://www.epfl.ch/labs/biorob/), Fall 2022 (MA3, 10 ECTS). Title: **_Real-Time Hybrid Control: Combining Reinforcement Learning and Model Predictive Control for Autonomous Systems_**.
 
-The core question: classical Model Predictive Control gives strong safety guarantees and respects vehicle dynamics, but it's limited by the dynamics model and struggles with aggressive maneuvers. Reinforcement Learning can discover policies that exploit the full dynamics envelope, but it's sample-inefficient and lacks safety guarantees. Can a switching controller get the best of both?
+Classical Model Predictive Control respects the vehicle dynamics and gives safety guarantees, but it is limited by its dynamics model and struggles with aggressive maneuvers. Reinforcement Learning can discover policies that use the full dynamics envelope, but it is sample-inefficient and offers no safety guarantee. The project builds a switching controller that runs both and hands over between them.
 
 ![Switching architecture — RL when off-track, MPC when on a confident trajectory.](/projects/hybrid-mpc-rl-racing/architecture-diagram.png)
 
@@ -63,9 +63,7 @@ The hybrid layer chooses between RL and MPC based on the **learned value functio
 
 ## Results
 
-The switching controller out-laps both standalone MPC and pure-RL across the evaluated tracks. The hybrid prior accelerates learning: starting from MPC behavior, the RL agent does not have to re-discover competent driving from scratch.
-
-The full report covers methodology, alternative architectures considered (including residual-policy and reward-shaping variants), and experimental results across track geometries.
+The report evaluates the switching controller against standalone MPC and RL baselines, and considers alternative architectures including reward-shaping variants.
 
 ## Article
 

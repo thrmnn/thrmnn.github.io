@@ -253,6 +253,10 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   // viewing angle: a settlement on a slope wants an oblique view; a canal
   // between overhanging quay trees wants a steeper one or the gap closes
   const tilt0 = parseFloat(canvas.dataset.tilt || '') || TILT;
+  // a full turn passes through the angle where a canal is seen end-on and
+  // vanishes for a beat; a swing keeps a linear feature oblique at all times
+  const swing = parseFloat(canvas.dataset.swing || '0') || 0;
+  const SWING_PERIOD_S = 97;
 
   // Painter's order changes every frame while the view turns. A bucket sort is
   // O(n) and visually identical to a comparison sort at this point count.
@@ -277,7 +281,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
 
     const { x, y, z, cat, ax0, ax1, ay0, ay1, mx, my, mz, axis, reach } = cloud;
     const flying = !reduceMotion.matches;
-    const rot = ROT0 + (flying ? elapsed * SPIN_RAD_PER_S : 0);
+    const rot = ROT0 + (flying ? (swing > 0 ? swing * Math.sin((elapsed * 2 * Math.PI) / SWING_PERIOD_S) : elapsed * SPIN_RAD_PER_S) : 0);
     const cosR = Math.cos(rot);
     const sinR = Math.sin(rot);
     const cam = flying ? camera(elapsed) : { zoom: 1, along: 0, tiltOff: 0 };

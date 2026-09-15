@@ -1,7 +1,7 @@
 ---
 title: "Leaf area from an aerial scan"
 date: '2024-09-01T00:00:00Z'
-cardImage: '/projects/aerial-lidar-tree-census/vondelpark-plate.webp'
+cardImage: '/projects/aerial-lidar-tree-census/jordaan-plate.webp'
 featuredOrder: 2
 externalLink: 'https://www.ams-institute.org/'
 summary: "A city knows where its trees are, not how much leaf they carry. I recover leaf area per tree by inverting how much sky the canopy blocks in an aerial LiDAR survey the city already flies for other reasons."

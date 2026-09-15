@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw
 ROOT = Path(__file__).parent.parent
 PLATES = {
     "vidigal-rooftops": ROOT / "public/projects/urban-morphometrics/vidigal-plate.webp",
-    "amsterdam-canopy": ROOT / "public/projects/aerial-lidar-tree-census/vondelpark-plate.webp",
+    "amsterdam-canopy": ROOT / "public/projects/aerial-lidar-tree-census/jordaan-plate.webp",
 }
 S = 1200
 BG = (14, 16, 22)

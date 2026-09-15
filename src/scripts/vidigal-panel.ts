@@ -13,8 +13,17 @@ const TILT = 0.62;
 const COS_T = Math.cos(TILT);
 const SIN_T = Math.sin(TILT);
 const Y_SQUASH = 0.7;
-const FILL = 0.92; // a little air around the envelope, no more
+const FILL = 0.86; // air around the envelope, enough for the tilt to breathe
 const REVEAL_MS = 1600;
+// The camera flies: the view tilts, comes in close over the settlement and
+// pulls back out, on periods that never line up with the turn so the flight
+// does not repeat within a visit. At zoom 1 the framing is exactly the
+// envelope; the pan only follows the ridge once the camera is in.
+const TILT_SWING = 0.17;
+const TILT_PERIOD_S = 47;
+const ZOOM_MAX = 1.9;
+const ZOOM_PERIOD_S = 71;
+const PAN_PERIOD_S = 103;
 
 interface Cloud {
   n: number;
@@ -26,6 +35,11 @@ interface Cloud {
   ax1: number;
   ay0: number;
   ay1: number;
+  mx: number;
+  my: number;
+  mz: number;
+  axis: { x: number; y: number };
+  reach: number;
 }
 
 function pct(sorted: Float64Array, q: number): number {
@@ -81,7 +95,36 @@ async function load(url: string): Promise<Cloud> {
     ay1 = Math.max(ay1, pct(sys, 0.99));
   }
 
-  return { n, x, y, z, cat, ax0, ax1, ay0, ay1 };
+  // Principal axis of the footprint, so the pan runs along the ridge.
+  let mx = 0;
+  let my = 0;
+  for (let i = 0; i < n; i++) {
+    mx += x[i]!;
+    my += y[i]!;
+  }
+  mx /= n;
+  my /= n;
+  let sxx = 0;
+  let sxy = 0;
+  let syy = 0;
+  for (let i = 0; i < n; i++) {
+    const dx = x[i]! - mx;
+    const dy = y[i]! - my;
+    sxx += dx * dx;
+    sxy += dx * dy;
+    syy += dy * dy;
+  }
+  const theta = 0.5 * Math.atan2(2 * sxy, sxx - syy);
+  const axis = { x: Math.cos(theta), y: Math.sin(theta) };
+  let reach = 0;
+  for (let i = 0; i < n; i++) {
+    reach = Math.max(reach, Math.abs((x[i]! - mx) * axis.x + (y[i]! - my) * axis.y));
+  }
+  let mz = 0;
+  for (let i = 0; i < n; i++) mz += z[i]!;
+  mz /= n;
+
+  return { n, x, y, z, cat, ax0, ax1, ay0, ay1, mx, my, mz, axis, reach };
 }
 
 // getComputedStyle returns unregistered custom properties as the token stream
@@ -134,6 +177,9 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   if (cloud.n === 0) return;
 
   let { accent, ground } = readColors(canvas, ctx);
+  // How much the subject category stands off its context: crowns among roofs
+  // need more than rooftops on bare terrain.
+  const emphasis = parseFloat(canvas.dataset.emphasis || '1') || 1;
   let cssW = canvas.clientWidth || 1;
   let cssH = canvas.clientHeight || 1;
   let t0 = 0;
@@ -164,23 +210,42 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx!.clearRect(0, 0, cssW, cssH);
 
-    const { x, y, z, cat, ax0, ax1, ay0, ay1 } = cloud;
-    const rot = ROT0 + (reduceMotion.matches ? 0 : elapsed * SPIN_RAD_PER_S);
+    const { x, y, z, cat, ax0, ax1, ay0, ay1, mx, my, mz, axis, reach } = cloud;
+    const flying = !reduceMotion.matches;
+    const rot = ROT0 + (flying ? elapsed * SPIN_RAD_PER_S : 0);
     const cosR = Math.cos(rot);
     const sinR = Math.sin(rot);
+    const tilt = TILT + (flying ? TILT_SWING * Math.sin((elapsed * 2 * Math.PI) / TILT_PERIOD_S) : 0);
+    const cosT = Math.cos(tilt);
+    const sinT = Math.sin(tilt);
+    const zoomT = flying ? (1 - Math.cos((elapsed * 2 * Math.PI) / ZOOM_PERIOD_S)) / 2 : 0;
+    const zoom = 1 + (ZOOM_MAX - 1) * zoomT;
 
-    const scale = Math.min(cssW / (ax1 - ax0), cssH / (ay1 - ay0)) * FILL;
-    const cx = cssW / 2 - ((ax0 + ax1) / 2) * scale;
-    const cy = cssH / 2 + ((ay0 + ay1) / 2) * scale;
-    const dot = Math.max(0.85, Math.min(2.1, scale / 260));
+    const base = Math.min(cssW / (ax1 - ax0), cssH / (ay1 - ay0)) * FILL;
+    const scale = base * zoom;
+    // Where the camera looks: the envelope centre when out, a point sliding
+    // along the ridge when in. Project that point with the frame's own maths.
+    const along = flying ? reach * 0.55 * Math.sin((elapsed * 2 * Math.PI) / PAN_PERIOD_S) : 0;
+    const px = mx + axis.x * along;
+    const py = my + axis.y * along;
+    const prz = px * sinR + py * cosR;
+    const tgtX = px * cosR - py * sinR;
+    const tgtY = (mz * cosT - prz * sinT) * Y_SQUASH;
+    const envX = (ax0 + ax1) / 2;
+    const envY = (ay0 + ay1) / 2;
+    const lookX = envX + (tgtX - envX) * zoomT;
+    const lookY = envY + (tgtY - envY) * zoomT;
+    const cx = cssW / 2 - lookX * scale;
+    const cy = cssH / 2 + lookY * scale;
+    const dot = Math.max(0.85, Math.min(2.4, scale / 260));
 
     let dmin = Infinity;
     let dmax = -Infinity;
     for (let i = 0; i < n; i++) {
       const rz = x[i]! * sinR + y[i]! * cosR;
       sxArr[i] = cx + (x[i]! * cosR - y[i]! * sinR) * scale;
-      syArr[i] = cy - (z[i]! * COS_T - rz * SIN_T) * Y_SQUASH * scale;
-      const d = z[i]! * SIN_T + rz * COS_T;
+      syArr[i] = cy - (z[i]! * cosT - rz * sinT) * Y_SQUASH * scale;
+      const d = z[i]! * sinT + rz * cosT;
       dArr[i] = d;
       if (d < dmin) dmin = d;
       if (d > dmax) dmax = d;
@@ -203,11 +268,13 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     for (let k = 0; k < shown; k++) {
       const i = order[k]!;
       const d = (dArr[i]! - dmin) / span;
-      const building = cat[i] === 1;
-      // nearer points sit slightly stronger, which gives the cloud its form
-      const a = building ? 0.42 + 0.5 * d : 0.16 + 0.2 * d;
-      ctx!.fillStyle = withAlpha(building ? accent : ground, a);
-      const size = (building ? 1.75 : 0.95) * dot;
+      const c = cat[i]!;
+      // nearer points sit slightly stronger, which gives the cloud its form;
+      // category 1 is the subject (rooftops, or crowns) in the accent, 0 is
+      // the ground as a surface, 2 is built context in the ground's colour
+      const a = c === 1 ? Math.min(1, (0.36 + 0.42 * d) * emphasis) : c === 2 ? 0.24 + 0.3 * d : 0.3 + 0.3 * d;
+      ctx!.fillStyle = withAlpha(c === 1 ? accent : ground, a);
+      const size = (c === 1 ? 1.35 * emphasis : c === 2 ? 1.1 : 1.15) * dot;
       ctx!.fillRect(sxArr[i]! - size / 2, syArr[i]! - size / 2, size, size);
     }
   }

@@ -96,7 +96,7 @@ if (existsSync(VIDIGAL_META)) {
   );
   // Every point-cloud panel: the sidecar count must match the binary it
   // describes, and the homepage must name the site the sidecar names.
-  for (const [stem, site] of [['vidigal-rooftops', 'Vidigal'], ['amsterdam-canopy', 'Vondelpark']]) {
+  for (const [stem, site] of [['vidigal-rooftops', 'Vidigal'], ['amsterdam-canopy', 'Jordaan']]) {
     const metaPath = `public/data/${stem}.json`;
     if (!existsSync(metaPath)) continue;
     const m = JSON.parse(readFileSync(metaPath, 'utf8'));

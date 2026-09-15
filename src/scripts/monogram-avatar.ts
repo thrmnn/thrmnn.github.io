@@ -1,7 +1,7 @@
 // The avatar is the monogram as a point cloud: the letters are rasterised in
 // the site's own display face and sampled into scattered dots. At rest it is
 // a still, face-on, legible dotted TAH. Once per page view it leans into
-// perspective, its five sheets fan apart until they can be counted, close, and it
+// perspective, its five sheets fan apart by less than a stem width, close, and it
 // turns back to face: the flat mark is shown to be a volume, the same story
 // the Vidigal panel tells.
 const LAYERS = 5;
@@ -11,10 +11,10 @@ const JITTER = 0.3;
 const YAW = 0.5;
 const TILT = 0.25;
 // adjacent sheet spacing at the peak, in stem widths, on screen: the word
-// stays whole below about 0.5 and the sheets become countable above 1. The
-// owner asked for the layers to unshuffle like dimensions, so they fan until
-// they can be counted and the word blurs for half a second at the peak.
-const SEP_STEMS = 1.1;
+// stays whole below about 0.5 and the sheets become countable above 1. At
+// 1.1 the peak read as a glitch at 178 px (motion critic, 2026-09-15); the
+// laminated slab keeps the word whole while the depth shows as striations.
+const SEP_STEMS = 0.4;
 const HOLD = 400;
 const RAMP = 700;
 const LAG = 250;

@@ -15,15 +15,33 @@ const SIN_T = Math.sin(TILT);
 const Y_SQUASH = 0.7;
 const FILL = 0.86; // air around the envelope, enough for the tilt to breathe
 const REVEAL_MS = 1600;
-// The camera flies: the view tilts, comes in close over the settlement and
-// pulls back out, on periods that never line up with the turn so the flight
-// does not repeat within a visit. At zoom 1 the framing is exactly the
-// envelope; the pan only follows the ridge once the camera is in.
-const TILT_SWING = 0.17;
-const TILT_PERIOD_S = 47;
-const ZOOM_MAX = 1.9;
-const ZOOM_PERIOD_S = 71;
-const PAN_PERIOD_S = 103;
+// The camera flies a shot list on top of the slow turn: hold wide, dive to
+// one end of the ridge dropping lower as it comes in, glide along the ridge
+// to the other end, pull back up to the wide frame. At zoom 1 the framing is
+// exactly the envelope; the look-at point only travels once the camera is in.
+// Keyframes: [time s, zoom, along (-1..1 of the ridge's reach), tilt offset].
+const SHOT: [number, number, number, number][] = [
+  [0, 1, 0, 0],
+  [9, 1, 0, 0],
+  [16, 1.8, -0.8, -0.18],
+  [34, 1.8, 0.8, -0.18],
+  [42, 1, 0, 0],
+];
+const SHOT_PERIOD_S = 42;
+const ALONG_REACH = 0.6;
+const smooth = (u: number) => u * u * (3 - 2 * u);
+function camera(elapsed: number): { zoom: number; along: number; tiltOff: number } {
+  const t = elapsed % SHOT_PERIOD_S;
+  for (let k = 1; k < SHOT.length; k++) {
+    const a = SHOT[k - 1]!;
+    const b = SHOT[k]!;
+    if (t <= b[0]) {
+      const u = smooth((t - a[0]) / (b[0] - a[0]));
+      return { zoom: a[1] + (b[1] - a[1]) * u, along: a[2] + (b[2] - a[2]) * u, tiltOff: a[3] + (b[3] - a[3]) * u };
+    }
+  }
+  return { zoom: 1, along: 0, tiltOff: 0 };
+}
 
 interface Cloud {
   n: number;
@@ -162,6 +180,45 @@ function readColors(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
   };
 }
 
+function buildEdges(cloud: Cloud, r: number): Uint32Array {
+  const { n, x, y, z, cat } = cloud;
+  // a wire only joins points at nearly the same height, so a crown's edge
+  // falls away as a gap instead of a curtain of lines down to the next cell
+  const ZR = 0.09;
+  const cell = r;
+  const key = (i: number, j: number) => `${i},${j}`;
+  const grid = new Map<string, number[]>();
+  for (let i = 0; i < n; i++) {
+    if (cat[i] !== 1) continue;
+    const k = key(Math.floor(x[i]! / cell), Math.floor(y[i]! / cell));
+    const b = grid.get(k);
+    if (b) b.push(i);
+    else grid.set(k, [i]);
+  }
+  const out: number[] = [];
+  for (let i = 0; i < n; i++) {
+    if (cat[i] !== 1) continue;
+    const gx = Math.floor(x[i]! / cell);
+    const gy = Math.floor(y[i]! / cell);
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        const b = grid.get(key(gx + dx, gy + dy));
+        if (!b) continue;
+        for (const j of b) {
+          if (j <= i) continue;
+          const ex = x[j]! - x[i]!;
+          const ey = y[j]! - y[i]!;
+          // axis-aligned neighbours only: a quad mesh reads as a surface,
+          // diagonals on top of it read as a tangle
+          const axisAligned = (Math.abs(ex) <= r && Math.abs(ey) <= 0.35 * r) || (Math.abs(ey) <= r && Math.abs(ex) <= 0.35 * r);
+          if (axisAligned && Math.abs(z[j]! - z[i]!) <= ZR) out.push(i, j);
+        }
+      }
+    }
+  }
+  return Uint32Array.from(out);
+}
+
 export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void> {
   const ctx = canvas.getContext('2d', { alpha: true });
   const src = canvas.dataset.rooftops;
@@ -189,6 +246,15 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
 
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
+  // Optional wire surface over the subject category: each point is joined to
+  // its neighbours within data-wire (in scene units), so a canopy sampled on
+  // a grid reads as a continuous crown surface instead of loose dots.
+  const wireR = parseFloat(canvas.dataset.wire || '0') || 0;
+  // how close the flight comes: a settlement on a ridge takes a deeper dive
+  // than a 120 m clip, which is already close
+  const zoomMax = parseFloat(canvas.dataset.zoom || '') || 1.8;
+  const edges = wireR > 0 ? buildEdges(cloud, wireR) : new Uint32Array(0);
+
   // Painter's order changes every frame while the view turns. A bucket sort is
   // O(n) and visually identical to a comparison sort at this point count.
   const BUCKETS = 384;
@@ -215,17 +281,19 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     const rot = ROT0 + (flying ? elapsed * SPIN_RAD_PER_S : 0);
     const cosR = Math.cos(rot);
     const sinR = Math.sin(rot);
-    const tilt = TILT + (flying ? TILT_SWING * Math.sin((elapsed * 2 * Math.PI) / TILT_PERIOD_S) : 0);
+    const cam = flying ? camera(elapsed) : { zoom: 1, along: 0, tiltOff: 0 };
+    cam.zoom = 1 + (cam.zoom - 1) * (zoomMax - 1) / 0.8;
+    const tilt = TILT + cam.tiltOff;
     const cosT = Math.cos(tilt);
     const sinT = Math.sin(tilt);
-    const zoomT = flying ? (1 - Math.cos((elapsed * 2 * Math.PI) / ZOOM_PERIOD_S)) / 2 : 0;
-    const zoom = 1 + (ZOOM_MAX - 1) * zoomT;
+    const zoom = cam.zoom;
+    const zoomT = Math.min(1, (zoom - 1) / 0.5); // look-at hand-over finishes early in the dive
 
     const base = Math.min(cssW / (ax1 - ax0), cssH / (ay1 - ay0)) * FILL;
     const scale = base * zoom;
     // Where the camera looks: the envelope centre when out, a point sliding
     // along the ridge when in. Project that point with the frame's own maths.
-    const along = flying ? reach * 0.55 * Math.sin((elapsed * 2 * Math.PI) / PAN_PERIOD_S) : 0;
+    const along = reach * ALONG_REACH * cam.along;
     const px = mx + axis.x * along;
     const py = my + axis.y * along;
     const prz = px * sinR + py * cosR;
@@ -237,7 +305,9 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     const lookY = envY + (tgtY - envY) * zoomT;
     const cx = cssW / 2 - lookX * scale;
     const cy = cssH / 2 + lookY * scale;
-    const dot = Math.max(0.85, Math.min(2.4, scale / 260));
+    // dots keep their screen size while the camera zooms; only the subject
+    // grows, gently, so a close view resolves rather than floods
+    const dot = Math.max(0.85, Math.min(2.4, base / 260));
 
     let dmin = Infinity;
     let dmax = -Infinity;
@@ -264,6 +334,23 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       order[cursor[b]!++] = i;
     }
 
+    // wire surface first, under the dots; alpha by mean depth so the far
+    // side of a crown sits paler than the near side
+    if (edges.length) {
+      ctx!.lineWidth = Math.max(0.5, dot * 0.45);
+      const lim = Math.round(reveal * n);
+      for (let e = 0; e < edges.length; e += 2) {
+        const i = edges[e]!;
+        const j = edges[e + 1]!;
+        if (i >= lim || j >= lim) continue;
+        const d = ((dArr[i]! + dArr[j]!) / 2 - dmin) / span;
+        ctx!.strokeStyle = withAlpha(accent, (0.14 + 0.3 * d) * Math.min(1, emphasis));
+        ctx!.beginPath();
+        ctx!.moveTo(sxArr[i]!, syArr[i]!);
+        ctx!.lineTo(sxArr[j]!, syArr[j]!);
+        ctx!.stroke();
+      }
+    }
     const shown = Math.round(reveal * n);
     for (let k = 0; k < shown; k++) {
       const i = order[k]!;
@@ -277,9 +364,9 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       // footprints instead of flooding into one fill
       // built context (2) sits heavier than bare ground (0) in the same grey,
       // so roofs read as houses rather than as pavement
-      const a = c === 1 ? Math.min(1, (0.26 + 0.36 * d) * emphasis / (0.75 + 0.25 * zoom)) : c === 2 ? 0.4 + 0.4 * d : 0.22 + 0.26 * d;
+      const a = c === 1 ? Math.min(1, (0.26 + 0.36 * d + 0.2 * z[i]!) * emphasis / (0.75 + 0.25 * zoom)) : c === 2 ? 0.4 + 0.4 * d : 0.16 + 0.22 * d;
       ctx!.fillStyle = withAlpha(c === 1 ? accent : ground, a);
-      const size = (c === 1 ? 1.35 * emphasis * Math.sqrt(zoom) / zoom : c === 2 ? 1.45 : 1.05) * dot;
+      const size = (c === 1 ? (edges.length ? 0.9 : 1.35) * emphasis * Math.sqrt(zoom) : c === 2 ? 1.45 : 1.05) * dot;
       ctx!.fillRect(sxArr[i]! - size / 2, syArr[i]! - size / 2, size, size);
     }
   }

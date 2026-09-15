@@ -1,19 +1,15 @@
-// The avatar is the monogram as a point cloud: the letters are rasterised in
-// the site's own display face and sampled into scattered dots. At rest it is
-// a still, face-on, legible dotted TAH. Once per page view it leans into
-// perspective, its five sheets fan apart by less than a stem width, close, and it
-// turns back to face: the flat mark is shown to be a volume, the same story
-// the Vidigal panel tells.
+// The avatar is the monogram drawn in the site's own display face as five
+// coincident sheets. At rest it is a still, face-on, crisp TAH. Once per page
+// view it leans into perspective, its sheets fan apart by less than a stem
+// width, close, and it turns back to face: the flat mark is shown to be a
+// volume, the same story the point-cloud panels tell.
 const LAYERS = 5;
 const RASTER = 220;
-const STEP = 3;
-const JITTER = 0.3;
+const FONT_PX = 86;
 const YAW = 0.5;
 const TILT = 0.25;
 // adjacent sheet spacing at the peak, in stem widths, on screen: the word
-// stays whole below about 0.5 and the sheets become countable above 1. At
-// 1.1 the peak read as a glitch at 178 px (motion critic, 2026-09-15); the
-// laminated slab keeps the word whole while the depth shows as striations.
+// stays whole below about 0.5 and the sheets become countable above 1
 const SEP_STEMS = 0.4;
 const HOLD = 400;
 const RAMP = 700;
@@ -22,45 +18,33 @@ const CLOSE = 2 * RAMP - LAG;
 const END = CLOSE + LAG + RAMP;
 // per-sheet alpha at rest such that the five coincident sheets cover 0.95
 const A0 = 1 - Math.pow(0.05, 1 / LAYERS);
+const FONT = `700 ${FONT_PX}px "Space Grotesk", system-ui, sans-serif`;
 
-function sample(text: string, size: number): { pts: Float32Array; stem: number } {
+// Stem width in normalised units, measured from a raster of the word: the
+// sheet spacing is keyed to it, not to a literal.
+function measureStem(text: string): number {
   const c = document.createElement('canvas');
   const S = RASTER;
   c.width = S;
   c.height = S;
   const g = c.getContext('2d', { willReadFrequently: true });
-  if (!g) return { pts: new Float32Array(0), stem: 0 };
+  if (!g) return 0.1;
   g.fillStyle = '#fff';
   g.textAlign = 'center';
   g.textBaseline = 'middle';
-  g.font = `700 ${size}px "Space Grotesk", system-ui, sans-serif`;
+  g.font = FONT;
   g.fillText(text, S / 2, S / 2);
   const { data } = g.getImageData(0, 0, S, S);
-  const lit = (x: number, y: number) => data[(y * S + x) * 4 + 3]! >= 128;
-  const out: number[] = [];
-  for (let y = 0; y < S; y += STEP) {
-    for (let x = 0; x < S; x += STEP) {
-      if (!lit(x, y)) continue;
-      // deterministic scatter: no lattice, so fanned sheets cannot moire,
-      // and the rest frame is identical on every load
-      const h = ((x * 73856093) ^ (y * 19349663)) >>> 0;
-      const jx = ((h & 255) / 255 - 0.5) * 2 * JITTER * STEP;
-      const jy = (((h >> 8) & 255) / 255 - 0.5) * 2 * JITTER * STEP;
-      out.push((x + jx - S / 2) / (S / 2), (y + jy - S / 2) / (S / 2));
-    }
-  }
-  // stem width = shortest lit run on a row below the letters' middle, in
-  // normalised units; the sheet spacing is keyed to it, not to a literal
+  const yr = Math.round(S / 2 + FONT_PX * 0.2);
   let stem = S;
-  const yr = Math.round(S / 2 + size * 0.2);
   for (let x = 0, run = 0; x <= S; x++) {
-    if (x < S && lit(x, yr)) run++;
+    if (x < S && data[(yr * S + x) * 4 + 3]! >= 128) run++;
     else {
       if (run > 2 && run < stem) stem = run;
       run = 0;
     }
   }
-  return { pts: Float32Array.from(out), stem: stem / (S / 2) };
+  return stem / (S / 2);
 }
 
 const ease = (u: number) => (u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
@@ -75,10 +59,8 @@ export async function initMonogramAvatar(canvas: HTMLCanvasElement): Promise<voi
   } catch {
     /* the fallback stack is fine if the face never resolves */
   }
-  const { pts, stem } = sample(text, 86);
-  if (!pts.length) return;
-  const SPREAD =
-    (2 * SEP_STEMS * stem) / Math.hypot(Math.sin(YAW), Math.cos(YAW) * Math.sin(TILT));
+  const stem = measureStem(text);
+  const SPREAD = (2 * SEP_STEMS * stem) / Math.hypot(Math.sin(YAW), Math.cos(YAW) * Math.sin(TILT));
 
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let accent = '#3b82f6';
@@ -113,28 +95,29 @@ export async function initMonogramAvatar(canvas: HTMLCanvasElement): Promise<voi
     ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx!.clearRect(0, 0, cssW, cssH);
     const scale = Math.min(cssW, cssH) * 0.42;
-    const dot = (0.58 * STEP * scale) / (RASTER / 2);
+    const k = scale / (RASTER / 2); // raster px -> css px
     const cY = Math.cos(st.yaw);
     const sY = Math.sin(st.yaw);
     const cT = Math.cos(st.tilt);
     const sT = Math.sin(st.tilt);
-    const ax = cY * scale;
-    const ay = cT * scale;
-    const bx = -sY * sT * scale;
     ctx!.fillStyle = accent;
-    // back to front; yaw stays under a quarter turn so the order is fixed
+    ctx!.font = FONT;
+    ctx!.textAlign = 'center';
+    ctx!.textBaseline = 'middle';
+    // back to front; yaw stays under a quarter turn so the order is fixed.
+    // Each sheet is the word itself under the frame's affine: x scaled by the
+    // yaw, y by the tilt, and a shear that leans the top away.
     for (let l = 0; l < LAYERS; l++) {
       const zn = (l / (LAYERS - 1) - 0.5) * 2;
       const z = zn * st.spread;
-      const ox = cssW / 2 - z * sY * scale - dot / 2;
-      const oy = cssH / 2 - z * cY * sT * scale - dot / 2;
+      const ox = cssW / 2 - z * sY * scale;
+      const oy = cssH / 2 - z * cY * sT * scale;
+      ctx!.setTransform(dpr * cY * k, dpr * -sY * sT * k, 0, dpr * cT * k, dpr * ox, dpr * oy);
       ctx!.globalAlpha = A0 * (1 - st.s) + st.s * (0.72 + 0.23 * zn);
-      for (let i = 0; i < pts.length; i += 2) {
-        const x = pts[i]!;
-        ctx!.fillRect(ox + x * ax, oy + pts[i + 1]! * ay + x * bx, dot, dot);
-      }
+      ctx!.fillText(text, 0, 0);
     }
     ctx!.globalAlpha = 1;
+    ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   const rest = () => render(state(Infinity));

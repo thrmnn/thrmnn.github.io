@@ -6,6 +6,7 @@
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { inflateSync } from 'node:zlib';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 
 const DIST = process.env.DIST || 'dist';
 
@@ -24,6 +25,7 @@ const groups = {
   artifact_caption: [],
   contrast: [],
   og_dimensions: [],
+  csp: [],
 };
 const fail = (group, m) => { groups[group].push(m); };
 const must = (group, cond, m) => { if (!cond) fail(group, m); };
@@ -449,6 +451,45 @@ if (existsSync(ogPath)) {
     ogWidth === 1200 && ogHeight === 630,
     `dist/og-default.png is ${ogWidth}x${ogHeight}, expected 1200x630`,
   );
+}
+
+// 12. CSP script-src gate — no 'unsafe-inline' anywhere, and every inline
+//     <script> (JSON-LD excluded: it's data, never executed) must have its
+//     exact source hashed into that same page's CSP meta. Hashing the actual
+//     rendered bytes — not trusting BaseLayout's own hash math — is what
+//     catches drift between the script a page ships and the hash that's
+//     supposed to allow it.
+for (const f of htmlFiles) {
+  const html = readFileSync(f, 'utf8');
+  const cspMatch = html.match(/<meta\s+http-equiv="Content-Security-Policy"\s+content="([^"]*)"/i);
+  if (!cspMatch) {
+    // Generated stub redirect pages (e.g. a renamed-slug 301) carry no
+    // BaseLayout and no <script> at all — nothing for a CSP to gate.
+    if (/<script[\s>]/i.test(html)) fail('csp', `${f}: no CSP meta tag found`);
+    continue;
+  }
+  const csp = cspMatch[1];
+  const scriptSrcMatch = csp.match(/script-src\s+([^;]+)/i);
+  const scriptSrc = scriptSrcMatch ? scriptSrcMatch[1] : '';
+  if (!scriptSrcMatch) {
+    fail('csp', `${f}: CSP has no script-src directive`);
+  } else if (/'unsafe-inline'/.test(scriptSrc)) {
+    fail('csp', `${f}: script-src still contains 'unsafe-inline' → "${scriptSrc.trim()}"`);
+  }
+  for (const m of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/gi)) {
+    const attrs = m[1];
+    const content = m[2];
+    if (/\bsrc\s*=/.test(attrs)) continue; // external file — nothing inline to hash
+    if (/type\s*=\s*"application\/ld\+json"/i.test(attrs)) continue; // data, not executed
+    if (!content.trim()) continue; // empty tag, nothing to execute
+    const hash = createHash('sha256').update(content, 'utf8').digest('base64');
+    if (!scriptSrc.includes(`'sha256-${hash}'`)) {
+      fail(
+        'csp',
+        `${f}: inline <script${attrs}> (${content.length} chars) has no matching 'sha256-${hash}' in script-src → "${scriptSrc.trim()}"`,
+      );
+    }
+  }
 }
 
 const totalErrors = Object.values(groups).reduce((s, a) => s + a.length, 0);

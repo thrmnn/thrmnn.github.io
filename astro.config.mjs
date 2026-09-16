@@ -16,6 +16,12 @@ export default defineConfig({
   output: 'static',
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // Every component <script> ships as an external file instead of being
+      // inlined below Vite's default 4KB threshold — required so script-src
+      // can drop 'unsafe-inline' (only the anti-FOUC script stays inline, hashed).
+      assetsInlineLimit: 0,
+    },
   },
   markdown: {
     shikiConfig: {

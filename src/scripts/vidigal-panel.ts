@@ -451,18 +451,24 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     }
   });
 
-  new IntersectionObserver(
-    (entries) => {
-      // document.hidden gates the animation loop, never whether we draw:
-      // a headless or background render must still paint the cloud
-      visible = entries[0]!.isIntersecting;
-      if (visible) {
-        measure();
-        kick();
-      }
-    },
-    { threshold: 0.15 },
-  ).observe(canvas);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(
+      (entries) => {
+        // document.hidden gates the animation loop, never whether we draw:
+        // a headless or background render must still paint the cloud
+        visible = entries[0]!.isIntersecting;
+        if (visible) {
+          measure();
+          kick();
+        }
+      },
+      { threshold: 0.15 },
+    ).observe(canvas);
+  } else {
+    // No IO: nothing will ever flip `visible`, so start the panel now.
+    visible = true;
+    kick();
+  }
 
   // Paint once, immediately, without waiting for any observer. The reveal and
   // the rotation are enhancements on top of a frame that is already correct;

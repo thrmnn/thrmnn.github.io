@@ -1,8 +1,10 @@
 ---
+import { createHash } from 'node:crypto';
 import { base } from '../data/base';
 import '../styles/global.css';
 import { siteConfig } from '../data/site';
 import { author } from '../data/author';
+import { themeScript, introScript } from '../data/inlineScripts';
 
 interface Props {
   title?: string;
@@ -66,6 +68,13 @@ const jsonLd = {
       "Computer vision and MLOps at Roboat (MIT spinoff) as its first intern; research fellow at MIT Senseable City Lab Rio, working on morphometrics of informal urban form; research assistant at EPFL VITA Lab; visiting researcher at IRI (CSIC-UPC).",
   },
 };
+
+// Every is:inline script's exact source text, hashed here and rendered
+// verbatim from the same constant in inlineScripts.ts — hash and bytes
+// can't drift apart. JSON-LD is data, not executed script, so it needs none.
+const inlineScriptCsp = [themeScript, introScript]
+  .map((s) => `'sha256-${createHash('sha256').update(s).digest('base64')}'`)
+  .join(' ');
 ---
 
 <!doctype html>
@@ -73,22 +82,11 @@ const jsonLd = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'" />
+    <meta http-equiv="Content-Security-Policy" content={`default-src 'self'; script-src 'self' ${inlineScriptCsp}; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'`} />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Anti-FOUC: set data-theme synchronously before first paint -->
-    <script is:inline>
-      (function () {
-        var stored = localStorage.getItem('theme');
-        if (stored === 'light' || stored === 'dark') {
-          document.documentElement.setAttribute('data-theme', stored);
-        }
-        // When no stored preference, let :root / @media (prefers-color-scheme)
-        // in CSS handle it — no data-theme attribute needed.
-        // Arm the scroll-reveal system (CSS only hides [data-reveal] once set).
-        document.documentElement.classList.add('reveal-ready');
-      })();
-    </script>
+    <script is:inline set:html={themeScript} />
 
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />

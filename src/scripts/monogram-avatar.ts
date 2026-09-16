@@ -160,17 +160,25 @@ export async function initMonogramAvatar(canvas: HTMLCanvasElement): Promise<voi
     if (!playing) rest();
   }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
-  const io: IntersectionObserver = new IntersectionObserver(
-    (entries) => {
-      if (!entries[0]!.isIntersecting) return;
-      io.disconnect();
-      // the wrapper's scroll-reveal owns the entry; the gesture waits for it
-      const wrap = canvas.closest('[data-reveal]');
-      if (wrap && getComputedStyle(wrap).opacity !== '1') {
-        wrap.addEventListener('transitionend', start, { once: true });
-      } else start();
-    },
-    { threshold: 0.6 },
-  );
-  io.observe(canvas);
+  // the wrapper's scroll-reveal owns the entry; the gesture waits for it
+  const armStart = () => {
+    const wrap = canvas.closest('[data-reveal]');
+    if (wrap && getComputedStyle(wrap).opacity !== '1') {
+      wrap.addEventListener('transitionend', start, { once: true });
+    } else start();
+  };
+
+  if ('IntersectionObserver' in window) {
+    const io: IntersectionObserver = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0]!.isIntersecting) return;
+        io.disconnect();
+        armStart();
+      },
+      { threshold: 0.6 },
+    );
+    io.observe(canvas);
+  } else {
+    armStart();
+  }
 }

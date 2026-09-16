@@ -4,6 +4,7 @@
 // the whole mark up-left so it appears to dock into the header's monogram
 // slot. View Transitions API where available; CSS fallback otherwise.
 // localStorage-gated — plays once per browser, not once per tab/session.
+import { introScript } from '../../data/inlineScripts';
 ---
 
 <div id="intro" class="intro" aria-hidden="true" data-stage="hidden">
@@ -75,26 +76,4 @@
   }
 </style>
 
-<script is:inline>
-  (() => {
-    if (localStorage.getItem('intro-played') === '1') return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      localStorage.setItem('intro-played', '1');
-      return;
-    }
-    const el = document.getElementById('intro');
-    if (!el) return;
-    // Hold while assets paint, then play. dock's transform transition is
-    // 520ms (see .intro-mark below); fade is scheduled right as it completes
-    // so there's no dead air. Total settle->hidden stays under 1s.
-    requestAnimationFrame(() => {
-      el.setAttribute('data-stage', 'settle');
-      setTimeout(() => el.setAttribute('data-stage', 'dock'), 150);
-      setTimeout(() => el.setAttribute('data-stage', 'fade'), 670);
-      setTimeout(() => {
-        el.setAttribute('data-stage', 'hidden');
-        localStorage.setItem('intro-played', '1');
-      }, 990);
-    });
-  })();
-</script>
+<script is:inline set:html={introScript} />

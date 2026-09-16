@@ -26,6 +26,9 @@ const ringVars = worldStripPlaces
         </a>
       ))}
     </svg>
+    {worldStripPlaces.map((p) => (
+      <span class="route-dot" style={`left: var(--${p.id}-x); top: var(--${p.id}-y); ${ringVars}`} aria-hidden="true"></span>
+    ))}
     <div class="route-ring" style={ringVars} aria-hidden="true"></div>
   </div>
   <nav class="route-names" aria-label="Jump to a research location">
@@ -89,6 +92,17 @@ const ringVars = worldStripPlaces
     fill: var(--color-accent);
   }
 
+  /* the places at rest: a dot in the ink, sized in pixels so it survives any
+     map size (an SVG circle in viewBox units vanishes at strip scale) */
+  .route-dot {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-text-muted);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
   .route-ring {
     position: absolute;
     left: 0;
@@ -105,7 +119,18 @@ const ringVars = worldStripPlaces
   .route-strip[data-active='amsterdam'] .route-ring { opacity: 1; left: var(--amsterdam-x); top: var(--amsterdam-y); }
   .route-strip[data-active='stata'] .route-ring { opacity: 1; left: var(--stata-x); top: var(--stata-y); }
   @media (prefers-reduced-motion: no-preference) {
-    .route-ring {
+    /* the places at rest: a dot in the ink, sized in pixels so it survives any
+     map size (an SVG circle in viewBox units vanishes at strip scale) */
+  .route-dot {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-text-muted);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .route-ring {
       transition: left 400ms var(--ease-out), top 400ms var(--ease-out), opacity 200ms var(--ease-out);
     }
   }

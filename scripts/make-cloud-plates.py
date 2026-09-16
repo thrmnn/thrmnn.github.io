@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Square card plates for the two research projects, drawn from the point
-clouds the site already ships (public/data/*.bin, int8 x, int8 y, uint8 z,
-uint8 category) with the same oblique projection the live panel uses. No
+clouds the site already ships (public/data/*.bin, v2 or v3 point format, see
+the sidecar) with the same oblique projection the live panel uses. No
 overlay, no readout. Host tooling (Pillow), run by hand; outputs committed.
 
     python3 scripts/make-cloud-plates.py
 """
 import math
+import json
 import struct
 from pathlib import Path
 
@@ -42,10 +43,19 @@ def project(pts):
 
 for stem, out in PLATES.items():
     raw = (ROOT / "public/data" / f"{stem}.bin").read_bytes()
+    meta = json.loads((ROOT / "public/data" / f"{stem}.json").read_text())
+    stride = meta.get("stride", 4)
     pts = []
-    for i in range(len(raw) // 4):
-        x, y, z, cat = struct.unpack_from("bbBB", raw, i * 4)
-        pts.append((x / 127, y / 127, z / 255, cat))
+    for i in range(len(raw) // stride):
+        if stride == 6:
+            x, y, z, cat = struct.unpack_from("<hhBB", raw, i * 6)
+            x, y, cat = x / 32767, y / 32767, cat & 15
+        else:
+            x, y, z, cat = struct.unpack_from("bbBB", raw, i * 4)
+            x, y = x / 127, y / 127
+        if cat == 15:
+            continue
+        pts.append((x, y, z / 255, cat))
     proj = sorted(project(pts), key=lambda p: p[2])
     xs = sorted(p[0] for p in proj)
     ys = sorted(p[1] for p in proj)
@@ -64,8 +74,11 @@ for stem, out in PLATES.items():
         if cat == 1:
             col = tuple(int(BG[k] + (ACCENT[k] - BG[k]) * (0.45 + 0.55 * t)) for k in range(3))
             r = 2.2
+        elif cat == 2:
+            col = tuple(int(BG[k] + (GROUND[k] - BG[k]) * (0.55 + 0.3 * t)) for k in range(3))
+            r = 1.6
         else:
-            col = tuple(int(BG[k] + (GROUND[k] - BG[k]) * (0.25 + 0.35 * t)) for k in range(3))
+            col = tuple(int(BG[k] + (GROUND[k] - BG[k]) * (0.2 + 0.3 * t) * (0.7 if cat == 3 else 1)) for k in range(3))
             r = 1.3
         d.ellipse([px - r, py - r, px + r, py + r], fill=col)
     out.parent.mkdir(parents=True, exist_ok=True)

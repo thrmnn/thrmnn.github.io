@@ -137,6 +137,10 @@ def main() -> int:
     n_noise = int((~keep_cell).sum())
     cx, cy, ci, cj = cx[keep_cell], cy[keep_cell], ci[keep_cell], cj[keep_cell]
     cz = smooth[cj, ci]
+    # a crown top is anywhere in its cell; drawing every one at the cell centre
+    # weaves a lattice through the crown, so each sits at a random spot in its cell
+    cx = cx + RNG.uniform(-0.5, 0.5, len(cx)) * CANOPY_CELL
+    cy = cy + RNG.uniform(-0.5, 0.5, len(cy)) * CANOPY_CELL
 
     bm = c == 6
     # the 90th percentile, not the max: one chimney return would otherwise spike a roof cell

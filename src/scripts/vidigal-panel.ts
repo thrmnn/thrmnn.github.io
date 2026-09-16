@@ -469,7 +469,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       tc.clearRect(0, 0, cssW, cssH);
       // the ink tone is the shadow on a light page and the light on a dark one
       const inkIsLight = luminance(bg) < 0.5;
-      tc.lineWidth = 0.7;
+      tc.lineWidth = 0.45;
       tc.lineJoin = 'round';
       const nc = terrain.length / 4;
       const cd = cellDepth.length === nc ? cellDepth : (cellDepth = new Float32Array(nc));
@@ -497,7 +497,10 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
         const f = cellFade[q]!;
         if (f <= 0) continue;
         // a roof is a flat slab in the ink tone; ground takes its hillshade
-        const tone = cellCat[q] === 2 ? 0.62 : 0.05 + 0.6 * (inkIsLight ? sh : 1 - sh) * (pass === 0 ? 0.75 : 1);
+        // ground: a floor so the surface never vanishes into the page, then the
+        // hillshade; the context ring is lighter; a roof is a flat slab in the ink
+        const lit = inkIsLight ? sh : 1 - sh;
+        const tone = cellCat[q] === 2 ? 0.7 : (inkIsLight ? 0.16 : 0.12) + 0.55 * lit * (pass === 0 ? 0.7 : 1);
         const col = mix(bg, ground, tone);
         tc.fillStyle = col;
         tc.strokeStyle = col; // the stroke closes the hairline seams between cells

@@ -1,4 +1,5 @@
 ---
+import { base } from '../data/base';
 import '../styles/global.css';
 import { siteConfig } from '../data/site';
 import { author } from '../data/author';
@@ -14,7 +15,7 @@ interface Props {
 const { title, description, image, ogType = 'website', articleJsonLd } = Astro.props;
 const pageTitle = title ? `${title} — ${siteConfig.title}` : siteConfig.title;
 const pageDescription = description || siteConfig.description;
-const canonicalUrl = new URL(Astro.url.pathname, siteConfig.url).href;
+const canonicalUrl = new URL(Astro.url.pathname.slice(base.length), siteConfig.url).href;
 const ogImage = new URL(image || siteConfig.ogImage, siteConfig.url).href;
 
 const socialUrls = author.social
@@ -94,9 +95,9 @@ const jsonLd = {
     <meta name="author" content={author.name} />
 
     <link rel="canonical" href={canonicalUrl} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <link rel="apple-touch-icon" href={`${base}/apple-touch-icon.png`} />
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href={`${base}/rss.xml`} />
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
@@ -123,7 +124,7 @@ const jsonLd = {
     )}
 
     <!-- Font (self-hosted Space Grotesk; latin preloaded, latin-ext lazy via unicode-range) -->
-    <link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={`${base}/fonts/space-grotesk-latin.woff2`} as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <slot />

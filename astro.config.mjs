@@ -9,6 +9,7 @@ export default defineConfig({
     '/projects/urban-digital-twin/': '/projects/urban-morphometrics/',
   },
   site: 'https://theoalessandro.com',
+  base: process.env.PREVIEW_BASE || '/',
   integrations: [mdx(), sitemap()],
   output: 'static',
   vite: {

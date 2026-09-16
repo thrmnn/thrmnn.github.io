@@ -1,4 +1,5 @@
 ---
+import { base } from '../data/base';
 import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/ui/Button.astro';
 import SocialIcon from '../components/ui/SocialIcon.astro';
@@ -75,7 +76,7 @@ const mailto = `mailto:${author.email}`;
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {proofProjects.map((p, i) => (
           <a
-            href={`/projects/${p.id}/`}
+            href={`${base}/projects/${p.id}/`}
             class="proof-plate"
             data-reveal
             style={`--reveal-d: ${i + 1};`}
@@ -88,7 +89,7 @@ const mailto = `mailto:${author.email}`;
         ))}
       </div>
       <p class="mt-8">
-        <a href="/projects/" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">All work →</a>
+        <a href={`${base}/projects/`} class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">All work →</a>
       </p>
     </div>
   </section>
@@ -131,7 +132,7 @@ const mailto = `mailto:${author.email}`;
           <p class="text-text-secondary leading-relaxed mb-4" set:html={paragraph} />
         ))}
         <p class="mt-2">
-          <a href="/cv/" class="inline-block py-3 -my-3 text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)] underline-offset-4 underline decoration-1">Full CV →</a>
+          <a href={`${base}/cv/`} class="inline-block py-3 -my-3 text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)] underline-offset-4 underline decoration-1">Full CV →</a>
         </p>
       </div>
       </div>

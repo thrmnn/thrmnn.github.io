@@ -1,8 +1,9 @@
 ---
+import { base } from '../../data/base';
 import { navLinks, mobileNavLinks } from '../../data/navigation';
 import ThemeToggle from '../ui/ThemeToggle.astro';
 
-const currentPath = Astro.url.pathname;
+const currentPath = Astro.url.pathname.slice(base.length) || '/';
 const isActive = (href: string) =>
   href === currentPath ||
   (href !== '/' && !href.startsWith('/#') && currentPath.startsWith(href));
@@ -26,7 +27,7 @@ const routeLabel =
     <div class="header-inner">
       <!-- Left: monogram (also the Home affordance) + live readout -->
       <div class="header-brand">
-        <a href="/" aria-label="Théo Alessandro Hermann — Home" class="monogram-link">
+        <a href={`${base}/`} aria-label="Théo Alessandro Hermann — Home" class="monogram-link">
           <span class="monogram" aria-hidden="true">
             <span class="mono-ch" style="--i:0">T</span>
             <span class="mono-ch" style="--i:1">·</span>
@@ -46,7 +47,7 @@ const routeLabel =
           {navLinks.map((link) => (
             <li class={link.label === 'Contact' ? 'nav-keep' : undefined}>
               <a
-                href={link.href}
+                href={base + link.href}
                 class="nav-link"
                 {...(isActive(link.href) ? { 'aria-current': 'page' } : {})}
               >
@@ -85,7 +86,7 @@ const routeLabel =
       {mobileNavLinks.map((link) => (
         <li>
           <a
-            href={link.href}
+            href={base + link.href}
             class="nav-link"
             {...(isActive(link.href) ? { 'aria-current': 'page' } : {})}
           >

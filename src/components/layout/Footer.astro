@@ -1,4 +1,5 @@
 ---
+import { base } from '../../data/base';
 import { footerLinks } from '../../data/navigation';
 import { author } from '../../data/author';
 
@@ -9,7 +10,7 @@ const monogramLetters = author.monogram.replace(/[^A-Za-z]/g, '').split('');
 <footer class="border-t border-border mt-24">
   <div class="mx-auto max-w-[var(--max-w-content)] px-6 py-12">
     <div class="flex items-baseline gap-4 flex-wrap mb-6">
-      <a href="/" class="footer-monogram" aria-label="Home">
+      <a href={`${base}/`} class="footer-monogram" aria-label="Home">
         {monogramLetters.map((char) => <span>{char}</span>)}
       </a>
       <nav class="flex-1 flex justify-center gap-6 flex-wrap min-w-0">

@@ -1,4 +1,5 @@
 ---
+import { base } from '../../data/base';
 import PageLayout from '../../layouts/PageLayout.astro';
 import { getCollection, render } from 'astro:content';
 import { author } from '../../data/author';
@@ -47,7 +48,7 @@ const articleJsonLd = {
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
       <!-- Header -->
       <div class="mb-10">
-        <a href="/projects/" class="text-sm text-text-muted hover:text-text-secondary mb-4 inline-block">
+        <a href={`${base}/projects/`} class="text-sm text-text-muted hover:text-text-secondary mb-4 inline-block">
           ← Back to projects
         </a>
         <h1 class="text-3xl font-bold text-text-primary mt-2">{project.data.title}</h1>
@@ -73,7 +74,7 @@ const articleJsonLd = {
       {project.data.image && (
         <div class="mb-10 rounded-lg overflow-hidden border border-border">
           <img
-            src={project.data.image}
+            src={base + project.data.image}
             alt={project.data.imageAlt ?? project.data.title}
             width={project.data.imageWidth ?? 1200}
             height={project.data.imageHeight ?? 630}
@@ -127,13 +128,13 @@ const articleJsonLd = {
       {(prev || next) && (
         <nav class="pager mt-16 pt-8 border-t border-border grid grid-cols-2 gap-3 sm:gap-4" aria-label="More projects">
           {prev ? (
-            <a href={`/projects/${prev.id}/`} class="pager-cell group/p">
+            <a href={`${base}/projects/${prev.id}/`} class="pager-cell group/p">
               <span class="pager-eyebrow">&larr;&nbsp;&nbsp;Previous</span>
               <span class="pager-title">{prev.title}</span>
             </a>
           ) : <span></span>}
           {next ? (
-            <a href={`/projects/${next.id}/`} class="pager-cell pager-cell-end group/p">
+            <a href={`${base}/projects/${next.id}/`} class="pager-cell pager-cell-end group/p">
               <span class="pager-eyebrow">Next&nbsp;&nbsp;&rarr;</span>
               <span class="pager-title">{next.title}</span>
             </a>

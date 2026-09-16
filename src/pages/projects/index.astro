@@ -1,4 +1,6 @@
 ---
+import { base } from '../../data/base';
+const withBase = (p?: string) => (p ? base + p : p);
 import PageLayout from '../../layouts/PageLayout.astro';
 import ProjectCard from '../../components/ui/ProjectCard.astro';
 import { getCollection } from 'astro:content';
@@ -28,9 +30,9 @@ const ordered = [...featured, ...rest];
             metric={project.data.metric}
             tags={project.data.tags}
             detail={project.data.summary}
-            href={`/projects/${project.id}/`}
+            href={`${base}/projects/${project.id}/`}
             gradient={project.data.gradient}
-            image={project.data.cardImage ?? project.data.image}
+            image={withBase(project.data.cardImage ?? project.data.image)}
             index={i}
           />
         ))}

@@ -139,22 +139,44 @@ def main() -> int:
     cz = smooth[cj, ci]
 
     bm = c == 6
-    bx, by, bz = per_cell(x[bm], y[bm], z[bm], BUILDING_CELL, np.max)
+    # the 90th percentile, not the max: one chimney return would otherwise spike a roof cell
+    bx, by, bz = per_cell(x[bm], y[bm], z[bm], BUILDING_CELL, lambda v: np.percentile(v, 90))
     n_ground_cells, n_canopy_cells, n_building_cells = len(gx), len(cx), len(bx)
-    if len(bx) > N_BUILDING:
-        i = RNG.choice(len(bx), N_BUILDING, replace=False)
-        bx, by, bz = bx[i], by[i], bz[i]
-    if len(gx) > N_GROUND:
-        i = RNG.choice(len(gx), N_GROUND, replace=False)
-        gx, gy, gz = gx[i], gy[i], gz[i]
     if len(cx) > N_CANOPY:
         i = RNG.choice(len(cx), N_CANOPY, replace=False)
         cx, cy, cz = cx[i], cy[i], cz[i]
 
-    ax = np.concatenate([gx, cx, bx])
-    ay = np.concatenate([gy, cy, by])
-    az = np.concatenate([gz, cz, bz])
-    cat = np.concatenate([np.zeros(len(gx), np.uint8), np.ones(len(cx), np.uint8), np.full(len(bx), 2, np.uint8)])
+    # Ground and roofs ship as full row-major grids so the renderer draws
+    # them as surfaces: the quay is a faint plane with the canal as its gap,
+    # each roof a slab. Empty cells are void (15); nothing is interpolated.
+    def as_grid(px, py, pz, cell):
+        nxg, nyg = int((X1 - X0) // cell) + 1, int((Y1 - Y0) // cell) + 1
+        g = np.full((nyg, nxg), np.nan)
+        g[((py - Y0) // cell).astype(int), ((px - X0) // cell).astype(int)] = pz
+        gx_ = X0 + (np.arange(nxg) + 0.5) * cell
+        gy_ = Y0 + (np.arange(nyg) + 0.5) * cell
+        X, Y = np.meshgrid(gx_, gy_)
+        return X.ravel(), Y.ravel(), g.ravel(), (nxg, nyg)
+    GX, GY, GZ, (gnx, gny) = as_grid(gx, gy, gz, GROUND_CELL)
+    RX, RY, RZ, (rnx, rny) = as_grid(bx, by, bz, BUILDING_CELL)
+    gvalid, rvalid = np.isfinite(GZ), np.isfinite(RZ)
+    # hillshade of the ground plane (the quays are flat, so this is near-uniform and light)
+    gg = np.where(gvalid, GZ, np.nanmedian(GZ)).reshape(gny, gnx)
+    dzdx, dzdy = np.gradient(gg, GROUND_CELL, axis=1), -np.gradient(gg, GROUND_CELL, axis=0)
+    slope = np.arctan(np.hypot(dzdx, dzdy)); aspect = np.arctan2(dzdy, -dzdx)
+    alt, azm = np.radians(45), np.radians(315)
+    gshade = np.clip(np.sin(alt) * np.cos(slope) + np.cos(alt) * np.sin(slope) * np.cos(azm - np.pi / 2 - aspect), 0, 1).ravel()
+
+    ax = np.concatenate([GX, RX, cx])
+    ay = np.concatenate([GY, RY, cy])
+    az = np.concatenate([np.nan_to_num(GZ, nan=np.nanmin(gz)), np.nan_to_num(RZ, nan=np.nanmin(gz)), cz])
+    shade = np.concatenate([np.round(gshade * 15), np.full(len(RX), 8), np.zeros(len(cx))]).astype(np.uint8)
+    cat = np.concatenate([np.where(gvalid, 0, 15), np.where(rvalid, 2, 15), np.ones(len(cx))]).astype(np.uint8)
+    cat = (cat & 0x0F) | (shade << 4)
+    grids = [
+        {"name": "ground", "cat": 0, "step_m": GROUND_CELL, "nx": int(gnx), "ny": int(gny), "offset": 0},
+        {"name": "roof", "cat": 2, "step_m": BUILDING_CELL, "nx": int(rnx), "ny": int(rny), "offset": int(len(GX))},
+    ]
 
     mx, my = (X0 + X1) / 2, (Y0 + Y1) / 2
     scale = max(X1 - X0, Y1 - Y0) / 2
@@ -176,24 +198,26 @@ def main() -> int:
         "site": "Jordaan, Amsterdam",
         "crs": "EPSG:28992",
         "bbox_m": {"x": [X0, X1], "y": [Y0, Y1]},
-        "encoding": "interleaved int8 x, int8 y, uint8 z, uint8 category (0=ground, 1=canopy, 2=building roof); 4 bytes/point",
+        "encoding": "interleaved int16 x, int16 y (scene units /32767), uint8 z, uint8 cat (low nibble: 0 ground cell, 1 canopy, 2 roof cell, 15 void; high nibble: hillshade 0..15 for ground); 6 bytes/point",
+        "terrain_grid": grids,
         "count": int(len(ax)),
-        "n_ground": int(len(gx)),
+        "n_ground": int(gvalid.sum()),
         "n_canopy": int(len(cx)),
-        "n_building": int(len(bx)),
+        "n_building": int(rvalid.sum()),
         "cells_before_thinning": {"ground": int(n_ground_cells), "canopy": int(n_canopy_cells), "building": int(n_building_cells)},
         "z_meters": {"min": round(z_min, 2), "max": round(z_max, 2), "datum": "NAP"},
         "assumptions": [
             f"ground = median z of classification 2 per {GROUND_CELL:g} m cell",
             f"canopy = highest classification-1 return per {CANOPY_CELL:g} m cell, at least {CANOPY_MIN_HAG:g} m above the local ground median, then a 3 x 3 mean over occupied cells; AHN does not label vegetation, so this is height above ground, not a species or leaf attribute",
-            f"building = highest classification-6 return per {BUILDING_CELL:g} m cell",
+            f"building = 90th percentile of classification-6 returns per {BUILDING_CELL:g} m cell",
             "water gives the laser no return, so the canal is the gap in the ground; bridges (26) excluded",
             f"{n_capped} returns above {Z_CAP_M:g} m NAP dropped (a single spire), so the houses keep their proportions",
-            "uniform random thinning to the point budget; no derived quantity computed",
+            "ground and roof cells ship as full grids with empty cells marked void and are drawn as surfaces; canopy tops are thinned uniformly to the point budget; no derived quantity computed",
+            f"canopy noise filter: a canopy cell keeps only with at least {MIN_NEIGHBOURS} of 8 occupied neighbours, in a patch of at least {MIN_PATCH_CELLS} cells, and not within {FACADE_CELLS} cells of a roof at or above its height ({n_noise} cells dropped)",
         ],
     }
     OUT_META.write_text(json.dumps(meta, indent=2) + "\n")
-    print(f"wrote {OUT_BIN} ({len(blob)} B, {len(ax)} points: {len(gx)} ground, {len(cx)} canopy, {len(bx)} building; z {z_min:.1f}..{z_max:.1f} m)")
+    print(f"wrote {OUT_BIN} ({len(blob)} B, {len(ax)} points: {int(gvalid.sum())} ground cells of {gnx}x{gny}, {len(cx)} canopy ({n_noise} noise cells dropped), {int(rvalid.sum())} roof cells of {rnx}x{rny}; z {z_min:.1f}..{z_max:.1f} m)")
     return 0
 
 

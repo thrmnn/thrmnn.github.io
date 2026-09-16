@@ -30,6 +30,7 @@ const SHOT: [number, number, number, number][] = [
 const SHOT_PERIOD_S = 42;
 const ALONG_REACH = 0.6;
 const TILT_FLOOR = 0.45;
+const ROOF_STEP = 0.14; // of the scene's z range, about 5 m in a 35 m clip
 const smooth = (u: number) => u * u * (3 - 2 * u);
 function camera(elapsed: number): { zoom: number; along: number; tiltOff: number } {
   const t = elapsed % SHOT_PERIOD_S;
@@ -53,6 +54,7 @@ interface Cloud {
   shade: Float32Array;
   terrain: Uint32Array; // 4 point indices per terrain cell, context ring first, then the core
   cellFade: Float32Array; // 1 inside, falling to 0 at the context ring's outer edge
+  cellCat: Uint8Array; // 0 ground, 2 roof, 3 context ring
   nCtxCells: number;
   ax0: number;
   ax1: number;
@@ -75,14 +77,17 @@ function pct(sorted: Float64Array, q: number): number {
 // Sidecar order is core first, context second; drawing order is the reverse:
 // the coarse context surface goes down first and fades at its outer edge, the
 // core is painted over it, so the two never seam and the clip never shows.
-function terrainCells(rings: string, cat: Uint8Array): { cells: Uint32Array; fade: Float32Array; nCtx: number } {
+function terrainCells(rings: string, cat: Uint8Array, z: Float32Array): { cells: Uint32Array; fade: Float32Array; cellCat: Uint8Array; nCtx: number } {
   const out: number[] = [];
   const fade: number[] = [];
+  const cc: number[] = [];
   const parsed = rings.split(';').map((r) => r.split(',').map(Number) as [number, number, number]);
   const EDGE = 5; // cells over which the context ring dissolves
+  // context cells (category 3) first, so they can be drawn as one underlay
+  const ordered = [...parsed].sort((r1, r2) => (cat[r2[2]] === 3 ? 1 : 0) - (cat[r1[2]] === 3 ? 1 : 0));
   let nCtx = 0;
-  [...parsed].reverse().forEach(([nx, ny, off], k) => {
-    const isCtx = parsed.length > 1 && k === 0;
+  for (const [nx, ny, off] of ordered) {
+    const isCtx = cat[off] === 3;
     for (let j = 0; j < ny - 1; j++) {
       for (let i = 0; i < nx - 1; i++) {
         const a = off + j * nx + i;
@@ -90,13 +95,17 @@ function terrainCells(rings: string, cat: Uint8Array): { cells: Uint32Array; fad
         const c = a + nx + 1;
         const d = a + nx;
         if (cat[a] === 15 || cat[b] === 15 || cat[c] === 15 || cat[d] === 15) continue;
+        // a roof cell spanning more than ROOF_STEP of the scene's height is a
+        // gable meeting a lower roof: draw the two roofs, not a wall between them
+        if (cat[a] === 2 && Math.max(z[a]!, z[b]!, z[c]!, z[d]!) - Math.min(z[a]!, z[b]!, z[c]!, z[d]!) > ROOF_STEP) continue;
         out.push(a, b, c, d);
+        cc.push(cat[a]!);
         fade.push(isCtx ? Math.min(1, Math.min(i, nx - 2 - i, j, ny - 2 - j) / EDGE) : 1);
       }
     }
     if (isCtx) nCtx = out.length / 4;
-  });
-  return { cells: Uint32Array.from(out), fade: Float32Array.from(fade), nCtx };
+  }
+  return { cells: Uint32Array.from(out), fade: Float32Array.from(fade), cellCat: Uint8Array.from(cc), nCtx };
 }
 
 async function load(url: string, stride: number, rings: string): Promise<Cloud> {
@@ -128,7 +137,7 @@ async function load(url: string, stride: number, rings: string): Promise<Cloud> 
       cat[i] = view.getUint8(o + 3);
     }
   }
-  const { cells: terrain, fade: cellFade, nCtx: nCtxCells } = rings ? terrainCells(rings, cat) : { cells: new Uint32Array(0), fade: new Float32Array(0), nCtx: 0 };
+  const { cells: terrain, fade: cellFade, cellCat, nCtx: nCtxCells } = rings ? terrainCells(rings, cat, z) : { cells: new Uint32Array(0), fade: new Float32Array(0), cellCat: new Uint8Array(0), nCtx: 0 };
   // framing, centre and axis come from the subject and its own ground (0, 1, 2);
   // the context ring (3) runs past the frame on purpose and void (15) is nothing
   const core: number[] = [];
@@ -192,7 +201,7 @@ async function load(url: string, stride: number, rings: string): Promise<Cloud> 
   for (const i of core) mz += z[i]!;
   mz /= core.length;
 
-  return { n, x, y, z, cat, shade, terrain, cellFade, nCtxCells, ax0, ax1, ay0, ay1, mx, my, mz, axis, reach };
+  return { n, x, y, z, cat, shade, terrain, cellFade, cellCat, nCtxCells, ax0, ax1, ay0, ay1, mx, my, mz, axis, reach };
 }
 
 // getComputedStyle returns unregistered custom properties as the token stream
@@ -445,7 +454,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
         ctx!.fill();
       }
     }
-    const { terrain, shade, cellFade, nCtxCells } = cloud;
+    const { terrain, shade, cellFade, cellCat, nCtxCells } = cloud;
     // The surface is the expensive pass (about 12k cells). It goes to its own
     // canvas every other frame and is blitted every frame; a one-frame lag
     // between the ground and the points is below what an eye can see.
@@ -487,7 +496,8 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
         const sh = (shade[a]! + shade[terrain[o + 2]!]!) * 0.5;
         const f = cellFade[q]!;
         if (f <= 0) continue;
-        const tone = 0.05 + 0.6 * (inkIsLight ? sh : 1 - sh) * (pass === 0 ? 0.75 : 1);
+        // a roof is a flat slab in the ink tone; ground takes its hillshade
+        const tone = cellCat[q] === 2 ? 0.62 : 0.05 + 0.6 * (inkIsLight ? sh : 1 - sh) * (pass === 0 ? 0.75 : 1);
         const col = mix(bg, ground, tone);
         tc.fillStyle = col;
         tc.strokeStyle = col; // the stroke closes the hairline seams between cells
@@ -513,7 +523,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     for (let k = 0; k < shown; k++) {
       const i = order[k]!;
       const c = cat[i]!;
-      if (c === 15 || (terrain.length && (c === 0 || c === 3))) continue;
+      if (c === 15 || (terrain.length && (c === 0 || c === 2 || c === 3))) continue;
       const d = (dArr[i]! - dmin) / span;
       // nearer points sit slightly stronger, which gives the cloud its form;
       // category 1 is the subject (rooftops, or crowns) in the accent, 0 is

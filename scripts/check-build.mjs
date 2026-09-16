@@ -26,6 +26,7 @@ const groups = {
   contrast: [],
   og_dimensions: [],
   csp: [],
+  orphans: [],
 };
 const fail = (group, m) => { groups[group].push(m); };
 const must = (group, cond, m) => { if (!cond) fail(group, m); };
@@ -489,6 +490,24 @@ for (const f of htmlFiles) {
         `${f}: inline <script${attrs}> (${content.length} chars) has no matching 'sha256-${hash}' in script-src → "${scriptSrc.trim()}"`,
       );
     }
+  }
+}
+
+// Every file under public/ ships to the world; each must be reached from a
+// built page, or be a platform file, or be the sidecar of a data file that is.
+{
+  const PUBLIC = 'public';
+  const platform = new Set(['CNAME', 'robots.txt']);
+  const corpus = walk(DIST)
+    .filter((f) => /\.(html|css|js|xml|json|txt|webmanifest)$/.test(f))
+    .map((f) => readFileSync(f, 'utf8'))
+    .join('\n');
+  const referenced = (rel) => corpus.includes(rel) || corpus.includes(rel.split('/').pop());
+  for (const f of walk(PUBLIC)) {
+    const rel = f.slice(PUBLIC.length).replace(/\\/g, '/');
+    if (platform.has(rel.slice(1)) || referenced(rel)) continue;
+    if (rel.endsWith('.json') && referenced(rel.replace(/\.json$/, '.bin'))) continue;
+    fail('orphans', `${rel} ships in public/ but no built page references it`);
   }
 }
 

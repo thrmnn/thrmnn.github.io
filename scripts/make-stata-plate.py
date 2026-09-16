@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Square card thumbnail for the ROS 2 triage project, drawn from the data
-the site already ships: public/data/stata-walls.bin (int8 x, y per point) and
-public/data/stata-replay.json (AMCL poses, int16, same frame). Walls in grey,
+kept as generator input, not shipped: scripts/assets/stata/stata-walls.bin (int8 x, y per point) and
+scripts/assets/stata/stata-replay.json (AMCL poses, int16, same frame). Walls in grey,
 the estimated path in green, nothing else. Host tooling (Pillow), run by hand
 like the resume; the output is committed.
 
@@ -14,8 +14,8 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).parent.parent
-WALLS = ROOT / "public" / "data" / "stata-walls.bin"
-REPLAY = ROOT / "public" / "data" / "stata-replay.json"
+WALLS = ROOT / "scripts" / "assets" / "stata" / "stata-walls.bin"
+REPLAY = ROOT / "scripts" / "assets" / "stata" / "stata-replay.json"
 OUT = ROOT / "public" / "projects" / "ros2-localization-triage" / "stata-plate.webp"
 
 S = 1200

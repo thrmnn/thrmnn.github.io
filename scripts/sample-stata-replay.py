@@ -8,13 +8,13 @@ the tool's fault-detector events. Nothing here is hand-typed: every count in
 the sidecar is computed from the three input files below.
 
 Outputs (stdlib only):
-    public/data/stata-walls.bin        — walls, same 4-byte/point format as
+    scripts/assets/stata/stata-walls.bin        — walls, same 4-byte/point format as
                                           sample-favela-pointcloud.py (int8 x,
                                           int8 y, uint8 z=0, uint8 cat=0).
-    public/data/stata-replay.json      — poses (int16, finer than the walls'
+    scripts/assets/stata/stata-replay.json      — poses (int16, finer than the walls'
                                           int8) + detector events, sharing the
                                           walls' affine frame.
-    public/data/stata-replay.meta.json — sidecar for the build-time caption.
+    scripts/assets/stata/stata-replay.meta.json — sidecar for the build-time caption.
 """
 from __future__ import annotations
 
@@ -25,9 +25,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
-OUT_WALLS_BIN = ROOT / "public" / "data" / "stata-walls.bin"
-OUT_REPLAY_JSON = ROOT / "public" / "data" / "stata-replay.json"
-OUT_META = ROOT / "public" / "data" / "stata-replay.meta.json"
+OUT_WALLS_BIN = ROOT / "scripts" / "assets" / "stata" / "stata-walls.bin"
+OUT_REPLAY_JSON = ROOT / "scripts" / "assets" / "stata" / "stata-replay.json"
+OUT_META = ROOT / "scripts" / "assets" / "stata" / "stata-replay.meta.json"
 
 # Same convention as the walls' int8 (value/127 -> [-1, 1]): poses use int16
 # so the trail renders at much finer resolution than the wall dots.

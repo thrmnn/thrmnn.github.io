@@ -35,7 +35,7 @@
     }
   ],
   "count": 15473,
-  "n_ground": 2651,
+  "n_ground": 2662,
   "n_canopy": 2856,
   "n_building": 2235,
   "cells_before_thinning": {
@@ -54,7 +54,7 @@
     "building = 90th percentile of classification-6 returns per 1.2 m cell",
     "water gives the laser no return, so the canal is the gap in the ground; bridges (26) excluded",
     "0 returns above 45 m NAP dropped (a single spire), so the houses keep their proportions",
-    "ground and roof cells ship as full grids with empty cells marked void and are drawn as surfaces; canopy tops are thinned uniformly to the point budget; no derived quantity computed",
+    "ground and roof cells ship as full grids with empty cells marked void and are drawn as surfaces (11 one-cell ground holes with 6+ occupied neighbours filled with their median); canopy tops are thinned uniformly to the point budget; no derived quantity computed",
     "canopy noise filter: a canopy cell keeps only with at least 5 of 8 occupied neighbours, in a patch of at least 12 cells, and not within 2 cells of a roof at or above its height (1053 cells dropped)"
   ]
 }

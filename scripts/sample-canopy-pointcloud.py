@@ -162,6 +162,16 @@ def main() -> int:
         X, Y = np.meshgrid(gx_, gy_)
         return X.ravel(), Y.ravel(), g.ravel(), (nxg, nyg)
     GX, GY, GZ, (gnx, gny) = as_grid(gx, gy, gz, GROUND_CELL)
+    # a quay cell under a crown often has no ground return; a hole with at
+    # least 6 of 8 occupied neighbours takes their median (one-cell infill,
+    # the only interpolation in the file), so the quay does not read as pitted
+    gg = GZ.reshape(gny, gnx)
+    padg = np.pad(gg, 1, constant_values=np.nan)
+    neigh = np.stack([padg[a:a + gny, b:b + gnx] for a in range(3) for b in range(3) if not (a == 1 and b == 1)])
+    holes = np.isnan(gg) & (np.isfinite(neigh).sum(axis=0) >= 6)
+    gg = np.where(holes, np.nanmedian(neigh, axis=0), gg)
+    n_holes = int(holes.sum())
+    GZ = gg.ravel()
     RX, RY, RZ, (rnx, rny) = as_grid(bx, by, bz, BUILDING_CELL)
     gvalid, rvalid = np.isfinite(GZ), np.isfinite(RZ)
     # hillshade of the ground plane (the quays are flat, so this is near-uniform and light)
@@ -216,7 +226,7 @@ def main() -> int:
             f"building = 90th percentile of classification-6 returns per {BUILDING_CELL:g} m cell",
             "water gives the laser no return, so the canal is the gap in the ground; bridges (26) excluded",
             f"{n_capped} returns above {Z_CAP_M:g} m NAP dropped (a single spire), so the houses keep their proportions",
-            "ground and roof cells ship as full grids with empty cells marked void and are drawn as surfaces; canopy tops are thinned uniformly to the point budget; no derived quantity computed",
+            f"ground and roof cells ship as full grids with empty cells marked void and are drawn as surfaces ({n_holes} one-cell ground holes with 6+ occupied neighbours filled with their median); canopy tops are thinned uniformly to the point budget; no derived quantity computed",
             f"canopy noise filter: a canopy cell keeps only with at least {MIN_NEIGHBOURS} of 8 occupied neighbours, in a patch of at least {MIN_PATCH_CELLS} cells, and not within {FACADE_CELLS} cells of a roof at or above its height ({n_noise} cells dropped)",
         ],
     }

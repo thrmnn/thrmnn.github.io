@@ -83,7 +83,8 @@ function terrainCells(rings: string, cat: Uint8Array, z: Float32Array): { cells:
   const fade: number[] = [];
   const cc: number[] = [];
   const parsed = rings.split(';').map((r) => r.split(',').map(Number) as [number, number, number]);
-  const EDGE = 5; // cells over which the context ring dissolves
+  const EDGE = 6; // cells over which a ground surface dissolves toward void
+  const CORE_EDGE = 4; // core cells that dissolve into the ring under them
   // context cells (category 3) first, so they can be drawn as one underlay
   const ordered = [...parsed].sort((r1, r2) => (cat[r2[2]] === 3 ? 1 : 0) - (cat[r1[2]] === 3 ? 1 : 0));
   let nCtx = 0;
@@ -134,7 +135,12 @@ function terrainCells(rings: string, cat: Uint8Array, z: Float32Array): { cells:
         out.push(a, b, c, d);
         cc.push(cat[a] === 2 && dz > WALL_STEP ? 4 : cat[a]!);
         const dv = Math.min(dist[j * nx + i]!, dist[j * nx + i + 1]!, dist[(j + 1) * nx + i]!, dist[(j + 1) * nx + i + 1]!);
-        fade.push(isGround ? Math.min(1, (dv + (isCtx ? 0 : 1)) / EDGE) : 1);
+        // the core also dissolves at its own grid edge, into the ring beneath it,
+        // so the change of cell size never shows as a seam; quadratic so the
+        // last cells are all but gone before the silhouette can step
+        const edgeD = isCtx ? 1e9 : Math.min(i, nx - 2 - i, j, ny - 2 - j);
+        const f = isGround ? Math.min(1, (dv + (isCtx ? 0 : 1)) / EDGE, (edgeD + 1) / CORE_EDGE) : 1;
+        fade.push(f * f);
       }
     }
     if (isCtx) nCtx = out.length / 4;

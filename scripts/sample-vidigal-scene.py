@@ -37,7 +37,7 @@ N_BUILDING = 4600   # rooftop outline points, as today
 RNG = np.random.default_rng(seed=42)
 
 
-def grid(dtm_path: Path, step: int, smooth=False):
+def grid(dtm_path: Path, step: int, smooth=0):
     """Block-mean the DTM onto a step-m grid; returns x, y, z, shade, valid (row-major)."""
     with rasterio.open(dtm_path) as src:
         z = src.read(1).astype(np.float64)
@@ -54,10 +54,11 @@ def grid(dtm_path: Path, step: int, smooth=False):
     # so those cells are void and the coast becomes the surface's edge
     valid = np.isfinite(zm) & (zm > SEA_LEVEL_M)
     if smooth:
-        # a coarse ring over steep ground throws needle cells at the crest;
-        # a 5 x 5 mean over valid cells keeps the relief and drops the needles
-        pad = np.pad(np.where(valid, zm, np.nan), 2, constant_values=np.nan)
-        zm = np.nanmean(np.stack([pad[a:a + zm.shape[0], b:b + zm.shape[1]] for a in range(5) for b in range(5)]), axis=0)
+        # a coarse ring over steep ground throws needle cells at the crest; a
+        # (2r+1)^2 mean over valid cells keeps the relief and drops the needles
+        r = smooth
+        pad = np.pad(np.where(valid, zm, np.nan), r, constant_values=np.nan)
+        zm = np.nanmean(np.stack([pad[a:a + zm.shape[0], b:b + zm.shape[1]] for a in range(2 * r + 1) for b in range(2 * r + 1)]), axis=0)
         zm = np.where(valid, zm, np.nan)
     # hillshade from the block-mean surface
     zf = np.where(valid, zm, np.nanmean(zm))
@@ -105,8 +106,8 @@ def main() -> int:
     with rasterio.open(DTM_CORE) as c:
         cb = c.bounds
         crs = str(c.crs)
-    Xw, Yw, Zw, Sw, Vw, (nxw, nyw) = grid(DTM_WIDE, CTX_STEP, smooth=True)
-    Xc, Yc, Zc, Sc, Vc, (nxc, nyc) = grid(DTM_WIDE, CORE_STEP)
+    Xw, Yw, Zw, Sw, Vw, (nxw, nyw) = grid(DTM_WIDE, CTX_STEP, smooth=2)
+    Xc, Yc, Zc, Sc, Vc, (nxc, nyc) = grid(DTM_WIDE, CORE_STEP, smooth=1)
     core_c = (Xc >= cb.left) & (Xc <= cb.right) & (Yc >= cb.bottom) & (Yc <= cb.top)
     # trim the core grid to the rows/cols that touch the 300 m clip
     rr = np.where(core_c.any(axis=1))[0]; cc = np.where(core_c.any(axis=0))[0]
@@ -163,7 +164,7 @@ def main() -> int:
         "assumptions": [
             f"terrain = DTM block mean per {CORE_STEP} m cell inside the 300 m clip, {CTX_STEP} m outside it out to the 700 m clip; drawn as a shaded surface, the shade is a hillshade of that mean (light from 315 deg azimuth, 45 deg up), not a measurement",
             "buildings = rooftop outline points sampled along each footprint's perimeter at its top height, thinned to a fixed budget; the footprint set and extent are unchanged from the previous derivative",
-            f"cells at or below {SEA_LEVEL_M} m (the clip's sea fill) are void, so the coast is the edge of the surface; the context ring is smoothed 5 x 5",
+            f"cells at or below {SEA_LEVEL_M} m (the clip's sea fill) are void, so the coast is the edge of the surface; the core is smoothed 3 x 3 and the context ring 5 x 5",
             "no derived quantity is computed or shown",
         ],
     }

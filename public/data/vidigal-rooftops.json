@@ -10,8 +10,8 @@
  "count_void": 3682,
  "n_building_footprints": 3608,
  "z_meters": {
-  "min": 0.5454900165398916,
-  "max": 529.8663465711805
+  "min": 1.0038904541068607,
+  "max": 523.9664566605179
  },
  "terrain_grid": [
   {
@@ -34,7 +34,7 @@
  "assumptions": [
   "terrain = DTM block mean per 16 m cell inside the 300 m clip, 32 m outside it out to the 700 m clip; drawn as a shaded surface, the shade is a hillshade of that mean (light from 315 deg azimuth, 45 deg up), not a measurement",
   "buildings = rooftop outline points sampled along each footprint's perimeter at its top height, thinned to a fixed budget; the footprint set and extent are unchanged from the previous derivative",
-  "cells at or below 0.5 m (the clip's sea fill) are void, so the coast is the edge of the surface; the context ring is smoothed 5 x 5",
+  "cells at or below 0.5 m (the clip's sea fill) are void, so the coast is the edge of the surface; the core is smoothed 3 x 3 and the context ring 5 x 5",
   "no derived quantity is computed or shown"
  ]
 }

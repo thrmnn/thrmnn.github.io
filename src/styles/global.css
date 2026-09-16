@@ -418,7 +418,7 @@
   /* svh-clamped, not vw: the min/max rem bounds keep short (mobile) viewports
      at roughly the old padding, while the svh term grows on tall desktop/
      laptop viewports so the artifact band's top edge creeps toward the fold. */
-  padding: clamp(3rem, calc(40svh - 8rem), 12rem) 1.5rem clamp(0px, calc(52svh - 364px), 6rem);
+  padding: clamp(3rem, calc(40svh - 8rem), 12rem) 1.5rem clamp(1.5rem, calc(52svh - 364px), 6rem);
 }
 .hero-type {
   max-width: 44rem;
@@ -434,6 +434,7 @@
   color: var(--color-text-primary);
   margin: 0 0 1.5rem;
   text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 .hero-positioning {
   font-size: clamp(1rem, 1.6vw, 1.15rem);
@@ -738,4 +739,75 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Print — the app chrome (fixed header, skip link, footer nav, canvases)
+   has no paper equivalent, and the scroll-reveal layer never resolves
+   without a viewport to intersect, so it must be forced visible rather
+   than skipped. Site-wide and generic: not a per-page stylesheet.
+   ========================================================================== */
+@media print {
+  :root,
+  [data-theme="dark"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #ffffff;
+    --bg-elevated: #ffffff;
+    --bg-accent: #ffffff;
+    --text-primary: #111111;
+    --text-secondary: #222222;
+    --text-muted: #444444;
+    --link: #111111;
+    --link-hover: #111111;
+    --border: rgba(0, 0, 0, 0.3);
+    --border-hover: rgba(0, 0, 0, 0.45);
+    color-scheme: light;
+  }
+
+  .site-header,
+  .skip-link,
+  #theme-toggle,
+  footer nav,
+  canvas {
+    display: none !important;
+  }
+
+  /* Flex-column body stretched to 100dvh for the sticky footer; on paper
+     it just reserves a trailing near-empty page. */
+  body {
+    min-height: auto;
+  }
+
+  /* The svh-clamped hero padding is tuned for a screen's own height and
+     collapses to a fixed value on paper, where "viewport height" is
+     meaningless. */
+  .hero-section {
+    padding: 1.5rem 0 1rem;
+  }
+
+  /* [data-reveal] elements only resolve to .in-view via an
+     IntersectionObserver that a print pass never runs. */
+  .reveal-ready [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Generic guard for vertically-stacked entry lists (CV experience,
+     education, etc.): don't split one item across a page break. */
+  .space-y-8 > *,
+  .space-y-6 > *,
+  .space-y-4 > * {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 }

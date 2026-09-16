@@ -99,6 +99,15 @@ const routeLabel =
 </header>
 
 <style>
+  /* Route strip's sticky offset, derived from this header's own top offset
+     and pill height (never restated as a px literal anywhere else). By the
+     time the strip is in view the page is always scrolled past 32px, so the
+     header is always in its condensed state — that's the value to derive
+     from, not the resting one. */
+  :global(:root) {
+    --header-clearance: calc(0.55rem + 3.1rem + 0.6rem);
+  }
+
   /* ============================ Floating instrument pill ============================ */
   .site-header {
     position: fixed;

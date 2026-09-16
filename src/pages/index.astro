@@ -4,6 +4,7 @@ import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/ui/Button.astro';
 import SocialIcon from '../components/ui/SocialIcon.astro';
 import VidigalPanel from '../components/ui/VidigalPanel.astro';
+import RouteStrip from '../components/ui/RouteStrip.astro';
 import { author } from '../data/author';
 import { getCollection } from 'astro:content';
 
@@ -29,9 +30,12 @@ const mailto = `mailto:${author.email}`;
         {author.name}
       </h1>
       <p class="hero-positioning" data-reveal style="--reveal-d: 1;">
-        Researcher and engineer. I measure environments that resist measurement: cities built without plans, tree canopy across a whole city, robots that have to know where they are. Different fields, one problem. Turning raw sensing into a number someone can defend.<br /><span class="hero-credentials">MSc Robotics, EPFL. Research fellow at <a href="https://senseablerio.mit.edu/" class="hero-credentials-link">MIT Senseable City Lab Rio</a>; earlier, computer vision and MLOps at Roboat.</span>
+        Researcher and engineer. I measure environments that resist measurement: cities built without plans, tree canopy across a whole city, robots that have to know where they are. Different fields, one problem. Turning raw sensing into a number someone can defend.
       </p>
-      <div class="hero-cta-row" data-reveal style="--reveal-d: 2;">
+      <p class="hero-caption" data-reveal style="--reveal-d: 2;">
+        MSc Robotics, EPFL. Research fellow at <a href="https://senseablerio.mit.edu/" class="hero-credentials-link">MIT Senseable City Lab Rio</a>; earlier, computer vision and MLOps at Roboat.
+      </p>
+      <div class="hero-cta-row" data-reveal style="--reveal-d: 3;">
         <Button href={mailto}>
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
           E-mail
@@ -40,59 +44,66 @@ const mailto = `mailto:${author.email}`;
     </div>
   </section>
 
-  <!-- Research — one lead strand carried by the artifact, two named after it.
-       Method and affiliation only: the studies are unpublished and multi-author,
-       so no result, figure or finding appears here. -->
-  <section id="research" class="py-[var(--space-section)]">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <p class="research-place" data-reveal style="--reveal-d: 1;">Rio de Janeiro</p>
-      <h3 class="research-lead-title" data-reveal style="--reveal-d: 2;">A city that was never drawn.</h3>
-      <p class="research-lead-body" data-reveal style="--reveal-d: 3;">Favelas are built without plans, and the usual urban measurements assume a street grid that is not there. I build morphometrics for that fabric from terrain models and building footprints: sky openness, frontal area density, slope, porosity, on a grid fine enough to describe a single alley. The wind and sunlight simulations run on those measurements.</p>
-    </div>
-    <VidigalPanel revealDelay={4} />
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6 research-second">
-      <p class="research-place" data-reveal style="--reveal-d: 1;">Amsterdam</p>
-      <h3 class="research-lead-title" data-reveal style="--reveal-d: 2;">Trees the city already scanned.</h3>
-      <p class="research-lead-body" data-reveal style="--reveal-d: 3;">Cities fly aerial LiDAR surveys on a regular cycle for unrelated reasons. In that data, a pulse that passes through a crown and a pulse the crown intercepts are distinguishable, so the fraction of sky visible through each tree can be recovered from a scan that already exists. Leaf area then follows by a physical inversion with stated assumptions, not a fitted model.</p>
-    </div>
-    <VidigalPanel
-      revealDelay={4}
-      data="amsterdam-canopy"
-      emphasis={1.2}
-      splat={0.015}
-      tilt={0.95}
-      swing={0.45}
-      zoom={1.3}
-      caption="Jordaan, Amsterdam · a canal, its houses and its trees"
-      provenance="AHN5, the Dutch national airborne laser scan, open data · Senseable City Lab, MIT and AMS Institute"
-      ariaLabel="Oblique point cloud of a canal in the Jordaan, Amsterdam: ground, roofs and tree crowns from an airborne laser scan; the water returns nothing and shows as a gap."
-    />
-  </section>
+  <!-- Route: a thin sticky world strip navigates the research stops and the
+       proof grid below; releases at this wrapper's end, before #about. -->
+  <div class="route">
+    <RouteStrip />
 
-  <!-- Proof — static grid, no carousel -->
-  <section id="projects" class="py-[var(--space-section)]">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="section-label mb-10" data-reveal>Selected work</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {proofProjects.map((p, i) => (
-          <a
-            href={`${base}/projects/${p.id}/`}
-            class="proof-plate"
-            data-reveal
-            style={`--reveal-d: ${i + 1};`}
-          >
-            {p.data.label && <p class="proof-plate-label">{p.data.label}</p>}
-            <p class="proof-plate-title">{p.data.title}</p>
-            <p class="proof-plate-hook">{p.data.summary}</p>
-            {p.data.metric && <p class="proof-plate-metric">{p.data.metric}</p>}
-          </a>
-        ))}
+    <!-- Research — one lead strand carried by the artifact, two named after it.
+         Method and affiliation only: the studies are unpublished and multi-author,
+         so no result, figure or finding appears here. -->
+    <section id="research" class="pt-6 pb-[var(--space-section)]">
+      <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+        <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">A city that was never drawn.</h3>
+        <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Favelas are built without plans, and the usual urban measurements assume a street grid that is not there.</p>
       </div>
-      <p class="mt-8">
-        <a href={`${base}/projects/`} class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">All work →</a>
-      </p>
-    </div>
-  </section>
+      <div id="rio"><VidigalPanel revealDelay={3} /></div>
+      <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+        <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">Trees the city already scanned.</h3>
+        <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Cities fly aerial LiDAR surveys on a regular cycle for unrelated reasons.</p>
+      </div>
+      <div id="amsterdam">
+        <VidigalPanel
+          revealDelay={3}
+          data="amsterdam-canopy"
+          emphasis={1.2}
+          splat={0.015}
+          tilt={0.95}
+          swing={0.45}
+          zoom={1.3}
+          caption="Jordaan, Amsterdam · a canal, its houses and its trees"
+          provenance="AHN5, the Dutch national airborne laser scan, open data · Senseable City Lab, MIT and AMS Institute"
+          ariaLabel="Oblique point cloud of a canal in the Jordaan, Amsterdam: ground, roofs and tree crowns from an airborne laser scan; the water returns nothing and shows as a gap."
+        />
+      </div>
+    </section>
+
+    <!-- Proof — static grid, no carousel -->
+    <section id="projects" class="py-[var(--space-section)]">
+      <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+        <h2 class="section-label mb-10" data-reveal>Selected work</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {proofProjects.map((p, i) => (
+            <a
+              href={`${base}/projects/${p.id}/`}
+              id={p.id === 'ros2-localization-triage' ? 'stata' : undefined}
+              class="proof-plate"
+              data-reveal
+              style={`--reveal-d: ${i + 1};`}
+            >
+              {p.data.label && <p class="proof-plate-label">{p.data.label}</p>}
+              <p class="proof-plate-title">{p.data.title}</p>
+              <p class="proof-plate-hook">{p.data.summary}</p>
+              {p.data.metric && <p class="proof-plate-metric">{p.data.metric}</p>}
+            </a>
+          ))}
+        </div>
+        <p class="mt-8">
+          <a href={`${base}/projects/`} class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">All work →</a>
+        </p>
+      </div>
+    </section>
+  </div>
 
 
   <!-- Biography -->

@@ -417,8 +417,11 @@
 .hero-section {
   /* svh-clamped, not vw: the min/max rem bounds keep short (mobile) viewports
      at roughly the old padding, while the svh term grows on tall desktop/
-     laptop viewports so the artifact band's top edge creeps toward the fold. */
-  padding: clamp(3rem, calc(40svh - 8rem), 12rem) 1.5rem clamp(1.5rem, calc(52svh - 364px), 6rem);
+     laptop viewports so the Vidigal frame's top edge stays pinned near the
+     fold instead of drifting. Re-derived for the 147-word page (cycle
+     2026-09-16): measured at 1280x800 against the shorter hero + route strip
+     + one-sentence stop, not carried over from the old 420-word stack. */
+  padding: clamp(1rem, calc(12svh - 72px), 4rem) 1.5rem clamp(0.75rem, calc(8svh - 40px), 3rem);
 }
 .hero-type {
   max-width: 44rem;
@@ -428,20 +431,20 @@
 .hero-name {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(2.5rem, 6.2vw, 4.25rem);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
   letter-spacing: -0.03em;
   line-height: 1.02;
   color: var(--color-text-primary);
-  margin: 0 0 1.5rem;
+  margin: 0 0 0.75rem;
   text-wrap: balance;
   overflow-wrap: anywhere;
 }
 .hero-positioning {
   font-size: clamp(1rem, 1.6vw, 1.15rem);
-  line-height: 1.6;
+  line-height: 1.45;
   color: var(--color-text-secondary);
-  max-width: 36rem;
-  margin: 0 0 1.75rem;
+  max-width: 44rem;
+  margin: 0 0 1rem;
 }
 .hero-positioning strong { color: var(--color-text-primary); font-weight: 600; }
 
@@ -531,7 +534,7 @@
   font-size: 0.78rem;
   letter-spacing: 0.02em;
   color: var(--color-text-muted);
-  margin: 0 0 1.25rem;
+  margin: 0 0 0.85rem;
 }
 .hero-cta-row {
   display: flex;
@@ -634,17 +637,6 @@
 #research .artifact-band:last-child {
   padding-bottom: 0;
 }
-.research-second {
-  padding-top: 3rem;
-}
-.research-place {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin: 0 0 0.6rem;
-}
 .research-title {
   font-size: 1.06rem;
   font-weight: 600;
@@ -675,20 +667,20 @@
 }
 .research-lead-title {
   max-width: var(--max-w-prose);
-  font-size: clamp(1.5rem, 3.2vw, 2.15rem);
+  font-size: clamp(1.35rem, 2.6vw, 1.85rem);
   font-weight: 600;
   line-height: 1.18;
   letter-spacing: -0.015em;
   color: var(--color-text-primary);
-  margin: 0 0 1rem;
+  margin: 0 0 0.35rem;
   text-wrap: balance;
 }
 .research-lead-body {
   max-width: var(--max-w-prose);
-  font-size: 1.02rem;
-  line-height: 1.72;
+  font-size: 1rem;
+  line-height: 1.5;
   color: var(--color-text-secondary);
-  margin: 0 0 2.5rem;
+  margin: 0 0 0.75rem;
 }
 .research-also {
   margin: 3.25rem 0 1.75rem;

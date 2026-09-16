@@ -27,6 +27,7 @@ const groups = {
   og_dimensions: [],
   csp: [],
   orphans: [],
+  route_strip: [],
 };
 const fail = (group, m) => { groups[group].push(m); };
 const must = (group, cond, m) => { if (!cond) fail(group, m); };
@@ -490,6 +491,44 @@ for (const f of htmlFiles) {
         `${f}: inline <script${attrs}> (${content.length} chars) has no matching 'sha256-${hash}' in script-src → "${scriptSrc.trim()}"`,
       );
     }
+  }
+}
+
+// 13. Route strip — the inline coastline path stays under its size budget,
+//     its three links resolve to ids the homepage actually built, and the
+//     "fewer words" ruling's own gate: hero + research text stays well
+//     under the pre-ruling ~420-word count (target ~147).
+{
+  const routeMatch = home.match(/<svg class="route-map"[^>]*>[\s\S]*?<\/svg>/);
+  if (!routeMatch) {
+    fail('route_strip', 'RouteStrip svg not found on the homepage');
+  } else {
+    const svg = routeMatch[0];
+    const pathMatch = svg.match(/<path d="([^"]*)"/);
+    if (!pathMatch) {
+      fail('route_strip', 'RouteStrip coastline <path> not found');
+    } else {
+      const pathBytes = Buffer.byteLength(pathMatch[1], 'utf8');
+      must('route_strip', pathBytes < 8 * 1024, `world-strip path is ${pathBytes} B (budget < 8192 B)`);
+    }
+    for (const id of ['rio', 'amsterdam', 'stata']) {
+      must('route_strip', svg.includes(`href="#${id}"`), `route strip missing a link to #${id}`);
+      must('route_strip', new RegExp(`id="${id}"`).test(home), `#${id} is not a built id on the homepage`);
+    }
+  }
+
+  const heroStart = home.indexOf('<section id="home"');
+  const gridStart = home.indexOf('<section id="projects"');
+  if (heroStart === -1 || gridStart === -1 || gridStart < heroStart) {
+    fail('route_strip', 'could not locate the hero..work-grid span on the homepage to count words');
+  } else {
+    let span = home.slice(heroStart, gridStart);
+    span = span.replace(/<title>[\s\S]*?<\/title>/g, ' ');
+    span = span.replace(/<[^>]+>/g, ' ');
+    span = span.replace(/&[a-z]+;/gi, ' ');
+    const words = span.split(/\s+/).filter((w) => /[A-Za-zÀ-ÿ0-9]/.test(w));
+    must('route_strip', words.length < 200, `${words.length} words above the work grid (budget < 200)`);
+    console.log(`  · ${words.length} words above the work grid`);
   }
 }
 

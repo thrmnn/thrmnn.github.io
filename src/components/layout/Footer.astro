@@ -26,6 +26,7 @@ const monogramLetters = author.monogram.replace(/[^A-Za-z]/g, '').split('');
       </nav>
       <p class="footer-copy">&copy; {year} {author.name}</p>
     </div>
+    <p class="footer-provenance">Coastlines: Natural Earth, public domain</p>
   </div>
 </footer>
 
@@ -84,6 +85,13 @@ const monogramLetters = author.monogram.replace(/[^A-Za-z]/g, '').split('');
     color: var(--color-text-muted);
     margin: 0;
     white-space: nowrap;
+  }
+  .footer-provenance {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    text-align: center;
   }
   @media (max-width: 640px) {
     .footer-sep { display: none; }

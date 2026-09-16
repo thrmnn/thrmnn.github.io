@@ -30,7 +30,8 @@ const SHOT: [number, number, number, number][] = [
 const SHOT_PERIOD_S = 42;
 const ALONG_REACH = 0.6;
 const TILT_FLOOR = 0.45;
-const ROOF_STEP = 0.14; // of the scene's z range, about 5 m in a 35 m clip
+const ROOF_STEP = 0.22; // of the scene's z range: about 8 m in a 35 m clip
+const WALL_STEP = 0.06; // a roof cell stepping more than this is drawn as a side
 const smooth = (u: number) => u * u * (3 - 2 * u);
 function camera(elapsed: number): { zoom: number; along: number; tiltOff: number } {
   const t = elapsed % SHOT_PERIOD_S;
@@ -54,7 +55,7 @@ interface Cloud {
   shade: Float32Array;
   terrain: Uint32Array; // 4 point indices per terrain cell, context ring first, then the core
   cellFade: Float32Array; // 1 inside, falling to 0 at the context ring's outer edge
-  cellCat: Uint8Array; // 0 ground, 2 roof, 3 context ring
+  cellCat: Uint8Array; // 0 ground, 2 roof, 3 context ring, 4 wall
   nCtxCells: number;
   ax0: number;
   ax1: number;
@@ -88,6 +89,37 @@ function terrainCells(rings: string, cat: Uint8Array, z: Float32Array): { cells:
   let nCtx = 0;
   for (const [nx, ny, off] of ordered) {
     const isCtx = cat[off] === 3;
+    const isGround = cat[off] === 0 || isCtx;
+    // distance (in cells) to the nearest void or, for the context ring, to the
+    // grid's edge: the surface dissolves there instead of ending in a staircase
+    const dist = new Float32Array(nx * ny).fill(isCtx ? 0 : 1e9);
+    const queue: number[] = [];
+    for (let j = 0; j < ny; j++) {
+      for (let i = 0; i < nx; i++) {
+        const k = j * nx + i;
+        const edge = isCtx && (i === 0 || j === 0 || i === nx - 1 || j === ny - 1);
+        if (cat[off + k] === 15 || edge) {
+          dist[k] = 0;
+          queue.push(k);
+        } else dist[k] = 1e9;
+      }
+    }
+    for (let h = 0; h < queue.length; h++) {
+      const k = queue[h]!;
+      const i = k % nx;
+      const j = (k - i) / nx;
+      const dd = dist[k]! + 1;
+      for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+        const ii = i + di;
+        const jj = j + dj;
+        if (ii < 0 || jj < 0 || ii >= nx || jj >= ny) continue;
+        const kk = jj * nx + ii;
+        if (dist[kk]! > dd) {
+          dist[kk] = dd;
+          queue.push(kk);
+        }
+      }
+    }
     for (let j = 0; j < ny - 1; j++) {
       for (let i = 0; i < nx - 1; i++) {
         const a = off + j * nx + i;
@@ -95,12 +127,14 @@ function terrainCells(rings: string, cat: Uint8Array, z: Float32Array): { cells:
         const c = a + nx + 1;
         const d = a + nx;
         if (cat[a] === 15 || cat[b] === 15 || cat[c] === 15 || cat[d] === 15) continue;
-        // a roof cell spanning more than ROOF_STEP of the scene's height is a
-        // gable meeting a lower roof: draw the two roofs, not a wall between them
-        if (cat[a] === 2 && Math.max(z[a]!, z[b]!, z[c]!, z[d]!) - Math.min(z[a]!, z[b]!, z[c]!, z[d]!) > ROOF_STEP) continue;
+        const dz = Math.max(z[a]!, z[b]!, z[c]!, z[d]!) - Math.min(z[a]!, z[b]!, z[c]!, z[d]!);
+        // between two roof cells at different heights the surface is a wall;
+        // a step past ROOF_STEP is a gable over a courtyard, not one building
+        if (cat[a] === 2 && dz > ROOF_STEP) continue;
         out.push(a, b, c, d);
-        cc.push(cat[a]!);
-        fade.push(isCtx ? Math.min(1, Math.min(i, nx - 2 - i, j, ny - 2 - j) / EDGE) : 1);
+        cc.push(cat[a] === 2 && dz > WALL_STEP ? 4 : cat[a]!);
+        const dv = Math.min(dist[j * nx + i]!, dist[j * nx + i + 1]!, dist[(j + 1) * nx + i]!, dist[(j + 1) * nx + i + 1]!);
+        fade.push(isGround ? Math.min(1, (dv + (isCtx ? 0 : 1)) / EDGE) : 1);
       }
     }
     if (isCtx) nCtx = out.length / 4;
@@ -469,8 +503,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       tc.clearRect(0, 0, cssW, cssH);
       // the ink tone is the shadow on a light page and the light on a dark one
       const inkIsLight = luminance(bg) < 0.5;
-      tc.lineWidth = 0.45;
-      tc.lineJoin = 'round';
+
       const nc = terrain.length / 4;
       const cd = cellDepth.length === nc ? cellDepth : (cellDepth = new Float32Array(nc));
       counts.fill(0);
@@ -500,19 +533,34 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
         // ground: a floor so the surface never vanishes into the page, then the
         // hillshade; the context ring is lighter; a roof is a flat slab in the ink
         const lit = inkIsLight ? sh : 1 - sh;
-        const tone = cellCat[q] === 2 ? 0.7 : (inkIsLight ? 0.16 : 0.12) + 0.55 * lit * (pass === 0 ? 0.7 : 1);
-        const col = mix(bg, ground, tone);
-        tc.fillStyle = col;
-        tc.strokeStyle = col; // the stroke closes the hairline seams between cells
+        const kind = cellCat[q]!;
+        const tone = kind === 2 ? 0.7 : kind === 4 ? 0.88 : (inkIsLight ? 0.16 : 0.12) + 0.55 * lit * (pass === 0 ? 0.7 : 1);
+        tc.fillStyle = mix(bg, ground, tone);
         tc.globalAlpha = reveal * f;
+        // each cell is pushed half a pixel out from its centre: the seams close
+        // without a stroke, and a stroke would draw a lattice over flat ground
+        const b = terrain[o + 1]!;
+        const c2 = terrain[o + 2]!;
+        const d = terrain[o + 3]!;
+        const mxq = (sxArr[a]! + sxArr[b]! + sxArr[c2]! + sxArr[d]!) * 0.25;
+        const myq = (syArr[a]! + syArr[b]! + syArr[c2]! + syArr[d]!) * 0.25;
+        const grow = (i: number) => {
+          const dx = sxArr[i]! - mxq;
+          const dy = syArr[i]! - myq;
+          const l = Math.hypot(dx, dy) || 1;
+          return [sxArr[i]! + (dx / l) * 0.6, syArr[i]! + (dy / l) * 0.6] as const;
+        };
         tc.beginPath();
-        tc.moveTo(sxArr[a]!, syArr[a]!);
-        tc.lineTo(sxArr[terrain[o + 1]!]!, syArr[terrain[o + 1]!]!);
-        tc.lineTo(sxArr[terrain[o + 2]!]!, syArr[terrain[o + 2]!]!);
-        tc.lineTo(sxArr[terrain[o + 3]!]!, syArr[terrain[o + 3]!]!);
+        let g = grow(a);
+        tc.moveTo(g[0], g[1]);
+        g = grow(b);
+        tc.lineTo(g[0], g[1]);
+        g = grow(c2);
+        tc.lineTo(g[0], g[1]);
+        g = grow(d);
+        tc.lineTo(g[0], g[1]);
         tc.closePath();
         tc.fill();
-        tc.stroke();
       }
       }
       tc.globalAlpha = 1;

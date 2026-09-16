@@ -6,7 +6,7 @@
 //
 // It reveals back to front on first view and then turns slowly, so a reader
 // can read the ridge and the valley rather than one flat silhouette.
-const STRIDE = 4; // int8 x, int8 y, uint8 z, uint8 category (0=terrain, 1=building)
+// v2: int8 x, int8 y, uint8 z, uint8 cat (4 bytes); v3: int16 x, int16 y, uint8 z, uint8 cat|shade<<4 (6 bytes)
 const ROT0 = 0.5;
 const SPIN_RAD_PER_S = 0.055; // one turn in roughly two minutes
 const TILT = 0.62;
@@ -29,6 +29,7 @@ const SHOT: [number, number, number, number][] = [
 ];
 const SHOT_PERIOD_S = 42;
 const ALONG_REACH = 0.6;
+const TILT_FLOOR = 0.45;
 const smooth = (u: number) => u * u * (3 - 2 * u);
 function camera(elapsed: number): { zoom: number; along: number; tiltOff: number } {
   const t = elapsed % SHOT_PERIOD_S;
@@ -49,6 +50,10 @@ interface Cloud {
   y: Float32Array;
   z: Float32Array;
   cat: Uint8Array;
+  shade: Float32Array;
+  terrain: Uint32Array; // 4 point indices per terrain cell, context ring first, then the core
+  cellFade: Float32Array; // 1 inside, falling to 0 at the context ring's outer edge
+  nCtxCells: number;
   ax0: number;
   ax1: number;
   ay0: number;
@@ -65,25 +70,69 @@ function pct(sorted: Float64Array, q: number): number {
   return sorted[Math.min(sorted.length - 1, Math.max(0, i))]!;
 }
 
-async function load(url: string): Promise<Cloud> {
+// grid rings: "nx,ny,offset;nx,ny,offset" (row-major rectangles of terrain
+// points, void cells carry category 15)
+// Sidecar order is core first, context second; drawing order is the reverse:
+// the coarse context surface goes down first and fades at its outer edge, the
+// core is painted over it, so the two never seam and the clip never shows.
+function terrainCells(rings: string, cat: Uint8Array): { cells: Uint32Array; fade: Float32Array; nCtx: number } {
+  const out: number[] = [];
+  const fade: number[] = [];
+  const parsed = rings.split(';').map((r) => r.split(',').map(Number) as [number, number, number]);
+  const EDGE = 5; // cells over which the context ring dissolves
+  let nCtx = 0;
+  [...parsed].reverse().forEach(([nx, ny, off], k) => {
+    const isCtx = parsed.length > 1 && k === 0;
+    for (let j = 0; j < ny - 1; j++) {
+      for (let i = 0; i < nx - 1; i++) {
+        const a = off + j * nx + i;
+        const b = a + 1;
+        const c = a + nx + 1;
+        const d = a + nx;
+        if (cat[a] === 15 || cat[b] === 15 || cat[c] === 15 || cat[d] === 15) continue;
+        out.push(a, b, c, d);
+        fade.push(isCtx ? Math.min(1, Math.min(i, nx - 2 - i, j, ny - 2 - j) / EDGE) : 1);
+      }
+    }
+    if (isCtx) nCtx = out.length / 4;
+  });
+  return { cells: Uint32Array.from(out), fade: Float32Array.from(fade), nCtx };
+}
+
+async function load(url: string, stride: number, rings: string): Promise<Cloud> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`vidigal-panel: ${url} -> ${res.status}`);
   const buf = await res.arrayBuffer();
   const view = new DataView(buf);
-  const n = Math.floor(buf.byteLength / STRIDE);
+  const n = Math.floor(buf.byteLength / stride);
 
   const x = new Float32Array(n);
   const y = new Float32Array(n);
   const z = new Float32Array(n);
   const cat = new Uint8Array(n);
+  const shade = new Float32Array(n);
 
   for (let i = 0; i < n; i++) {
-    const o = i * STRIDE;
-    x[i] = view.getInt8(o) / 127;
-    y[i] = view.getInt8(o + 1) / 127;
-    z[i] = view.getUint8(o + 2) / 255;
-    cat[i] = view.getUint8(o + 3);
+    const o = i * stride;
+    if (stride === 6) {
+      x[i] = view.getInt16(o, true) / 32767;
+      y[i] = view.getInt16(o + 2, true) / 32767;
+      z[i] = view.getUint8(o + 4) / 255;
+      const c = view.getUint8(o + 5);
+      cat[i] = c & 15;
+      shade[i] = (c >> 4) / 15;
+    } else {
+      x[i] = view.getInt8(o) / 127;
+      y[i] = view.getInt8(o + 1) / 127;
+      z[i] = view.getUint8(o + 2) / 255;
+      cat[i] = view.getUint8(o + 3);
+    }
   }
+  const { cells: terrain, fade: cellFade, nCtx: nCtxCells } = rings ? terrainCells(rings, cat) : { cells: new Uint32Array(0), fade: new Float32Array(0), nCtx: 0 };
+  // framing, centre and axis come from the subject and its own ground (0, 1, 2);
+  // the context ring (3) runs past the frame on purpose and void (15) is nothing
+  const core: number[] = [];
+  for (let i = 0; i < n; i++) if (cat[i]! < 3) core.push(i);
 
   // The view turns, so the frame has to hold the cloud at every angle without
   // breathing. The bounding radius is far too generous for an elongated ridge,
@@ -100,13 +149,14 @@ async function load(url: string): Promise<Cloud> {
     const th = (a / ANGLES) * Math.PI * 2;
     const c = Math.cos(th);
     const si = Math.sin(th);
-    for (let i = 0; i < n; i++) {
+    for (let k = 0; k < core.length; k++) {
+      const i = core[k]!;
       const rz = x[i]! * si + y[i]! * c;
-      bufX[i] = x[i]! * c - y[i]! * si;
-      bufY[i] = (z[i]! * COS_T - rz * SIN_T) * Y_SQUASH;
+      bufX[k] = x[i]! * c - y[i]! * si;
+      bufY[k] = (z[i]! * COS_T - rz * SIN_T) * Y_SQUASH;
     }
-    const sxs = Float64Array.from(bufX).sort();
-    const sys = Float64Array.from(bufY).sort();
+    const sxs = bufX.slice(0, core.length).sort();
+    const sys = bufY.slice(0, core.length).sort();
     ax0 = Math.min(ax0, pct(sxs, 0.01));
     ax1 = Math.max(ax1, pct(sxs, 0.99));
     ay0 = Math.min(ay0, pct(sys, 0.01));
@@ -116,16 +166,16 @@ async function load(url: string): Promise<Cloud> {
   // Principal axis of the footprint, so the pan runs along the ridge.
   let mx = 0;
   let my = 0;
-  for (let i = 0; i < n; i++) {
+  for (const i of core) {
     mx += x[i]!;
     my += y[i]!;
   }
-  mx /= n;
-  my /= n;
+  mx /= core.length;
+  my /= core.length;
   let sxx = 0;
   let sxy = 0;
   let syy = 0;
-  for (let i = 0; i < n; i++) {
+  for (const i of core) {
     const dx = x[i]! - mx;
     const dy = y[i]! - my;
     sxx += dx * dx;
@@ -135,14 +185,14 @@ async function load(url: string): Promise<Cloud> {
   const theta = 0.5 * Math.atan2(2 * sxy, sxx - syy);
   const axis = { x: Math.cos(theta), y: Math.sin(theta) };
   let reach = 0;
-  for (let i = 0; i < n; i++) {
+  for (const i of core) {
     reach = Math.max(reach, Math.abs((x[i]! - mx) * axis.x + (y[i]! - my) * axis.y));
   }
   let mz = 0;
-  for (let i = 0; i < n; i++) mz += z[i]!;
-  mz /= n;
+  for (const i of core) mz += z[i]!;
+  mz /= core.length;
 
-  return { n, x, y, z, cat, ax0, ax1, ay0, ay1, mx, my, mz, axis, reach };
+  return { n, x, y, z, cat, shade, terrain, cellFade, nCtxCells, ax0, ax1, ay0, ay1, mx, my, mz, axis, reach };
 }
 
 // getComputedStyle returns unregistered custom properties as the token stream
@@ -158,6 +208,27 @@ function resolveColor(ctx: CanvasRenderingContext2D, candidates: string[], fallb
     if (ctx.fillStyle !== '#000000' || v === '#000000' || v === 'black') return ctx.fillStyle as string;
   }
   return fallback;
+}
+
+// opaque mix of two hex colours; the terrain surface must hide what is behind it
+function mix(hexA: string, hexB: string, t: number): string {
+  const c = (h: string) => {
+    const f = h.replace('#', '');
+    const g = f.length === 3 ? f.split('').map((x) => x + x).join('') : f.slice(0, 6);
+    return [0, 2, 4].map((i) => parseInt(g.slice(i, i + 2), 16));
+  };
+  const a = c(hexA);
+  const b = c(hexB);
+  if ([...a, ...b].some(Number.isNaN)) return hexB;
+  const m = a.map((v, i) => Math.round(v + (b[i]! - v) * t));
+  return `rgb(${m[0]},${m[1]},${m[2]})`;
+}
+
+function luminance(hex: string): number {
+  const f = hex.replace('#', '');
+  const g = f.length === 3 ? f.split('').map((x) => x + x).join('') : f.slice(0, 6);
+  const [r, gg, b] = [0, 2, 4].map((i) => parseInt(g.slice(i, i + 2), 16) / 255);
+  return Number.isNaN(r! + gg! + b!) ? 1 : 0.2126 * r! + 0.7152 * gg! + 0.0722 * b!;
 }
 
 function withAlpha(rgbHex: string, a: number): string {
@@ -177,6 +248,7 @@ function readColors(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
   return {
     accent: pick(['--color-accent', '--accent'], '#3b82f6'),
     ground: pick(['--color-text-muted', '--text-muted'], '#6b6b6b'),
+    bg: pick(['--color-bg-primary', '--bg-primary'], '#ffffff'),
   };
 }
 
@@ -219,14 +291,14 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
 
   let cloud: Cloud;
   try {
-    cloud = await load(src);
+    cloud = await load(src, parseInt(canvas.dataset.stride || '4', 10), canvas.dataset.grid || '');
   } catch (err) {
     console.error(err);
     return;
   }
   if (cloud.n === 0) return;
 
-  let { accent, ground } = readColors(canvas, ctx);
+  let { accent, ground, bg } = readColors(canvas, ctx);
   // How much the subject category stands off its context: crowns among roofs
   // need more than rooftops on bare terrain.
   const emphasis = parseFloat(canvas.dataset.emphasis || '1') || 1;
@@ -267,6 +339,10 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   const dArr = new Float32Array(n);
   const counts = new Uint32Array(BUCKETS + 1);
   const order = new Uint32Array(n);
+  let cellDepth = new Float32Array(0);
+  let cellOrder = new Uint32Array(0);
+  let tCanvas: HTMLCanvasElement | null = null;
+  let frameNo = 0;
 
   function render(elapsed: number) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -286,7 +362,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     const sinR = Math.sin(rot);
     const cam = flying ? camera(elapsed) : { zoom: 1, along: 0, tiltOff: 0 };
     cam.zoom = 1 + (cam.zoom - 1) * (zoomMax - 1) / 0.8;
-    const tilt = tilt0 + cam.tiltOff;
+    const tilt = Math.max(TILT_FLOOR, tilt0 + cam.tiltOff);
     const cosT = Math.cos(tilt);
     const sinT = Math.sin(tilt);
     const zoom = cam.zoom;
@@ -369,11 +445,76 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
         ctx!.fill();
       }
     }
+    const { terrain, shade, cellFade, nCtxCells } = cloud;
+    // The surface is the expensive pass (about 12k cells). It goes to its own
+    // canvas every other frame and is blitted every frame; a one-frame lag
+    // between the ground and the points is below what an eye can see.
+    if (terrain.length && (frameNo++ & 1) === 0) {
+      if (!tCanvas) tCanvas = document.createElement('canvas');
+      if (tCanvas.width !== w || tCanvas.height !== h) {
+        tCanvas.width = w;
+        tCanvas.height = h;
+      }
+      const tc = tCanvas.getContext('2d')!;
+      tc.setTransform(dpr, 0, 0, dpr, 0, 0);
+      tc.clearRect(0, 0, cssW, cssH);
+      // the ink tone is the shadow on a light page and the light on a dark one
+      const inkIsLight = luminance(bg) < 0.5;
+      tc.lineWidth = 0.7;
+      tc.lineJoin = 'round';
+      const nc = terrain.length / 4;
+      const cd = cellDepth.length === nc ? cellDepth : (cellDepth = new Float32Array(nc));
+      counts.fill(0);
+      for (let q = 0; q < nc; q++) {
+        const o = q * 4;
+        cd[q] = (dArr[terrain[o]!]! + dArr[terrain[o + 2]!]!) * 0.5;
+        counts[Math.min(BUCKETS - 1, ((cd[q]! - dmin) / span * BUCKETS) | 0) + 1]!++;
+      }
+      for (let b = 1; b <= BUCKETS; b++) counts[b]! += counts[b - 1]!;
+      const cur = counts.slice();
+      const co = cellOrder.length === nc ? cellOrder : (cellOrder = new Uint32Array(nc));
+      for (let q = 0; q < nc; q++) co[cur[Math.min(BUCKETS - 1, ((cd[q]! - dmin) / span * BUCKETS) | 0)]!++] = q;
+      // Two passes, each back to front: the context ring, dissolving at its
+      // outer edge, then the core over it. Shade is a colour between the page
+      // and the ground tone, opaque, so the far slope never shows through.
+      tc.globalAlpha = reveal;
+      for (let pass = 0; pass < 2; pass++) {
+      for (let k = 0; k < nc; k++) {
+        const q = co[k]!;
+        if ((q < nCtxCells) !== (pass === 0)) continue;
+        const o = q * 4;
+        const a = terrain[o]!;
+        const sh = (shade[a]! + shade[terrain[o + 2]!]!) * 0.5;
+        const f = cellFade[q]!;
+        if (f <= 0) continue;
+        const tone = 0.05 + 0.6 * (inkIsLight ? sh : 1 - sh) * (pass === 0 ? 0.75 : 1);
+        const col = mix(bg, ground, tone);
+        tc.fillStyle = col;
+        tc.strokeStyle = col; // the stroke closes the hairline seams between cells
+        tc.globalAlpha = reveal * f;
+        tc.beginPath();
+        tc.moveTo(sxArr[a]!, syArr[a]!);
+        tc.lineTo(sxArr[terrain[o + 1]!]!, syArr[terrain[o + 1]!]!);
+        tc.lineTo(sxArr[terrain[o + 2]!]!, syArr[terrain[o + 2]!]!);
+        tc.lineTo(sxArr[terrain[o + 3]!]!, syArr[terrain[o + 3]!]!);
+        tc.closePath();
+        tc.fill();
+        tc.stroke();
+      }
+      }
+      tc.globalAlpha = 1;
+    }
+    if (tCanvas) {
+      ctx!.setTransform(1, 0, 0, 1, 0, 0);
+      ctx!.drawImage(tCanvas, 0, 0);
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
     const shown = Math.round(reveal * n);
     for (let k = 0; k < shown; k++) {
       const i = order[k]!;
-      const d = (dArr[i]! - dmin) / span;
       const c = cat[i]!;
+      if (c === 15 || (terrain.length && (c === 0 || c === 3))) continue;
+      const d = (dArr[i]! - dmin) / span;
       // nearer points sit slightly stronger, which gives the cloud its form;
       // category 1 is the subject (rooftops, or crowns) in the accent, 0 is
       // the ground as a surface, 2 is built context in the ground's colour
@@ -434,7 +575,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   }).observe(canvas);
 
   const retheme = () => {
-    ({ accent, ground } = readColors(canvas, ctx));
+    ({ accent, ground, bg } = readColors(canvas, ctx));
     if (!rafOn) render(0);
   };
   new MutationObserver(retheme).observe(document.documentElement, {

@@ -1,15 +1,39 @@
 {
-  "schema": "vidigal-rooftops-v2",
-  "source": "MIT Senseable City Lab Rio \u2014 Vidigal DTM + building footprints",
-  "site": "Vidigal favela, Rio de Janeiro",
-  "encoding": "interleaved int8 x, int8 y, uint8 z, uint8 category (0=terrain, 1=building); 4 bytes/point",
-  "count": 12469,
-  "count_terrain": 7868,
-  "count_buildings": 4601,
-  "n_building_footprints": 3610,
-  "z_meters": {
-    "min": 31.839555740356445,
-    "max": 523.778076171875
+ "schema": "cloud-v3",
+ "stride": 6,
+ "source": "MIT Senseable City Lab Rio \u2014 Vidigal DTM (700 m extended clip, 5 m) + building footprints (300 m clip)",
+ "site": "Vidigal favela, Rio de Janeiro",
+ "encoding": "interleaved int16 x, int16 y (scene units /32767), uint8 z, uint8 cat (low nibble: 0 terrain core, 1 building, 3 terrain context, 15 void; high nibble: hillshade 0..15); 6 bytes/point",
+ "count": 19029,
+ "count_terrain": 10780,
+ "count_buildings": 4600,
+ "count_void": 3649,
+ "n_building_footprints": 3608,
+ "z_meters": {
+  "min": -0.018120390176773072,
+  "max": 529.8663465711805
+ },
+ "terrain_grid": [
+  {
+   "name": "core",
+   "step_m": 16,
+   "nx": 119,
+   "ny": 75,
+   "offset": 0
   },
-  "terrain_display": "terrain re-sampled on a regular grid (7868 points) by linear interpolation of the 2500 sampled DTM cells this file previously carried; rooftop outline points thinned to 45% (4601 of 10029); no new source data"
+  {
+   "name": "context",
+   "step_m": 32,
+   "nx": 86,
+   "ny": 64,
+   "offset": 8925
+  }
+ ],
+ "buildings_offset": 14429,
+ "scene_half_extent_m": 1282.5,
+ "assumptions": [
+  "terrain = DTM block mean per 16 m cell inside the 300 m clip, 32 m outside it out to the 700 m clip; drawn as a shaded surface, the shade is a hillshade of that mean (light from 315 deg azimuth, 45 deg up), not a measurement",
+  "buildings = rooftop outline points sampled along each footprint's perimeter at its top height, thinned to a fixed budget; the footprint set and extent are unchanged from the previous derivative",
+  "no derived quantity is computed or shown"
+ ]
 }

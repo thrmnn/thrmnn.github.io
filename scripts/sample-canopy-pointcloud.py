@@ -24,6 +24,7 @@ from pathlib import Path
 
 import laspy
 import numpy as np
+from scipy import ndimage
 
 ROOT = Path(__file__).parent.parent
 LAZS = [Path("/home/theo/SCL/SCA/ShadyBusiness2/data/tiles/25GN1/lidar/25GN1_01.LAZ"),
@@ -41,6 +42,9 @@ Z_CAP_M = 45.0         # NAP; one spire in the clip would otherwise flatten ever
 CANOPY_CELL = 1.0      # metres; one canopy point per cell (highest return)
 BUILDING_CELL = 1.2    # metres; one roof point per cell (highest return)
 CANOPY_MIN_HAG = 2.0   # metres above the local ground median
+MIN_NEIGHBOURS = 5     # of 8, for a canopy cell to count as part of a crown
+MIN_PATCH_CELLS = 12   # a crown patch smaller than this (m^2) is noise
+FACADE_CELLS = 2       # a canopy cell this close to a roof at its height is a wall
 N_GROUND = 3800
 N_CANOPY = 4500
 N_BUILDING = 4200
@@ -110,6 +114,28 @@ def main() -> int:
     pad = np.pad(chm, 1, constant_values=np.nan)
     stack = np.stack([pad[a:a + ny, b:b + nx] for a in range(3) for b in range(3)])
     smooth = np.nanmean(stack, axis=0)
+    # Noise: a crown is a compact patch of occupied cells. A cell with fewer
+    # than MIN_NEIGHBOURS occupied neighbours (a wire, a lamp post, a facade
+    # edge) is dropped, then any remaining patch under MIN_PATCH_CELLS.
+    occ = np.isfinite(chm)
+    neigh = np.stack([np.pad(occ, 1)[a:a + ny, b:b + nx] for a in range(3) for b in range(3)]).sum(axis=0) - occ
+    occ &= neigh >= MIN_NEIGHBOURS
+    lab, nlab = ndimage.label(occ)
+    sizes = ndimage.sum(occ, lab, index=np.arange(1, nlab + 1))
+    small = np.isin(lab, np.where(sizes < MIN_PATCH_CELLS)[0] + 1)
+    occ &= ~small
+    # Facade echoes: unclassified returns hugging a building at roof height.
+    # A canopy cell within FACADE_CELLS of a roof cell whose top is at or
+    # above the canopy top is a wall or a chimney, not a tree.
+    bm = c == 6
+    bgrid = np.full((ny, nx), np.nan)
+    bi = np.clip(((x[bm] - X0) // CANOPY_CELL).astype(int), 0, nx - 1); bj = np.clip(((y[bm] - Y0) // CANOPY_CELL).astype(int), 0, ny - 1)
+    np.maximum.at(bgrid, (bj, bi), z[bm])
+    roofmax = ndimage.maximum_filter(np.nan_to_num(bgrid, nan=-np.inf), size=2 * FACADE_CELLS + 1)
+    occ &= ~(roofmax >= smooth - 1.0)
+    keep_cell = occ[cj, ci]
+    n_noise = int((~keep_cell).sum())
+    cx, cy, ci, cj = cx[keep_cell], cy[keep_cell], ci[keep_cell], cj[keep_cell]
     cz = smooth[cj, ci]
 
     bm = c == 6
@@ -133,17 +159,18 @@ def main() -> int:
     mx, my = (X0 + X1) / 2, (Y0 + Y1) / 2
     scale = max(X1 - X0, Y1 - Y0) / 2
     z_min, z_max = float(az.min()), float(az.max())
-    qx = np.clip(np.round((ax - mx) / scale * 127), -128, 127).astype(np.int8)
-    qy = np.clip(np.round((ay - my) / scale * 127), -128, 127).astype(np.int8)
+    qx = np.clip(np.round((ax - mx) / scale * 32767), -32768, 32767).astype(np.int16)
+    qy = np.clip(np.round((ay - my) / scale * 32767), -32768, 32767).astype(np.int16)
     qz = np.clip(np.round((az - z_min) / max(z_max - z_min, 1e-6) * 255), 0, 255).astype(np.uint8)
 
     blob = bytearray()
     for x_, y_, z_, c_ in zip(qx.tolist(), qy.tolist(), qz.tolist(), cat.tolist()):
-        blob += struct.pack("bbBB", x_, y_, z_, c_)
+        blob += struct.pack("<hhBB", x_, y_, z_, c_)
     OUT_BIN.write_bytes(blob)
 
     meta = {
-        "schema": "amsterdam-canopy-v2",
+        "schema": "cloud-v3",
+        "stride": 6,
         "source": "AHN5, Dutch national airborne laser scan (Kadaster, open data via PDOK), sub-tiles 25GN1_01 and 25EZ1_21",
         "source_url": "https://www.pdok.nl/introductie/-/article/actueel-hoogtebestand-nederland-ahn",
         "site": "Jordaan, Amsterdam",

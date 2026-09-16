@@ -38,17 +38,23 @@ const {
 } = Astro.props;
 
 const dataDir = join(process.cwd(), 'public/data');
-const meta = JSON.parse(readFileSync(join(dataDir, `${data}.json`), 'utf8')) as { count: number };
+const meta = JSON.parse(readFileSync(join(dataDir, `${data}.json`), 'utf8')) as {
+  count: number;
+  stride?: number;
+  terrain_grid?: { nx: number; ny: number; offset: number }[];
+};
+const stride = meta.stride ?? 4;
 const binBytes = readFileSync(join(dataDir, `${data}.bin`)).length;
-if (meta.count * 4 !== binBytes) {
-  throw new Error(`${data}.json: count (${meta.count}) × 4 does not match ${data}.bin size (${binBytes} bytes)`);
+if (meta.count * stride !== binBytes) {
+  throw new Error(`${data}.json: count (${meta.count}) × ${stride} does not match ${data}.bin size (${binBytes} bytes)`);
 }
+const grid = (meta.terrain_grid ?? []).map((g) => `${g.nx},${g.ny},${g.offset}`).join(';');
 ---
 
 <section class="artifact-band">
   <div class="hero-artifact vidigal-artifact" data-reveal style={`--reveal-d: ${revealDelay}; --frame-aspect: ${aspect}; --frame-aspect-mobile: ${mobileAspect};`}>
     <div class="artifact-frame vidigal-frame">
-      <canvas class="vidigal-panel" data-rooftops={`${base}/data/${data}.bin`} data-emphasis={emphasis} data-wire={wire} data-zoom={zoom} data-splat={splat} data-tilt={tilt} data-swing={swing} aria-label={ariaLabel}></canvas>
+      <canvas class="vidigal-panel" data-rooftops={`${base}/data/${data}.bin`} data-stride={stride} data-grid={grid} data-emphasis={emphasis} data-wire={wire} data-zoom={zoom} data-splat={splat} data-tilt={tilt} data-swing={swing} aria-label={ariaLabel}></canvas>
       <div class="artifact-corners" aria-hidden="true">
         <span></span><span></span><span></span><span></span>
       </div>

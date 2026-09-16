@@ -106,8 +106,8 @@ if (existsSync(VIDIGAL_META)) {
     const binBytes = existsSync(`public/data/${stem}.bin`) ? statSync(`public/data/${stem}.bin`).size : 0;
     must(
       'artifact_caption',
-      binBytes === m.count * 4,
-      `${stem}.bin is ${binBytes} B, sidecar count implies ${m.count * 4} B`,
+      binBytes === m.count * (m.stride ?? 4),
+      `${stem}.bin is ${binBytes} B, sidecar count implies ${m.count * (m.stride ?? 4)} B`,
     );
     must('artifact_caption', home.includes(site), `${stem} caption missing the site name ${site}`);
   }

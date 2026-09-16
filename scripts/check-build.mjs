@@ -27,6 +27,7 @@ const groups = {
   og_dimensions: [],
   csp: [],
   orphans: [],
+  cross_link: [],
   route_strip: [],
 };
 const fail = (group, m) => { groups[group].push(m); };

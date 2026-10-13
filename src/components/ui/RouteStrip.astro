@@ -306,8 +306,9 @@ const fmt = (v: number, pos: string, neg: string) => `${Math.abs(v).toFixed(2)}Â
       if (el) io.observe(el);
     }
 
-    // Overlay shows once the hero has scrolled away and yields to the contact
-    // band and footer; the phone strip is sticky and always shown.
+    // The overlay maps the place panels, so it shows only while they are on
+    // screen: over the work grid it would sit on card text. The phone strip is
+    // sticky and always shown.
     const hide = new Set<Element>();
     const apply = () => strip.classList.toggle('is-hidden', hide.size > 0);
     const vis = new IntersectionObserver((entries) => {
@@ -317,7 +318,7 @@ const fmt = (v: number, pos: string, neg: string) => `${Math.abs(v).toFixed(2)}Â
       }
       apply();
     });
-    for (const sel of ['#home', '#contact', 'footer']) {
+    for (const sel of ['#home', '#projects', '#about', '#contact', 'footer']) {
       const el = document.querySelector(sel);
       if (el) vis.observe(el);
     }

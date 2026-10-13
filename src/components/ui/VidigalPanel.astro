@@ -9,7 +9,9 @@ import { join } from 'node:path';
 interface Props {
   revealDelay?: number;
   data?: string;
-  caption?: string;
+  sheet?: string;
+  place?: string;
+  kind?: string;
   provenance?: string;
   ariaLabel?: string;
   aspect?: string;
@@ -24,7 +26,9 @@ interface Props {
 const {
   revealDelay = 1,
   data = 'vidigal-rooftops',
-  caption = 'Vidigal, Rio de Janeiro · terrain and building footprints',
+  sheet = '01',
+  place = 'Vidigal, Rio de Janeiro',
+  kind = 'DTM + footprints',
   provenance = 'MIT Senseable City Lab Rio',
   ariaLabel = 'Oblique point cloud of Vidigal, Rio de Janeiro: a digital terrain model and building footprints.',
   aspect = '1.85 / 1',
@@ -59,7 +63,7 @@ const grid = (meta.terrain_grid ?? []).map((g) => `${g.nx},${g.ny},${g.offset}`)
         <span></span><span></span><span></span><span></span>
       </div>
     </div>
-    <p class="artifact-caption">{caption}</p>
+    <p class="title-block"><span>SHEET {sheet}</span><span>{place}</span><span>{kind}</span></p>
     <p class="artifact-provenance">{provenance}</p>
   </div>
 </section>

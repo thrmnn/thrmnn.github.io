@@ -28,14 +28,9 @@ const pages = [
 
 <PageLayout title="404 — Page Not Found" description="This page does not exist.">
   <section class="not-found-section relative min-h-[70vh] flex items-center justify-center overflow-hidden py-[var(--space-section)]">
-    <!-- Subtle background -->
-    <div class="not-found-bg absolute inset-0"></div>
-    <div class="not-found-grid absolute inset-0"></div>
-
     <div class="relative z-10 mx-auto max-w-[var(--max-w-content)] px-6 w-full">
       <div class="text-center mb-12">
-        <!-- Large 404 with outline/gradient effect -->
-        <h1 class="not-found-heading select-none" style="font-family: var(--font-display);">
+                <h1 class="not-found-heading select-none">
           404
         </h1>
         <p class="text-lg sm:text-xl text-text-secondary mt-2 max-w-md mx-auto">
@@ -48,7 +43,7 @@ const pages = [
         {pages.map((page) => (
           <a
             href={base + page.href}
-            class="not-found-link group block rounded-lg border border-border px-4 sm:px-5 py-4 transition-all duration-200 hover:border-border-hover hover:bg-bg-elevated"
+            class="not-found-link group block border border-border-hover px-4 sm:px-5 py-4 transition-all duration-200 hover:border-border-hover hover:bg-bg-elevated"
           >
             <span
               class="text-base font-semibold text-text-primary group-hover:text-accent-hover transition-colors"
@@ -78,85 +73,12 @@ const pages = [
 
 <style>
   .not-found-heading {
-    font-size: clamp(6rem, 18vw, 12rem);
-    font-weight: 700;
+    font-family: var(--font-mono);
+    font-size: clamp(5rem, 16vw, 10rem);
+    font-weight: 500;
     line-height: 1;
     letter-spacing: -0.04em;
-    background: linear-gradient(
-      180deg,
-      rgba(23, 23, 23, 0.18) 0%,
-      rgba(37, 99, 235, 0.15) 50%,
-      rgba(23, 23, 23, 0.05) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.08);
-  }
-
-  :global([data-theme="dark"]) .not-found-heading {
-    background: linear-gradient(
-      180deg,
-      rgba(245, 245, 245, 0.15) 0%,
-      rgba(59, 130, 246, 0.10) 50%,
-      rgba(245, 245, 245, 0.04) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.12);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme])) .not-found-heading {
-      background: linear-gradient(
-        180deg,
-        rgba(245, 245, 245, 0.15) 0%,
-        rgba(59, 130, 246, 0.10) 50%,
-        rgba(245, 245, 245, 0.04) 100%
-      );
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.12);
-    }
-  }
-
-  .not-found-bg {
-    background: radial-gradient(
-      ellipse 60% 50% at 50% 40%,
-      rgba(59, 130, 246, 0.08) 0%,
-      transparent 70%
-    );
-  }
-
-  :global([data-theme="dark"]) .not-found-bg {
-    background: radial-gradient(
-      ellipse 60% 50% at 50% 40%,
-      rgba(59, 130, 246, 0.05) 0%,
-      transparent 70%
-    );
-  }
-
-  .not-found-grid {
-    background-image:
-      linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 10%, transparent 60%);
-    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 10%, transparent 60%);
-  }
-
-  :global([data-theme="dark"]) .not-found-grid {
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme])) .not-found-grid {
-      background-image:
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    }
+    color: var(--color-text-muted);
   }
 
   .not-found-link {

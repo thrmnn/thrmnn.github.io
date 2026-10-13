@@ -7,97 +7,126 @@ import {
   worldStripPlaces,
 } from '../../data/world-strip';
 
-// Percentage positions so the accent ring (plain HTML, not SVG) overlays the
-// map without needing SVG-local transform units; the wrap's aspect-ratio
-// below is set to the same viewBox ratio so the percentages line up exactly.
+// Place coordinates are the world-strip data's own (scripts/make-world-strip.py
+// PLACES), so the readout and the blip it describes can never disagree.
+// Amsterdam cross-checks against the AHN5 clip's RD bbox (EPSG:28992).
 const ringVars = worldStripPlaces
-  .map((p) => `--${p.id}-x:${((p.x / worldStripWidth) * 100).toFixed(2)}%;--${p.id}-y:${((p.y / worldStripHeight) * 100).toFixed(2)}%;`)
+  .map((p) => `--${p.id}-x:${((p.x / worldStripWidth) * 100).toFixed(2)}%;--${p.id}-y:${((p.y / worldStripHeight) * 100).toFixed(2)}%;--${p.id}-b:${(((p.lon + 85) / 110) * 100).toFixed(2)}%;`)
   .join('');
+
+// 10 degree graticule in the strip's own equirectangular units; drawn after the
+// coastline so the gate's first-<path> size budget still measures the coast.
+const graticule =
+  [-80, -70, -60, -50, -40, -30, -20, -10, 0, 10, 20].map((lon) => `M${(lon + 85) * 8} 0V${worldStripHeight}`).join('') +
+  [-30, -20, -10, 0, 10, 20, 30, 40, 50, 60].map((lat) => `M0 ${(65 - lat) * 8}H${worldStripWidth}`).join('');
+
+const first = worldStripPlaces[0];
+const fmt = (v: number, pos: string, neg: string) => `${Math.abs(v).toFixed(2)}°${v >= 0 ? pos : neg}`;
 ---
 
-<div class="route-strip">
-  <div class="route-map-wrap" style={`aspect-ratio: ${worldStripWidth} / ${worldStripHeight};`}>
-    <svg class="route-map" viewBox={worldStripViewBox} aria-hidden="true" focusable="false">
-      <title>Coastlines: Natural Earth, public domain</title>
-      <path d={worldStripPath} />
-      {worldStripPlaces.map((p) => (
-        <a href={`#${p.id}`} tabindex="-1">
-          <circle cx={p.x} cy={p.y} r="4" />
-        </a>
-      ))}
-    </svg>
-    {worldStripPlaces.map((p) => (
-      <span class="route-dot" style={`left: var(--${p.id}-x); top: var(--${p.id}-y); ${ringVars}`} aria-hidden="true"></span>
-    ))}
-    <div class="route-ring" style={ringVars} aria-hidden="true"></div>
+<div class="route-strip" data-active={first.id}>
+  <div class="mm-readout" aria-hidden="true">
+    <span class="mm-tag">POS</span>
+    <span class="mm-coord" data-lat={first.lat} data-lon={first.lon}>{fmt(first.lat, 'N', 'S')} {fmt(first.lon, 'E', 'W')}</span>
   </div>
-  <nav class="route-names" aria-label="Jump to a research location">
-    {worldStripPlaces.map((p) => (
-      <a href={`#${p.id}`} class="route-link" data-place={p.id}>{p.name}</a>
-    ))}
-  </nav>
+  <div class="mm-body">
+    <div class="route-map-wrap" style={`aspect-ratio: ${worldStripWidth} / ${worldStripHeight};`}>
+      <svg class="route-map" viewBox={worldStripViewBox} aria-hidden="true" focusable="false">
+        <title>Coastlines: Natural Earth, public domain</title>
+        <path d={worldStripPath} />
+        <path class="mm-grat" d={graticule} />
+        {worldStripPlaces.map((p) => (
+          <a href={`#${p.id}`} tabindex="-1">
+            <circle cx={p.x} cy={p.y} r="4" />
+          </a>
+        ))}
+      </svg>
+      {worldStripPlaces.map((p) => (
+        <span class="route-dot" style={`left: var(--${p.id}-x); top: var(--${p.id}-y); ${ringVars}`} aria-hidden="true"></span>
+      ))}
+      <div class="route-ring" style={ringVars} aria-hidden="true"></div>
+    </div>
+    <nav class="route-names" aria-label="Jump to a research location">
+      {worldStripPlaces.map((p) => (
+        <a href={`#${p.id}`} class="route-link" data-place={p.id} data-lat={p.lat} data-lon={p.lon}>{p.name}</a>
+      ))}
+    </nav>
+  </div>
+  <div class="mm-bar" style={ringVars} aria-hidden="true"><i></i></div>
 </div>
 
 <style>
   .route-strip {
+    --t: 7px;
     position: sticky;
     top: var(--header-clearance);
     z-index: 40;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    min-height: 128px;
-    padding: 0.5rem 1.5rem;
     max-width: var(--max-w-content);
     margin: 0 auto;
-    background-color: color-mix(in srgb, var(--color-bg-primary) 88%, transparent);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    padding: 0.4rem 1rem;
+    background: color-mix(in srgb, var(--color-bg-primary) 94%, transparent);
+    border-block: 1px solid var(--color-border);
   }
-  @media (max-width: 767px) {
-    .route-strip {
-      min-height: 88px;
-      gap: 0.6rem;
-      padding: 0.125rem 1rem;
-    }
+  .route-strip::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--color-accent), var(--color-accent)) top left / var(--t) 1px no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) top left / 1px var(--t) no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) top right / var(--t) 1px no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) top right / 1px var(--t) no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) bottom left / var(--t) 1px no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) bottom left / 1px var(--t) no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) bottom right / var(--t) 1px no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) bottom right / 1px var(--t) no-repeat;
+    opacity: 0.8;
   }
+  .mm-readout {
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .mm-tag { color: var(--color-accent); }
+  .mm-coord { color: var(--color-text-primary); white-space: nowrap; }
+  .mm-body {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+  .mm-bar { display: none; }
+
   .route-map-wrap {
     position: relative;
     flex: 0 0 auto;
-    height: 76px;
-    width: auto; /* from the aspect-ratio set inline */
+    height: 58px;
+    width: auto;
   }
-  @media (min-width: 768px) {
-    .route-map-wrap {
-      height: 112px;
-    }
-  }
-
-  .route-map {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
+  .route-map { display: block; width: 100%; height: 100%; }
   .route-map path {
     fill: none;
     stroke: var(--color-text-muted);
-    stroke-width: 1.5;
+    stroke-width: 1.25;
     vector-effect: non-scaling-stroke;
   }
-  .route-map circle {
-    fill: var(--color-text-muted);
+  .route-map path.mm-grat {
+    stroke: var(--color-border);
+    stroke-width: 1;
   }
-  .route-map a:focus-visible circle {
-    fill: var(--color-accent);
-  }
+  .route-map circle { fill: var(--color-text-muted); }
+  .route-map a:focus-visible circle { fill: var(--color-accent); }
 
-  /* the places at rest: a dot in the ink, sized in pixels so it survives any
-     map size (an SVG circle in viewBox units vanishes at strip scale) */
   .route-dot {
     position: absolute;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
+    width: 4px;
+    height: 4px;
     background: var(--color-text-muted);
     transform: translate(-50%, -50%);
     pointer-events: none;
@@ -106,10 +135,9 @@ const ringVars = worldStripPlaces
     position: absolute;
     left: 0;
     top: 0;
-    width: 10px;
-    height: 10px;
+    width: 11px;
+    height: 11px;
     border: 1px solid var(--color-accent);
-    border-radius: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
     pointer-events: none;
@@ -117,26 +145,20 @@ const ringVars = worldStripPlaces
   .route-strip[data-active='rio'] .route-ring { opacity: 1; left: var(--rio-x); top: var(--rio-y); }
   .route-strip[data-active='amsterdam'] .route-ring { opacity: 1; left: var(--amsterdam-x); top: var(--amsterdam-y); }
   .route-strip[data-active='stata'] .route-ring { opacity: 1; left: var(--stata-x); top: var(--stata-y); }
+  .route-strip[data-active='rio'] .mm-bar i { left: var(--rio-b); }
+  .route-strip[data-active='amsterdam'] .mm-bar i { left: var(--amsterdam-b); }
+  .route-strip[data-active='stata'] .mm-bar i { left: var(--stata-b); }
   @media (prefers-reduced-motion: no-preference) {
-    /* the places at rest: a dot in the ink, sized in pixels so it survives any
-     map size (an SVG circle in viewBox units vanishes at strip scale) */
-  .route-dot {
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--color-text-muted);
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-  .route-ring {
+    .route-ring {
       transition: left 400ms var(--ease-out), top 400ms var(--ease-out), opacity 200ms var(--ease-out);
     }
+    .mm-bar i { transition: left 400ms var(--ease-out); }
+    .route-strip { transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-out); }
   }
 
   .route-names {
     display: flex;
-    gap: 1.25rem;
+    gap: 1rem;
     flex-wrap: wrap;
     min-width: 0;
   }
@@ -145,49 +167,85 @@ const ringVars = worldStripPlaces
     align-items: center;
     min-height: 44px;
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: 0.64rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--color-text-muted);
     transition: color var(--dur-1) var(--ease-out);
     white-space: nowrap;
   }
-  .route-link:hover {
-    color: var(--color-text-secondary);
-  }
-  .route-link[aria-current='location'] {
-    color: var(--color-text-primary);
-  }
+  .route-link:hover { color: var(--color-text-secondary); }
+  .route-link[aria-current='location'] { color: var(--color-text-primary); }
   .route-link:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
-    border-radius: 2px;
   }
   @media (max-width: 767px) {
+    .route-strip { padding: 0.3rem 0.75rem; }
+    .mm-body { gap: 0.6rem; }
+    .route-map-wrap { height: 46px; }
     .route-names {
       flex-wrap: nowrap;
       overflow-x: auto;
       gap: 0.7rem;
       scrollbar-width: none;
     }
-    .route-names::-webkit-scrollbar {
-      display: none;
+    .route-names::-webkit-scrollbar { display: none; }
+    .route-link { font-size: 0.58rem; letter-spacing: 0.05em; flex-shrink: 0; }
+  }
+
+  @media (min-width: 768px) {
+    .route-strip {
+      position: fixed;
+      top: auto;
+      left: 1rem;
+      bottom: 1rem;
+      z-index: 45;
+      width: 212px;
+      max-width: none;
+      margin: 0;
+      padding: 0.55rem 0.65rem 0.5rem;
+      border: 1px solid var(--color-border-hover);
+      background: var(--color-bg-primary);
     }
-    .route-link {
-      font-size: 0.58rem;
-      letter-spacing: 0.05em;
-      flex-shrink: 0;
+    .route-strip.is-hidden {
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      visibility: hidden;
+    }
+    .mm-readout { margin-bottom: 0.4rem; justify-content: space-between; }
+    .mm-body { align-items: flex-start; gap: 0.6rem; }
+    .route-map-wrap { height: 84px; outline: 1px solid var(--color-border); }
+    .route-names { flex-direction: column; gap: 0; flex-wrap: nowrap; }
+    .route-link { min-height: 28px; font-size: 0.56rem; letter-spacing: 0.08em; }
+    .mm-bar {
+      display: block;
+      position: relative;
+      height: 12px;
+      margin-top: 0.45rem;
+      border-top: 1px solid var(--color-border-hover);
+      background: repeating-linear-gradient(90deg, var(--color-text-muted) 0 1px, transparent 1px 9.0909%) top / 100% 4px no-repeat;
+    }
+    .mm-bar i {
+      position: absolute;
+      top: 1px;
+      left: 0;
+      width: 1px;
+      height: 10px;
+      background: var(--color-accent);
     }
   }
 </style>
 
 <script>
-  // Same instrument pattern as the header readout: one IntersectionObserver,
-  // guarded the same way, keyed to the same rootMargin so the strip's active
-  // place and the header's live readout agree on when a section is "in view".
+  // Same observer pattern and rootMargin as the header readout, so the
+  // minimap's active place and the header's section name agree.
   (() => {
     const strip = document.querySelector('.route-strip') as HTMLElement | null;
-    if (!strip || !('IntersectionObserver' in window)) return;
+    if (!strip) return;
+    const coord = strip.querySelector('.mm-coord') as HTMLElement | null;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const links = new Map(
       Array.from(strip.querySelectorAll<HTMLAnchorElement>('.route-link')).map((a) => [
@@ -196,13 +254,44 @@ const ringVars = worldStripPlaces
       ]),
     );
 
+    let lat = Number(coord?.dataset.lat);
+    let lon = Number(coord?.dataset.lon);
+    let raf = 0;
+    const fmt = (v: number, pos: string, neg: string) => `${Math.abs(v).toFixed(2)}°${v >= 0 ? pos : neg}`;
+    const paint = (la: number, lo: number) => {
+      if (coord) coord.textContent = `${fmt(la, 'N', 'S')} ${fmt(lo, 'E', 'W')}`;
+    };
+    const tickTo = (toLat: number, toLon: number) => {
+      cancelAnimationFrame(raf);
+      if (reduce) {
+        lat = toLat; lon = toLon; paint(lat, lon);
+        return;
+      }
+      const fromLat = lat, fromLon = lon, t0 = performance.now(), dur = 420;
+      const step = (now: number) => {
+        const k = Math.min(1, (now - t0) / dur);
+        const e = 1 - Math.pow(1 - k, 3);
+        lat = fromLat + (toLat - fromLat) * e;
+        lon = fromLon + (toLon - fromLon) * e;
+        paint(lat, lon);
+        if (k < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    };
+
     const setActive = (id: string) => {
+      if (strip.dataset.active === id && strip.dataset.set) return;
       strip.dataset.active = id;
+      strip.dataset.set = '1';
       for (const [placeId, link] of links) {
         if (placeId === id) link.setAttribute('aria-current', 'location');
         else link.removeAttribute('aria-current');
       }
+      const l = links.get(id);
+      if (l) tickTo(Number(l.dataset.lat), Number(l.dataset.lon));
     };
+
+    if (!('IntersectionObserver' in window)) return;
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -215,6 +304,22 @@ const ringVars = worldStripPlaces
     for (const id of ['rio', 'amsterdam', 'stata']) {
       const el = document.getElementById(id);
       if (el) io.observe(el);
+    }
+
+    // Overlay shows once the hero has scrolled away and yields to the contact
+    // band and footer; the phone strip is sticky and always shown.
+    const hide = new Set<Element>();
+    const apply = () => strip.classList.toggle('is-hidden', hide.size > 0);
+    const vis = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) hide.add(e.target);
+        else hide.delete(e.target);
+      }
+      apply();
+    });
+    for (const sel of ['#home', '#contact', 'footer']) {
+      const el = document.querySelector(sel);
+      if (el) vis.observe(el);
     }
   })();
 </script>

@@ -127,15 +127,28 @@ const routeLabel =
     max-width: 880px;
     margin: 0 auto;
     border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
-    border-radius: 999px;
-    background-color: color-mix(in srgb, var(--color-bg-primary) 60%, transparent);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    box-shadow: 0 14px 32px -16px rgba(0, 0, 0, 0.18);
+    border-radius: 0;
+    background-color: color-mix(in srgb, var(--color-bg-primary) 92%, transparent);
     transition:
       background-color var(--dur-2) var(--ease-out),
-      border-color var(--dur-2) var(--ease-out),
-      box-shadow var(--dur-2) var(--ease-out);
+      border-color var(--dur-2) var(--ease-out);
+  }
+  .header-pill::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+    --t: 8px;
+    background:
+      linear-gradient(var(--color-accent), var(--color-accent)) top left / var(--t) 1px no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) top left / 1px var(--t) no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) top right / var(--t) 1px no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) top right / 1px var(--t) no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) bottom left / var(--t) 1px no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) bottom left / 1px var(--t) no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) bottom right / var(--t) 1px no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) bottom right / 1px var(--t) no-repeat;
+    opacity: 0.7;
   }
   /* Scan-progress hairline: consumes --progress (set on scroll, see script
      below) as a 1px accent line inside the pill's bottom edge. Position
@@ -159,37 +172,9 @@ const routeLabel =
     }
   }
   .site-header.condensed .header-pill {
-    background-color: color-mix(in srgb, var(--color-bg-primary) 82%, transparent);
+    background-color: var(--color-bg-primary);
     border-color: var(--color-border-hover);
-    box-shadow: 0 8px 22px -14px rgba(0, 0, 0, 0.22);
   }
-  /* Dark-mode tuning — deeper shadow. */
-  [data-theme="dark"] .header-pill {
-    background-color: color-mix(in srgb, var(--color-bg-primary) 42%, transparent);
-    border-color: color-mix(in srgb, var(--color-border) 65%, transparent);
-    box-shadow: 0 18px 46px -20px rgba(0, 0, 0, 0.7);
-  }
-  [data-theme="dark"] .site-header.condensed .header-pill {
-    background-color: color-mix(in srgb, var(--color-bg-primary) 75%, transparent);
-    border-color: var(--color-border);
-    box-shadow: 0 8px 22px -12px rgba(0, 0, 0, 0.6);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme]) .header-pill {
-      background-color: color-mix(in srgb, var(--color-bg-primary) 42%, transparent);
-      border-color: color-mix(in srgb, var(--color-border) 65%, transparent);
-      box-shadow: 0 18px 46px -20px rgba(0, 0, 0, 0.7);
-    }
-    :root:not([data-theme]) .site-header.condensed .header-pill {
-      background-color: color-mix(in srgb, var(--color-bg-primary) 75%, transparent);
-    }
-  }
-  /* Fallback for browsers without backdrop-filter — bump the bg up so the
-     content stays legible without the blur trick. */
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .header-pill { background-color: var(--color-bg-primary); }
-  }
-
   .header-inner {
     padding: 0 1rem 0 1.25rem;
     min-height: 3.1rem;
@@ -347,13 +332,11 @@ const routeLabel =
   .nav-burger:hover { color: var(--color-text-primary); }
   .nav-burger:active {
     background-color: color-mix(in srgb, var(--color-accent) 14%, transparent);
-    border-radius: 6px;
   }
   .nav-burger:active svg { transform: scale(0.92); }
   .nav-burger:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
-    border-radius: 4px;
   }
   @media (prefers-reduced-motion: reduce) {
     .nav-burger svg, .nav-burger:active svg { transition: none; transform: none; }
@@ -370,11 +353,8 @@ const routeLabel =
     margin: 0.55rem auto 0;
     padding: 0;
     border: 1px solid var(--color-border-hover);
-    border-radius: 14px;
-    background-color: color-mix(in srgb, var(--color-bg-primary) 92%, transparent);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    box-shadow: 0 14px 40px -16px rgba(0, 0, 0, 0.55);
+    border-radius: 0;
+    background-color: var(--color-bg-primary);
   }
   .site-header[data-open="true"] .mobile-menu { display: block; }
   .mobile-menu ul {

@@ -1,121 +1,40 @@
 ---
 interface Props {
   title: string;
+  summary: string;
+  href: string;
   label?: string;
   metric?: string;
-  tags?: string[];
-  detail?: string;
-  href: string;
-  gradient?: string;
+  year?: number;
   image?: string;
-  number?: number;
+  number: number;
+  id?: string;
   index?: number;
-  reveal?: boolean;
 }
 
-const { title, label, tags = [], href, gradient, image, number, index = 0, reveal = true } = Astro.props;
-
-const bgStyle = image
-  ? `background-image: url('${image}'); background-size: cover; background-position: center;`
-  : `background: ${gradient || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)'};`;
-
-const displayNumber = number ? String(number).padStart(2, '0') : undefined;
-const isExternal = /^https?:\/\//.test(href);
-// Cap at 4 visible tags on hover — the detail page shows the full set.
-const hoverTags = tags.slice(0, 4);
+const { title, summary, href, label, metric, year, image, number, id, index = 0 } = Astro.props;
+const plate = String(number).padStart(2, '0');
 ---
 
 <a
   href={href}
-  target={isExternal ? '_blank' : undefined}
-  rel={isExternal ? 'noopener' : undefined}
-  class="block group h-full"
-  {...(reveal ? { 'data-reveal': true } : {})}
-  style={`--reveal-d: ${index}`}
+  id={id}
+  class="proof-plate"
+  data-reveal
+  style={`--reveal-d: ${index};`}
 >
-  <div class="project-card relative rounded-2xl overflow-hidden min-h-[300px] border border-border cursor-pointer transition-all duration-500 hover:border-border-hover">
-
-    <div class="card-bg absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.06]" style={bgStyle}></div>
-
-    {!image && (
-      <div class="absolute inset-0 noise-overlay opacity-[0.04]"></div>
-    )}
-
-    {displayNumber && !image && (
-      <div class="absolute top-4 left-5 font-mono text-[3.5rem] font-black leading-none text-white/[0.08] group-hover:text-white/[0.14] transition-all duration-700 select-none tracking-tighter">
-        {displayNumber}
-      </div>
-    )}
-
-    {/* Darkening gradient — only as much as the title actually needs */}
-    <div class="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-black/90 via-black/55 to-transparent"></div>
-
-    {/* Content — label + title only by default; tags fade in on hover/focus */}
-    <div class="absolute inset-0 flex flex-col justify-end p-6 text-white">
-      {label && (
-        <p class="card-label text-[0.7rem] uppercase tracking-[0.18em] text-white/65 mb-1.5 font-medium">
-          {label}
-        </p>
-      )}
-      <p class="card-title text-lg font-bold leading-snug text-white" style="font-family: var(--font-display);">
-        {title}
-      </p>
-      {hoverTags.length > 0 && (
-        <div class="card-tags flex flex-wrap gap-1.5">
-          {hoverTags.map((tag) => (
-            <span class="text-[0.62rem] uppercase tracking-[0.12em] text-white/65 border border-white/15 px-2 py-0.5 rounded-full">
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
+  <div class="plate-block">
+    <span>PLATE {plate}</span>
+    <span>{label ?? year}</span>
+  </div>
+  {image && (
+    <div class="plate-figure">
+      <img src={image} alt="" width="1200" height="1200" loading="lazy" decoding="async" />
     </div>
+  )}
+  <div class="plate-body">
+    <p class="proof-plate-title">{title}</p>
+    <p class="proof-plate-hook">{summary}</p>
+    {metric && <div class="plate-foot"><p class="proof-plate-metric">{metric}</p></div>}
   </div>
 </a>
-
-<style>
-  .project-card {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    transition: box-shadow 0.4s ease, border-color 0.4s ease, transform 0.4s ease;
-  }
-  .group:hover .project-card {
-    box-shadow:
-      0 0 18px rgba(59, 130, 246, 0.13),
-      0 8px 24px rgba(0, 0, 0, 0.25);
-    transform: translateY(-3px);
-  }
-  .group:hover .card-bg { filter: brightness(1.12) saturate(1.1); }
-
-  /* Tags hidden by default — fade and slide in on hover OR keyboard focus.
-     On touch / no-hover devices they stay hidden; the detail page carries them. */
-  .card-tags {
-    margin-top: 0;
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition:
-      max-height 0.35s var(--ease-out),
-      margin-top 0.25s var(--ease-out),
-      opacity 0.25s var(--ease-out);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .group:hover .card-tags,
-    .project-card:focus-within .card-tags {
-      max-height: 4rem;
-      margin-top: 0.75rem;
-      opacity: 1;
-    }
-  }
-
-  /* Decorative noise on gradient placeholders */
-  .noise-overlay {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    background-size: 128px 128px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .project-card, .card-bg, .card-tags { transition: none; }
-    .group:hover .project-card { transform: none; }
-    .group:hover .card-bg { filter: none; }
-  }
-</style>

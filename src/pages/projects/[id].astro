@@ -56,14 +56,14 @@ const articleJsonLd = {
           <p class="text-sm text-accent mt-2">{project.data.label}</p>
         )}
         {project.data.metric && (
-          <p class="text-xs text-text-muted mt-2 px-3 py-1 border border-border rounded-md w-fit">
+          <p class="text-xs text-text-muted mt-2 px-3 py-1 border border-border font-mono uppercase tracking-[0.1em] w-fit">
             {project.data.metric}
           </p>
         )}
         {project.data.tags.length > 0 && (
           <div class="flex flex-wrap gap-2 mt-4">
             {project.data.tags.map((tag: string) => (
-              <span class="text-xs px-2 py-0.5 rounded-full bg-bg-elevated text-text-muted border border-border">
+              <span class="text-xs px-2 py-0.5 font-mono bg-bg-elevated text-text-muted border border-border">
                 {tag}
               </span>
             ))}
@@ -72,7 +72,7 @@ const articleJsonLd = {
       </div>
 
       {project.data.image && (
-        <div class="mb-10 rounded-lg overflow-hidden border border-border">
+        <div class="mb-10 overflow-hidden border border-border">
           <img
             src={base + project.data.image}
             alt={project.data.imageAlt ?? project.data.title}
@@ -115,7 +115,7 @@ const articleJsonLd = {
           )}
           {project.data.proprietary && (
             <span
-              class="inline-flex items-center gap-2 text-xs text-text-muted px-2.5 py-1 border border-border rounded-md"
+              class="inline-flex items-center gap-2 text-xs text-text-muted px-2.5 py-1 border border-border"
               title="Source code remains proprietary — no public repository."
             >
               Code: proprietary
@@ -152,9 +152,8 @@ const articleJsonLd = {
     gap: 0.4rem;
     padding: 1.1rem 1.25rem;
     border: 1px solid var(--color-border);
-    border-radius: 0.75rem;
-    background: var(--color-bg-secondary);
-    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    background: var(--color-bg-primary);
+    transition: border-color 0.2s ease;
   }
 
   .pager-cell-end {
@@ -163,9 +162,7 @@ const articleJsonLd = {
   }
 
   .pager-cell:hover {
-    border-color: var(--color-border-hover);
-    box-shadow: 0 0 0 1px var(--color-accent-soft), 0 0 22px rgba(59, 130, 246, 0.12);
-    transform: translateY(-2px);
+    border-color: var(--color-accent);
   }
 
   .pager-eyebrow {
@@ -190,6 +187,5 @@ const articleJsonLd = {
 
   @media (prefers-reduced-motion: reduce) {
     .pager-cell { transition: none; }
-    .pager-cell:hover { transform: none; }
   }
 </style>

@@ -551,15 +551,12 @@ for (const f of htmlFiles) {
   }
 }
 
-// The two sites never link to each other from a page a peer will reach
-// (vision, 2026-09-14). /consulting is live but unreachable from navigation
-// and is the one page allowed to name the practice's domain.
+// The homepage links visibly to the practice site (owner, 2026-10-15 Dubai
+// positioning, confirmed 2026-10-23); this reverses the cycle-10 rule that
+// kept the two sites apart. The practice's own name stays forbidden above.
 {
-  const domain = ['dGhlb2hlcm1hbm4uY2g='].map((b) => Buffer.from(b, 'base64').toString())[0];
-  for (const f of walk(DIST).filter((f) => f.endsWith('.html'))) {
-    if (/[\\/]consulting[\\/]index\.html$/.test(f)) continue;
-    if (readFileSync(f, 'utf8').includes(domain)) fail('cross_link', `${f} links to the consulting site`);
-  }
+  const domain = 'https://theohermann.ch';
+  must('cross_link', home.includes(`href="${domain}"`), 'homepage has no link to the practice site');
 }
 
 const totalErrors = Object.values(groups).reduce((s, a) => s + a.length, 0);

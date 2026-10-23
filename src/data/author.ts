@@ -3,13 +3,16 @@ const email = 'thermann.ai@gmail.com';
 export const author = {
   name: 'Théo Alessandro Hermann',
   monogram: 'T.A.H',
-  role: 'Researcher and robotics engineer',
+  role: 'Roboticist and urban scientist',
   affiliation: 'MIT Senseable City Lab Rio',
   email,
 
+  // The owner's locked About text (Acervo C-2026-10-22-07), word for word;
+  // only the paragraph breaks and the links are the desk's.
   bio: [
-    'Four years building perception and autonomy systems on edge hardware. Franco-Brazilian, trained in Switzerland. French · English · Portuguese · Spanish.',
-    'Computer vision and MLOps at <strong>Roboat</strong> (MIT spinoff) as its first intern, adding camera perception to a stack built on LiDAR. Research fellow at <strong><a href="https://senseablerio.mit.edu/">MIT Senseable City Lab Rio</a></strong> — 3D reconstruction of dense informal settlements from terrestrial LiDAR, terrain models and building footprints. Research assistant at <a href="https://www.epfl.ch/labs/vita/">EPFL VITA Lab</a>; visiting researcher at <a href="https://www.iri.upc.edu/">IRI (CSIC-UPC)</a>, Barcelona.',
+    "I'm Théo, a French-Brazilian roboticist and urban scientist. Paris, São Paulo, Rio, Lausanne, Amsterdam, Barcelona, Stockholm.",
+    'I trained in robotics at EPFL, built perception for a person-following robot at <a href="https://www.epfl.ch/labs/vita/">VITA Lab</a> and for an autonomous boat at Roboat, then brought the same tools to cities at <a href="https://senseablerio.mit.edu/">MIT Senseable City Lab</a>.',
+    'Wherever I work, the question is the same: what aren\'t we seeing yet that explains how the system behaves? Today I help <a href="https://theohermann.ch">robot makers find out why their systems fail</a>, and I study how city form shapes light and air.',
   ],
 
   education: [

@@ -8,8 +8,12 @@ A parallel rebrand exploration lives on `design-sprint-2026-05-14` (Astro + Frau
 
 ## 1. Project north star
 
-**RESEARCH PORTFOLIO** for **Théo Alessandro Hermann**. Repositioned in cycle 10
-(2026-09-14) by the owner's direction. The full vision is written up at
+**PORTFOLIO** for **Théo Alessandro Hermann**. Repositioned in cycle 10
+(2026-09-14) as a research portfolio, then widened by the owner on 2026-10-22
+(Acervo C-2026-10-22-05 to 07): clients first in the next phase, research kept
+as a stable section, headline "I make hidden structure visible.", a visible
+link to theohermann.ch. Where this section and the 2026-10-22 notes disagree,
+the notes win. The full vision is written up at
 `~/Perso/site-review/docs/vision-com.md` and that document, not this section,
 is the thing to read before changing the site.
 
@@ -48,9 +52,14 @@ work supports it.
 - Main GitHub: **`@thrmnn`** — NEVER use `@theoh-io` (that's a work account; outdated for personal portfolio)
 - Domain: `theoalessandro.com` (GitHub Pages custom domain since 2026-09-03; `thrmnn.github.io/*` 301s to it). Off-tailnet review surface: `preview.theoalessandro.com` (Cloudflare tunnel + Access).
 
-### Positioning (one-liner)
+### Positioning (locked 2026-10-22)
 
-> Researcher and engineer. I measure environments that resist measurement: cities built without plans, tree canopy across a whole city, robots that have to know where they are. Different fields, one problem. Turning raw sensing into a number someone can defend.
+> I make hidden structure visible. I study cities like a roboticist would. Scan. Model. Decipher.
+
+The About text is the owner's, word for word (`author.bio`). Rejected by the
+owner: "distill", robot-like framing ("read cities the way robots read the
+world"), "understand", "noise", "hiding in plain sight", any designer or
+festival framing.
 
 ### Tag triplet
 
@@ -62,8 +71,10 @@ Superseded 2026-09-14: `site.ts` `description` is the research-portfolio sentenc
 2. Labs and organisers who might invite or co-author
 3. Anyone assessing the engineering behind the research
 
-Consulting prospects are NOT an audience here. That funnel is theohermann.ch,
-and this site links to it from nowhere a peer will reach (cycle-10 ruling).
+Superseded 2026-10-22/23: clients come first in the next phase, research stays
+a stable section. The homepage links to theohermann.ch (hero button, Practice
+card, About) and `check-build.mjs` now requires that link; the practice's name
+stays forbidden.
 
 ### Tenure
 
@@ -143,7 +154,7 @@ Tailwind utility classes are the chosen convention on `main`. Don't refactor com
 
 | Path             | Purpose                                                                   |
 | ---------------- | ------------------------------------------------------------------------- |
-| `/`              | Hero → Research (lead thread + Vidigal point-cloud artifact) → Selected work (6 cards) → About → Contact |
+| `/`              | Hero (headline, subtitle, Dubai band, CTAs) → Research (Vidigal and Jordaan clouds) → Selected work (4 Hidden / Revealed / Changed cards, `src/data/cards.ts`) → About → Contact |
 | `/consulting`    | Orphaned: live, but unreachable from nav or any link on this site. Four of its five scopes exist nowhere else yet. |
 | `/projects`      | Project index (all published projects)                                    |
 | `/projects/[id]` | Project detail                                                            |
@@ -291,6 +302,8 @@ Format: `YYYY-MM-DD — decision — rationale.`
 
 ---
 - 2026-09-16 — Cycle 11 (branch cycle-20260915/canopy-artifact, merge pending the owner): (a) second research axis, a Jordaan canal clip cut from AHN5 open data (`scripts/sample-canopy-pointcloud.py`; crown tops smoothed 3 x 3, roofs as a third category); (b) the point-cloud panel is one component with per-panel data attributes (zoom, tilt, swing, splat, wire, emphasis) and a travelling-shot camera; Vidigal terrain re-sampled by interpolating the shipped samples (`scripts/densify-vidigal-terrain.py`, no new source data); (c) the monogram is a one-shot lean-fan-close-face gesture in text sheets, once per view, no spin, no bounce, no dots (owner rejected the pixelated rest frame); (d) slug urban-digital-twin renamed urban-morphometrics with a redirect; `cardImage` field for card-only plates rendered from the clouds and the Stata replay; (e) hybrid-mpc rewritten method-only after an audit, stays drafted; /now lost its consulting line and on-site link; resume.pdf regenerated. Rulings and rejected lists: site-review docs/ruling11-monogram.md, vision-com.md.
+
+- 2026-10-23 — Cycle 16 copy track (branch cycle-20261023/copy): the owner's 2026-10-22 copy locks applied on the current design. Hero h1 is the headline (decompose moved to it), the name is a kicker; a Dubai Future Week band (`src/data/talk.ts`, event and dates only until the owner confirms the talk; set to null after 21 Nov); "For robot makers" button to theohermann.ch. The six featured project cards are replaced by four cards in the owner's Hidden / Revealed / Changed template (Practice, Roboat as an internship without the waves case, Research method-only, Open source). About = the owner's locked text; `author.role` = "Roboticist and urban scientist"; `siteConfig.description` = headline + subtitle; og image regenerated. The cross_link gate is reversed: the homepage must link to the practice site.
 
 ## 11. Out of scope (deliberately)
 

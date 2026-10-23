@@ -447,6 +447,40 @@
   margin: 0 0 1rem;
 }
 .hero-positioning strong { color: var(--color-text-primary); font-weight: 600; }
+.hero-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0 0 0.9rem;
+}
+
+/* The talk, one ruled line under the subtitle; a link, never a banner. */
+.talk-band {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  max-width: 44rem;
+  margin: 0 0 1.1rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+  transition: border-color var(--dur-1) var(--ease-out);
+}
+.talk-band:hover,
+.talk-band:focus-visible { border-color: var(--color-border-hover); }
+.talk-band-kind {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+.talk-band-when { white-space: nowrap; }
+.talk-band-arrow { margin-left: auto; color: var(--color-text-muted); }
 
 /* --- Artifact band: full-width, centered; point-cloud scrubber as one unit --- */
 .artifact-band {
@@ -577,6 +611,33 @@
   line-height: 1.5;
   color: var(--color-text-secondary);
   margin: 0;
+}
+
+/* Work cards: the owner's Hidden / Revealed / Changed template. */
+.work-card-hrc {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.45rem 1rem;
+  margin: 0;
+}
+.work-card-hrc dt {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  padding-top: 0.28rem;
+}
+.work-card-hrc dd {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+@media (max-width: 479px) {
+  .work-card-hrc { grid-template-columns: 1fr; gap: 0.15rem; }
+  .work-card-hrc dd { margin-bottom: 0.55rem; }
+  .work-card-hrc dd:last-child { margin-bottom: 0; }
 }
 
 /* --- Offer: bold lead + one sentence, three across --- */

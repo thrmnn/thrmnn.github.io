@@ -49,7 +49,7 @@ export const workCards: WorkCard[] = [
   },
   {
     id: 'stata',
-    label: 'Open source · 2023 to now',
+    label: 'Open source · 2026',
     title: 'Finding the moment a robot got lost',
     hidden: 'Robots that lose track of where they are while still reporting high confidence.',
     revealed: 'Four detectors that find those moments in the logs a fleet already records, run unchanged on recordings from five platforms.',

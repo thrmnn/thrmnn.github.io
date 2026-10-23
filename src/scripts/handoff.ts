@@ -33,6 +33,7 @@ export function initHandoff(strip: HTMLElement) {
   let past = false;
   let raf = 0;
   let running = false;
+  let landed = false; // the plate is in the corner, as a dot
   // Where the flyer is right now, so a reversed flight starts from there.
   let at = { x: 0, y: 0, w: 0, h: 0 };
 
@@ -60,6 +61,7 @@ export function initHandoff(strip: HTMLElement) {
     const aspect = start.w / start.h || 1.6;
     plate.classList.add('is-away');
     running = true;
+    landed = false;
     const t0 = performance.now();
     const step = (now: number) => {
       const t = Math.min(1, (now - t0) / DURATION);
@@ -72,6 +74,7 @@ export function initHandoff(strip: HTMLElement) {
       if (t < 1) { raf = requestAnimationFrame(step); return; }
       running = false;
       if (out) {
+        landed = true;
         flyer.style.opacity = '0';
         if (strip.dataset.state === 'full') strip.classList.add('is-landed');
       } else {
@@ -82,15 +85,29 @@ export function initHandoff(strip: HTMLElement) {
     raf = requestAnimationFrame(step);
   };
 
+  let lastY = window.scrollY;
+  const settle = () => {
+    // A jump (scroll restoration, an anchor link) is not a scroll: land in the
+    // matching state at once instead of flying across the page.
+    past = window.scrollY > heroH * LEAVE_AT;
+    cancelAnimationFrame(raf);
+    running = false;
+    landed = past;
+    plate.classList.toggle('is-away', past);
+    flyer.style.opacity = '0';
+  };
   const onScroll = () => {
     const y = window.scrollY;
+    const jump = Math.abs(y - lastY) > heroH;
+    lastY = y;
+    if (jump) { settle(); return; }
     if (!past && y > heroH * LEAVE_AT) {
       past = true;
       fly(true, running ? at : null);
     } else if (past && y < heroH * RETURN_AT) {
       past = false;
       // From the dot if the plate had landed, from mid-air if it had not.
-      const from = flyer.style.opacity === '0' ? dotRect(at.w / at.h || 1.6) : at;
+      const from = landed ? dotRect(plateRect().w / plateRect().h || 1.6) : at;
       flyer.style.opacity = '1';
       fly(false, from);
     }
@@ -99,6 +116,7 @@ export function initHandoff(strip: HTMLElement) {
   // A page restored mid-scroll starts in the settled state, without a flight.
   if (window.scrollY > heroH * LEAVE_AT) {
     past = true;
+    landed = true;
     plate.classList.add('is-away');
   }
   addEventListener('scroll', onScroll, { passive: true });

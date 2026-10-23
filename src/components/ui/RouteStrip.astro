@@ -128,8 +128,8 @@ const placeVars = minimapPlaces.map((p) => `--${p.id}-x:${pct(p.x)};--${p.id}-y:
     top: var(--rio-y);
     transform: translateY(-50%);
     font-family: var(--font-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.08em;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
     white-space: nowrap;
     color: var(--color-text-primary);
     background: var(--color-bg-primary);
@@ -185,18 +185,18 @@ const placeVars = minimapPlaces.map((p) => `--${p.id}-x:${pct(p.x)};--${p.id}-y:
      absolute: the strip may sit anywhere, the margin does not move. */
   .route-tab {
     position: fixed;
-    left: 3px;
+    left: max(3px, calc((100vw - var(--max-w-content)) / 2 - 26px));
     top: calc(var(--header-clearance) + 0.5rem);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.35rem;
-    width: 20px;
-    min-height: 64px;
+    width: 21px;
+    min-height: 68px;
     padding: 0.4rem 0;
     writing-mode: vertical-rl;
     font-family: var(--font-mono);
-    font-size: 0.6rem;
+    font-size: 0.66rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--color-accent);
@@ -250,6 +250,8 @@ const placeVars = minimapPlaces.map((p) => `--${p.id}-x:${pct(p.x)};--${p.id}-y:
     const strip = document.querySelector('.route-strip') as HTMLElement | null;
     if (!strip || !('IntersectionObserver' in window)) return;
     const tab = strip.querySelector('.route-tab') as HTMLButtonElement;
+    const body = strip.querySelector('#route-body') as HTMLElement;
+    let openedAt = -1;
     const links = new Map(
       Array.from(strip.querySelectorAll<HTMLAnchorElement>('.route-link')).map((a) => [a.dataset.place as string, a]),
     );
@@ -272,23 +274,32 @@ const placeVars = minimapPlaces.map((p) => `--${p.id}-x:${pct(p.x)};--${p.id}-y:
       strip.dataset.state = state;
       const tabLive = state !== 'full';
       tab.tabIndex = tabLive ? 0 : -1;
+      tab.toggleAttribute('aria-hidden', !tabLive);
+      body.inert = state === 'folded';
+      openedAt = state === 'open' ? window.scrollY : -1;
       tab.setAttribute('aria-expanded', String(state !== 'folded'));
       tab.setAttribute('aria-label', state === 'folded' ? 'Show the map' : 'Fold the map');
       if (!tabLive) tab.removeAttribute('aria-label');
     };
     tab.addEventListener('click', () => setState(strip.dataset.state === 'open' ? 'folded' : 'open'));
+    // An opened map is a glance, not a new resting state: it folds again once
+    // the reader scrolls on, so it never sits over the text at rest.
+    addEventListener('scroll', () => {
+      if (openedAt >= 0 && Math.abs(window.scrollY - openedAt) > 120) setState('folded');
+    }, { passive: true });
 
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
           const id = entry.target.id;
-          if (links.has(id)) setActive(id);
           const sectionId = PLACE_SECTION[id] ?? id;
           if (sectionId !== beat) {
             beat = sectionId;
             setState(FOLDED_BEATS.has(beat) ? 'folded' : 'full');
+            if (sectionId !== 'research') setActive('');
           }
+          if (links.has(id)) setActive(id);
         }
       },
       { rootMargin: '-40% 0px -55% 0px' },

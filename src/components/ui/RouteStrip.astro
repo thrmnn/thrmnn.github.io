@@ -175,6 +175,12 @@ const placeVars = minimapPlaces.map((p) => `--${p.id}-x:${pct(p.x)};--${p.id}-y:
     .route-names::-webkit-scrollbar { display: none; }
     .route-link { font-size: 0.58rem; letter-spacing: 0.05em; flex-shrink: 0; }
   }
+  /* small phones: all three names fit beside the map, open or not (measured at 360) */
+  @media (max-width: 419px) {
+    .route-names { gap: 0.5rem; }
+    .route-link { font-size: 0.55rem; letter-spacing: 0; }
+    .route-strip[data-state='open'] { padding-left: 1.9rem; }
+  }
 
   /* Folded: the map shrinks into the corner it came from and the tab takes
      its place. The strip keeps its size in the flow (no layout jump) but

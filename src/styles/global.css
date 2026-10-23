@@ -683,77 +683,35 @@
   margin: 0;
 }
 
-/* Work cards: the owner's Hidden / Revealed / Changed template, drawn as a
-   survey sheet (L-4): corner ticks, a sheet number, the three rows on one
-   ruled line, where the card leads at the foot. */
-.work-card {
-  position: relative;
-  border: 0;
-  padding: 1.6rem 1.5rem 1.25rem;
-}
-.work-card::before,
-.work-card::after {
-  content: '';
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-color: var(--color-text-primary);
-  border-style: solid;
-  transition: border-color var(--dur-1) var(--ease-out);
-}
-.work-card::before { left: 0; top: 0; border-width: 1px 0 0 1px; }
-.work-card::after { right: 0; bottom: 0; border-width: 0 1px 1px 0; }
-.work-card:hover::before,
-.work-card:hover::after,
-.work-card:focus-visible::before,
-.work-card:focus-visible::after { border-color: var(--color-accent); }
-.work-card-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.work-card-sheet {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.16em;
-  color: var(--color-text-muted);
-  white-space: nowrap;
-}
-.work-card .proof-plate-title { margin-bottom: 1rem; }
+/* Work cards: the owner's Hidden / Revealed / Changed template, on the
+   plain plate (L-4, reopened 2026-10-23: "A · plate"). */
 .work-card-hrc {
   display: grid;
-  gap: 0.7rem;
+  grid-template-columns: max-content 1fr;
+  gap: 0.45rem 1rem;
   margin: 0;
-  padding-left: 1rem;
-  border-left: 1px solid var(--color-text-primary);
 }
 .work-card-hrc dt {
-  position: relative;
   font-family: var(--font-mono);
   font-size: 0.66rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-text-muted);
-}
-.work-card-hrc dt::before {
-  content: '';
-  position: absolute;
-  left: calc(-1rem - 4px);
-  top: 0.55em;
-  width: 9px;
-  border-top: 1px solid var(--color-text-primary);
+  padding-top: 0.28rem;
 }
 .work-card-hrc dd {
-  margin: -0.45rem 0 0;
+  margin: 0;
   font-size: 0.9rem;
   line-height: 1.5;
   color: var(--color-text-secondary);
 }
+@media (max-width: 479px) {
+  .work-card-hrc { grid-template-columns: 1fr; gap: 0.15rem; }
+  .work-card-hrc dd { margin-bottom: 0.55rem; }
+  .work-card-hrc dd:last-child { margin-bottom: 0; }
+}
 .work-card-foot {
-  margin: 1.1rem 0 0;
-  padding-top: 0.6rem;
-  border-top: 1px solid var(--color-border);
+  margin: 1rem 0 0;
   font-family: var(--font-mono);
   font-size: 0.6rem;
   letter-spacing: 0.12em;

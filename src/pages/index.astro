@@ -113,10 +113,7 @@ const mailto = `mailto:${author.email}`;
               data-reveal
               style={`--reveal-d: ${i + 1};`}
             >
-              <div class="work-card-head">
-                <p class="proof-plate-label">{c.label}</p>
-                <p class="work-card-sheet">{String(i + 1).padStart(2, '0')} / {String(workCards.length).padStart(2, '0')}</p>
-              </div>
+              <p class="proof-plate-label">{c.label}</p>
               <p class="proof-plate-title">{c.title}</p>
               <dl class="work-card-hrc">
                 <dt>Hidden</dt><dd>{c.hidden}</dd>

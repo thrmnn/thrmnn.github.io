@@ -11,6 +11,8 @@ export interface WorkCard {
   changed: string;
   href: string;
   external?: boolean;
+  /** One quiet line under the three rows: where the card leads, or what it builds on. */
+  foot?: string;
 }
 
 export const practiceUrl = 'https://theohermann.ch';
@@ -18,13 +20,14 @@ export const practiceUrl = 'https://theohermann.ch';
 export const workCards: WorkCard[] = [
   {
     id: 'practice',
-    label: 'Practice · theohermann.ch',
+    label: 'Practice · 2026',
     title: 'Making autonomous systems legible',
     hidden: "Robot failures the logs don't explain.",
     revealed: 'The real cause, found and proved independently.',
     changed: 'Evidence a team can act on, and that its safety assessors will ask for from 2027.',
     href: practiceUrl,
     external: true,
+    foot: 'theohermann.ch →',
   },
   {
     id: 'roboat',
@@ -39,18 +42,19 @@ export const workCards: WorkCard[] = [
     id: 'research',
     label: 'MIT Senseable City Lab Rio · since 2025',
     title: 'How city form shapes light and air',
-    hidden: 'Favelas are built without plans, and the usual urban measures assume a street grid that is not there.',
+    hidden: 'How light and air move through a city built without plans, which measures made for street grids miss.',
     revealed: '3D models of the fabric, from the whole city down to a single alley, to study sunlight and airflow where people live.',
     changed: 'Measures that hold on a fabric the standard ones were not built for. The findings stay with the papers until they are out.',
     href: '/projects/urban-morphometrics/',
   },
   {
     id: 'stata',
-    label: 'Open source · since 2023',
+    label: 'Open source · 2023 to now',
     title: 'Finding the moment a robot got lost',
     hidden: 'Robots that lose track of where they are while still reporting high confidence.',
-    revealed: 'Four detectors that find those moments in the logs a fleet already records, graded on labelled recordings from five platforms.',
-    changed: 'Every number can be recomputed from the repository. It builds on open work since 2023: a ROS stack for a person-following robot at EPFL VITA Lab, and a modular perception pipeline.',
+    revealed: 'Four detectors that find those moments in the logs a fleet already records, run unchanged on recordings from five platforms.',
+    changed: 'Published with what it missed, and nearly every number recomputes from the repository with one script.',
+    foot: 'Built on: a ROS stack for a person-following robot at EPFL VITA Lab (2023), a modular perception pipeline',
     href: '/projects/ros2-localization-triage/',
   },
 ];

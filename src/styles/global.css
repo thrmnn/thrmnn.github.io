@@ -480,6 +480,20 @@
   color: var(--color-accent);
 }
 .talk-band-when { white-space: nowrap; }
+.hero-bridge {
+  max-width: 36rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  margin: 0 0 1rem;
+}
+.contact-address {
+  margin: 1.25rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  user-select: all;
+}
 .talk-band-arrow { margin-left: auto; color: var(--color-text-muted); }
 
 /* --- Artifact band: full-width, centered; point-cloud scrubber as one unit --- */
@@ -568,7 +582,7 @@
   font-size: 0.78rem;
   letter-spacing: 0.02em;
   color: var(--color-text-muted);
-  margin: 0 0 0.85rem;
+  margin: 1rem 0 0;
 }
 .hero-cta-row {
   display: flex;
@@ -622,7 +636,7 @@
 }
 .work-card-hrc dt {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-text-muted);

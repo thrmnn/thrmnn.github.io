@@ -37,6 +37,7 @@ export const workCards: WorkCard[] = [
     revealed: "Camera detection and tracking, running on the boat's own edge computer.",
     changed: 'A second sense on board, and every model traceable to the recordings it learned from.',
     href: '/projects/autonomous-boat-perception/',
+    foot: 'Case page →',
   },
   {
     id: 'research',
@@ -46,6 +47,7 @@ export const workCards: WorkCard[] = [
     revealed: '3D models of the fabric, from the whole city down to a single alley, to study sunlight and airflow where people live.',
     changed: 'Measures that hold on a fabric the standard ones were not built for. The findings stay with the papers until they are out.',
     href: '/projects/urban-morphometrics/',
+    foot: 'Method page →',
   },
   {
     id: 'stata',
@@ -54,7 +56,7 @@ export const workCards: WorkCard[] = [
     hidden: 'Robots that lose track of where they are while still reporting high confidence.',
     revealed: 'Four detectors that find those moments in the logs a fleet already records, run unchanged on recordings from five platforms.',
     changed: 'Published with what it missed, and nearly every number recomputes from the repository with one script.',
-    foot: 'Built on: a ROS stack for a person-following robot at EPFL VITA Lab (2023), a modular perception pipeline',
+    foot: 'Built on: a ROS stack for a person-following robot at EPFL VITA Lab (2023), a modular perception pipeline · Case page →',
     href: '/projects/ros2-localization-triage/',
   },
 ];

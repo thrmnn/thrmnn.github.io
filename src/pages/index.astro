@@ -16,6 +16,7 @@ const mailto = `mailto:${author.email}`;
 <PageLayout ogType="profile">
   <!-- Hero — type-first viewport 1; the research artifact follows below -->
   <section id="home" class="hero-section">
+    <div class="hero-grid">
     <div class="hero-type">
       <p class="hero-kicker" data-reveal style="--reveal-d: 0;">{author.name}</p>
       <h1
@@ -48,10 +49,25 @@ const mailto = `mailto:${author.email}`;
         MSc Robotics, EPFL. Research fellow at <a href="https://senseablerio.mit.edu/" class="hero-credentials-link">MIT Senseable City Lab Rio</a>; earlier, computer vision and MLOps at Roboat.
       </p>
     </div>
+    <!-- The hero plate (owner lock L-2): Vidigal's terrain and rooftops from
+         the quantised data already on this page. It flies into Rio on the
+         corner map (src/scripts/handoff.ts). -->
+    <figure class="hero-plate" data-handoff-plate>
+      <img
+        src={`${base}/hero/vidigal-plan.webp`}
+        width="1424"
+        height="892"
+        alt="Plan of Vidigal, Rio de Janeiro: the hillside as shaded relief with 25 m contours, and its rooftop outlines in blue."
+        decoding="async"
+        fetchpriority="high"
+      />
+      <figcaption>Vidigal, Rio de Janeiro · terrain and rooftops · MIT Senseable City Lab Rio</figcaption>
+    </figure>
+    </div>
   </section>
 
-  <!-- Route: a thin sticky world strip navigates the research stops and the
-       proof grid below; releases at this wrapper's end, before #about. -->
+  <!-- Route: the corner map navigates the research stops; it stays for the
+       rest of the page, folded into a tab from the work grid down (L-1). -->
   <div class="route">
     <RouteStrip />
 
@@ -97,14 +113,17 @@ const mailto = `mailto:${author.email}`;
               data-reveal
               style={`--reveal-d: ${i + 1};`}
             >
-              <p class="proof-plate-label">{c.label}</p>
+              <div class="work-card-head">
+                <p class="proof-plate-label">{c.label}</p>
+                <p class="work-card-sheet">{String(i + 1).padStart(2, '0')} / {String(workCards.length).padStart(2, '0')}</p>
+              </div>
               <p class="proof-plate-title">{c.title}</p>
               <dl class="work-card-hrc">
                 <dt>Hidden</dt><dd>{c.hidden}</dd>
                 <dt>Revealed</dt><dd>{c.revealed}</dd>
                 <dt>Changed</dt><dd>{c.changed}</dd>
               </dl>
-              {c.foot && <p class="proof-plate-metric">{c.foot}</p>}
+              {c.foot && <p class="work-card-foot">{c.foot}</p>}
             </a>
           ))}
         </div>
@@ -113,7 +132,6 @@ const mailto = `mailto:${author.email}`;
         </p>
       </div>
     </section>
-  </div>
 
 
   <!-- Biography -->
@@ -177,6 +195,7 @@ const mailto = `mailto:${author.email}`;
       <p class="contact-address" data-reveal style="--reveal-d: 3;">{author.email}</p>
     </div>
   </section>
+  </div>
 
 
   <script>

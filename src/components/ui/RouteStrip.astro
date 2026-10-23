@@ -1,41 +1,47 @@
 ---
 import {
-  worldStripPath,
-  worldStripViewBox,
-  worldStripWidth,
-  worldStripHeight,
-  worldStripPlaces,
-} from '../../data/world-strip';
+  minimapPath,
+  minimapViewBox,
+  minimapSize,
+  minimapRadius,
+  minimapPlaces,
+} from '../../data/minimap';
 
-// Percentage positions so the accent ring (plain HTML, not SVG) overlays the
-// map without needing SVG-local transform units; the wrap's aspect-ratio
-// below is set to the same viewBox ratio so the percentages line up exactly.
-const ringVars = worldStripPlaces
-  .map((p) => `--${p.id}-x:${((p.x / worldStripWidth) * 100).toFixed(2)}%;--${p.id}-y:${((p.y / worldStripHeight) * 100).toFixed(2)}%;`)
-  .join('');
+// Percentage positions so the dots and the ring (plain HTML, not SVG) sit on
+// the sphere without SVG-local units; the wrap is square like the viewBox.
+const pct = (v: number) => `${((v / minimapSize) * 100).toFixed(2)}%`;
+const placeVars = minimapPlaces.map((p) => `--${p.id}-x:${pct(p.x)};--${p.id}-y:${pct(p.y)};`).join('');
 ---
 
-<div class="route-strip">
-  <div class="route-map-wrap" style={`aspect-ratio: ${worldStripWidth} / ${worldStripHeight};`}>
-    <svg class="route-map" viewBox={worldStripViewBox} aria-hidden="true" focusable="false">
-      <title>Coastlines: Natural Earth, public domain</title>
-      <path d={worldStripPath} />
-      {worldStripPlaces.map((p) => (
-        <a href={`#${p.id}`} tabindex="-1">
-          <circle cx={p.x} cy={p.y} r="4" />
-        </a>
+<!-- The corner map (owner locks L-1 and L-3): full over the hero and the
+     places; over the work and below it folds into a labelled tab in the same
+     corner and unfolds on the way back. The hero plate lands on Rio here. -->
+<div class="route-strip" data-state="full" style={placeVars}>
+  <div class="route-body" id="route-body">
+    <div class="route-map-wrap">
+      <svg class="route-map" viewBox={minimapViewBox} aria-hidden="true" focusable="false">
+        <title>Coastlines: Natural Earth, public domain</title>
+        <circle class="route-sphere" cx={minimapSize / 2} cy={minimapSize / 2} r={minimapRadius} />
+        <path d={minimapPath} />
+        {minimapPlaces.map((p) => (
+          <a href={`#${p.id}`} tabindex="-1">
+            <circle cx={p.x} cy={p.y} r="9" />
+          </a>
+        ))}
+      </svg>
+      {minimapPlaces.map((p) => (
+        <span class="route-dot" data-dot={p.id} style={`left: var(--${p.id}-x); top: var(--${p.id}-y);`} aria-hidden="true"></span>
       ))}
-    </svg>
-    {worldStripPlaces.map((p) => (
-      <span class="route-dot" style={`left: var(--${p.id}-x); top: var(--${p.id}-y); ${ringVars}`} aria-hidden="true"></span>
-    ))}
-    <div class="route-ring" style={ringVars} aria-hidden="true"></div>
+      <span class="route-ring" aria-hidden="true"></span>
+      <span class="route-landing" aria-hidden="true">Vidigal, Rio</span>
+    </div>
+    <nav class="route-names" aria-label="Jump to a research location">
+      {minimapPlaces.map((p) => (
+        <a href={`#${p.id}`} class="route-link" data-place={p.id}>{p.name}</a>
+      ))}
+    </nav>
   </div>
-  <nav class="route-names" aria-label="Jump to a research location">
-    {worldStripPlaces.map((p) => (
-      <a href={`#${p.id}`} class="route-link" data-place={p.id}>{p.name}</a>
-    ))}
-  </nav>
+  <button type="button" class="route-tab" aria-controls="route-body" aria-expanded="true" tabindex="-1">Map</button>
 </div>
 
 <style>
@@ -43,13 +49,10 @@ const ringVars = worldStripPlaces
     position: sticky;
     top: var(--header-clearance);
     z-index: 40;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
     min-height: 128px;
-    padding: 0.5rem 1.5rem;
     max-width: var(--max-w-content);
     margin: 0 auto;
+    padding: 0.5rem 1.5rem;
     background-color: color-mix(in srgb, var(--color-bg-primary) 88%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -57,48 +60,48 @@ const ringVars = worldStripPlaces
   @media (max-width: 767px) {
     .route-strip {
       min-height: 88px;
-      gap: 0.6rem;
-      padding: 0.125rem 1rem;
+      padding: 0.25rem 1rem;
     }
+  }
+  .route-body {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transform-origin: 1.5rem 0.5rem;
   }
   .route-map-wrap {
     position: relative;
     flex: 0 0 auto;
-    height: 76px;
-    width: auto; /* from the aspect-ratio set inline */
+    width: 112px;
+    aspect-ratio: 1;
   }
-  @media (min-width: 768px) {
-    .route-map-wrap {
-      height: 112px;
-    }
+  @media (max-width: 767px) {
+    .route-map-wrap { width: 76px; }
+    .route-body { gap: 0.6rem; transform-origin: 1rem 0.25rem; }
   }
-
-  .route-map {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
+  .route-map { display: block; width: 100%; height: 100%; overflow: visible; }
   .route-map path {
     fill: none;
     stroke: var(--color-text-muted);
-    stroke-width: 1.5;
+    stroke-width: 1;
     vector-effect: non-scaling-stroke;
   }
-  .route-map circle {
-    fill: var(--color-text-muted);
+  .route-sphere {
+    fill: none;
+    stroke: var(--color-text-muted);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
   }
-  .route-map a:focus-visible circle {
-    fill: var(--color-accent);
-  }
+  /* SVG hit areas only; the visible marks are the pixel-sized dots below */
+  .route-map circle:not(.route-sphere) { fill: transparent; }
+  .route-map a:focus-visible circle { stroke: var(--color-accent); stroke-width: 2; }
 
-  /* the places at rest: a dot in the ink, sized in pixels so it survives any
-     map size (an SVG circle in viewBox units vanishes at strip scale) */
   .route-dot {
     position: absolute;
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: var(--color-text-muted);
+    background: var(--color-text-primary);
     transform: translate(-50%, -50%);
     pointer-events: none;
   }
@@ -106,8 +109,8 @@ const ringVars = worldStripPlaces
     position: absolute;
     left: 0;
     top: 0;
-    width: 10px;
-    height: 10px;
+    width: 13px;
+    height: 13px;
     border: 1px solid var(--color-accent);
     border-radius: 50%;
     transform: translate(-50%, -50%);
@@ -117,21 +120,28 @@ const ringVars = worldStripPlaces
   .route-strip[data-active='rio'] .route-ring { opacity: 1; left: var(--rio-x); top: var(--rio-y); }
   .route-strip[data-active='amsterdam'] .route-ring { opacity: 1; left: var(--amsterdam-x); top: var(--amsterdam-y); }
   .route-strip[data-active='stata'] .route-ring { opacity: 1; left: var(--stata-x); top: var(--stata-y); }
-  @media (prefers-reduced-motion: no-preference) {
-    /* the places at rest: a dot in the ink, sized in pixels so it survives any
-     map size (an SVG circle in viewBox units vanishes at strip scale) */
-  .route-dot {
+
+  /* "Vidigal, Rio": said once, beside the dot, when the hero plate lands. */
+  .route-landing {
     position: absolute;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--color-text-muted);
-    transform: translate(-50%, -50%);
+    left: calc(var(--rio-x) + 9px);
+    top: var(--rio-y);
+    transform: translateY(-50%);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    color: var(--color-text-primary);
+    background: var(--color-bg-primary);
+    padding: 1px 4px;
+    opacity: 0;
     pointer-events: none;
   }
-  .route-ring {
-      transition: left 400ms var(--ease-out), top 400ms var(--ease-out), opacity 200ms var(--ease-out);
-    }
+  .route-strip.is-landed .route-landing { animation: route-landing 1.2s var(--ease-out) forwards; }
+  @keyframes route-landing {
+    0% { opacity: 0; }
+    15%, 75% { opacity: 1; }
+    100% { opacity: 0; }
   }
 
   .route-names {
@@ -152,17 +162,9 @@ const ringVars = worldStripPlaces
     transition: color var(--dur-1) var(--ease-out);
     white-space: nowrap;
   }
-  .route-link:hover {
-    color: var(--color-text-secondary);
-  }
-  .route-link[aria-current='location'] {
-    color: var(--color-text-primary);
-  }
-  .route-link:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-    border-radius: 2px;
-  }
+  .route-link:hover { color: var(--color-text-secondary); }
+  .route-link[aria-current='location'] { color: var(--color-text-primary); }
+  .route-link:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
   @media (max-width: 767px) {
     .route-names {
       flex-wrap: nowrap;
@@ -170,30 +172,86 @@ const ringVars = worldStripPlaces
       gap: 0.7rem;
       scrollbar-width: none;
     }
-    .route-names::-webkit-scrollbar {
-      display: none;
+    .route-names::-webkit-scrollbar { display: none; }
+    .route-link { font-size: 0.58rem; letter-spacing: 0.05em; flex-shrink: 0; }
+  }
+
+  /* Folded: the map shrinks into the corner it came from and the tab takes
+     its place. The strip keeps its size in the flow (no layout jump) but
+     stops painting a ground, so nothing under it is covered. */
+  /* The tab lives in the page's own margin, the thin band no text ever
+     enters (24 px on phones, the gutter beside the column on laptops), so
+     folded chrome covers nothing (ruling15 principle 5). Fixed, not
+     absolute: the strip may sit anywhere, the margin does not move. */
+  .route-tab {
+    position: fixed;
+    left: 3px;
+    top: calc(var(--header-clearance) + 0.5rem);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: 20px;
+    min-height: 64px;
+    padding: 0.4rem 0;
+    writing-mode: vertical-rl;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-accent);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateX(-6px);
+    pointer-events: none;
+  }
+  /* a 44 px target without widening the mark into the text column */
+  .route-tab::after { content: ''; position: absolute; inset: -10px -12px -10px -3px; }
+  .route-tab::before { content: '▸'; writing-mode: horizontal-tb; }
+  .route-tab:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .route-strip[data-state='folded'] {
+    background-color: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    pointer-events: none;
+  }
+  .route-strip[data-state='folded'] .route-body { transform: scale(0.18); opacity: 0; }
+  .route-strip[data-state='folded'] .route-tab { opacity: 1; transform: none; pointer-events: auto; }
+  .route-strip[data-state='open'] .route-tab { opacity: 1; transform: none; pointer-events: auto; }
+  /* backdrop-filter would make the strip the tab's containing block and move it */
+  .route-strip[data-state='open'] {
+    padding-left: 2.25rem;
+    background-color: var(--color-bg-primary);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .route-strip[data-state='open'] .route-tab::before { content: '◂'; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .route-ring {
+      transition: left 400ms var(--ease-out), top 400ms var(--ease-out), opacity 200ms var(--ease-out);
     }
-    .route-link {
-      font-size: 0.58rem;
-      letter-spacing: 0.05em;
-      flex-shrink: 0;
+    .route-body,
+    .route-tab {
+      transition: transform 400ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 400ms cubic-bezier(0.2, 0.7, 0.2, 1);
     }
+    .route-strip { transition: background-color 400ms var(--ease-out); }
   }
 </style>
 
 <script>
-  // Same instrument pattern as the header readout: one IntersectionObserver,
-  // guarded the same way, keyed to the same rootMargin so the strip's active
-  // place and the header's live readout agree on when a section is "in view".
+  // One controller for the corner map (ruling15 principle 4): the active place,
+  // the fold, and the hero plate's flight all read the same section state.
+  import { initHandoff } from '../../scripts/handoff';
+
   (() => {
     const strip = document.querySelector('.route-strip') as HTMLElement | null;
     if (!strip || !('IntersectionObserver' in window)) return;
-
+    const tab = strip.querySelector('.route-tab') as HTMLButtonElement;
     const links = new Map(
-      Array.from(strip.querySelectorAll<HTMLAnchorElement>('.route-link')).map((a) => [
-        a.dataset.place as string,
-        a,
-      ]),
+      Array.from(strip.querySelectorAll<HTMLAnchorElement>('.route-link')).map((a) => [a.dataset.place as string, a]),
     );
 
     const setActive = (id: string) => {
@@ -204,17 +262,42 @@ const ringVars = worldStripPlaces
       }
     };
 
+    // Beats: the map is full over the hero and the places, folded from the
+    // work grid down. A tap on the tab opens it until the next beat.
+    const FOLDED_BEATS = new Set(['projects', 'about', 'contact']);
+    const PLACE_SECTION: Record<string, string> = { rio: 'research', amsterdam: 'research', stata: 'projects' };
+    let beat = 'home';
+    const setState = (state: 'full' | 'folded' | 'open') => {
+      if (strip.dataset.state === state) return;
+      strip.dataset.state = state;
+      const tabLive = state !== 'full';
+      tab.tabIndex = tabLive ? 0 : -1;
+      tab.setAttribute('aria-expanded', String(state !== 'folded'));
+      tab.setAttribute('aria-label', state === 'folded' ? 'Show the map' : 'Fold the map');
+      if (!tabLive) tab.removeAttribute('aria-label');
+    };
+    tab.addEventListener('click', () => setState(strip.dataset.state === 'open' ? 'folded' : 'open'));
+
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) setActive(entry.target.id);
+          if (!entry.isIntersecting) continue;
+          const id = entry.target.id;
+          if (links.has(id)) setActive(id);
+          const sectionId = PLACE_SECTION[id] ?? id;
+          if (sectionId !== beat) {
+            beat = sectionId;
+            setState(FOLDED_BEATS.has(beat) ? 'folded' : 'full');
+          }
         }
       },
       { rootMargin: '-40% 0px -55% 0px' },
     );
-    for (const id of ['rio', 'amsterdam', 'stata']) {
+    for (const id of ['home', 'rio', 'amsterdam', 'research', 'stata', 'projects', 'about', 'contact']) {
       const el = document.getElementById(id);
       if (el) io.observe(el);
     }
+
+    initHandoff(strip);
   })();
 </script>

@@ -510,12 +510,22 @@ for (const f of htmlFiles) {
       fail('route_strip', 'RouteStrip coastline <path> not found');
     } else {
       const pathBytes = Buffer.byteLength(pathMatch[1], 'utf8');
-      must('route_strip', pathBytes < 8 * 1024, `world-strip path is ${pathBytes} B (budget < 8192 B)`);
+      must('route_strip', pathBytes < 8 * 1024, `corner map path is ${pathBytes} B (budget < 8192 B)`);
     }
     for (const id of ['rio', 'amsterdam', 'stata']) {
       must('route_strip', svg.includes(`href="#${id}"`), `route strip missing a link to #${id}`);
       must('route_strip', new RegExp(`id="${id}"`).test(home), `#${id} is not a built id on the homepage`);
     }
+  }
+
+  // Chrome never gets a hidden state (ruling15 principle 1, owner lock L-1):
+  // the corner map folds and moves, it is never display:none or hidden.
+  {
+    const src = readFileSync('src/components/ui/RouteStrip.astro', 'utf8');
+    const css = (src.match(/<style>([\s\S]*?)<\/style>/) || [, ''])[1]
+      .replace(/[^{}]*::-webkit-scrollbar\s*\{[^}]*\}/g, '');
+    must('route_strip', !/display:\s*none|visibility:\s*hidden/.test(css), 'the corner map has a hidden state (display:none or visibility:hidden)');
+    must('route_strip', /data-handoff-plate/.test(home), 'the hero plate (data-handoff-plate) is missing from the homepage');
   }
 
   const heroStart = home.indexOf('<section id="home"');

@@ -9,10 +9,9 @@ export interface PortfolioEntry {
   hidden?: string;
   revealed?: string;
   changed?: string;
-  /** Case pages shown under this one as what it builds on: label, title, summary. */
-  builtOn?: string[];
 }
 
+/** A page each. */
 export const portfolio: PortfolioEntry[] = [
   { card: 'roboat' },
   { card: 'research' },
@@ -22,5 +21,33 @@ export const portfolio: PortfolioEntry[] = [
     revealed: 'Leaf area per tree, recovered by a physical inversion from the aerial LiDAR survey the city already flies.',
     changed: 'An estimate that can be argued with on its own terms, from data that already exists. The numbers stay with the paper until it is out.',
   },
-  { card: 'stata', builtOn: ['autonomous-mobile-robot', 'perception-pipeline'] },
+  { card: 'stata' },
+];
+
+/** Shorter entries, two to a page. */
+export const moreWork: PortfolioEntry[] = [
+  {
+    slug: 'autonomous-mobile-robot',
+    hidden: 'Where the people around a robot are and where they are heading, in a crowded indoor space.',
+    revealed: 'A full ROS autonomy stack on a Segway Loomo: mapping, planning, obstacle avoidance, and person-following with detection, tracking and trajectory prediction.',
+    changed: 'Validated end to end on the physical robot among real pedestrians, not only in simulation, and open-sourced.',
+  },
+  {
+    slug: 'perception-pipeline',
+    hidden: 'Four versions of the same detection and tracking work, built 2022 to 2023, sharing no interface and pinned to stacks that aged out.',
+    revealed: 'One modular stack with narrow interfaces, every module reporting its own latency. Version 0.1 ships detection and tracking; re-identification and pose follow.',
+    changed: 'A module can be swapped without touching the rest, and the pipeline can be held to a frame budget. Open source, MIT licensed.',
+  },
+  {
+    slug: 'event-cameras-drone',
+    hidden: 'Where a drone is during aggressive flight, once frame cameras blur and standard visual-inertial odometry diverges.',
+    revealed: '6-DOF pose from event-camera streams fused with IMU data, in a PyTorch network trained on high-speed flights with motion-capture ground truth.',
+    changed: 'Pose tracking held through maneuvers above 5 g, the regime where the frame-based pipelines fail.',
+  },
+  {
+    slug: 'agent-harness',
+    hidden: 'Agent failures nobody sees: a tool call breaks, nothing traces it, and a user finds out first.',
+    revealed: 'A typed tool layer with one structured trace line per call, and a regression suite wired into CI.',
+    changed: 'A bad prompt change fails the build instead of reaching the user.',
+  },
 ];

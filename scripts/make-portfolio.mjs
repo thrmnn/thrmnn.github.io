@@ -19,7 +19,7 @@ import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import { author } from '../src/data/author.ts';
 import { workCards, practiceUrl } from '../src/data/cards.ts';
-import { portfolio } from '../src/data/portfolio.ts';
+import { portfolio, moreWork } from '../src/data/portfolio.ts';
 import { talk } from '../src/data/talk.ts';
 import { siteConfig } from '../src/data/site.ts';
 
@@ -42,10 +42,11 @@ const card = (id) => {
   return c;
 };
 
-const entries = portfolio.map((e) => {
+const resolve = (e) => {
   const c = e.card ? card(e.card) : null;
   const slug = e.slug ?? c.href.match(/^\/projects\/([^/]+)\/$/)[1];
   const page = caseFile(slug);
+  const raster = page.image && !page.image.endsWith('.svg') ? page.image : null;
   return {
     page,
     label: c?.label ?? page.label,
@@ -53,9 +54,11 @@ const entries = portfolio.map((e) => {
     hidden: c?.hidden ?? e.hidden,
     revealed: c?.revealed ?? e.revealed,
     changed: c?.changed ?? e.changed,
-    builtOn: (e.builtOn ?? []).map(caseFile),
+    picture: page.cardImage ?? raster,
   };
-});
+};
+const entries = portfolio.map(resolve);
+const more = moreWork.map(resolve);
 
 const practice = card('practice');
 
@@ -75,8 +78,8 @@ await Promise.all([
   ...entries.flatMap((x) => [
     x.page.cardImage && embed(x.page.cardImage, 64),
     x.page.imageAlt && embed(x.page.image, 174),
-    ...x.builtOn.filter((b) => b.image && !b.image.endsWith('.svg')).map((b) => embed(b.image, 40)),
   ]),
+  ...more.map((x) => x.picture && embed(x.picture, 56)),
 ]);
 const asset = (p) => embedded.get(p);
 const month = new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
@@ -102,14 +105,18 @@ const project = (x, i) => `<section class="project" id="p${i}">
   <div class="case">${x.page.html}</div>
   ${x.page.imageAlt ? `<figure><img src="${asset(x.page.image)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>` : ''}
   <p class="foot"><span>${x.page.tags.map(esc).join(' · ')}</span><span>${links(x.page)}</span></p>
-  ${x.builtOn.length ? `<div class="built-on"><p class="kicker">Built on</p>${x.builtOn
-    .map(
-      (b) => `<div class="b">
-    ${b.image && !b.image.endsWith('.svg') ? `<img src="${asset(b.image)}" alt="">` : ''}
-    <div><p class="label">${esc(b.label)}</p><h3>${esc(b.title)}</h3><p>${esc(b.summary)}</p><p class="foot">${links(b)}</p></div>
-  </div>`,
-    )
-    .join('\n')}</div>` : ''}
+</section>`;
+
+const short = (x, i) => `<section class="short" id="m${i}">
+  ${i === 0 ? '<p class="kicker">More work</p>' : ''}
+  <p class="label">${esc(x.label)}</p>
+  <h2>${esc(x.title)}</h2>
+  <div class="top">
+    ${hrc(x)}
+    ${x.picture ? `<img class="pic" src="${asset(x.picture)}" alt="">` : ''}
+  </div>
+  <p class="summary">${esc(x.page.summary)}</p>
+  <p class="foot"><span>${x.page.tags.map(esc).join(' · ')}</span><span>${links(x.page)}</span></p>
 </section>`;
 
 const html = `<!doctype html>
@@ -157,6 +164,7 @@ const html = `<!doctype html>
   .toc .t { font-size: 10.5pt; font-weight: 600; }
   .toc .l { flex: 1; color: var(--muted); font-size: 8.5pt; }
   .toc .n::after { content: target-counter(attr(href), page); }
+  .toc li.m .t { font-weight: 400; }
 
   .project { page-break-before: always; }
   .project > header h2 { font-size: 20pt; letter-spacing: -0.02em; line-height: 1.1; margin: 1.5mm 0 6mm; }
@@ -179,11 +187,11 @@ const html = `<!doctype html>
   .foot { display: flex; justify-content: space-between; gap: 6mm; margin-top: 6mm; padding-top: 2mm; border-top: 0.5pt solid var(--rule); }
   .foot a { color: var(--accent); white-space: nowrap; }
   .foot > span:last-child { text-align: right; }
-  .built-on { margin-top: 9mm; page-break-inside: avoid; }
-  .built-on .b { display: flex; gap: 5mm; padding: 3mm 0; border-top: 0.5pt solid var(--rule); }
-  .built-on .b img { width: 40mm; height: 24mm; object-fit: cover; }
-  .built-on h3 { font-size: 10.5pt; margin: 0.5mm 0 1mm; }
-  .built-on .foot { display: block; border: 0; margin-top: 1mm; padding: 0; }
+  .short { page-break-inside: avoid; margin-bottom: 14mm; }
+  .short:first-of-type, #m0 { page-break-before: always; }
+  .short h2 { font-size: 15pt; letter-spacing: -0.01em; line-height: 1.15; margin: 1mm 0 4mm; }
+  .short .pic { width: 56mm; height: 38mm; object-fit: cover; }
+  .short .summary { margin-top: 4mm; max-width: 150mm; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -213,11 +221,14 @@ const html = `<!doctype html>
     <p class="kicker">In this portfolio</p>
     <ul class="toc">
 ${entries.map((x, i) => `      <li><span class="t">${esc(x.title)}</span><span class="l">${esc(x.label)}</span><a class="n" href="#p${i}"></a></li>`).join('\n')}
+${more.map((x, i) => `      <li class="m"><span class="t">${esc(x.title)}</span><span class="l">${esc(x.label)}</span><a class="n" href="#m${i}"></a></li>`).join('\n')}
     </ul>
   </section>
 </section>
 
 ${entries.map(project).join('\n\n')}
+
+${more.map(short).join('\n\n')}
 </body>
 </html>
 `;
@@ -235,4 +246,4 @@ for (const [re, where, why] of [
   }
 }
 writeFileSync(join(root, 'portfolio.html'), html);
-console.log(`portfolio.html: ${entries.length} case pages, ${entries.reduce((n, x) => n + x.builtOn.length, 0)} built-on`);
+console.log(`portfolio.html: ${entries.length} case pages, ${more.length} shorter entries`);

@@ -56,7 +56,7 @@ export const workCards: WorkCard[] = [
     hidden: 'Robots that lose track of where they are while still reporting high confidence.',
     revealed: 'Four detectors that find those moments in the logs a fleet already records, run unchanged on recordings from five platforms.',
     changed: 'Published with what it missed, and nearly every number recomputes from the repository with one script.',
-    foot: 'Built on: a ROS stack for a person-following robot at EPFL VITA Lab (2023), a modular perception pipeline · Case page →',
+    foot: 'Built on: a ROS stack for a person-following robot at EPFL VITA Lab (2022–23), a modular perception pipeline · Case page →',
     href: '/projects/ros2-localization-triage/',
   },
 ];

@@ -37,7 +37,7 @@ export const portfolio: PortfolioEntry[] = [
   {
     card: 'stata',
     // README and docs/how-this-was-graded.md.
-    role: 'Mine end to end: I recorded the faults, ran the tool and graded the results; there is no independent evaluator',
+    role: 'Mine end to end: I recorded the faults, ran the tool and graded the results myself',
   },
 ];
 
@@ -60,7 +60,7 @@ export const moreWork: PortfolioEntry[] = [
     slug: 'event-cameras-drone',
     role: 'Visiting research fellow, IRI (CSIC-UPC), with Juan Andrade-Cetto · Barcelona · October 2023 to February 2024',
     hidden: 'Where a drone is during aggressive flight, once frame cameras blur and standard visual-inertial odometry diverges.',
-    revealed: '6-DOF pose from event-camera streams fused with RGB and IMU data, in a PyTorch network trained on high-speed drone flights.',
+    revealed: 'A PyTorch network that estimates 6-DOF pose from event-camera, RGB and IMU streams, trained on high-speed drone flights.',
     changed: 'A pose estimator built for flight above 5 g, the regime where frame-based pipelines fail; the training framework is open source.',
   },
   {

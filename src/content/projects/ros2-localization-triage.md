@@ -39,5 +39,5 @@ The same frozen thresholds did not transfer. The covariance threshold, set on a 
 
 - 16 of 16 labelled laser gaps found, against labels the tool's author never wrote (the Cartographer dataset's own decade-old ground truth).
 - Three predictions were committed before the ERL benchmark run. Two held, including that the laser-gap detector would show no elevation on the engineered failure runs: it fired zero times over 1,013 seconds. The prediction that the transform detector would not rise did not hold.
-- Two case-log rows are graded "wrong" and published as such.
+- Two case-log rows are graded “wrong” and published as such.
 - One candidate dataset was rejected over its licence, not for a technical reason.

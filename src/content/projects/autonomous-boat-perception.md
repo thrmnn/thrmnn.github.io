@@ -10,7 +10,6 @@ metric: "Camera perception on a LiDAR stack"
 gradient: "linear-gradient(135deg, #1a1a3e 0%, #2a2a5e 50%, #3a3a7e 100%)"
 tags:
   - Object Detection
-  - Sensor Fusion
   - Multi-Object Tracking
   - PyTorch
   - YOLO

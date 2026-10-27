@@ -14,20 +14,16 @@ gradient: 'linear-gradient(135deg, #1a3a3a 0%, #2d5a5a 50%, #3a7a7a 100%)'
 tags:
   - Object Detection
   - Multi-Object Tracking
-  - Re-Identification
-  - Pose Estimation
   - YOLO
   - ByteTrack
   - PyTorch
-  - TensorRT
-  - Edge Deployment
 ---
 
 ## Overview
 
-Across 2022–2023 I shipped four versions of "detection + tracking + ReID" — single-person tracking on a Loomo robot, multi-person pose tracking, a ReID demo on Colab, and the perception module of a full ROS autonomy stack. Each solved a real problem in its context. None of them shared an interface; all four ran on dependency stacks that aged out.
+Across 2022–2023 I shipped four versions of “detection + tracking + ReID” — single-person tracking on a Loomo robot, multi-person pose tracking, a ReID demo on Colab, and the perception module of a full ROS autonomy stack. Each solved a real problem in its context. None of them shared an interface; all four ran on dependency stacks that aged out.
 
-**`perception-pipeline` is the consolidated re-do** against the 2026 stack: modern YOLO (v8/v11), ByteTrack / BoT-SORT / OC-SORT, OSNet-class ReID, MMPose-compatible 2D and 3D pose, with TensorRT export targets for edge deployment on Jetson-class hardware.
+**`perception-pipeline` is the consolidated re-do** against the 2026 stack. v0.1 ships detection and tracking (modern YOLO, ByteTrack); the roadmap below adds BoT-SORT / OC-SORT, OSNet-class ReID, MMPose-compatible 2D and 3D pose, and TensorRT export for Jetson-class hardware.
 
 ## What v0.1 ships (June 2026)
 
@@ -49,7 +45,7 @@ A runnable detector + tracker loop with the architecture the rest of the roadmap
 
 ## Roadmap
 
-- ✅ **v0.1** — Detection + tracking baseline (YOLO + ByteTrack), CLI demo, latency reporting. **Shipped June 2026.**
+- **v0.1** — Detection + tracking baseline (YOLO + ByteTrack), CLI demo, latency reporting. **Shipped June 2026.**
 - **v0.2** — ReID hook (OSNet baseline), multi-person tracking, YAML pipeline config
 - **v0.3** — 2D pose estimation (MMPose-compatible)
 - **v0.4** — 3D pose lifting + temporal smoothing

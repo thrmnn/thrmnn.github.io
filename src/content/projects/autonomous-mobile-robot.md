@@ -7,7 +7,7 @@ image: '/projects/autonomous-mobile-robot/hero-poster.jpg'
 imageWidth: 600
 imageHeight: 338
 summary: "A modular ROS stack for a Segway Loomo at EPFL VITA Lab: person detection, tracking and 3D pose, trajectory prediction, planning and model predictive control, validated end to end on the physical robot."
-label: "EPFL VITA Lab · 2023"
+label: "EPFL VITA Lab · 2022–23"
 metric: "End-to-end on the physical robot · code on GitHub"
 gradient: "linear-gradient(135deg, #1a3a3a 0%, #2d5a5a 50%, #3a7a7a 100%)"
 tags:
@@ -30,7 +30,7 @@ Enable Segway Loomo robots to navigate crowded, dynamic indoor environments; mos
 A modular ROS pipeline that runs on a server and drives the Loomo over a wireless socket link, one package per job:
 
 - **Perception:** person detection (YOLOv5), a single-object tracker that holds on to the person being followed (Stark), and their 2D and 3D keypoints.
-- **Estimation:** the robot's state from its IMU and GPS, and a map, with the state estimated from all its sensors.
+- **Estimation:** one node estimates the robot's state from its IMU and GPS; another builds a map and estimates the state from all its sensors.
 - **Prediction:** where the followed person is heading.
 - **Planning and control:** a collision-free path, followed with model predictive control.
 

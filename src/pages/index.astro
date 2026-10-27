@@ -25,10 +25,10 @@ const mailto = `mailto:${author.email}`;
         data-reveal
         style="--reveal-d: 0;"
       >
-        I make hidden structure visible.
+        {author.headline}
       </h1>
       <p class="hero-positioning" data-reveal style="--reveal-d: 1;">
-        I study cities like a roboticist would. Scan. Model. Decipher.
+        {author.subtitle}
       </p>
       {talk && (
         <a href={talk.href} class="talk-band" data-reveal style="--reveal-d: 2;">

@@ -10,7 +10,10 @@ import { skills } from '../data/skills';
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
       <div class="flex items-baseline justify-between mb-10">
         <h1 class="text-3xl font-bold text-text-primary">CV</h1>
-        <a href={`${base}/resume.pdf`} class="text-sm">Download PDF →</a>
+        <span class="flex gap-6 text-sm">
+          <a href={`${base}/portfolio.pdf`}>Portfolio (PDF) →</a>
+          <a href={`${base}/resume.pdf`}>CV (PDF) →</a>
+        </span>
       </div>
 
       <!-- Experience -->

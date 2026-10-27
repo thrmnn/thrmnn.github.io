@@ -7,7 +7,8 @@
 //
 //   node scripts/make-portfolio.mjs && weasyprint portfolio.html public/portfolio.pdf
 //
-// check-build.mjs scans every PDF in dist for the forbidden terms.
+// `--check` fails when public/portfolio.pdf was not made from today's sources
+// (pdf-source.mjs); check-build.mjs scans every PDF in dist for the forbidden terms.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join, dirname } from 'node:path';
@@ -22,6 +23,7 @@ import { workCards, practiceUrl } from '../src/data/cards.ts';
 import { portfolio, moreWork } from '../src/data/portfolio.ts';
 import { talk } from '../src/data/talk.ts';
 import { siteConfig } from '../src/data/site.ts';
+import { sourceHash, stampMeta, checkPdf } from './pdf-source.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
@@ -62,26 +64,13 @@ const more = moreWork.map(resolve);
 
 const practice = card('practice');
 
-// Images go in as JPEG at 200 dpi for their printed width (mm), which keeps the
-// PDF under check-build's 1 MB warning; weasyprint would embed them lossless.
-const embedded = new Map();
-async function embed(p, mm) {
-  const buf = await sharp(join(root, 'public', p))
-    .flatten({ background: '#ffffff' })
-    .resize({ width: Math.round((mm / 25.4) * 200), withoutEnlargement: true })
-    .jpeg({ quality: 80, mozjpeg: true })
-    .toBuffer();
-  embedded.set(p, `data:image/jpeg;base64,${buf.toString('base64')}`);
-}
-await Promise.all([
-  embed('hero/vidigal-plan.webp', 174),
-  ...entries.flatMap((x) => [
-    x.page.cardImage && embed(x.page.cardImage, 64),
-    x.page.imageAlt && embed(x.page.image, 174),
-  ]),
-  ...more.map((x) => x.picture && embed(x.picture, 56)),
-]);
-const asset = (p) => embedded.get(p);
+// Images are placeholders (`asset:<printed width mm>:<path>`) until the HTML is
+// stamped, so the stamp hashes the source files, not one host's JPEG encoder.
+const used = new Set();
+const asset = (p, mm) => {
+  used.add(p);
+  return `asset:${mm}:${p}`;
+};
 const month = new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
 
 const hrc = (x) => `<dl class="hrc">
@@ -100,10 +89,10 @@ const project = (x, i) => `<section class="project" id="p${i}">
   </header>
   <div class="top${x.page.cardImage ? '' : ' wide'}">
     ${hrc(x)}
-    ${x.page.cardImage ? `<img class="plate" src="${asset(x.page.cardImage)}" alt="">` : ''}
+    ${x.page.cardImage ? `<img class="plate" src="${asset(x.page.cardImage, 64)}" alt="">` : ''}
   </div>
   <div class="case">${x.page.html}</div>
-  ${x.page.imageAlt ? `<figure><img src="${asset(x.page.image)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>` : ''}
+  ${x.page.imageAlt ? `<figure><img src="${asset(x.page.image, 174)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>` : ''}
   <p class="foot"><span>${x.page.tags.map(esc).join(' · ')}</span><span>${links(x.page)}</span></p>
 </section>`;
 
@@ -113,7 +102,7 @@ const short = (x, i) => `<section class="short" id="m${i}">
   <h2>${esc(x.title)}</h2>
   <div class="top">
     ${hrc(x)}
-    ${x.picture ? `<img class="pic" src="${asset(x.picture)}" alt="">` : ''}
+    ${x.picture ? `<img class="pic" src="${asset(x.picture, 56)}" alt="">` : ''}
   </div>
   <p class="summary">${esc(x.page.summary)}</p>
   <p class="foot"><span>${x.page.tags.map(esc).join(' · ')}</span><span>${links(x.page)}</span></p>
@@ -199,7 +188,7 @@ const html = `<!doctype html>
   <p class="kicker">Portfolio · ${esc(month)}</p>
   <h1>${esc(author.headline)}</h1>
   <p class="sub">${esc(author.subtitle)}</p>
-  <img src="${asset('hero/vidigal-plan.webp')}" alt="">
+  <img src="${asset('hero/vidigal-plan.webp', 174)}" alt="">
   <p class="who">${esc(author.name)}</p>
   <p class="role">${esc(author.role)} · ${esc(author.affiliation)}</p>
   <p class="contacts"><a href="mailto:${author.email}">${esc(author.email)}</a> · <a href="${siteConfig.url}">${esc(bare(siteConfig.url))}</a> · <a href="${practiceUrl}">${esc(bare(practiceUrl))}</a> · <a href="https://github.com/thrmnn">github.com/thrmnn</a></p>
@@ -245,5 +234,26 @@ for (const [re, where, why] of [
     process.exit(1);
   }
 }
-writeFileSync(join(root, 'portfolio.html'), html);
+// The cover's month is the print date, not a source.
+const hash = sourceHash(html.replace(month, ''), [...used].sort().map((p) => join(root, 'public', p)));
+if (process.argv.includes('--check')) {
+  checkPdf(join(root, 'public/portfolio.pdf'), hash, 'node scripts/make-portfolio.mjs && weasyprint portfolio.html public/portfolio.pdf');
+  process.exit(0);
+}
+
+// JPEG at 200 dpi for the printed width keeps the PDF under check-build's 1 MB
+// warning; weasyprint would embed the sources lossless.
+const jpeg = async (p, mm) => {
+  const buf = await sharp(join(root, 'public', p))
+    .flatten({ background: '#ffffff' })
+    .resize({ width: Math.round((mm / 25.4) * 200), withoutEnlargement: true })
+    .jpeg({ quality: 80, mozjpeg: true })
+    .toBuffer();
+  return `data:image/jpeg;base64,${buf.toString('base64')}`;
+};
+let out = html.replace('<meta charset="utf-8">', `<meta charset="utf-8">\n${stampMeta(hash)}`);
+for (const [ph, mm, p] of new Set(html.match(/asset:\d+:[^"]+/g)).values().map((ph) => ph.match(/^asset:(\d+):(.+)$/))) {
+  out = out.replaceAll(`"${ph}"`, `"${await jpeg(p, Number(mm))}"`);
+}
+writeFileSync(join(root, 'portfolio.html'), out);
 console.log(`portfolio.html: ${entries.length} case pages, ${more.length} shorter entries`);

@@ -9,9 +9,10 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "node scripts/ensure-dist.mjs && astro check && node scripts/check-build.mjs",
-    "preflight": "rm -rf dist && npm run build && npm test && npm run check:og",
+    "preflight": "rm -rf dist && npm run build && npm test && npm run check:og && npm run check:pdf",
     "make:og": "node scripts/make-og.mjs",
     "check:og": "node scripts/make-og.mjs --check",
+    "check:pdf": "node scripts/make-resume.mjs --check && node scripts/make-portfolio.mjs --check",
     "check:external": "node scripts/check-external.mjs",
     "install-hooks": "node scripts/install-hooks.mjs"
   },

@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { join, dirname } from 'node:path';
 import { author } from '../src/data/author.ts';
 import { skills } from '../src/data/skills.ts';
+import { sourceHash, stampMeta, checkPdf } from './pdf-source.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -151,6 +152,12 @@ for (const [re, where] of [[/theoh-io/i, html], [/\+\d{1,3}[\d\s.-]{7,}/, render
   }
 }
 
-const out = join(root, 'resume.html');
-writeFileSync(out, html);
-console.log(`✓ wrote ${out} — now run: weasyprint resume.html public/resume.pdf`);
+const hash = sourceHash(html);
+const regenerate = 'node scripts/make-resume.mjs && weasyprint resume.html public/resume.pdf';
+if (process.argv.includes('--check')) {
+  checkPdf(join(root, 'public/resume.pdf'), hash, regenerate);
+} else {
+  const out = join(root, 'resume.html');
+  writeFileSync(out, html.replace('<meta charset="utf-8">', `<meta charset="utf-8">\n${stampMeta(hash)}`));
+  console.log(`✓ wrote ${out} — now run: weasyprint resume.html public/resume.pdf`);
+}

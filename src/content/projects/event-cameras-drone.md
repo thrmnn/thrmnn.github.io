@@ -25,7 +25,13 @@ Conventional frame-based cameras suffer motion blur at high angular and linear v
 
 ## Built
 
-A PyTorch fusion architecture combining neuromorphic event-camera streams (asynchronous per-pixel brightness changes, microsecond resolution) with IMU data for continuous 6-DOF pose estimation — event-stream tensor representations, a recurrent temporal-fusion network trained on high-speed flight datasets with motion-capture ground truth, optimized for onboard ROS-integrated inference.
+A PyTorch network that estimates 6-DOF pose from three streams: an event camera (asynchronous per-pixel brightness changes, microsecond resolution), an RGB camera and an IMU.
+
+- **Early fusion:** event and RGB frames are fused on a shared spatial tensor.
+- **IMU encoder:** a WaveNet encoder reads the IMU stream over time.
+- **Pose head:** a multi-modal head regresses the 6-DOF pose.
+
+Trained on the UZH-FPV drone-racing dataset and the lab's own IRI-Borinot recordings (RGB, IMU and an event camera on a drone), with Juan Andrade-Cetto.
 
 ## Why hard
 
@@ -33,4 +39,4 @@ Event cameras eliminate motion blur but require fundamentally different processi
 
 ## What happened
 
-The system maintained accurate pose tracking through maneuvers exceeding 5g acceleration — the regime where conventional frame cameras and standard VIO diverge.
+The model targets maneuvers above 5g, the regime where conventional frame cameras and standard VIO diverge. The training framework is open source ([EVIO](https://github.com/thrmnn/EVIO)); real-time onboard inference lives in a separate repository that is not yet open.

@@ -17,7 +17,7 @@ tags:
 
 ## Overview
 
-For teams shipping agentic products and hitting the wall every team hits — flaky tool calls, unobservable failures, no evals, no safe way to ship a prompt change. I build the harness around your agent so it behaves like a production system: typed tool layer, retrieval you can measure, traces you can actually read, and an eval suite that catches regressions before users do.
+Agentic products hit the same walls: flaky tool calls, failures nobody can see, no evals, no safe way to ship a prompt change. A harness around the agent makes it behave like a production system: a typed tool layer, traces you can actually read, and an eval suite that catches regressions before users do.
 
 ## What this covers
 

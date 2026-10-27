@@ -9,27 +9,45 @@ export interface PortfolioEntry {
   hidden?: string;
   revealed?: string;
   changed?: string;
+  /** Who, where, when: from author.ts or the project's own README. */
+  role?: string;
+  /** How it works, from the project's public README; method only on research. */
+  steps?: string[];
 }
 
 /** A page each. */
 export const portfolio: PortfolioEntry[] = [
-  { card: 'roboat' },
-  { card: 'research' },
+  { card: 'roboat', role: 'Computer vision and MLOps intern, the first · Amsterdam · March to August 2024' },
+  {
+    card: 'research',
+    role: 'Research fellow since January 2025, there from the Rio branch’s first week',
+    // MorphoFavela README, pipeline order. No indicator values, no findings.
+    steps: [
+      'Clip the building footprints and terrain model to each site, then compute each indicator on its own: sky view, solar access, sectional porosity, occupancy density, urban form.',
+      'Stratify the fabric on sky view, slope and built density to choose where airflow is simulated (OpenFOAM, on MIT’s cluster, in a separate pipeline).',
+      'Weight the results by the site’s wind rose, built from public weather-station records.',
+    ],
+  },
   {
     slug: 'aerial-lidar-tree-census',
     hidden: 'How much leaf a city’s trees carry. Registers record where each tree stands, not how much shade it gives.',
     revealed: 'Leaf area per tree, recovered by a physical inversion from the aerial LiDAR survey the city already flies.',
     changed: 'An estimate that can be argued with on its own terms, from data that already exists. The numbers stay with the paper until it is out.',
   },
-  { card: 'stata' },
+  {
+    card: 'stata',
+    // README and docs/how-this-was-graded.md.
+    role: 'Mine end to end: I recorded the faults, ran the tool and graded the results; there is no independent evaluator',
+  },
 ];
 
-/** Shorter entries, two to a page. */
+/** A page each, after a More work divider. */
 export const moreWork: PortfolioEntry[] = [
   {
     slug: 'autonomous-mobile-robot',
+    role: 'Research assistant, EPFL VITA Lab, under Alexandre Alahi · Lausanne · June 2022 to June 2023',
     hidden: 'Where the people around a robot are and where they are heading, in a crowded indoor space.',
-    revealed: 'A full ROS autonomy stack on a Segway Loomo: mapping, planning, obstacle avoidance, and person-following with detection, tracking and trajectory prediction.',
+    revealed: 'A modular ROS pipeline on a Segway Loomo: person detection and tracking, trajectory prediction, path planning and model predictive control.',
     changed: 'Validated end to end on the physical robot among real pedestrians, not only in simulation, and open-sourced.',
   },
   {
@@ -40,9 +58,10 @@ export const moreWork: PortfolioEntry[] = [
   },
   {
     slug: 'event-cameras-drone',
+    role: 'Visiting research fellow, IRI (CSIC-UPC), with Juan Andrade-Cetto · Barcelona · October 2023 to February 2024',
     hidden: 'Where a drone is during aggressive flight, once frame cameras blur and standard visual-inertial odometry diverges.',
     revealed: '6-DOF pose from event-camera streams fused with RGB and IMU data, in a PyTorch network trained on high-speed drone flights.',
-    changed: 'Pose tracking held through maneuvers above 5 g, the regime where the frame-based pipelines fail.',
+    changed: 'A pose estimator built for flight above 5 g, the regime where frame-based pipelines fail; the training framework is open source.',
   },
   {
     slug: 'agent-harness',

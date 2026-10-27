@@ -56,6 +56,8 @@ const resolve = (e) => {
     hidden: c?.hidden ?? e.hidden,
     revealed: c?.revealed ?? e.revealed,
     changed: c?.changed ?? e.changed,
+    role: e.role,
+    steps: e.steps,
     picture: page.cardImage ?? raster,
   };
 };
@@ -82,29 +84,19 @@ const hrc = (x) => `<dl class="hrc">
 const links = (p) =>
   [p.url, p.github].filter(Boolean).map((u) => `<a href="${u}">${esc(bare(u))}</a>`).join(' · ');
 
-const project = (x, i) => `<section class="project" id="p${i}">
+const project = (id, kicker) => (x) => `<section class="project" id="${id(x)}">
   <header>
+    ${kicker(x) ? `<p class="kicker">${kicker(x)}</p>` : ''}
     <p class="label">${esc(x.label)}</p>
     <h2>${esc(x.title)}</h2>
+    ${x.role ? `<p class="role">${esc(x.role)}</p>` : ''}
   </header>
-  <div class="top${x.page.cardImage ? '' : ' wide'}">
-    ${hrc(x)}
-    ${x.page.cardImage ? `<img class="plate" src="${asset(x.page.cardImage, 64)}" alt="">` : ''}
-  </div>
-  <div class="case">${x.page.html}</div>
-  ${x.page.imageAlt ? `<figure><img src="${asset(x.page.image, 174)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>` : ''}
-  <p class="foot"><span>${x.page.tags.map(esc).join(' · ')}</span><span>${links(x.page)}</span></p>
-</section>`;
-
-const short = (x, i) => `<section class="short" id="m${i}">
-  ${i === 0 ? '<p class="kicker">More work</p>' : ''}
-  <p class="label">${esc(x.label)}</p>
-  <h2>${esc(x.title)}</h2>
   <div class="top">
     ${hrc(x)}
-    ${x.picture ? `<img class="pic" src="${asset(x.picture, 56)}" alt="">` : ''}
+    ${x.picture ? `<img class="plate" src="${asset(x.picture, 58)}" alt="">` : ''}
   </div>
-  <p class="summary">${esc(x.page.summary)}</p>
+  <div class="case">${x.page.html}${x.steps ? `<h2>How it works</h2><ol class="steps">${x.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>` : ''}</div>
+  ${x.page.imageAlt ? `<figure><img src="${asset(x.page.image, 174)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>` : ''}
   <p class="foot"><span>${x.page.tags.map(esc).join(' · ')}</span><span>${links(x.page)}</span></p>
 </section>`;
 
@@ -160,12 +152,12 @@ const html = `<!doctype html>
   .project > header h2 { font-size: 20pt; letter-spacing: -0.02em; line-height: 1.1; margin: 1.5mm 0 6mm; }
   .top { display: flex; gap: 7mm; align-items: flex-start; }
   .top .hrc { flex: 1; }
-  .plate { width: 64mm; height: 64mm; object-fit: cover; }
+  .plate { width: 58mm; height: 58mm; object-fit: cover; }
   dl.hrc { display: grid; grid-template-columns: 19mm 1fr; row-gap: 3mm; border-top: 1.2pt solid var(--ink); padding-top: 3mm; }
   dl.hrc dd { font-size: 10.5pt; line-height: 1.4; }
   dl.hrc dt { padding-top: 0.8mm; }
-  .case { margin-top: 8mm; max-width: 150mm; }
-  .case h2 { font-weight: 400; text-transform: uppercase; letter-spacing: 0.12em; margin: 5mm 0 1.5mm; page-break-after: avoid; }
+  .case { margin-top: 6mm; max-width: 150mm; }
+  .case h2 { font-weight: 400; text-transform: uppercase; letter-spacing: 0.12em; margin: 4mm 0 1.5mm; page-break-after: avoid; }
   .case p + p { margin-top: 2mm; }
   .case ul { margin: 1.5mm 0 0 4.5mm; }
   .case li + li { margin-top: 1mm; }
@@ -177,11 +169,9 @@ const html = `<!doctype html>
   .foot { display: flex; justify-content: space-between; gap: 6mm; margin-top: 6mm; padding-top: 2mm; border-top: 0.5pt solid var(--rule); }
   .foot a { color: var(--accent); white-space: nowrap; }
   .foot > span:last-child { text-align: right; }
-  .short { page-break-inside: avoid; margin-bottom: 14mm; }
-  .short:first-of-type, #m0 { page-break-before: always; }
-  .short h2 { font-size: 15pt; letter-spacing: -0.01em; line-height: 1.15; margin: 1mm 0 4mm; }
-  .short .pic { width: 56mm; height: 38mm; object-fit: cover; }
-  .short .summary { margin-top: 4mm; max-width: 150mm; color: var(--muted); }
+  .project > header .role { color: var(--muted); margin: -3.5mm 0 6mm; max-width: 150mm; }
+  .case ol.steps { margin: 1.5mm 0 0 4.5mm; }
+  .case ol.steps li + li { margin-top: 1mm; }
 </style>
 </head>
 <body>
@@ -216,9 +206,9 @@ ${more.map((x, i) => `      <li class="m"><span class="t">${esc(x.title)}</span>
   </section>
 </section>
 
-${entries.map(project).join('\n\n')}
+${entries.map(project((x) => `p${entries.indexOf(x)}`, () => '')).join('\n\n')}
 
-${more.map(short).join('\n\n')}
+${more.map(project((x) => `m${more.indexOf(x)}`, (x) => (x === more[0] ? 'More work' : ''))).join('\n\n')}
 </body>
 </html>
 `;
@@ -257,4 +247,4 @@ for (const [ph, mm, p] of new Set(html.match(/asset:\d+:[^"]+/g)).values().map((
   out = out.replaceAll(`"${ph}"`, `"${await jpeg(p, Number(mm))}"`);
 }
 writeFileSync(join(root, 'portfolio.html'), out);
-console.log(`portfolio.html: ${entries.length} case pages, ${more.length} shorter entries`);
+console.log(`portfolio.html: ${entries.length} case pages, then ${more.length} under More work`);

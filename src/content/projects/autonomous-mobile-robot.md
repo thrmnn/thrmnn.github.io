@@ -27,7 +27,14 @@ Enable Segway Loomo robots to navigate crowded, dynamic indoor environments; mos
 
 ## Built
 
-A complete ROS autonomy stack — SLAM (GMapping/Cartographer) producing occupancy grids, an A* global planner with dynamic replanning, costmap-based reactive obstacle avoidance, and vision-based person-following with multi-object tracking and trajectory prediction.
+A modular ROS pipeline that runs on a server and drives the Loomo over a wireless socket link, one package per job:
+
+- **Perception:** person detection (YOLOv5), a single-object tracker that holds on to the person being followed (Stark), and their 2D and 3D keypoints.
+- **Estimation:** the robot's state from its IMU and GPS, and a map, with the state estimated from all its sensors.
+- **Prediction:** where the followed person is heading.
+- **Planning and control:** a collision-free path, followed with model predictive control.
+
+It builds on an earlier autonomous driving pipeline by C. Conejo Bernal; the perception models and the ROS 1 workspace are pinned to the 2023 stack, and its modern successor is the real-time vision pipeline.
 
 ## Why hard
 

@@ -48,7 +48,7 @@ export const moreWork: PortfolioEntry[] = [
     role: 'Research assistant, EPFL VITA Lab, under Alexandre Alahi · Lausanne · June 2022 to June 2023',
     hidden: 'Where the people around a robot are and where they are heading, in a crowded indoor space.',
     revealed: 'A modular ROS pipeline on a Segway Loomo: person detection and tracking, trajectory prediction, path planning and model predictive control.',
-    changed: 'Validated end to end on the physical robot among real pedestrians, not only in simulation, and open-sourced.',
+    changed: 'Validated end to end on the physical robot among real pedestrians, not only in simulation; the code is public.',
   },
   {
     slug: 'perception-pipeline',

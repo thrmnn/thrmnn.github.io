@@ -6,9 +6,9 @@ github: 'https://github.com/thrmnn/ROS_Autonomous_Driving'
 image: '/projects/autonomous-mobile-robot/hero-poster.jpg'
 imageWidth: 600
 imageHeight: 338
-summary: "A full autonomy stack — SLAM, planning, obstacle avoidance, person-following — validated end-to-end on a physical robot (Segway Loomo, EPFL VITA Lab research platform)."
+summary: "A modular ROS stack for a Segway Loomo at EPFL VITA Lab: person detection, tracking and 3D pose, trajectory prediction, planning and model predictive control, validated end to end on the physical robot."
 label: "EPFL VITA Lab · 2023"
-metric: "End-to-end on physical robots · open-sourced on GitHub"
+metric: "End-to-end on the physical robot · code on GitHub"
 gradient: "linear-gradient(135deg, #1a3a3a 0%, #2d5a5a 50%, #3a7a7a 100%)"
 tags:
   - SLAM
@@ -34,7 +34,7 @@ A modular ROS pipeline that runs on a server and drives the Loomo over a wireles
 - **Prediction:** where the followed person is heading.
 - **Planning and control:** a collision-free path, followed with model predictive control.
 
-It builds on an earlier autonomous driving pipeline by C. Conejo Bernal; the perception models and the ROS 1 workspace are pinned to the 2023 stack, and its modern successor is the real-time vision pipeline.
+It keeps the base of C. Conejo Bernal's earlier pipeline (2020–21); I redid its architecture and its perception block in 2022–23, continuing the VITA Lab research line. The perception models and the ROS 1 workspace are pinned to the 2023 stack; the modern successor of the perception is the real-time vision pipeline.
 
 ## Why hard
 
@@ -42,4 +42,4 @@ Real-time performance across several computationally intensive perception module
 
 ## What happened
 
-Validated end-to-end on physical robots (Segway Loomo, EPFL VITA Lab research platform); the full stack was open-sourced on GitHub (`github.com/thrmnn/ROS_Autonomous_Driving`).
+Validated end-to-end on physical robots (Segway Loomo, EPFL VITA Lab research platform); the code is public on GitHub (`github.com/thrmnn/ROS_Autonomous_Driving`).

@@ -71,7 +71,7 @@ export const author = {
       period: 'Jun 2022 – Jun 2023',
       location: 'Lausanne, Switzerland',
       summary:
-        'Built and open-sourced a full ROS autonomy stack for mobile robot navigation in crowded environments. Real-time detection, multi-object tracking, 3D pose estimation, and trajectory prediction on Segway Loomo. Tech: ROS, Python, C++, OpenCV.',
+        'Redid the architecture and the perception block of the lab’s ROS autonomy stack for mobile robot navigation in crowded environments, continuing the VITA Lab research line. Real-time detection, multi-object tracking, 3D pose estimation, and trajectory prediction on Segway Loomo. Tech: ROS, Python, C++, OpenCV.',
     },
   ],
 

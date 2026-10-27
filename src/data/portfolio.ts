@@ -35,13 +35,13 @@ export const moreWork: PortfolioEntry[] = [
   {
     slug: 'perception-pipeline',
     hidden: 'Four versions of the same detection and tracking work, built 2022 to 2023, sharing no interface and pinned to stacks that aged out.',
-    revealed: 'One modular stack with narrow interfaces, every module reporting its own latency. Version 0.1 ships detection and tracking; re-identification and pose follow.',
-    changed: 'A module can be swapped without touching the rest, and the pipeline can be held to a frame budget. Open source, MIT licensed.',
+    revealed: 'One modular stack behind narrow interfaces. Version 0.1 ships detection and tracking; re-identification and pose follow.',
+    changed: 'A module can be swapped without touching the rest, and every module reports its own latency. Open source, MIT licensed.',
   },
   {
     slug: 'event-cameras-drone',
     hidden: 'Where a drone is during aggressive flight, once frame cameras blur and standard visual-inertial odometry diverges.',
-    revealed: '6-DOF pose from event-camera streams fused with IMU data, in a PyTorch network trained on high-speed flights with motion-capture ground truth.',
+    revealed: '6-DOF pose from event-camera streams fused with RGB and IMU data, in a PyTorch network trained on high-speed drone flights.',
     changed: 'Pose tracking held through maneuvers above 5 g, the regime where the frame-based pipelines fail.',
   },
   {

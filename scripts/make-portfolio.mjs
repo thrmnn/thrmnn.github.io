@@ -139,6 +139,7 @@ const html = `<!doctype html>
   .cover img { width: 100%; margin: auto 0; }
   .cover .who { font-size: 12pt; font-weight: 700; }
   .cover .role { color: var(--muted); margin: 1mm 0 3mm; }
+  .contacts a { white-space: nowrap; }
 
   .about { page-break-after: always; }
   .kicker { text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 3mm; }
@@ -191,7 +192,7 @@ const html = `<!doctype html>
   <img src="${asset('hero/vidigal-plan.webp', 174)}" alt="">
   <p class="who">${esc(author.name)}</p>
   <p class="role">${esc(author.role)} · ${esc(author.affiliation)}</p>
-  <p class="contacts"><a href="mailto:${author.email}">${esc(author.email)}</a> · <a href="${siteConfig.url}">${esc(bare(siteConfig.url))}</a> · <a href="${practiceUrl}">${esc(bare(practiceUrl))}</a> · <a href="https://github.com/thrmnn">github.com/thrmnn</a></p>
+  <p class="contacts"><a href="mailto:${author.email}">${esc(author.email)}</a> · <a href="${siteConfig.url}">${esc(bare(siteConfig.url))}</a> · <a href="${practiceUrl}">${esc(bare(practiceUrl))}</a> · ${author.social.filter((s) => s.icon !== 'email').map((s) => `<a href="${s.href}">${esc(bare(s.href).replace('www.', ''))}</a>`).join(' · ')}</p>
 </section>
 
 <section class="about">

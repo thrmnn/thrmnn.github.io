@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { join, dirname } from 'node:path';
 import { author } from '../src/data/author.ts';
 import { skills } from '../src/data/skills.ts';
+import { practiceUrl } from '../src/data/cards.ts';
 import { sourceHash, stampMeta, checkPdf } from './pdf-source.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -29,6 +30,7 @@ const contacts = [
   '<a href="https://github.com/thrmnn">github.com/thrmnn</a>',
   '<a href="https://www.linkedin.com/in/theohermann-epfl/">linkedin.com/in/theohermann-epfl</a>',
   '<a href="https://theoalessandro.com">theoalessandro.com</a>',
+  `<a href="${practiceUrl}">${practiceUrl.replace('https://', '')}</a>`,
 ];
 
 const html = `<!doctype html>

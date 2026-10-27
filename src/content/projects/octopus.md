@@ -2,7 +2,7 @@
 title: "A street-level sensor anyone can build"
 # Sort key and datePublished: the first public talk, Casa Firjan, 28 Oct 2026 (Acervo C-2026-10-27-01).
 date: '2026-10-28T00:00:00Z'
-summary: "Octopus, MIT Senseable City Lab's open-source kit for street-level heat, humidity and fine particles. My part is in Rio: its projects and deployment, the research meetings, and linking its measurements to urban form."
+summary: "Octopus, MIT Senseable City Lab's open-source kit for street-level heat, humidity and fine particles. My part is in Rio: its projects and deployment, the research meetings, and linking its measurements to urban form in Maré."
 label: "MIT Senseable City Lab Rio · Octopus"
 tags:
   - Environmental sensing
@@ -26,7 +26,7 @@ microSD card, first on vehicles, then anywhere.
 In the Rio lab I work on its projects and deployment, take part in the
 research meetings, and present the hardware (Casa Firjan summer school,
 October 2026). I am helping shape the new research line that links its
-measurements to urban form.
+measurements to urban form in Maré.
 
 ## Credits
 

@@ -64,6 +64,14 @@ export const moreWork: PortfolioEntry[] = [
     changed: 'A pose estimator built for flight above 5 g, the regime where frame-based pipelines fail; the training framework is open source.',
   },
   {
+    // Desk draft from Acervo C-2026-10-27-01 and the owner's words of 27 Oct; disclosure call pending.
+    slug: 'octopus',
+    role: 'Research fellow in the Rio lab: projects and deployment, research meetings, talks',
+    hidden: 'Heat, humidity and fine particles at street level, where people actually walk and live.',
+    revealed: 'A sensor anyone can build: an Arduino board, a fine-particle sensor and GPS in a 3D-printed case, assembled in about 20 minutes, logging a line every 5 seconds.',
+    changed: 'Street-level air and heat can be mapped without a lab’s equipment; in Rio, the measurements are being linked to urban form.',
+  },
+  {
     slug: 'agent-harness',
     hidden: 'Agent failures nobody sees: a tool call breaks, nothing traces it, and a user finds out first.',
     revealed: 'A typed tool layer with one structured trace line per call, and a regression suite wired into CI.',

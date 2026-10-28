@@ -5,14 +5,13 @@ import { base } from '../../data/base';
 interface Props {
   slugs: string[];
   external?: { label: string; href: string };
-  notes?: Record<string, string>;
 }
-const { slugs, external, notes = {} } = Astro.props;
+const { slugs, external } = Astro.props;
 const all = await getCollection('projects');
 const items = slugs.map((slug) => {
   const p = all.find((e) => e.id === slug || e.id.replace(/\.md$/, '') === slug);
   if (!p) throw new Error(`ProjectLinks: no project "${slug}"`);
-  return { href: `${base}/projects/${slug}/`, label: p.data.title, note: notes[slug] };
+  return { href: `${base}/projects/${slug}/`, label: p.data.title };
 });
 ---
 
@@ -20,7 +19,7 @@ const items = slugs.map((slug) => {
   <ul class="spotlight-links" data-reveal style="--reveal-d: 3;">
     {external && <li><a href={external.href}>{external.label} →</a></li>}
     {items.map((i) => (
-      <li><a href={i.href}>{i.label} →</a>{i.note && <span class="spotlight-note">{i.note}</span>}</li>
+      <li><a href={i.href}>{i.label} →</a></li>
     ))}
   </ul>
 </div>

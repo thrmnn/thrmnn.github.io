@@ -877,6 +877,10 @@
 .spotlight {
   padding-bottom: var(--space-section);
 }
+/* the panel's own band padding would double the gap before the links */
+.spotlight .artifact-band {
+  padding-bottom: 0;
+}
 .spotlight-fig {
   margin: 1.5rem 0 0;
 }
@@ -910,9 +914,4 @@
 .spotlight-links a:hover,
 .spotlight-links a:focus-visible {
   color: var(--color-link-hover);
-}
-.spotlight-note {
-  margin-left: 0.75rem;
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
 }

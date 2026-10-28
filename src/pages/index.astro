@@ -70,7 +70,6 @@ const mailto = `mailto:${author.email}`;
       <h2 class="section-label mb-4" data-reveal>Robotics</h2>
       <!-- desk draft, owner corrects -->
       <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">Perception on real robots.</h3>
-      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">A person-following robot at EPFL, camera tracking on the Roboat boat's edge computer, and pose from event cameras for high-speed drone flight.</p>
       <figure class="spotlight-fig" data-reveal style="--reveal-d: 3;">
         <img src={`${base}/projects/autonomous-mobile-robot/hero-poster.jpg`} width="600" height="338" alt="A Segway Loomo robot following a person indoors at EPFL." loading="lazy" decoding="async" />
         <figcaption>Segway Loomo, EPFL VITA Lab · 2022–23</figcaption>
@@ -81,15 +80,15 @@ const mailto = `mailto:${author.email}`;
 
   <section id="legible" class="spotlight">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="section-label mb-4" data-reveal>Practice: robots + agents</h2>
+      <h2 class="section-label mb-4" data-reveal>Practice</h2>
       <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">Making autonomous systems legible</h3>
-      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Robot failures the logs don't explain, and the real cause, found and proved independently.</p>
+      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Robot failures the logs don't explain: the real cause, found and proved independently. Agentic systems fail the way robots do.</p>
       <figure class="spotlight-fig" data-reveal style="--reveal-d: 3;">
         <StataPlan />
         <figcaption>PR2, MIT Stata Center dataset (CC BY 3.0) · replayed and graded by me</figcaption>
       </figure>
     </div>
-    <ProjectLinks slugs={['ros2-localization-triage', 'agent-harness']} external={{ label: 'theohermann.ch', href: practiceUrl }} notes={{ 'agent-harness': 'Agentic systems fail the way robots do.' }} />
+    <ProjectLinks slugs={['ros2-localization-triage', 'agent-harness']} external={{ label: 'theohermann.ch', href: practiceUrl }} />
   </section>
 
   <!-- More work: one card; the full list lives on /projects/ -->

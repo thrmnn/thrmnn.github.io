@@ -722,11 +722,6 @@
 }
 
 /* Research axes — the .com's own section; method-level descriptions only. */
-/* The last artifact band already sits on the section's own bottom padding;
-   its own padding on top of that opened a gap three times the one above it. */
-#research .artifact-band:last-child {
-  padding-bottom: 0;
-}
 .research-title {
   font-size: 1.06rem;
   font-weight: 600;
@@ -876,4 +871,48 @@
     break-inside: avoid;
     page-break-inside: avoid;
   }
+}
+
+/* --- Homepage spotlights: label, one picture, one line, a list of links --- */
+.spotlight {
+  padding-bottom: var(--space-section);
+}
+.spotlight-fig {
+  margin: 1.5rem 0 0;
+}
+.spotlight-fig img {
+  display: block;
+  width: 100%;
+  max-width: 34rem;
+  height: auto;
+}
+.spotlight-fig figcaption {
+  margin-top: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.spotlight-links {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+.spotlight-links a {
+  display: inline-block;
+  padding: 0.35rem 0;
+  font-size: 0.95rem;
+  color: var(--color-link);
+}
+.spotlight-links a:hover,
+.spotlight-links a:focus-visible {
+  color: var(--color-link-hover);
+}
+.spotlight-note {
+  margin-left: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
 }

@@ -5,7 +5,10 @@ import Button from '../components/ui/Button.astro';
 import SocialIcon from '../components/ui/SocialIcon.astro';
 import VidigalPanel from '../components/ui/VidigalPanel.astro';
 import { author } from '../data/author';
-import { workCards, practiceUrl } from '../data/cards';
+import StataPlan from '../components/ui/StataPlan.astro';
+import ProjectLinks from '../components/ui/ProjectLinks.astro';
+import { practiceUrl } from '../data/cards';
+import { homeCards } from '../data/home';
 import { talk } from '../data/talk';
 
 const mailto = `mailto:${author.email}`;
@@ -50,47 +53,57 @@ const mailto = `mailto:${author.email}`;
     </div>
   </section>
 
-  <!-- Research — one lead strand carried by the artifact, two named after it.
-       Method and affiliation only: the studies are unpublished and multi-author,
-       so no result, figure or finding appears here. -->
-  <section id="research" class="pt-6 pb-[var(--space-section)]">
+  <!-- Three spotlights. Method and affiliation only: the studies are
+       unpublished and multi-author, so no result or finding appears here. -->
+  <section id="favela" class="spotlight pt-6">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <h2 class="section-label mb-4" data-reveal>Favela research</h2>
       <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">A city that was never drawn.</h3>
       <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Favelas are built without plans, and the usual urban measurements assume a street grid that is not there.</p>
     </div>
-    <div id="rio"><VidigalPanel revealDelay={3} /></div>
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">Trees the city already scanned.</h3>
-      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Cities fly aerial LiDAR surveys on a regular cycle for unrelated reasons.</p>
-    </div>
-    <div id="amsterdam">
-      <VidigalPanel
-        revealDelay={3}
-        data="amsterdam-canopy"
-        emphasis={1.2}
-        splat={0.015}
-        tilt={0.95}
-        swing={0.45}
-        zoom={1.3}
-        caption="Jordaan, Amsterdam · a canal, its houses and its trees"
-        provenance="AHN5, the Dutch national airborne laser scan, open data · Senseable City Lab, MIT and AMS Institute"
-        ariaLabel="Oblique point cloud of a canal in the Jordaan, Amsterdam: ground, roofs and tree crowns from an airborne laser scan; the water returns nothing and shows as a gap."
-      />
-    </div>
+    <VidigalPanel revealDelay={3} />
+    <ProjectLinks slugs={['urban-morphometrics', 'octopus']} />
   </section>
 
-  <!-- Proof — static grid, no carousel -->
+  <section id="robotics" class="spotlight">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <h2 class="section-label mb-4" data-reveal>Robotics</h2>
+      <!-- desk draft, owner corrects -->
+      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">Perception on real robots.</h3>
+      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">A person-following robot at EPFL, camera tracking on the Roboat boat's edge computer, and pose from event cameras for high-speed drone flight.</p>
+      <figure class="spotlight-fig" data-reveal style="--reveal-d: 3;">
+        <img src={`${base}/projects/autonomous-mobile-robot/hero-poster.jpg`} width="600" height="338" alt="A Segway Loomo robot following a person indoors at EPFL." loading="lazy" decoding="async" />
+        <figcaption>Segway Loomo, EPFL VITA Lab · 2022–23</figcaption>
+      </figure>
+    </div>
+    <ProjectLinks slugs={['autonomous-mobile-robot', 'autonomous-boat-perception', 'event-cameras-drone', 'perception-pipeline']} />
+  </section>
+
+  <section id="legible" class="spotlight">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <h2 class="section-label mb-4" data-reveal>Practice: robots + agents</h2>
+      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">Making autonomous systems legible</h3>
+      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Robot failures the logs don't explain, and the real cause, found and proved independently.</p>
+      <figure class="spotlight-fig" data-reveal style="--reveal-d: 3;">
+        <StataPlan />
+        <figcaption>PR2, MIT Stata Center dataset (CC BY 3.0) · replayed and graded by me</figcaption>
+      </figure>
+    </div>
+    <ProjectLinks slugs={['ros2-localization-triage', 'agent-harness']} external={{ label: 'theohermann.ch', href: practiceUrl }} notes={{ 'agent-harness': 'Agentic systems fail the way robots do.' }} />
+  </section>
+
+  <!-- More work: one card; the full list lives on /projects/ -->
   <section id="projects" class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="section-label mb-10" data-reveal>Selected work</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {workCards.map((c, i) => (
+      <h2 class="section-label mb-10" data-reveal>More work</h2>
+      <div class="grid grid-cols-1 gap-4">
+        {homeCards.map((c) => (
           <a
-            href={c.external ? c.href : `${base}${c.href}`}
+            href={`${base}${c.href}`}
             id={c.id}
             class="proof-plate work-card"
             data-reveal
-            style={`--reveal-d: ${i + 1};`}
+            style="--reveal-d: 1;"
           >
             <p class="proof-plate-label">{c.label}</p>
             <p class="proof-plate-title">{c.title}</p>

@@ -124,11 +124,11 @@ const html = `<!doctype html>
     font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; color: var(--muted); letter-spacing: 0.02em;
   }
 
-  .cover { height: 259mm; display: flex; flex-direction: column; page-break-after: always; }
+  .cover { height: 259mm; position: relative; page-break-after: always; }
+  .cover .id { position: absolute; left: 0; right: 0; bottom: 0; }
   .cover .kicker { margin-bottom: 30mm; }
   .cover h1 { font-size: 34pt; line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; max-width: 150mm; }
   .cover .sub { font-size: 14pt; color: var(--muted); margin-top: 6mm; max-width: 140mm; }
-  .cover img { width: 100%; margin: auto 0; }
   .cover .who { font-size: 12pt; font-weight: 700; }
   .cover .role { color: var(--muted); margin: 1mm 0 3mm; }
   .contacts a { white-space: nowrap; }
@@ -179,10 +179,11 @@ const html = `<!doctype html>
   <p class="kicker">Portfolio · ${esc(month)}</p>
   <h1>${esc(author.headline)}</h1>
   <p class="sub">${esc(author.subtitle)}</p>
-  <img src="${asset('scripts/assets/hero/vidigal-plan.webp', 174)}" alt="">
-  <p class="who">${esc(author.name)}</p>
-  <p class="role">${esc(author.role)} · ${esc(author.affiliation)}</p>
-  <p class="contacts"><a href="mailto:${author.email}">${esc(author.email)}</a> · <a href="${siteConfig.url}">${esc(bare(siteConfig.url))}</a> · <a href="${practiceUrl}">${esc(bare(practiceUrl))}</a> · ${author.social.filter((s) => s.icon !== 'email').map((s) => `<a href="${s.href}">${esc(bare(s.href).replace('www.', ''))}</a>`).join(' · ')}</p>
+  <div class="id">
+    <p class="who">${esc(author.name)}</p>
+    <p class="role">${esc(author.role)} · ${esc(author.affiliation)}</p>
+    <p class="contacts"><a href="mailto:${author.email}">${esc(author.email)}</a> · <a href="${siteConfig.url}">${esc(bare(siteConfig.url))}</a> · <a href="${practiceUrl}">${esc(bare(practiceUrl))}</a> · ${author.social.filter((s) => s.icon !== 'email').map((s) => `<a href="${s.href}">${esc(bare(s.href).replace('www.', ''))}</a>`).join(' · ')}</p>
+  </div>
 </section>
 
 <section class="about">
@@ -226,9 +227,7 @@ for (const [re, where, why] of [
   }
 }
 // The cover's month is the print date, not a source.
-// Paths under scripts/ are PDF-only sources that do not ship with the site.
-const source = (p) => join(root, p.startsWith('scripts/') ? '' : 'public', p);
-const hash = sourceHash(html.replace(month, ''), [...used].sort().map(source));
+const hash = sourceHash(html.replace(month, ''), [...used].sort().map((p) => join(root, 'public', p)));
 if (process.argv.includes('--check')) {
   checkPdf(join(root, 'public/portfolio.pdf'), hash, 'node scripts/make-portfolio.mjs && weasyprint portfolio.html public/portfolio.pdf');
   process.exit(0);
@@ -237,7 +236,7 @@ if (process.argv.includes('--check')) {
 // JPEG at 200 dpi for the printed width keeps the PDF under check-build's 1 MB
 // warning; weasyprint would embed the sources lossless.
 const jpeg = async (p, mm) => {
-  const buf = await sharp(source(p))
+  const buf = await sharp(join(root, 'public', p))
     .flatten({ background: '#ffffff' })
     .resize({ width: Math.round((mm / 25.4) * 200), withoutEnlargement: true })
     .jpeg({ quality: 80, mozjpeg: true })

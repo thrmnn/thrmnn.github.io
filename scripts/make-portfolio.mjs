@@ -179,7 +179,7 @@ const html = `<!doctype html>
   <p class="kicker">Portfolio · ${esc(month)}</p>
   <h1>${esc(author.headline)}</h1>
   <p class="sub">${esc(author.subtitle)}</p>
-  <img src="${asset('hero/vidigal-plan.webp', 174)}" alt="">
+  <img src="${asset('scripts/assets/hero/vidigal-plan.webp', 174)}" alt="">
   <p class="who">${esc(author.name)}</p>
   <p class="role">${esc(author.role)} · ${esc(author.affiliation)}</p>
   <p class="contacts"><a href="mailto:${author.email}">${esc(author.email)}</a> · <a href="${siteConfig.url}">${esc(bare(siteConfig.url))}</a> · <a href="${practiceUrl}">${esc(bare(practiceUrl))}</a> · ${author.social.filter((s) => s.icon !== 'email').map((s) => `<a href="${s.href}">${esc(bare(s.href).replace('www.', ''))}</a>`).join(' · ')}</p>
@@ -226,7 +226,9 @@ for (const [re, where, why] of [
   }
 }
 // The cover's month is the print date, not a source.
-const hash = sourceHash(html.replace(month, ''), [...used].sort().map((p) => join(root, 'public', p)));
+// Paths under scripts/ are PDF-only sources that do not ship with the site.
+const source = (p) => join(root, p.startsWith('scripts/') ? '' : 'public', p);
+const hash = sourceHash(html.replace(month, ''), [...used].sort().map(source));
 if (process.argv.includes('--check')) {
   checkPdf(join(root, 'public/portfolio.pdf'), hash, 'node scripts/make-portfolio.mjs && weasyprint portfolio.html public/portfolio.pdf');
   process.exit(0);
@@ -235,7 +237,7 @@ if (process.argv.includes('--check')) {
 // JPEG at 200 dpi for the printed width keeps the PDF under check-build's 1 MB
 // warning; weasyprint would embed the sources lossless.
 const jpeg = async (p, mm) => {
-  const buf = await sharp(join(root, 'public', p))
+  const buf = await sharp(source(p))
     .flatten({ background: '#ffffff' })
     .resize({ width: Math.round((mm / 25.4) * 200), withoutEnlargement: true })
     .jpeg({ quality: 80, mozjpeg: true })

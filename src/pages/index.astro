@@ -4,7 +4,6 @@ import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/ui/Button.astro';
 import SocialIcon from '../components/ui/SocialIcon.astro';
 import VidigalPanel from '../components/ui/VidigalPanel.astro';
-import RouteStrip from '../components/ui/RouteStrip.astro';
 import { author } from '../data/author';
 import { workCards, practiceUrl } from '../data/cards';
 import { talk } from '../data/talk';
@@ -14,7 +13,7 @@ const mailto = `mailto:${author.email}`;
 ---
 
 <PageLayout ogType="profile">
-  <!-- Hero — type-first viewport 1; the research artifact follows below -->
+  <!-- Hero: words only (owner, 2026-10-28); the research artifact follows below -->
   <section id="home" class="hero-section">
     <div class="hero-grid">
     <div class="hero-type">
@@ -37,7 +36,6 @@ const mailto = `mailto:${author.email}`;
           <span class="talk-band-arrow" aria-hidden="true">&rarr;</span>
         </a>
       )}
-      <p class="hero-bridge" data-reveal style="--reveal-d: 3;">Today I help robot makers find out why their systems fail, and I study how city form shapes light and air.</p>
       <div class="hero-cta-row" data-reveal style="--reveal-d: 3;">
         <Button href={mailto}>
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -45,90 +43,68 @@ const mailto = `mailto:${author.email}`;
         </Button>
         <Button href={practiceUrl} variant="secondary">For robot makers</Button>
       </div>
-      <p class="hero-caption" data-reveal style="--reveal-d: 4;">
-        MSc Robotics, EPFL. Research fellow at <a href="https://senseablerio.mit.edu/" class="hero-credentials-link">MIT Senseable City Lab Rio</a>; earlier, computer vision and MLOps at Roboat.
-      </p>
     </div>
-    <!-- The hero plate (owner lock L-2): Vidigal's terrain and rooftops from
-         the quantised data already on this page. It flies into Rio on the
-         corner map (src/scripts/handoff.ts). -->
-    <figure class="hero-plate" data-handoff-plate>
-      <img
-        src={`${base}/hero/vidigal-plan.webp`}
-        width="1424"
-        height="892"
-        alt="Plan of Vidigal, Rio de Janeiro: the hillside as shaded relief with 25 m contours, and its rooftop outlines in blue."
-        decoding="async"
-        fetchpriority="high"
-      />
-      <figcaption>Vidigal, Rio de Janeiro · terrain and rooftops · MIT Senseable City Lab Rio</figcaption>
-    </figure>
     </div>
   </section>
 
-  <!-- Route: the corner map navigates the research stops; it stays for the
-       rest of the page, folded into a tab from the work grid down (L-1). -->
-  <div class="route">
-    <RouteStrip />
+  <!-- Research — one lead strand carried by the artifact, two named after it.
+       Method and affiliation only: the studies are unpublished and multi-author,
+       so no result, figure or finding appears here. -->
+  <section id="research" class="pt-6 pb-[var(--space-section)]">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">A city that was never drawn.</h3>
+      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Favelas are built without plans, and the usual urban measurements assume a street grid that is not there.</p>
+    </div>
+    <div id="rio"><VidigalPanel revealDelay={3} /></div>
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">Trees the city already scanned.</h3>
+      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Cities fly aerial LiDAR surveys on a regular cycle for unrelated reasons.</p>
+    </div>
+    <div id="amsterdam">
+      <VidigalPanel
+        revealDelay={3}
+        data="amsterdam-canopy"
+        emphasis={1.2}
+        splat={0.015}
+        tilt={0.95}
+        swing={0.45}
+        zoom={1.3}
+        caption="Jordaan, Amsterdam · a canal, its houses and its trees"
+        provenance="AHN5, the Dutch national airborne laser scan, open data · Senseable City Lab, MIT and AMS Institute"
+        ariaLabel="Oblique point cloud of a canal in the Jordaan, Amsterdam: ground, roofs and tree crowns from an airborne laser scan; the water returns nothing and shows as a gap."
+      />
+    </div>
+  </section>
 
-    <!-- Research — one lead strand carried by the artifact, two named after it.
-         Method and affiliation only: the studies are unpublished and multi-author,
-         so no result, figure or finding appears here. -->
-    <section id="research" class="pt-6 pb-[var(--space-section)]">
-      <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-        <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">A city that was never drawn.</h3>
-        <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Favelas are built without plans, and the usual urban measurements assume a street grid that is not there.</p>
+  <!-- Proof — static grid, no carousel -->
+  <section id="projects" class="py-[var(--space-section)]">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <h2 class="section-label mb-10" data-reveal>Selected work</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {workCards.map((c, i) => (
+          <a
+            href={c.external ? c.href : `${base}${c.href}`}
+            id={c.id}
+            class="proof-plate work-card"
+            data-reveal
+            style={`--reveal-d: ${i + 1};`}
+          >
+            <p class="proof-plate-label">{c.label}</p>
+            <p class="proof-plate-title">{c.title}</p>
+            <dl class="work-card-hrc">
+              <dt>Hidden</dt><dd>{c.hidden}</dd>
+              <dt>Revealed</dt><dd>{c.revealed}</dd>
+              <dt>Changed</dt><dd>{c.changed}</dd>
+            </dl>
+            {c.foot && <p class="work-card-foot">{c.foot}</p>}
+          </a>
+        ))}
       </div>
-      <div id="rio"><VidigalPanel revealDelay={3} /></div>
-      <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-        <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">Trees the city already scanned.</h3>
-        <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Cities fly aerial LiDAR surveys on a regular cycle for unrelated reasons.</p>
-      </div>
-      <div id="amsterdam">
-        <VidigalPanel
-          revealDelay={3}
-          data="amsterdam-canopy"
-          emphasis={1.2}
-          splat={0.015}
-          tilt={0.95}
-          swing={0.45}
-          zoom={1.3}
-          caption="Jordaan, Amsterdam · a canal, its houses and its trees"
-          provenance="AHN5, the Dutch national airborne laser scan, open data · Senseable City Lab, MIT and AMS Institute"
-          ariaLabel="Oblique point cloud of a canal in the Jordaan, Amsterdam: ground, roofs and tree crowns from an airborne laser scan; the water returns nothing and shows as a gap."
-        />
-      </div>
-    </section>
-
-    <!-- Proof — static grid, no carousel -->
-    <section id="projects" class="py-[var(--space-section)]">
-      <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-        <h2 class="section-label mb-10" data-reveal>Selected work</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {workCards.map((c, i) => (
-            <a
-              href={c.external ? c.href : `${base}${c.href}`}
-              id={c.id}
-              class="proof-plate work-card"
-              data-reveal
-              style={`--reveal-d: ${i + 1};`}
-            >
-              <p class="proof-plate-label">{c.label}</p>
-              <p class="proof-plate-title">{c.title}</p>
-              <dl class="work-card-hrc">
-                <dt>Hidden</dt><dd>{c.hidden}</dd>
-                <dt>Revealed</dt><dd>{c.revealed}</dd>
-                <dt>Changed</dt><dd>{c.changed}</dd>
-              </dl>
-              {c.foot && <p class="work-card-foot">{c.foot}</p>}
-            </a>
-          ))}
-        </div>
-        <p class="mt-8">
-          <a href={`${base}/projects/`} class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">All work →</a>
-        </p>
-      </div>
-    </section>
+      <p class="mt-8">
+        <a href={`${base}/projects/`} class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">All work →</a>
+      </p>
+    </div>
+  </section>
 
 
   <!-- Biography -->
@@ -192,7 +168,6 @@ const mailto = `mailto:${author.email}`;
       <p class="contact-address" data-reveal style="--reveal-d: 3;">{author.email}</p>
     </div>
   </section>
-  </div>
 
 
   <script>

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Render public/hero/vidigal-plan.webp, the homepage hero plate (owner lock
-L-2, 2026-10-23: "Vidigal, terrain and roofs").
+"""Render scripts/assets/hero/vidigal-plan.webp, the portfolio PDF's cover plate
+(owner lock L-2, 2026-10-23: "Vidigal, terrain and roofs"; off the homepage
+hero since 2026-10-28, so it no longer ships with the site).
 
 Every mark comes from public/data/vidigal-rooftops.{bin,json}, the quantised
 derivative already published on this site (no new data, see the Vidigal
@@ -20,7 +21,7 @@ from scipy.ndimage import gaussian_filter, zoom
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "public/data"
-OUT = ROOT / "public/hero/vidigal-plan.webp"
+OUT = ROOT / "scripts/assets/hero/vidigal-plan.webp"
 ACCENT = "#2563eb"
 UP = 4  # upsampling of the 16 m grid before shading, for a smooth surface
 

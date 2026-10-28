@@ -5,8 +5,8 @@ export const author = {
   monogram: 'T.A.H',
   role: 'Roboticist and urban scientist',
   // Locked 22 Oct (Acervo C-2026-10-22-05), word for word.
-  headline: 'I make hidden structure visible.',
-  subtitle: 'I study cities like a roboticist would. Scan. Model. Decipher.',
+  headline: 'Scan. Model. Decipher.',
+  subtitle: 'Making hidden structure visible.',
   affiliation: 'MIT Senseable City Lab Rio',
   email,
 

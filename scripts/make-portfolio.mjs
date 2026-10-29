@@ -20,7 +20,7 @@ import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import { author } from '../src/data/author.ts';
 import { workCards, practiceUrl } from '../src/data/cards.ts';
-import { portfolio, moreWork } from '../src/data/portfolio.ts';
+import { portfolio, moreWork, sections, audienceOrder } from '../src/data/portfolio.ts';
 import { talk } from '../src/data/talk.ts';
 import { siteConfig } from '../src/data/site.ts';
 import { sourceHash, stampMeta, checkPdf } from './pdf-source.mjs';
@@ -61,8 +61,26 @@ const resolve = (e) => {
     picture: page.cardImage ?? raster,
   };
 };
-const entries = portfolio.map(resolve);
-const more = moreWork.map(resolve);
+const audience = process.argv.includes('--audience') ? process.argv[process.argv.indexOf('--audience') + 1] : null;
+if (audience && !audienceOrder[audience]) throw new Error(`unknown audience "${audience}"`);
+const outName = audience ? `portfolio-${audience}.html` : 'portfolio.html';
+const bySlug = new Map();
+for (const e of [...portfolio, ...moreWork]) {
+  const r = resolve(e);
+  bySlug.set(r.page.slug, r);
+}
+const order = audience ? audienceOrder[audience].map((n) => sections.find((s) => s.name === n)) : sections;
+let seq = 0;
+const groups = order.map((s) => ({
+  name: s.name,
+  items: s.slugs.map((slug) => {
+    const x = bySlug.get(slug);
+    if (!x) throw new Error(`section "${s.name}": no entry for ${slug}`);
+    return { ...x, id: `p${seq++}` };
+  }),
+}));
+const placed = groups.flatMap((g) => g.items);
+for (const slug of bySlug.keys()) if (!placed.some((x) => x.page.slug === slug)) throw new Error(`${slug} is in no section`);
 
 const practice = card('practice');
 
@@ -86,8 +104,7 @@ const links = (p) =>
 
 const project = (id, kicker) => (x) => `<section class="project" id="${id(x)}">
   <header>
-    ${kicker(x) ? `<p class="kicker">${kicker(x)}</p>` : ''}
-    <p class="label">${esc(x.label)}</p>
+    <p class="label">${kicker(x) ? `<span class="sect">${kicker(x)}</span> · ` : ''}${esc(x.label)}</p>
     <h2>${esc(x.title)}</h2>
     ${x.role ? `<p class="role">${esc(x.role)}</p>` : ''}
   </header>
@@ -141,12 +158,14 @@ const html = `<!doctype html>
   .about h2 { font-size: 15pt; letter-spacing: -0.01em; margin: 1mm 0 4mm; }
   .talk { margin-top: 6mm; font-size: 10.5pt; }
   .talk span { font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; color: var(--muted); margin-right: 3mm; }
-  .toc li { list-style: none; display: flex; align-items: baseline; gap: 4mm; padding: 2mm 0; border-top: 0.5pt solid var(--rule); }
+  .toc li { list-style: none; display: flex; align-items: baseline; gap: 4mm; padding: 1.3mm 0; border-top: 0.5pt solid var(--rule); }
   .toc li:last-child { border-bottom: 0.5pt solid var(--rule); }
   .toc .t { font-size: 10.5pt; font-weight: 600; }
   .toc .l { flex: 1; color: var(--muted); font-size: 8.5pt; }
   .toc .n::after { content: target-counter(attr(href), page); }
-  .toc li.m .t { font-weight: 400; }
+  .sect { text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); }
+  .toc li.sec { border-top: none; padding: 2.5mm 0 0.5mm; }
+  .toc li.sec .t { font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; font-weight: 400; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); }
 
   .project { page-break-before: always; }
   .project > header h2 { font-size: 20pt; letter-spacing: -0.02em; line-height: 1.1; margin: 1.5mm 0 6mm; }
@@ -201,15 +220,12 @@ const html = `<!doctype html>
   <section>
     <p class="kicker">In this portfolio</p>
     <ul class="toc">
-${entries.map((x, i) => `      <li><span class="t">${esc(x.title)}</span><span class="l">${esc(x.label)}</span><a class="n" href="#p${i}"></a></li>`).join('\n')}
-${more.map((x, i) => `      <li class="m"><span class="t">${esc(x.title)}</span><span class="l">${esc(x.label)}</span><a class="n" href="#m${i}"></a></li>`).join('\n')}
+${groups.map((g) => `      <li class="sec"><span class="t">${esc(g.name)}</span></li>\n` + g.items.map((x) => `      <li><span class="t">${esc(x.title)}</span><span class="l">${esc(x.label)}</span><a class="n" href="#${x.id}"></a></li>`).join('\n')).join('\n')}
     </ul>
   </section>
 </section>
 
-${entries.map(project((x) => `p${entries.indexOf(x)}`, () => '')).join('\n\n')}
-
-${more.map(project((x) => `m${more.indexOf(x)}`, (x) => (x === more[0] ? 'More work' : ''))).join('\n\n')}
+${groups.map((g) => g.items.map(project((x) => x.id, (x) => (x === g.items[0] ? esc(g.name) : ''))).join('\n\n')).join('\n\n')}
 </body>
 </html>
 `;
@@ -228,7 +244,7 @@ for (const [re, where, why] of [
 }
 // The cover's month is the print date, not a source.
 const hash = sourceHash(html.replace(month, ''), [...used].sort().map((p) => join(root, 'public', p)));
-if (process.argv.includes('--check')) {
+if (process.argv.includes('--check') && !audience) {
   checkPdf(join(root, 'public/portfolio.pdf'), hash, 'node scripts/make-portfolio.mjs && weasyprint portfolio.html public/portfolio.pdf');
   process.exit(0);
 }
@@ -247,5 +263,5 @@ let out = html.replace('<meta charset="utf-8">', `<meta charset="utf-8">\n${stam
 for (const [ph, mm, p] of new Set(html.match(/asset:\d+:[^"]+/g)).values().map((ph) => ph.match(/^asset:(\d+):(.+)$/))) {
   out = out.replaceAll(`"${ph}"`, `"${await jpeg(p, Number(mm))}"`);
 }
-writeFileSync(join(root, 'portfolio.html'), out);
-console.log(`portfolio.html: ${entries.length} case pages, then ${more.length} under More work`);
+writeFileSync(join(root, outName), out);
+console.log(`${outName}: ${placed.length} case pages in ${groups.length} sections`);

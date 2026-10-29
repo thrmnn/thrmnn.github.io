@@ -78,3 +78,15 @@ export const moreWork: PortfolioEntry[] = [
     changed: 'A bad prompt change fails the build instead of reaching the user.',
   },
 ];
+
+/** Section order by audience; the default follows the homepage's spotlights. */
+export const sections: { name: string; slugs: string[] }[] = [
+  { name: 'Favela research', slugs: ['urban-morphometrics', 'octopus'] },
+  { name: 'Robotics', slugs: ['autonomous-mobile-robot', 'autonomous-boat-perception', 'event-cameras-drone', 'perception-pipeline'] },
+  { name: 'Practice: Making autonomous systems legible', slugs: ['ros2-localization-triage', 'agent-harness'] },
+  { name: 'More work', slugs: ['aerial-lidar-tree-census'] },
+];
+
+export const audienceOrder: Record<string, string[]> = {
+  cto: ['Practice: Making autonomous systems legible', 'Robotics', 'Favela research', 'More work'],
+};

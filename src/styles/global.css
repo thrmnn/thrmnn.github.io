@@ -493,7 +493,7 @@
 }
 .talk-band-when { white-space: nowrap; }
 .hero-lines {
-  margin: 1rem 0 0;
+  margin: 1rem 0 1.25rem;
   font-size: 0.95rem;
   line-height: 1.5;
   color: var(--color-text-secondary);

@@ -93,6 +93,7 @@ const html = `<!doctype html>
   .job p.desc { margin-top: 1mm; }
   .edu { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.5mm; }
   .edu .inst { color: var(--muted); }
+  .edu .note { display: block; color: var(--muted); margin-top: 0.5mm; }
   table.skills { width: 100%; border-collapse: collapse; }
   table.skills td { vertical-align: top; padding: 0.8mm 0; }
   table.skills td.domain { font-weight: 600; white-space: nowrap; padding-right: 5mm; }
@@ -126,7 +127,7 @@ ${author.experience
 ${author.education
   .map(
     (edu) => `<div class="edu">
-  <span><strong>${esc(edu.degree)}</strong> <span class="inst">— ${esc(edu.institution)}</span></span>
+  <span><strong>${esc(edu.degree)}</strong> <span class="inst">— ${esc(edu.institution)}</span>${edu.note ? `<span class="note">${esc(edu.note)}</span>` : ''}</span>
   <span class="meta">${esc(edu.years)}</span>
 </div>`,
   )

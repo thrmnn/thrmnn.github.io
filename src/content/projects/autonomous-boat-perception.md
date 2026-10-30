@@ -39,7 +39,3 @@ The second half of the work was the part that outlives any particular model.
 Datasets and model versions went under DVC so a result could be traced back to
 the exact data that produced it, and retraining stopped being a thing one
 person could do on one laptop.
-
-## What is not here
-
-The performance figures belong to Roboat and are not mine to publish.

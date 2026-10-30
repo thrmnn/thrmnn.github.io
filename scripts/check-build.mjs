@@ -505,6 +505,8 @@ for (const f of htmlFiles) {
   } else {
     let span = home.slice(heroStart, gridStart);
     span = span.replace(/<title>[\s\S]*?<\/title>/g, ' ');
+    // labels inside a drawing are not reading text (the .ch's word budget does the same)
+    span = span.replace(/<svg[\s\S]*?<\/svg>/g, ' ');
     span = span.replace(/<[^>]+>/g, ' ');
     span = span.replace(/&[a-z]+;/gi, ' ');
     const words = span.split(/\s+/).filter((w) => /[A-Za-zÀ-ÿ0-9]/.test(w));

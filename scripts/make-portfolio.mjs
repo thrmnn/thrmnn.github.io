@@ -186,7 +186,7 @@ const FORMATS = {
   @page { size: A4; margin: 18mm 18mm 20mm;
     @bottom-left { content: "${esc(author.name)} · portfolio"; font: 7pt 'JetBrains Mono'; color: #777; }
     @bottom-right { content: counter(page); font: 7pt 'JetBrains Mono'; color: #777; } }
-  body { font-size: 9.5pt; }
+  body { font-size: 10pt; }
   .cover { height: 259mm; }
   .cover .kicker { margin-bottom: 30mm; }
   .cover h1 { font-size: 34pt; line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; max-width: 150mm; }
@@ -197,14 +197,14 @@ const FORMATS = {
   .top { display: flex; gap: 7mm; align-items: flex-start; }
   .top .hrc { flex: 1; }
   .plate { width: 58mm; height: 58mm; object-fit: cover; }
-  .case { margin-top: 6mm; max-width: 150mm; font-size: 9pt; }
+  .case { margin-top: 6mm; max-width: 150mm; font-size: 10pt; }
   figure.wide { margin-top: 5mm; }
-  figure.wide img { display: block; max-width: 100%; max-height: 92mm; width: auto; }
+  figure.wide img { display: block; max-width: 100%; max-height: 82mm; width: auto; }
   .foot { display: flex; justify-content: space-between; gap: 6mm; margin-top: 5mm; padding-top: 2mm; border-top: 0.5pt solid var(--rule); }
   .foot a { white-space: nowrap; }
   .foot > span:last-child { text-align: right; }`,
     // Words of case text that fit under the top block: fewer when a wide figure follows.
-    budget: (x) => (x.page.imageAlt ? 150 : 300),
+    budget: (x) => (x.page.imageAlt ? 120 : 245),
     project: (x, kicker, asset, budget) => `<section class="project" id="${x.id}">
   <p class="label">${kicker ? `<span class="sect">${kicker}</span> · ` : ''}${esc(x.label)}</p>
   <h2 class="title">${esc(x.title)}</h2>
@@ -224,7 +224,7 @@ const FORMATS = {
   @page { size: A4 landscape; margin: 14mm 16mm 15mm;
     @bottom-left { content: "${esc(author.name)} · portfolio"; font: 7pt 'JetBrains Mono'; color: #777; }
     @bottom-right { content: counter(page); font: 7pt 'JetBrains Mono'; color: #777; } }
-  body { font-size: 9pt; }
+  body { font-size: 10pt; }
   .cover { height: 181mm; }
   .cover .kicker { margin-bottom: 26mm; }
   .cover h1 { font-size: 48pt; line-height: 1.02; letter-spacing: -0.03em; font-weight: 700; }
@@ -243,7 +243,7 @@ const FORMATS = {
   .links { margin-top: 1.5mm; }
   .vis { margin-bottom: 5mm; }
   .vis img { display: block; max-width: 100%; max-height: 76mm; width: auto; }
-  .case { column-count: 2; column-gap: 8mm; font-size: 8.5pt; line-height: 1.42; }
+  .case { column-count: 2; column-gap: 8mm; font-size: 10pt; line-height: 1.42; }
   .body.card dl.hrc { grid-template-columns: 24mm 1fr; row-gap: 5mm; padding-top: 4mm; margin-bottom: 9mm; }
   .body.card dl.hrc dd { font-size: 13pt; line-height: 1.32; letter-spacing: -0.005em; }
   .body.card dl.hrc dt { padding-top: 1.6mm; }
@@ -257,7 +257,7 @@ const FORMATS = {
           ? `<figure class="vis"><img src="${asset(x.picture, 140)}" alt=""></figure>`
           : '',
     // Words of case text that fit beside the lead column: fewer under a picture.
-    budget: (x) => (x.page.imageAlt || x.picture ? 210 : 220),
+    budget: (x) => (x.page.imageAlt || x.picture ? 190 : 220),
     // A page with no picture yet carries its card in the wide column, set large, so the
     // page reads as designed rather than half empty (diagnostic, 30 Oct).
     project(x, kicker, asset, budget) {

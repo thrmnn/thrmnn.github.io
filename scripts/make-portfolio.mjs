@@ -32,7 +32,11 @@ import { siteConfig } from '../src/data/site.ts';
 import { sourceHash, stampMeta, checkPdf } from './pdf-source.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const plan = planSvg(JSON.parse(readFileSync(join(root, 'src/data/stata-plan.json'), 'utf8')));
+// WeasyPrint styles an inline SVG only from a <style> inside it (the page's CSS never reaches its paths)
+// and has no paint-order, so the labels lose their white halo here.
+const PLAN_CSS = ".walls { stroke: #777; stroke-opacity: .5; stroke-width: 2.2; stroke-linecap: round; fill: none; } .was, .said { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; } .was { stroke: #171717; } .said { stroke: #2563eb; } .was-dot { fill: #171717; } .said-dot { fill: #2563eb; } .gap { stroke: #171717; stroke-width: 1.5; stroke-dasharray: 4 4; } .bar { stroke: #171717; stroke-width: 2; } .lab { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; fill: #171717; } .said-lab { fill: #2563eb; } .big { font-size: 22px; font-weight: 700; } .tick { font-family: 'JetBrains Mono', monospace; font-size: 15px; fill: #777; }";
+const plan = planSvg(JSON.parse(readFileSync(join(root, 'src/data/stata-plan.json'), 'utf8')))
+  .replace(/(<svg[^>]*>)/, `$1<style>${PLAN_CSS}</style>`);
 const esc = (s) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 const bare = (url) => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
 const md = unified().use(remarkParse).use(remarkRehype).use(rehypeStringify);
@@ -54,7 +58,8 @@ const card = (id) => {
 const resolve = (e) => {
   const c = e.card ? card(e.card) : null;
   const slug = e.slug ?? c.href.match(/^\/projects\/([^/]+)\/$/)[1];
-  const page = caseFile(slug);
+  const file = caseFile(slug);
+  const page = e.pdfPicture ? { ...file, imageAlt: undefined } : file;
   const raster = page.image && !page.image.endsWith('.svg') ? page.image : null;
   return {
     page,
@@ -65,7 +70,7 @@ const resolve = (e) => {
     changed: c?.changed ?? e.changed,
     role: e.role,
     steps: e.steps,
-    picture: page.cardImage ?? raster,
+    picture: e.pdfPicture ?? page.cardImage ?? raster,
   };
 };
 const audience = process.argv.includes('--audience') ? process.argv[process.argv.indexOf('--audience') + 1] : null;
@@ -100,6 +105,7 @@ const hrc = (x) => `<dl class="hrc">
 const links = (p) =>
   [p.url, p.github].filter(Boolean).map((u) => `<a href="${u}">${esc(bare(u))}</a>`).join('&nbsp;· ');
 
+const pic = (p, mm, asset) => (p === 'plan' ? `<div class="pl">${plan}</div>` : `<img src="${asset(p, mm)}" alt="">`);
 const caption = (pic) => (pictureCaptions[pic] ? `<figcaption>${esc(pictureCaptions[pic])}</figcaption>` : '');
 
 const words = (h) => h.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
@@ -144,13 +150,6 @@ const CSS_COMMON = `
   .cvis .pl svg { display: block; height: 100%; width: auto; margin: 0 auto; }
   .cvis figcaption { font-family: 'JetBrains Mono', monospace; font-size: 7pt; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-top: 1.5mm; }
   .cvis figcaption span { display: block; margin-top: 0.8mm; font-family: 'Space Grotesk', sans-serif; font-size: 7.5pt; text-transform: none; letter-spacing: 0; color: var(--muted); }
-  .plan .walls { stroke: #777; stroke-opacity: .5; stroke-width: 2.2; stroke-linecap: round; fill: none; }
-  .plan .was, .plan .said { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
-  .plan .was { stroke: var(--ink); } .plan .said { stroke: var(--accent); }
-  .plan .was-dot { fill: var(--ink); } .plan .said-dot { fill: var(--accent); }
-  .plan .gap { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 4; } .plan .bar { stroke: var(--ink); stroke-width: 2; }
-  .plan .lab { font: 600 14px 'Space Grotesk', sans-serif; fill: var(--ink); paint-order: stroke; stroke: #fff; stroke-width: 5px; }
-  .plan .said-lab { fill: var(--accent); } .plan .big { font-size: 22px; font-weight: 700; } .plan .tick { font: 12px 'JetBrains Mono', monospace; fill: #777; }
   .cover .who { font-size: 12pt; font-weight: 700; margin-bottom: 2mm; }
   .contacts a { white-space: nowrap; }
   .about { page-break-after: always; }
@@ -202,6 +201,7 @@ const FORMATS = {
   .top .hrc { flex: 1; }
   .plate { width: 58mm; margin: 0; }
   .plate img { display: block; width: 58mm; height: 58mm; object-fit: cover; }
+  .plate .pl svg { display: block; width: 58mm; height: 70mm; }
   .case { margin-top: 6mm; max-width: 150mm; font-size: 10pt; }
   figure.wide { margin-top: 5mm; }
   figure.wide img { display: block; max-width: 100%; max-height: 82mm; width: auto; }
@@ -216,11 +216,11 @@ const FORMATS = {
   ${x.role ? `<p class="role">${esc(x.role)}</p>` : ''}
   <div class="top">
     ${hrc(x)}
-    ${x.picture && !x.page.imageAlt ? `<figure class="plate"><img src="${asset(x.picture, 58)}" alt="">${caption(x.picture)}</figure>` : ''}
+    ${x.picture && !x.page.imageAlt ? `<figure class="plate">${pic(x.picture, 58, asset)}${caption(x.picture)}</figure>` : ''}
   </div>
   <div class="case">${caseText(x, budget)}</div>
   ${x.page.imageAlt ? `<figure class="wide"><img src="${asset(x.page.image, 174)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>` : ''}
-  <p class="foot"><span>${x.page.tags.map(esc).join(' · ')}</span><span>${links(x.page)}</span></p>
+  <p class="foot"><span>${x.page.tags.map(esc).join('&nbsp;· ')}</span><span>${links(x.page)}</span></p>
 </section>`,
   },
   landscape: {
@@ -248,6 +248,7 @@ const FORMATS = {
   .links { margin-top: 1.5mm; }
   .vis { margin-bottom: 5mm; }
   .vis img { display: block; max-width: 100%; max-height: 72mm; width: auto; }
+  .vis .pl svg { display: block; width: 60mm; height: 72mm; }
   .case { column-count: 2; column-gap: 8mm; font-size: 10pt; line-height: 1.42; }
   .body.card dl.hrc { grid-template-columns: 24mm 1fr; row-gap: 5mm; padding-top: 4mm; margin-bottom: 9mm; }
   .body.card dl.hrc dd { font-size: 13pt; line-height: 1.32; letter-spacing: -0.005em; }
@@ -259,7 +260,7 @@ const FORMATS = {
       x.page.imageAlt
         ? `<figure class="vis"><img src="${asset(x.page.image, 160)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>`
         : x.picture
-          ? `<figure class="vis"><img src="${asset(x.picture, 140)}" alt="">${caption(x.picture)}</figure>`
+          ? `<figure class="vis">${pic(x.picture, 140, asset)}${caption(x.picture)}</figure>`
           : '',
     // Words of case text that fit beside the lead column: fewer under a picture.
     budget: (x) => (x.page.imageAlt || x.picture ? 190 : 220),
@@ -273,7 +274,7 @@ const FORMATS = {
     <h2 class="title">${esc(x.title)}</h2>
     ${x.role ? `<p class="role">${esc(x.role)}</p>` : ''}
     ${vis ? hrc(x) : ''}
-    <p class="tags">${x.page.tags.map(esc).join(' · ')}</p>
+    <p class="tags">${x.page.tags.map(esc).join('&nbsp;· ')}</p>
     <p class="links">${links(x.page).replaceAll('&nbsp;· ', '<br>')}</p>
   </div>
   <div class="body${vis ? '' : ' card'}">
@@ -374,6 +375,12 @@ for (const f of Object.values(FORMATS)) {
       process.exit(1);
     }
     console.log(`✓ ${f.file}.pdf: one page per project (${placed.length} projects, ${pages} pages)`);
+    // A wrapped tag or link line must not open on its separator (critic round, 30 Oct).
+    const stray = execFileSync('pdftotext', ['-layout', pdf, '-']).toString().split('\n').filter((l) => /^\s*·\s/.test(l));
+    if (stray.length) {
+      console.error(`✗ public/${f.file}.pdf: ${stray.length} line(s) open on a separator: ${stray[0].trim()}`);
+      process.exit(1);
+    }
     continue;
   }
   let out = html.replace('<meta charset="utf-8">', `<meta charset="utf-8">\n${stampMeta(hash)}`);

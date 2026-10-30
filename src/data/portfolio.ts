@@ -49,20 +49,20 @@ export const moreWork: PortfolioEntry[] = [
     role: 'Research assistant, EPFL VITA Lab, under Alexandre Alahi · Lausanne · June 2022 to June 2023',
     hidden: 'Where the people around a robot are and where they are heading, in a crowded indoor space.',
     revealed: 'A modular ROS pipeline on a Segway Loomo: person detection and tracking, trajectory prediction, path planning and model predictive control.',
-    changed: 'Validated end to end on the physical robot among real pedestrians, not only in simulation; the code is public.',
+    changed: 'Validated end to end on the physical robot among real pedestrians, not only in simulation; the code is public. No figures were published: the evidence is the video in the repo.',
   },
   {
     slug: 'perception-pipeline',
     hidden: 'Four versions of the same detection and tracking work, built 2022 to 2023, sharing no interface and pinned to stacks that aged out.',
     revealed: 'One modular stack behind narrow interfaces. Version 0.1 ships detection and tracking; re-identification and pose follow.',
-    changed: 'A module can be swapped without touching the rest, and every module reports its own latency. Open source, MIT licensed; the detector it wraps is AGPL-3.0.',
+    changed: 'A module can be swapped without touching the rest, and every module reports its own latency. No benchmark is published: those timings depend on the machine. Open source, MIT licensed; the detector it wraps is AGPL-3.0.',
   },
   {
     slug: 'event-cameras-drone',
     role: 'Visiting research fellow, IRI (CSIC-UPC), with Juan Andrade-Cetto · Barcelona · October 2023 to February 2024',
     hidden: 'Where a drone is during aggressive flight, once frame cameras blur and standard visual-inertial odometry diverges.',
     revealed: 'A PyTorch network that estimates 6-DOF pose from event-camera, RGB and IMU streams, trained on high-speed drone flights.',
-    changed: 'A pose estimator built for flight above 5 g, the regime where frame-based pipelines fail; the training framework is open source.',
+    changed: 'A pose estimator built for flight above 5 g, the regime where frame-based pipelines fail; the training framework is open source. No accuracy figures were published.',
   },
   {
     // From Acervo C-2026-10-27-01 and the owner's words; owner, 27 Oct: ship as drafted, Maré named (the study lead agreed).

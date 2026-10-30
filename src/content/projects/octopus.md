@@ -21,14 +21,14 @@ board, a fine-particle sensor and a GPS receiver sit in a 3D-printed case. It
 assembles in about 20 minutes and writes one line of data every 5 seconds to a
 microSD card, first on vehicles, then anywhere.
 
+## Credits
+
+Octopus is led by Simone Mora and Fabio Duarte, with Carlo Ratti; electronics
+by FAE Technology.
+
 ## What I do
 
 In the Rio lab I work on its projects and deployment, take part in the
 research meetings, and present the hardware (Casa Firjan summer school,
 October 2026). I am helping shape the new research line that links its
 measurements to urban form in Maré.
-
-## Credits
-
-Octopus is led by Simone Mora and Fabio Duarte, with Carlo Ratti; electronics
-by FAE Technology.

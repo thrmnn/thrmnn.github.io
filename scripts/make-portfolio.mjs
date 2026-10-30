@@ -218,13 +218,20 @@ const FORMATS = {
   .about .left { float: left; width: 118mm; }
   .about .right { margin-left: 132mm; }
   .about .bio p { font-size: 11pt; line-height: 1.5; }
+  .toc li:not(.sec) { flex-wrap: wrap; row-gap: 0.4mm; }
+  .toc li:not(.sec) .n { order: 2; margin-left: auto; }
+  .toc li:not(.sec) .l { order: 3; flex: 0 0 100%; }
   .project .lead { float: left; width: 84mm; }
   .project .body { margin-left: 94mm; }
   .tags { margin-top: 6mm; padding-top: 2mm; border-top: 0.5pt solid var(--rule); }
   .links { margin-top: 1.5mm; }
   .vis { margin-bottom: 5mm; }
   .vis img { display: block; max-width: 100%; max-height: 76mm; width: auto; }
-  .case { column-count: 2; column-gap: 8mm; font-size: 8.5pt; line-height: 1.42; }`,
+  .case { column-count: 2; column-gap: 8mm; font-size: 8.5pt; line-height: 1.42; }
+  .body.card dl.hrc { grid-template-columns: 24mm 1fr; row-gap: 5mm; padding-top: 4mm; margin-bottom: 9mm; }
+  .body.card dl.hrc dd { font-size: 13pt; line-height: 1.32; letter-spacing: -0.005em; }
+  .body.card dl.hrc dt { padding-top: 1.6mm; }
+  .body.card .case { font-size: 10pt; line-height: 1.5; }`,
     // One visual per project, the larger the better (CommKit: visuals carry the page):
     // the case page's captioned figure if it has one, else its card plate or raster image.
     visual: (x, asset) =>
@@ -235,18 +242,21 @@ const FORMATS = {
           : '',
     // Words of case text that fit beside the lead column: fewer under a picture.
     budget: (x) => (x.page.imageAlt || x.picture ? 210 : 430),
+    // A page with no picture yet carries its card in the wide column, set large, so the
+    // page reads as designed rather than half empty (diagnostic, 30 Oct).
     project(x, kicker, asset, budget) {
+      const vis = this.visual(x, asset);
       return `<section class="project" id="${x.id}">
   <div class="lead">
     <p class="label">${kicker ? `<span class="sect">${kicker}</span><br>` : ''}${esc(x.label)}</p>
     <h2 class="title">${esc(x.title)}</h2>
     ${x.role ? `<p class="role">${esc(x.role)}</p>` : ''}
-    ${hrc(x)}
+    ${vis ? hrc(x) : ''}
     <p class="tags">${x.page.tags.map(esc).join(' · ')}</p>
     <p class="links">${links(x.page)}</p>
   </div>
-  <div class="body">
-    ${this.visual(x, asset)}
+  <div class="body${vis ? '' : ' card'}">
+    ${vis || hrc(x)}
     <div class="case">${caseText(x, budget)}</div>
   </div>
 </section>`;

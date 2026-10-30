@@ -65,7 +65,7 @@ export const moreWork: PortfolioEntry[] = [
     role: 'Visiting research fellow, IRI (CSIC-UPC), with Juan Andrade-Cetto · Barcelona · October 2023 to February 2024',
     hidden: 'Where a drone is during aggressive flight, once frame cameras blur and standard visual-inertial odometry diverges.',
     revealed: 'A PyTorch network that estimates 6-DOF pose from event-camera, RGB and IMU streams, trained on high-speed drone flights.',
-    changed: 'A pose estimator built for flight above 5 g, the regime where frame-based pipelines fail; the training framework is open source. No accuracy figures were published.',
+    changed: 'A pose estimator aimed at flight above 5 g, the regime where frame-based pipelines fail; the training framework is open source. No accuracy figures were published.',
   },
   {
     // From Acervo C-2026-10-27-01 and the owner's words; owner, 27 Oct: ship as drafted, Maré named (the study lead agreed).

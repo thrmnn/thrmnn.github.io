@@ -106,6 +106,8 @@ const links = (p) =>
   [p.url, p.github].filter(Boolean).map((u) => `<a href="${u}">${esc(bare(u))}</a>`).join('&nbsp;· ');
 
 const pic = (p, mm, asset) => (p === 'plan' ? `<div class="pl">${plan}</div>` : `<img src="${asset(p, mm)}" alt="">`);
+// The last two words of a title stay together, so a wrap never leaves one word alone.
+const title = (t) => esc(t).replace(/ (\S+)$/, '&nbsp;$1');
 const caption = (pic) => (pictureCaptions[pic] ? `<figcaption>${esc(pictureCaptions[pic])}</figcaption>` : '');
 
 const words = (h) => h.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
@@ -212,7 +214,7 @@ const FORMATS = {
     budget: (x) => (x.page.imageAlt ? 120 : 245),
     project: (x, kicker, asset, budget) => `<section class="project" id="${x.id}">
   <p class="label">${kicker ? `<span class="sect">${kicker}</span> · ` : ''}${esc(x.label)}</p>
-  <h2 class="title">${esc(x.title)}</h2>
+  <h2 class="title">${title(x.title)}</h2>
   ${x.role ? `<p class="role">${esc(x.role)}</p>` : ''}
   <div class="top">
     ${hrc(x)}
@@ -220,7 +222,7 @@ const FORMATS = {
   </div>
   <div class="case">${caseText(x, budget)}</div>
   ${x.page.imageAlt ? `<figure class="wide"><img src="${asset(x.page.image, 174)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>` : ''}
-  <p class="foot"><span>${x.page.tags.map(esc).join('&nbsp;· ')}</span><span>${links(x.page)}</span></p>
+  <p class="foot"><span>${x.page.tags.map(esc).join(', ')}</span><span>${links(x.page).replaceAll('&nbsp;· ', '<br>')}</span></p>
 </section>`,
   },
   landscape: {
@@ -271,10 +273,10 @@ const FORMATS = {
       return `<section class="project" id="${x.id}">
   <div class="lead">
     <p class="label">${kicker ? `<span class="sect">${kicker}</span><br>` : ''}${esc(x.label)}</p>
-    <h2 class="title">${esc(x.title)}</h2>
-    ${x.role ? `<p class="role">${esc(x.role)}</p>` : ''}
+    <h2 class="title">${title(x.title)}</h2>
+    ${x.role ? `<p class="role">${esc(x.role).replaceAll(' · ', '<br>')}</p>` : ''}
     ${vis ? hrc(x) : ''}
-    <p class="tags">${x.page.tags.map(esc).join('&nbsp;· ')}</p>
+    <p class="tags">${x.page.tags.map(esc).join(', ')}</p>
     <p class="links">${links(x.page).replaceAll('&nbsp;· ', '<br>')}</p>
   </div>
   <div class="body${vis ? '' : ' card'}">
@@ -312,7 +314,7 @@ const build = (f) => {
   <div class="cvis">${spotlights.map((s) => `<figure>${coverPictures[s.id] === 'plan' ? `<div class="pl">${plan}</div>` : `<img src="${asset(coverPictures[s.id], 60)}" alt="">`}<figcaption>${esc(s.label)}<span>${esc(pictureCaptions[coverPictures[s.id]] ?? '')}</span></figcaption></figure>`).join('')}</div>
   <div class="id">
     <p class="who">${esc(author.name)}</p>
-    <p class="contacts"><a href="mailto:${author.email}">${esc(author.email)}</a> · <a href="${siteConfig.url}">${esc(bare(siteConfig.url))}</a> · <a href="${practiceUrl}">${esc(bare(practiceUrl))}</a> · ${author.social.filter((s) => s.icon !== 'email').map((s) => `<a href="${s.href}">${esc(bare(s.href).replace('www.', ''))}</a>`).join(' · ')}</p>
+    <p class="contacts"><a href="mailto:${author.email}">${esc(author.email)}</a> · <a href="${siteConfig.url}">${esc(bare(siteConfig.url))}</a> · <a href="${practiceUrl}">${esc(bare(practiceUrl))}</a><br>${author.social.filter((s) => s.icon !== 'email').map((s) => `<a href="${s.href}">${esc(bare(s.href).replace('www.', ''))}</a>`).join(' · ')}</p>
   </div>
 </section>
 
@@ -375,10 +377,10 @@ for (const f of Object.values(FORMATS)) {
       process.exit(1);
     }
     console.log(`✓ ${f.file}.pdf: one page per project (${placed.length} projects, ${pages} pages)`);
-    // A wrapped tag or link line must not open on its separator (critic round, 30 Oct).
-    const stray = execFileSync('pdftotext', ['-layout', pdf, '-']).toString().split('\n').filter((l) => /^\s*·\s/.test(l));
+    // A wrapped tag, link or role line must not open or end on its separator (critic rounds, 30 Oct).
+    const stray = execFileSync('pdftotext', ['-layout', pdf, '-']).toString().split('\n').filter((l) => /^\s*·\s|\s·\s*$/.test(l));
     if (stray.length) {
-      console.error(`✗ public/${f.file}.pdf: ${stray.length} line(s) open on a separator: ${stray[0].trim()}`);
+      console.error(`✗ public/${f.file}.pdf: ${stray.length} line(s) open or end on a separator: ${stray[0].trim()}`);
       process.exit(1);
     }
     continue;

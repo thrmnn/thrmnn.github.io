@@ -492,6 +492,14 @@
   color: var(--color-accent);
 }
 .talk-band-when { white-space: nowrap; }
+.hero-lines {
+  margin: 1rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+.hero-lines span { display: block; }
+.hero-lines .hero-now { color: var(--color-text-primary); }
 .contact-address {
   margin: 1.25rem 0 0;
   font-family: var(--font-mono);

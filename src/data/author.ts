@@ -7,6 +7,11 @@ export const author = {
   // Locked 22 Oct (Acervo C-2026-10-22-05), word for word.
   headline: 'Scan. Model. Decipher.',
   subtitle: 'Making hidden structure visible.',
+  heroLines: [
+    'Research Fellow, MIT Senseable City Lab Rio · MSc Robotics, EPFL',
+    'Research: how city form shapes light and air.',
+    'Practice: making autonomous systems legible.',
+  ],
   affiliation: 'MIT Senseable City Lab Rio',
   email,
 

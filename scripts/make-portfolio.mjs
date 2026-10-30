@@ -24,12 +24,15 @@ import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import { author } from '../src/data/author.ts';
 import { workCards, practiceUrl } from '../src/data/cards.ts';
-import { portfolio, moreWork, sections, audienceOrder } from '../src/data/portfolio.ts';
+import { portfolio, moreWork, sections, audienceOrder, coverPictures } from '../src/data/portfolio.ts';
+import { spotlights } from '../src/data/home.ts';
+import { planSvg } from '../src/data/stata-plan-svg.ts';
 import { talk } from '../src/data/talk.ts';
 import { siteConfig } from '../src/data/site.ts';
 import { sourceHash, stampMeta, checkPdf } from './pdf-source.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const plan = planSvg(JSON.parse(readFileSync(join(root, 'src/data/stata-plan.json'), 'utf8')));
 const esc = (s) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 const bare = (url) => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
 const md = unified().use(remarkParse).use(remarkRehype).use(rehypeStringify);
@@ -133,6 +136,18 @@ const CSS_COMMON = `
   .cover .lines span { display: block; }
   .cover .lines span:first-child { color: var(--ink); }
   .cover .id { position: absolute; left: 0; right: 0; bottom: 0; }
+  .cvis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-top: 12mm; }
+  .cvis figure { margin: 0; }
+  .cvis img, .cvis .pl { display: block; width: 100%; height: 50mm; object-fit: cover; border: 0.4pt solid var(--rule); background: #fff; box-sizing: border-box; }
+  .cvis .pl svg { display: block; height: 100%; width: auto; margin: 0 auto; }
+  .cvis figcaption { font-family: 'JetBrains Mono', monospace; font-size: 7pt; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-top: 1.5mm; }
+  .plan .walls { stroke: #777; stroke-opacity: .5; stroke-width: 2.2; stroke-linecap: round; fill: none; }
+  .plan .was, .plan .said { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  .plan .was { stroke: var(--ink); } .plan .said { stroke: var(--accent); }
+  .plan .was-dot { fill: var(--ink); } .plan .said-dot { fill: var(--accent); }
+  .plan .gap { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 4; } .plan .bar { stroke: var(--ink); stroke-width: 2; }
+  .plan .lab { font: 600 14px 'Space Grotesk', sans-serif; fill: var(--ink); paint-order: stroke; stroke: #fff; stroke-width: 5px; }
+  .plan .said-lab { fill: var(--accent); } .plan .big { font-size: 22px; font-weight: 700; } .plan .tick { font: 12px 'JetBrains Mono', monospace; fill: #777; }
   .cover .who { font-size: 12pt; font-weight: 700; margin-bottom: 2mm; }
   .contacts a { white-space: nowrap; }
   .about { page-break-after: always; }
@@ -215,6 +230,7 @@ const FORMATS = {
   .cover h1 { font-size: 48pt; line-height: 1.02; letter-spacing: -0.03em; font-weight: 700; }
   .cover .sub { font-size: 17pt; color: var(--muted); margin-top: 5mm; }
   .cover .lines { margin-top: 12mm; font-size: 11.5pt; line-height: 1.55; color: var(--muted); }
+  .cvis { margin-top: 12mm; gap: 6mm; } .cvis img, .cvis .pl { height: 46mm; }
   .about .left { float: left; width: 118mm; }
   .about .right { margin-left: 132mm; }
   .about .bio p { font-size: 11pt; line-height: 1.5; }
@@ -287,6 +303,7 @@ const build = (f) => {
   <h1>${esc(author.headline)}</h1>
   <p class="sub">${esc(author.subtitle)}</p>
   <p class="lines">${author.heroLines.map((l) => `<span>${esc(l)}</span>`).join('')}</p>
+  <div class="cvis">${spotlights.map((s) => `<figure>${coverPictures[s.id] === 'plan' ? `<div class="pl">${plan}</div>` : `<img src="${asset(coverPictures[s.id], 60)}" alt="">`}<figcaption>${esc(s.label)}</figcaption></figure>`).join('')}</div>
   <div class="id">
     <p class="who">${esc(author.name)}</p>
     <p class="contacts"><a href="mailto:${author.email}">${esc(author.email)}</a> · <a href="${siteConfig.url}">${esc(bare(siteConfig.url))}</a> · <a href="${practiceUrl}">${esc(bare(practiceUrl))}</a> · ${author.social.filter((s) => s.icon !== 'email').map((s) => `<a href="${s.href}">${esc(bare(s.href).replace('www.', ''))}</a>`).join(' · ')}</p>

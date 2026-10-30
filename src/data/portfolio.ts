@@ -89,3 +89,11 @@ export const sections: { id: string; name: string; slugs: string[] }[] = [
 export const audienceOrder: Record<string, string[]> = {
   cto: ['legible', 'robotics', 'favela', 'more'],
 };
+
+// The cover shows one picture per spotlight (owner's pick B, 30 Oct: the voice note "the
+// first page of the PDF portfolio is missing a visual"). 'plan' draws the Practice floor plan.
+export const coverPictures: Record<string, string> = {
+  favela: '/projects/urban-morphometrics/vidigal-plate.webp',
+  robotics: '/projects/autonomous-mobile-robot/hero-poster.jpg',
+  legible: 'plan',
+};

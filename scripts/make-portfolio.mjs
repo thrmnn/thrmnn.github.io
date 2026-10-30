@@ -69,7 +69,7 @@ for (const e of [...portfolio, ...moreWork]) {
   const r = resolve(e);
   bySlug.set(r.page.slug, r);
 }
-const order = audience ? audienceOrder[audience].map((n) => sections.find((s) => s.name === n)) : sections;
+const order = audience ? audienceOrder[audience].map((id) => sections.find((s) => s.id === id)) : sections;
 let seq = 0;
 const groups = order.map((s) => ({
   name: s.name,

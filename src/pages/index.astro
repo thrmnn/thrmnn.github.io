@@ -8,10 +8,11 @@ import { author } from '../data/author';
 import StataPlan from '../components/ui/StataPlan.astro';
 import ProjectLinks from '../components/ui/ProjectLinks.astro';
 import { practiceUrl } from '../data/cards';
-import { homeCards } from '../data/home';
+import { homeCards, spotlights } from '../data/home';
 import { talk } from '../data/talk';
 
 const mailto = `mailto:${author.email}`;
+const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
 
 ---
 
@@ -57,38 +58,38 @@ const mailto = `mailto:${author.email}`;
        unpublished and multi-author, so no result or finding appears here. -->
   <section id="favela" class="spotlight pt-6">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="section-label mb-4" data-reveal>Favela research</h2>
-      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">A city that was never drawn.</h3>
-      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Favelas are built without plans, and the usual urban measurements assume a street grid that is not there.</p>
+      <h2 class="section-label mb-4" data-reveal>{spot.favela.label}</h2>
+      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">{spot.favela.title}</h3>
+      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">{spot.favela.lead}</p>
     </div>
     <VidigalPanel revealDelay={3} />
-    <ProjectLinks slugs={['urban-morphometrics', 'octopus']} />
+    <ProjectLinks slugs={spot.favela.slugs} />
   </section>
 
   <section id="robotics" class="spotlight">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="section-label mb-4" data-reveal>Robotics</h2>
-      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">Perception on real robots.</h3>
+      <h2 class="section-label mb-4" data-reveal>{spot.robotics.label}</h2>
+      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">{spot.robotics.title}</h3>
       <figure class="spotlight-fig" data-reveal style="--reveal-d: 3;">
         <img src={`${base}/projects/autonomous-mobile-robot/hero-poster.jpg`} width="600" height="338" alt="A Segway Loomo robot following a person indoors at EPFL." loading="lazy" decoding="async" />
         <figcaption>Segway Loomo, EPFL VITA Lab · 2022–23</figcaption>
       </figure>
     </div>
-    <ProjectLinks slugs={['autonomous-mobile-robot', 'autonomous-boat-perception', 'event-cameras-drone', 'perception-pipeline']} />
+    <ProjectLinks slugs={spot.robotics.slugs} />
   </section>
 
   <section id="legible" class="spotlight">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="section-label mb-4" data-reveal>Practice</h2>
-      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">Making autonomous systems legible</h3>
-      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">Robot failures the logs don't explain: the real cause, found and proved independently. Agentic systems fail the way robots do.</p>
+      <h2 class="section-label mb-4" data-reveal>{spot.legible.label}</h2>
+      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">{spot.legible.title}</h3>
+      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">{spot.legible.lead}</p>
       <figure class="spotlight-fig" data-reveal style="--reveal-d: 3;">
         <p class="spotlight-fig-lead">One example, on a public recording: the robot was in one corridor, and reported, sure to a few centimetres, that it was in another.</p>
         <StataPlan />
         <figcaption>PR2, MIT Stata Center dataset (CC BY 3.0)</figcaption>
       </figure>
     </div>
-    <ProjectLinks slugs={['ros2-localization-triage', 'agent-harness']} external={{ label: 'theohermann.ch', href: practiceUrl }} />
+    <ProjectLinks slugs={spot.legible.slugs} external={{ label: 'theohermann.ch', href: practiceUrl }} />
   </section>
 
   <!-- More work: one card; the full list lives on /projects/ -->

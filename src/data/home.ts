@@ -14,3 +14,36 @@ export const homeCards: WorkCard[] = [
     foot: 'Case page →',
   },
 ];
+
+// The homepage's three spotlights (owner, 2026-10-28, L-8). The PDF's sections
+// and the one-page leave-behind read the same list, so the three stay one story.
+export interface Spotlight {
+  id: string;
+  label: string;
+  title: string;
+  lead?: string;
+  slugs: string[];
+}
+
+export const spotlights: Spotlight[] = [
+  {
+    id: 'favela',
+    label: 'Favela research',
+    title: 'A city that was never drawn.',
+    lead: 'Favelas are built without plans, and the usual urban measurements assume a street grid that is not there.',
+    slugs: ['urban-morphometrics', 'octopus'],
+  },
+  {
+    id: 'robotics',
+    label: 'Robotics',
+    title: 'Perception on real robots.',
+    slugs: ['autonomous-mobile-robot', 'autonomous-boat-perception', 'event-cameras-drone', 'perception-pipeline'],
+  },
+  {
+    id: 'legible',
+    label: 'Practice',
+    title: 'Making autonomous systems legible',
+    lead: "Robot failures the logs don't explain: the real cause, found and proved independently. Agentic systems fail the way robots do.",
+    slugs: ['ros2-localization-triage', 'agent-harness'],
+  },
+];

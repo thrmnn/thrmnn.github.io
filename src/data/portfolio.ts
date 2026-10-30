@@ -2,6 +2,7 @@
 // case pages it details, in order. Projects with a homepage card take their
 // Hidden / Revealed / Changed text from cards.ts; the others carry it here,
 // drafted from their own case page for the owner to correct.
+import { spotlights } from './home.ts';
 export interface PortfolioEntry {
   /** A workCards id; its href names the case page. */
   card?: string;
@@ -80,13 +81,11 @@ export const moreWork: PortfolioEntry[] = [
 ];
 
 /** Section order by audience; the default follows the homepage's spotlights. */
-export const sections: { name: string; slugs: string[] }[] = [
-  { name: 'Favela research', slugs: ['urban-morphometrics', 'octopus'] },
-  { name: 'Robotics', slugs: ['autonomous-mobile-robot', 'autonomous-boat-perception', 'event-cameras-drone', 'perception-pipeline'] },
-  { name: 'Practice: Making autonomous systems legible', slugs: ['ros2-localization-triage', 'agent-harness'] },
-  { name: 'More work', slugs: ['aerial-lidar-tree-census'] },
+export const sections: { id: string; name: string; slugs: string[] }[] = [
+  ...spotlights.map((s) => ({ id: s.id, name: s.label, slugs: s.slugs })),
+  { id: 'more', name: 'More work', slugs: ['aerial-lidar-tree-census'] },
 ];
 
 export const audienceOrder: Record<string, string[]> = {
-  cto: ['Practice: Making autonomous systems legible', 'Robotics', 'Favela research', 'More work'],
+  cto: ['legible', 'robotics', 'favela', 'more'],
 };

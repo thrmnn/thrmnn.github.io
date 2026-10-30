@@ -34,7 +34,7 @@ A runnable detector + tracker loop with the architecture the rest of the roadmap
 - **ByteTrack association**: via the `supervision` package; persistent track IDs across frames.
 - **CLI demo**: `perception-demo --input video.mp4 --output annotated.mp4`. Latency summary printed on exit (per-module mean / p95, effective FPS).
 - **Type contracts**: `Detections`, `Tracks`, `FrameResult` carry per-module latencies so the runtime can budget downstream stages.
-- **MIT-licensed, pip-installable**: `pip install -e .` and you're running.
+- **MIT-licensed, pip-installable**: `pip install -e .` and you're running. The detector it wraps, `ultralytics`, is AGPL-3.0, and that licence applies to anything you ship with it.
 
 ## Design principles
 
@@ -54,11 +54,11 @@ A runnable detector + tracker loop with the architecture the rest of the roadmap
 
 ## Ancestors
 
-The historical record. These still run on their original dependency stacks:
+The historical record, on their original dependency stacks. The first three sit on an earlier GitHub account and are not linked here:
 
-- [Perception-Pipeline](https://github.com/thrmnn/Perception-Pipeline) (2022): single-person detection + tracking, method comparison
-- **ReID** (2022): YOLO + ReID demo notebook · _repo under maintenance_
-- **PostureTrack** (2023): modular pose tracking, single + multi-person · _repo under maintenance_
+- **Perception-Pipeline** (2022): single-person detection + tracking, method comparison
+- **ReID** (2022): YOLO + ReID demo notebook
+- **PostureTrack** (2023): modular pose tracking, single + multi-person
 - [ROS_Autonomous_Driving](https://github.com/thrmnn/ROS_Autonomous_Driving) perception module (2023): same primitives wrapped in ROS for the Loomo robot
 
 ## Why open

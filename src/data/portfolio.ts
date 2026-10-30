@@ -55,7 +55,7 @@ export const moreWork: PortfolioEntry[] = [
     slug: 'perception-pipeline',
     hidden: 'Four versions of the same detection and tracking work, built 2022 to 2023, sharing no interface and pinned to stacks that aged out.',
     revealed: 'One modular stack behind narrow interfaces. Version 0.1 ships detection and tracking; re-identification and pose follow.',
-    changed: 'A module can be swapped without touching the rest, and every module reports its own latency. Open source, MIT licensed.',
+    changed: 'A module can be swapped without touching the rest, and every module reports its own latency. Open source, MIT licensed; the detector it wraps is AGPL-3.0.',
   },
   {
     slug: 'event-cameras-drone',

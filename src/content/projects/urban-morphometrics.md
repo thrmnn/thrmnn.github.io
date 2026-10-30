@@ -41,7 +41,7 @@ back.
 
 ## What is shown here
 
-The geometry of one site, Vidigal, is drawn on theoalessandro.com. Nothing
-else from this work appears here. It is unpublished
+The only picture of this work is the geometry of one site, Vidigal, on the
+front page of theoalessandro.com. Nothing else from this work appears. It is unpublished
 research with co-authors, so this page describes the method and stops there: no
 indicators, no findings, no figures from the study.

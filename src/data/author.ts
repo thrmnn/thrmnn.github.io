@@ -54,7 +54,7 @@ export const author = {
     },
     {
       role: 'Computer Vision and MLOps Intern (first intern)',
-      company: 'Roboat (MIT Spinoff)',
+      company: 'Roboat (MIT spinoff)',
       period: 'Mar 2024 – Aug 2024',
       location: 'Amsterdam, Netherlands',
       summary:
@@ -67,7 +67,7 @@ export const author = {
       period: 'Oct 2023 – Feb 2024',
       location: 'Barcelona, Spain',
       summary:
-        'Built PyTorch fusion model combining neuromorphic event cameras with visual-inertial odometry for 6-DOF drone state estimation during aggressive maneuvers (>5g). Tech: PyTorch, ROS, C++.',
+        'Built PyTorch fusion model combining neuromorphic event cameras with visual-inertial odometry for 6-DOF drone state estimation during aggressive maneuvers (above 5 g). Tech: PyTorch, ROS, C++.',
     },
     {
       role: 'Research Assistant',
@@ -81,7 +81,7 @@ export const author = {
   ],
 
   social: [
-    { label: 'Email', href: `mailto:${email}`, icon: 'email' },
+    { label: 'E-mail', href: `mailto:${email}`, icon: 'email' },
     { label: 'GitHub', href: 'https://github.com/thrmnn', icon: 'github' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/theohermann-epfl/', icon: 'linkedin' },
   ],

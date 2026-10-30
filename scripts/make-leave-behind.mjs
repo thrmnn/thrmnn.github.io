@@ -101,7 +101,7 @@ ${spotlights.map((s) => `    <section class="spot">
   </div>
   <div class="foot">
     <div class="codes">
-${codes.map((c) => `      <div class="code"><img src="${c.src}" alt=""><p>${esc(c.label)}<span class="mono">${esc(bare(c.url))}</span></p></div>`).join('\n')}
+${codes.map((c) => `      <a class="code" href="${c.url}"><img src="${c.src}" alt=""><p>${esc(c.label)}<span class="mono">${esc(bare(c.url))}</span></p></a>`).join('\n')}
     </div>
     <p class="mono contacts"><a href="mailto:${author.email}">${esc(author.email)}</a> · <a href="${siteConfig.url}">${esc(bare(siteConfig.url))}</a> · ${author.social.filter((s) => s.icon !== 'email').map((s) => `<a href="${s.href}">${esc(bare(s.href).replace('www.', ''))}</a>`).join(' · ')}</p>
   </div>

@@ -7,7 +7,7 @@ image: '/projects/agent-harness/eval-run.webp'
 imageWidth: 1800
 imageHeight: 1192
 imageAlt: "The repository's own eval suite at commit bdbe373, run twice: as committed, all six cases pass and the run exits 0; after one change to the example search tool (TITLE_WEIGHT from 2 to 1, as the suite's comment describes), the regression case fails and the run exits 1."
-summary: "Agentic systems fail the way robots do: a tool call breaks, nothing traces it, and nobody notices until a user does. I built a typed tool layer with one structured trace line per call and a regression suite wired into CI, so a bad prompt change fails the build instead of the user."
+summary: "Agentic systems fail the way robots do: a tool call breaks, nothing traces it, and nobody notices until a user does. I built a typed tool layer with one structured trace line per call and a regression suite wired into CI, so a bad change to a tool fails the build instead of the user."
 label: "Open source · 2026"
 featuredOrder: 6
 gradient: "linear-gradient(135deg, #1e1b2e 0%, #2d1b4e 50%, #3a1f6e 100%)"

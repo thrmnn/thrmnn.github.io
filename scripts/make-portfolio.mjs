@@ -24,7 +24,7 @@ import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import { author } from '../src/data/author.ts';
 import { workCards, practiceUrl } from '../src/data/cards.ts';
-import { portfolio, moreWork, sections, audienceOrder, coverPictures } from '../src/data/portfolio.ts';
+import { portfolio, moreWork, sections, audienceOrder, coverPictures, pictureCaptions } from '../src/data/portfolio.ts';
 import { spotlights } from '../src/data/home.ts';
 import { planSvg } from '../src/data/stata-plan-svg.ts';
 import { talk } from '../src/data/talk.ts';
@@ -98,7 +98,9 @@ const hrc = (x) => `<dl class="hrc">
 </dl>`;
 
 const links = (p) =>
-  [p.url, p.github].filter(Boolean).map((u) => `<a href="${u}">${esc(bare(u))}</a>`).join(' · ');
+  [p.url, p.github].filter(Boolean).map((u) => `<a href="${u}">${esc(bare(u))}</a>`).join('&nbsp;· ');
+
+const caption = (pic) => (pictureCaptions[pic] ? `<figcaption>${esc(pictureCaptions[pic])}</figcaption>` : '');
 
 const words = (h) => h.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
 // Sections go in whole, in order, until the next one would overflow the page;
@@ -141,6 +143,7 @@ const CSS_COMMON = `
   .cvis img, .cvis .pl { display: block; width: 100%; height: 50mm; object-fit: cover; border: 0.4pt solid var(--rule); background: #fff; box-sizing: border-box; }
   .cvis .pl svg { display: block; height: 100%; width: auto; margin: 0 auto; }
   .cvis figcaption { font-family: 'JetBrains Mono', monospace; font-size: 7pt; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-top: 1.5mm; }
+  .cvis figcaption span { display: block; margin-top: 0.8mm; font-family: 'Space Grotesk', sans-serif; font-size: 7.5pt; text-transform: none; letter-spacing: 0; color: var(--muted); }
   .plan .walls { stroke: #777; stroke-opacity: .5; stroke-width: 2.2; stroke-linecap: round; fill: none; }
   .plan .was, .plan .said { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
   .plan .was { stroke: var(--ink); } .plan .said { stroke: var(--accent); }
@@ -172,6 +175,7 @@ const CSS_COMMON = `
   .case p + p { margin-top: 1.6mm; }
   .case ul, .case ol.steps { margin: 1.2mm 0 0 4mm; }
   .case li + li { margin-top: 0.8mm; }
+  .case ul + p, .case ol + p { margin-top: 1.6mm; }
   .case code { font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; }
   .case a, .links a, .foot a { color: var(--accent); }
   .case .more { margin-top: 2.5mm; font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; color: var(--muted); }
@@ -184,7 +188,7 @@ const FORMATS = {
     file: 'portfolio',
     css: `
   @page { size: A4; margin: 18mm 18mm 20mm;
-    @bottom-left { content: "${esc(author.name)} · portfolio"; font: 7pt 'JetBrains Mono'; color: #777; }
+    @bottom-left { content: "${esc(author.name)} · ${author.email}"; font: 7pt 'JetBrains Mono'; color: #777; }
     @bottom-right { content: counter(page); font: 7pt 'JetBrains Mono'; color: #777; } }
   body { font-size: 10pt; }
   .cover { height: 259mm; }
@@ -196,7 +200,8 @@ const FORMATS = {
   .about .right { margin-top: 11mm; }
   .top { display: flex; gap: 7mm; align-items: flex-start; }
   .top .hrc { flex: 1; }
-  .plate { width: 58mm; height: 58mm; object-fit: cover; }
+  .plate { width: 58mm; margin: 0; }
+  .plate img { display: block; width: 58mm; height: 58mm; object-fit: cover; }
   .case { margin-top: 6mm; max-width: 150mm; font-size: 10pt; }
   figure.wide { margin-top: 5mm; }
   figure.wide img { display: block; max-width: 100%; max-height: 82mm; width: auto; }
@@ -211,7 +216,7 @@ const FORMATS = {
   ${x.role ? `<p class="role">${esc(x.role)}</p>` : ''}
   <div class="top">
     ${hrc(x)}
-    ${x.picture && !x.page.imageAlt ? `<img class="plate" src="${asset(x.picture, 58)}" alt="">` : ''}
+    ${x.picture && !x.page.imageAlt ? `<figure class="plate"><img src="${asset(x.picture, 58)}" alt="">${caption(x.picture)}</figure>` : ''}
   </div>
   <div class="case">${caseText(x, budget)}</div>
   ${x.page.imageAlt ? `<figure class="wide"><img src="${asset(x.page.image, 174)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>` : ''}
@@ -222,7 +227,7 @@ const FORMATS = {
     file: 'portfolio-landscape',
     css: `
   @page { size: A4 landscape; margin: 14mm 16mm 15mm;
-    @bottom-left { content: "${esc(author.name)} · portfolio"; font: 7pt 'JetBrains Mono'; color: #777; }
+    @bottom-left { content: "${esc(author.name)} · ${author.email}"; font: 7pt 'JetBrains Mono'; color: #777; }
     @bottom-right { content: counter(page); font: 7pt 'JetBrains Mono'; color: #777; } }
   body { font-size: 10pt; }
   .cover { height: 181mm; }
@@ -242,7 +247,7 @@ const FORMATS = {
   .tags { margin-top: 6mm; padding-top: 2mm; border-top: 0.5pt solid var(--rule); }
   .links { margin-top: 1.5mm; }
   .vis { margin-bottom: 5mm; }
-  .vis img { display: block; max-width: 100%; max-height: 76mm; width: auto; }
+  .vis img { display: block; max-width: 100%; max-height: 72mm; width: auto; }
   .case { column-count: 2; column-gap: 8mm; font-size: 10pt; line-height: 1.42; }
   .body.card dl.hrc { grid-template-columns: 24mm 1fr; row-gap: 5mm; padding-top: 4mm; margin-bottom: 9mm; }
   .body.card dl.hrc dd { font-size: 13pt; line-height: 1.32; letter-spacing: -0.005em; }
@@ -254,7 +259,7 @@ const FORMATS = {
       x.page.imageAlt
         ? `<figure class="vis"><img src="${asset(x.page.image, 160)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>`
         : x.picture
-          ? `<figure class="vis"><img src="${asset(x.picture, 140)}" alt=""></figure>`
+          ? `<figure class="vis"><img src="${asset(x.picture, 140)}" alt="">${caption(x.picture)}</figure>`
           : '',
     // Words of case text that fit beside the lead column: fewer under a picture.
     budget: (x) => (x.page.imageAlt || x.picture ? 190 : 220),
@@ -269,7 +274,7 @@ const FORMATS = {
     ${x.role ? `<p class="role">${esc(x.role)}</p>` : ''}
     ${vis ? hrc(x) : ''}
     <p class="tags">${x.page.tags.map(esc).join(' · ')}</p>
-    <p class="links">${links(x.page)}</p>
+    <p class="links">${links(x.page).replaceAll('&nbsp;· ', '<br>')}</p>
   </div>
   <div class="body${vis ? '' : ' card'}">
     ${vis || hrc(x)}
@@ -303,7 +308,7 @@ const build = (f) => {
   <h1>${esc(author.headline)}</h1>
   <p class="sub">${esc(author.subtitle)}</p>
   <p class="lines">${author.heroLines.map((l) => `<span>${esc(l)}</span>`).join('')}</p>
-  <div class="cvis">${spotlights.map((s) => `<figure>${coverPictures[s.id] === 'plan' ? `<div class="pl">${plan}</div>` : `<img src="${asset(coverPictures[s.id], 60)}" alt="">`}<figcaption>${esc(s.label)}</figcaption></figure>`).join('')}</div>
+  <div class="cvis">${spotlights.map((s) => `<figure>${coverPictures[s.id] === 'plan' ? `<div class="pl">${plan}</div>` : `<img src="${asset(coverPictures[s.id], 60)}" alt="">`}<figcaption>${esc(s.label)}<span>${esc(pictureCaptions[coverPictures[s.id]] ?? '')}</span></figcaption></figure>`).join('')}</div>
   <div class="id">
     <p class="who">${esc(author.name)}</p>
     <p class="contacts"><a href="mailto:${author.email}">${esc(author.email)}</a> · <a href="${siteConfig.url}">${esc(bare(siteConfig.url))}</a> · <a href="${practiceUrl}">${esc(bare(practiceUrl))}</a> · ${author.social.filter((s) => s.icon !== 'email').map((s) => `<a href="${s.href}">${esc(bare(s.href).replace('www.', ''))}</a>`).join(' · ')}</p>

@@ -18,7 +18,7 @@ export interface PortfolioEntry {
 
 /** A page each. */
 export const portfolio: PortfolioEntry[] = [
-  { card: 'roboat', role: 'Computer vision and MLOps intern, the first · Amsterdam · March to August 2024' },
+  { card: 'roboat', role: 'First intern, on computer vision and MLOps · Amsterdam · March to August 2024' },
   {
     card: 'research',
     role: 'Research fellow since January 2025, there from the Rio branch’s first week',
@@ -48,8 +48,8 @@ export const moreWork: PortfolioEntry[] = [
     slug: 'autonomous-mobile-robot',
     role: 'Research assistant, EPFL VITA Lab, under Alexandre Alahi · Lausanne · June 2022 to June 2023',
     hidden: 'Where the people around a robot are and where they are heading, in a crowded indoor space.',
-    revealed: 'A modular ROS pipeline on a Segway Loomo: person detection and tracking, trajectory prediction, path planning and model predictive control.',
-    changed: 'Validated end to end on the physical robot among real pedestrians, not only in simulation; the code is public. No figures were published: the evidence is the video in the repo.',
+    revealed: 'A modular ROS pipeline on a Segway Loomo: person detection and tracking, trajectory prediction, path planning and model predictive control. The base is C. Conejo Bernal’s; I redid its architecture and its perception block.',
+    changed: 'Validated end to end on the physical robot, not only in simulation; the code is public. No figures were published: the evidence is the video in the repo.',
   },
   {
     slug: 'perception-pipeline',
@@ -76,7 +76,7 @@ export const moreWork: PortfolioEntry[] = [
     slug: 'agent-harness',
     hidden: 'Agent failures nobody sees: a tool call breaks, nothing traces it, and a user finds out first.',
     revealed: 'A typed tool layer with one structured trace line per call, and a regression suite wired into CI.',
-    changed: 'A bad prompt change fails the build instead of reaching the user.',
+    changed: 'A bad change to a tool fails the build instead of reaching the user.',
   },
 ];
 
@@ -92,6 +92,15 @@ export const audienceOrder: Record<string, string[]> = {
 
 // The cover shows one picture per spotlight (owner's pick B, 30 Oct: the voice note "the
 // first page of the PDF portfolio is missing a visual"). 'plan' draws the Practice floor plan.
+// One caption per picture, in the words the site already uses (homepage figures,
+// VidigalPanel) or the generator's own source line (sample-canopy-pointcloud.py).
+export const pictureCaptions: Record<string, string> = {
+  '/projects/urban-morphometrics/vidigal-plate.webp': 'Vidigal, Rio de Janeiro · terrain and building footprints',
+  '/projects/autonomous-mobile-robot/hero-poster.jpg': 'Segway Loomo, EPFL VITA Lab · 2022–23',
+  '/projects/aerial-lidar-tree-census/jordaan-plate.webp': 'Jordaan, Amsterdam · AHN5, the open Dutch airborne laser scan',
+  plan: 'PR2, MIT Stata Center dataset (CC BY 3.0): in one corridor, sure it was in another',
+};
+
 export const coverPictures: Record<string, string> = {
   favela: '/projects/urban-morphometrics/vidigal-plate.webp',
   robotics: '/projects/autonomous-mobile-robot/hero-poster.jpg',

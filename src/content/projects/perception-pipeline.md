@@ -20,7 +20,7 @@ tags:
 
 Across 2022–2023 I shipped four versions of “detection + tracking + ReID”: single-person tracking on a Loomo robot, multi-person pose tracking, a ReID demo on Colab, and the perception module of a full ROS autonomy stack. Each solved a real problem in its context. None of them shared an interface; all four ran on dependency stacks that aged out.
 
-**`perception-pipeline` is the consolidated re-do** against the 2026 stack. v0.1 ships detection and tracking (modern YOLO, ByteTrack); the roadmap below adds BoT-SORT / OC-SORT, OSNet-class ReID, MMPose-compatible 2D and 3D pose, and TensorRT export for Jetson-class hardware.
+**`perception-pipeline` is the consolidated re-do** against the 2026 stack. v0.1 ships detection and tracking (modern YOLO, ByteTrack); the roadmap adds BoT-SORT / OC-SORT, OSNet-class ReID, MMPose-compatible 2D and 3D pose, and TensorRT export for Jetson-class hardware.
 
 ## What v0.1 ships (June 2026)
 

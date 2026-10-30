@@ -38,7 +38,7 @@ export const portfolio: PortfolioEntry[] = [
   {
     card: 'stata',
     // README and docs/how-this-was-graded.md.
-    role: 'Mine end to end: I recorded the faults, ran the tool and graded the results myself',
+    role: 'Mine end to end: I built the detectors, ran them on public recordings and graded every result myself',
   },
 ];
 

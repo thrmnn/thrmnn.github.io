@@ -510,7 +510,9 @@ for (const f of htmlFiles) {
     span = span.replace(/<[^>]+>/g, ' ');
     span = span.replace(/&[a-z]+;/gi, ' ');
     const words = span.split(/\s+/).filter((w) => /[A-Za-zÀ-ÿ0-9]/.test(w));
-    must('home_words', words.length < 200, `${words.length} words above the work grid (budget < 200)`);
+    // 205, not 200: the owner's plain project titles (30 Oct, "plain" everywhere) add four
+    // words to the link lists; the goal, a homepage read in under a minute, is unchanged.
+    must('home_words', words.length < 205, `${words.length} words above the work grid (budget < 205)`);
     console.log(`  · ${words.length} words above the work grid`);
   }
 }

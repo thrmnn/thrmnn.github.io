@@ -1,5 +1,5 @@
 ---
-title: "Morphometrics of informal urban form"
+title: "How city form shapes light and air"
 date: '2025-01-01T00:00:00Z'
 cardImage: '/projects/urban-morphometrics/vidigal-plate.webp'
 featuredOrder: 1

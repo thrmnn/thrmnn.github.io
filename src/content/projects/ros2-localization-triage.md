@@ -1,5 +1,5 @@
 ---
-title: "ROS 2 fleet log triage"
+title: "Finding the moment a robot got lost"
 date: '2026-08-27T00:00:00Z'
 summary: "Robots that navigate from their own sensors fail quietly: the estimate drifts while the reported confidence stays high. I built four detectors that find those moments in the logs a fleet already records, and ran them unchanged on recordings from five platforms."
 label: "Open source · 2026"

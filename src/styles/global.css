@@ -920,3 +920,11 @@
 .spotlight-links a:focus-visible {
   color: var(--color-link-hover);
 }
+
+/* The portfolio PDF in the screen's own format (owner, 2026-10-30): portrait for a
+   phone held upright, landscape for a wide screen. */
+.pdf-landscape { display: none; }
+@media (orientation: landscape) and (min-width: 768px) {
+  .pdf-portrait { display: none; }
+  .pdf-landscape { display: inline; }
+}

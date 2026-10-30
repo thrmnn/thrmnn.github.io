@@ -15,6 +15,7 @@ lighthouse.*
 monogram-package.zip
 /resume.html
 /portfolio.html
+/portfolio-landscape.html
 /leave-behind.html
 
 # Raw asset staging — drop originals here; Claude optimizes them into

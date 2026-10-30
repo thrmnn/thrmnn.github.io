@@ -3,12 +3,15 @@
 // Changed), portfolio.ts (which case pages, in order) and the case pages in
 // src/content/projects. No fact lives in this file.
 //
-// Generate the PDF (manual step, like the resume; weasyprint is host tooling):
+// Two formats from the same pages: portrait for a phone held upright, landscape
+// for a wide screen; /cv offers the one that matches the screen. Generate the
+// PDFs (manual step, like the resume; weasyprint is host tooling):
 //
-//   node scripts/make-portfolio.mjs && weasyprint portfolio.html public/portfolio.pdf
+//   node scripts/make-portfolio.mjs && weasyprint portfolio.html public/portfolio.pdf \
+//     && weasyprint portfolio-landscape.html public/portfolio-landscape.pdf
 //
-// `--check` fails when public/portfolio.pdf was not made from today's sources
-// (pdf-source.mjs); check-build.mjs scans every PDF in dist for the forbidden terms.
+// `--check` fails when either PDF was not made from today's sources (pdf-source.mjs)
+// or a project spills onto a second page; check-build.mjs scans every PDF in dist.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -64,7 +67,6 @@ const resolve = (e) => {
 };
 const audience = process.argv.includes('--audience') ? process.argv[process.argv.indexOf('--audience') + 1] : null;
 if (audience && !audienceOrder[audience]) throw new Error(`unknown audience "${audience}"`);
-const outName = audience ? `portfolio-${audience}.html` : 'portfolio.html';
 const bySlug = new Map();
 for (const e of [...portfolio, ...moreWork]) {
   const r = resolve(e);
@@ -84,13 +86,6 @@ const placed = groups.flatMap((g) => g.items);
 for (const slug of bySlug.keys()) if (!placed.some((x) => x.page.slug === slug)) throw new Error(`${slug} is in no section`);
 
 
-// Images are placeholders (`asset:<printed width mm>:<path>`) until the HTML is
-// stamped, so the stamp hashes the source files, not one host's JPEG encoder.
-const used = new Set();
-const asset = (p, mm) => {
-  used.add(p);
-  return `asset:${mm}:${p}`;
-};
 const month = new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
 
 const hrc = (x) => `<dl class="hrc">
@@ -102,24 +97,12 @@ const hrc = (x) => `<dl class="hrc">
 const links = (p) =>
   [p.url, p.github].filter(Boolean).map((u) => `<a href="${u}">${esc(bare(u))}</a>`).join(' · ');
 
-// One visual per project, the larger the better (CommKit: visuals carry the page):
-// the case page's captioned figure if it has one, else its card plate or raster image.
-const visual = (x) =>
-  x.page.imageAlt
-    ? `<figure class="vis"><img src="${asset(x.page.image, 160)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>`
-    : x.picture
-      ? `<figure class="vis"><img src="${asset(x.picture, 140)}" alt=""></figure>`
-      : '';
-
-// A landscape page holds about this many words of case text beside its lead
-// column: fewer under a picture. Sections go in whole, in order, until the next
-// one would overflow; the rest stays on the site, linked. No sentence is cut.
-const PAGE_WORDS = { withPicture: 210, without: 430 };
 const words = (h) => h.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
-const caseText = (x) => {
+// Sections go in whole, in order, until the next one would overflow the page;
+// the rest stays on the site, linked. No sentence is cut.
+const caseText = (x, budget) => {
   const steps = x.steps ? `<h2>How it works</h2><ol class="steps">${x.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>` : '';
-  const parts = (x.page.html.split(/(?=<h2>)/).filter((s) => s.trim())).concat(steps ? [steps] : []);
-  const budget = visual(x) ? PAGE_WORDS.withPicture : PAGE_WORDS.without;
+  const parts = x.page.html.split(/(?=<h2>)/).filter((s) => s.trim()).concat(steps ? [steps] : []);
   const kept = [];
   let n = 0;
   for (const part of parts) {
@@ -132,63 +115,28 @@ const caseText = (x) => {
   return kept.join('') + more;
 };
 
-const project = (id, kicker) => (x) => `<section class="project" id="${id(x)}">
-  <div class="lead">
-    <p class="label">${kicker(x) ? `<span class="sect">${kicker(x)}</span><br>` : ''}${esc(x.label)}</p>
-    <h2>${esc(x.title)}</h2>
-    ${x.role ? `<p class="role">${esc(x.role)}</p>` : ''}
-    ${hrc(x)}
-    <p class="tags">${x.page.tags.map(esc).join(' · ')}</p>
-    <p class="links">${links(x.page)}</p>
-  </div>
-  <div class="body">
-    ${visual(x)}
-    <div class="case">${caseText(x)}</div>
-  </div>
-</section>`;
-
-const html = `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>${esc(author.name)}, portfolio</title>
-<meta name="author" content="${esc(author.name)}">
-<style>
+const CSS_COMMON = `
   @font-face { font-family: 'Space Grotesk'; src: url('public/fonts/space-grotesk-latin.woff2') format('woff2'); }
   @font-face { font-family: 'Space Grotesk'; src: url('public/fonts/space-grotesk-latin-ext.woff2') format('woff2'); unicode-range: U+0100-024F, U+1E00-1EFF; }
   @font-face { font-family: 'JetBrains Mono'; src: url('public/fonts/jetbrains-mono-latin.woff2') format('woff2'); }
-  @page {
-    size: A4 landscape; margin: 14mm 16mm 15mm;
-    @bottom-left { content: "${esc(author.name)} · portfolio"; font: 7pt 'JetBrains Mono'; color: #777; }
-    @bottom-right { content: counter(page); font: 7pt 'JetBrains Mono'; color: #777; }
-  }
   @page :first { @bottom-left { content: none; } @bottom-right { content: none; } }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root { --ink: #171717; --muted: #5c5c5c; --accent: #2563eb; --rule: #d9d9d9; }
-  body { font-family: 'Space Grotesk', sans-serif; color: var(--ink); font-size: 9pt; line-height: 1.45; }
+  body { font-family: 'Space Grotesk', sans-serif; color: var(--ink); line-height: 1.45; }
   a { color: inherit; text-decoration: none; }
-  .label, .kicker, dt, .case h2, .tags, .links, .contacts, .toc .n {
+  .label, .kicker, dt, .case h2, .tags, .links, .foot, .contacts, .toc .n {
     font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; color: var(--muted); letter-spacing: 0.02em;
   }
   .kicker, .sect { text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); }
-
-  .cover { height: 181mm; position: relative; page-break-after: always; }
-  .cover .kicker { margin-bottom: 26mm; }
-  .cover h1 { font-size: 48pt; line-height: 1.02; letter-spacing: -0.03em; font-weight: 700; }
-  .cover .sub { font-size: 17pt; color: var(--muted); margin-top: 5mm; }
-  .cover .lines { margin-top: 12mm; font-size: 11.5pt; line-height: 1.55; color: var(--muted); }
+  .kicker { margin-bottom: 3mm; }
+  .cover { position: relative; page-break-after: always; }
   .cover .lines span { display: block; }
   .cover .lines span:first-child { color: var(--ink); }
   .cover .id { position: absolute; left: 0; right: 0; bottom: 0; }
   .cover .who { font-size: 12pt; font-weight: 700; margin-bottom: 2mm; }
   .contacts a { white-space: nowrap; }
-
   .about { page-break-after: always; }
-  .about .left { float: left; width: 118mm; }
-  .about .right { margin-left: 132mm; }
-  .about .bio p { font-size: 11pt; line-height: 1.5; }
   .about .bio p + p { margin-top: 3mm; }
-  .about h2 { font-size: 14pt; letter-spacing: -0.01em; margin: 1mm 0 4mm; }
   .talk { margin-top: 6mm; font-size: 10.5pt; }
   .talk span { font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; color: var(--muted); margin-right: 3mm; }
   .toc li { list-style: none; display: flex; align-items: baseline; gap: 4mm; padding: 1.2mm 0; border-top: 0.5pt solid var(--rule); }
@@ -198,30 +146,129 @@ const html = `<!doctype html>
   .toc .n::after { content: target-counter(attr(href), page); }
   .toc li.sec { border-top: none; padding: 3mm 0 0.5mm; }
   .toc li.sec .t { font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; font-weight: 400; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); }
-
   .project { page-break-before: always; }
-  .project .lead { float: left; width: 84mm; }
-  .project .body { margin-left: 94mm; }
-  .lead h2 { font-size: 19pt; letter-spacing: -0.02em; line-height: 1.1; margin: 2mm 0 4mm; }
+  .project h2.title { font-size: 19pt; letter-spacing: -0.02em; line-height: 1.1; margin: 2mm 0 4mm; }
   .project .role { color: var(--muted); margin-bottom: 5mm; }
   dl.hrc { display: grid; grid-template-columns: 17mm 1fr; row-gap: 3mm; border-top: 1.2pt solid var(--ink); padding-top: 3mm; }
   dl.hrc dd { font-size: 10pt; line-height: 1.4; }
   dl.hrc dt { padding-top: 0.8mm; }
-  .tags { margin-top: 6mm; padding-top: 2mm; border-top: 0.5pt solid var(--rule); }
-  .links { margin-top: 1.5mm; }
-  .links a { color: var(--accent); }
-  .vis { page-break-inside: avoid; margin-bottom: 5mm; }
-  .vis img { display: block; max-width: 100%; max-height: 76mm; width: auto; }
-  .vis figcaption { font-size: 7.5pt; color: var(--muted); margin-top: 1.5mm; }
-  .case { column-count: 2; column-gap: 8mm; font-size: 8.5pt; line-height: 1.42; }
   .case h2 { font-weight: 400; text-transform: uppercase; letter-spacing: 0.12em; margin: 3mm 0 1.2mm; break-after: avoid; }
   .case > h2:first-child { margin-top: 0; }
   .case p + p { margin-top: 1.6mm; }
   .case ul, .case ol.steps { margin: 1.2mm 0 0 4mm; }
   .case li + li { margin-top: 0.8mm; }
   .case code { font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; }
-  .case a { color: var(--accent); }
+  .case a, .links a, .foot a { color: var(--accent); }
   .case .more { margin-top: 2.5mm; font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; color: var(--muted); }
+  figure { page-break-inside: avoid; }
+  figcaption { font-size: 7.5pt; color: var(--muted); margin-top: 1.5mm; }
+`;
+
+const FORMATS = {
+  portrait: {
+    file: 'portfolio',
+    css: `
+  @page { size: A4; margin: 18mm 18mm 20mm;
+    @bottom-left { content: "${esc(author.name)} · portfolio"; font: 7pt 'JetBrains Mono'; color: #777; }
+    @bottom-right { content: counter(page); font: 7pt 'JetBrains Mono'; color: #777; } }
+  body { font-size: 9.5pt; }
+  .cover { height: 259mm; }
+  .cover .kicker { margin-bottom: 30mm; }
+  .cover h1 { font-size: 34pt; line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; max-width: 150mm; }
+  .cover .sub { font-size: 14pt; color: var(--muted); margin-top: 5mm; }
+  .cover .lines { margin-top: 10mm; font-size: 10.5pt; line-height: 1.55; color: var(--muted); }
+  .about .bio p { font-size: 11.5pt; line-height: 1.5; max-width: 150mm; }
+  .about .right { margin-top: 11mm; }
+  .top { display: flex; gap: 7mm; align-items: flex-start; }
+  .top .hrc { flex: 1; }
+  .plate { width: 58mm; height: 58mm; object-fit: cover; }
+  .case { margin-top: 6mm; max-width: 150mm; font-size: 9pt; }
+  figure.wide { margin-top: 5mm; }
+  figure.wide img { display: block; max-width: 100%; max-height: 92mm; width: auto; }
+  .foot { display: flex; justify-content: space-between; gap: 6mm; margin-top: 5mm; padding-top: 2mm; border-top: 0.5pt solid var(--rule); }
+  .foot a { white-space: nowrap; }
+  .foot > span:last-child { text-align: right; }`,
+    // Words of case text that fit under the top block: fewer when a wide figure follows.
+    budget: (x) => (x.page.imageAlt ? 150 : 300),
+    project: (x, kicker, asset, budget) => `<section class="project" id="${x.id}">
+  <p class="label">${kicker ? `<span class="sect">${kicker}</span> · ` : ''}${esc(x.label)}</p>
+  <h2 class="title">${esc(x.title)}</h2>
+  ${x.role ? `<p class="role">${esc(x.role)}</p>` : ''}
+  <div class="top">
+    ${hrc(x)}
+    ${x.picture && !x.page.imageAlt ? `<img class="plate" src="${asset(x.picture, 58)}" alt="">` : ''}
+  </div>
+  <div class="case">${caseText(x, budget)}</div>
+  ${x.page.imageAlt ? `<figure class="wide"><img src="${asset(x.page.image, 174)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>` : ''}
+  <p class="foot"><span>${x.page.tags.map(esc).join(' · ')}</span><span>${links(x.page)}</span></p>
+</section>`,
+  },
+  landscape: {
+    file: 'portfolio-landscape',
+    css: `
+  @page { size: A4 landscape; margin: 14mm 16mm 15mm;
+    @bottom-left { content: "${esc(author.name)} · portfolio"; font: 7pt 'JetBrains Mono'; color: #777; }
+    @bottom-right { content: counter(page); font: 7pt 'JetBrains Mono'; color: #777; } }
+  body { font-size: 9pt; }
+  .cover { height: 181mm; }
+  .cover .kicker { margin-bottom: 26mm; }
+  .cover h1 { font-size: 48pt; line-height: 1.02; letter-spacing: -0.03em; font-weight: 700; }
+  .cover .sub { font-size: 17pt; color: var(--muted); margin-top: 5mm; }
+  .cover .lines { margin-top: 12mm; font-size: 11.5pt; line-height: 1.55; color: var(--muted); }
+  .about .left { float: left; width: 118mm; }
+  .about .right { margin-left: 132mm; }
+  .about .bio p { font-size: 11pt; line-height: 1.5; }
+  .project .lead { float: left; width: 84mm; }
+  .project .body { margin-left: 94mm; }
+  .tags { margin-top: 6mm; padding-top: 2mm; border-top: 0.5pt solid var(--rule); }
+  .links { margin-top: 1.5mm; }
+  .vis { margin-bottom: 5mm; }
+  .vis img { display: block; max-width: 100%; max-height: 76mm; width: auto; }
+  .case { column-count: 2; column-gap: 8mm; font-size: 8.5pt; line-height: 1.42; }`,
+    // One visual per project, the larger the better (CommKit: visuals carry the page):
+    // the case page's captioned figure if it has one, else its card plate or raster image.
+    visual: (x, asset) =>
+      x.page.imageAlt
+        ? `<figure class="vis"><img src="${asset(x.page.image, 160)}" alt=""><figcaption>${esc(x.page.imageAlt)}</figcaption></figure>`
+        : x.picture
+          ? `<figure class="vis"><img src="${asset(x.picture, 140)}" alt=""></figure>`
+          : '',
+    // Words of case text that fit beside the lead column: fewer under a picture.
+    budget: (x) => (x.page.imageAlt || x.picture ? 210 : 430),
+    project(x, kicker, asset, budget) {
+      return `<section class="project" id="${x.id}">
+  <div class="lead">
+    <p class="label">${kicker ? `<span class="sect">${kicker}</span><br>` : ''}${esc(x.label)}</p>
+    <h2 class="title">${esc(x.title)}</h2>
+    ${x.role ? `<p class="role">${esc(x.role)}</p>` : ''}
+    ${hrc(x)}
+    <p class="tags">${x.page.tags.map(esc).join(' · ')}</p>
+    <p class="links">${links(x.page)}</p>
+  </div>
+  <div class="body">
+    ${this.visual(x, asset)}
+    <div class="case">${caseText(x, budget)}</div>
+  </div>
+</section>`;
+    },
+  },
+};
+
+// Images are placeholders (`asset:<printed width mm>:<path>`) until the HTML is
+// stamped, so the stamp hashes the source files, not one host's JPEG encoder.
+const build = (f) => {
+  const used = new Set();
+  const asset = (p, mm) => {
+    used.add(p);
+    return `asset:${mm}:${p}`;
+  };
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>${esc(author.name)}, portfolio</title>
+<meta name="author" content="${esc(author.name)}">
+<style>${CSS_COMMON}${f.css}
 </style>
 </head>
 <body>
@@ -250,38 +297,14 @@ ${groups.map((g) => `      <li class="sec"><span class="t">${esc(g.name)}</span>
   </div>
 </section>
 
-${groups.map((g) => g.items.map(project((x) => x.id, (x) => (x === g.items[0] ? esc(g.name) : ''))).join('\n\n')).join('\n\n')}
+${groups.map((g) => g.items.map((x) => f.project(x, x === g.items[0] ? esc(g.name) : '', asset, f.budget(x))).join('\n\n')).join('\n\n')}
 </body>
 </html>
 `;
+  return { html, used };
+};
 
-const text = html.replace(/<style>[\s\S]*?<\/style>/, '').replace(/<[^>]+>/g, '');
-for (const [re, where, why] of [
-  [/theoh-io/i, html, 'work account'],
-  [/Massif/i, text, 'studio name not public'],
-  [/\+\d{1,3}[\d\s.-]{7,}/, text, 'phone'],
-]) {
-  const hit = where.match(re);
-  if (hit) {
-    console.error(`✗ forbidden content in portfolio.html (${why}): "${hit[0]}"`);
-    process.exit(1);
-  }
-}
-// The cover's month is the print date, not a source.
-const hash = sourceHash(html.replace(month, ''), [...used].sort().map((p) => join(root, 'public', p)));
-if (process.argv.includes('--check') && !audience) {
-  checkPdf(join(root, 'public/portfolio.pdf'), hash, 'node scripts/make-portfolio.mjs && weasyprint portfolio.html public/portfolio.pdf');
-  // One page per project (CommKit): cover, About, then exactly one page each; a spill is a defect.
-  const pages = Number(execFileSync('pdfinfo', [join(root, 'public/portfolio.pdf')]).toString().match(/Pages:\s+(\d+)/)[1]);
-  if (pages !== 2 + placed.length) {
-    console.error(`✗ public/portfolio.pdf has ${pages} pages, want ${2 + placed.length}: a project spills onto a second page`);
-    process.exit(1);
-  }
-  console.log(`✓ one page per project (${placed.length} projects, ${pages} pages)`);
-  process.exit(0);
-}
-
-// JPEG at 200 dpi for the printed width keeps the PDF under check-build's 1 MB
+// JPEG at 200 dpi for the printed width keeps each PDF under check-build's 1 MB
 // warning; weasyprint would embed the sources lossless.
 const jpeg = async (p, mm) => {
   const buf = await sharp(join(root, 'public', p))
@@ -291,9 +314,41 @@ const jpeg = async (p, mm) => {
     .toBuffer();
   return `data:image/jpeg;base64,${buf.toString('base64')}`;
 };
-let out = html.replace('<meta charset="utf-8">', `<meta charset="utf-8">\n${stampMeta(hash)}`);
-for (const [ph, mm, p] of new Set(html.match(/asset:\d+:[^"]+/g)).values().map((ph) => ph.match(/^asset:(\d+):(.+)$/))) {
-  out = out.replaceAll(`"${ph}"`, `"${await jpeg(p, Number(mm))}"`);
+
+for (const f of Object.values(FORMATS)) {
+  const { html, used } = build(f);
+  const text = html.replace(/<style>[\s\S]*?<\/style>/, '').replace(/<[^>]+>/g, '');
+  for (const [re, where, why] of [
+    [/theoh-io/i, html, 'work account'],
+    [/Massif/i, text, 'studio name not public'],
+    [/\+\d{1,3}[\d\s.-]{7,}/, text, 'phone'],
+  ]) {
+    const hit = where.match(re);
+    if (hit) {
+      console.error(`✗ forbidden content in ${f.file}.html (${why}): "${hit[0]}"`);
+      process.exit(1);
+    }
+  }
+  // The cover's month is the print date, not a source.
+  const hash = sourceHash(html.replace(month, ''), [...used].sort().map((p) => join(root, 'public', p)));
+  const pdf = join(root, 'public', `${f.file}.pdf`);
+  if (process.argv.includes('--check')) {
+    if (audience) continue;
+    checkPdf(pdf, hash, `node scripts/make-portfolio.mjs && weasyprint ${f.file}.html public/${f.file}.pdf`);
+    // One page per project (CommKit): cover, About, then exactly one page each; a spill is a defect.
+    const pages = Number(execFileSync('pdfinfo', [pdf]).toString().match(/Pages:\s+(\d+)/)[1]);
+    if (pages !== 2 + placed.length) {
+      console.error(`✗ public/${f.file}.pdf has ${pages} pages, want ${2 + placed.length}: a project spills onto a second page`);
+      process.exit(1);
+    }
+    console.log(`✓ ${f.file}.pdf: one page per project (${placed.length} projects, ${pages} pages)`);
+    continue;
+  }
+  let out = html.replace('<meta charset="utf-8">', `<meta charset="utf-8">\n${stampMeta(hash)}`);
+  for (const [ph, mm, p] of new Set(html.match(/asset:\d+:[^"]+/g)).values().map((ph) => ph.match(/^asset:(\d+):(.+)$/))) {
+    out = out.replaceAll(`"${ph}"`, `"${await jpeg(p, Number(mm))}"`);
+  }
+  const name = audience ? `${f.file}-${audience}.html` : `${f.file}.html`;
+  writeFileSync(join(root, name), out);
+  console.log(`${name}: ${placed.length} case pages in ${groups.length} sections`);
 }
-writeFileSync(join(root, outName), out);
-console.log(`${outName}: ${placed.length} case pages in ${groups.length} sections`);

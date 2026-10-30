@@ -29,7 +29,7 @@ Enable Segway Loomo robots to navigate crowded, dynamic indoor environments; mos
 A modular ROS pipeline that runs on a server and drives the Loomo over a wireless socket link, one package per job:
 
 - **Perception:** person detection (YOLOv5), a single-object tracker that holds on to the person being followed (Stark), and their 2D and 3D keypoints.
-- **Estimation:** one node estimates the robot's state from its IMU and GPS; another builds a map and estimates the state from all its sensors.
+- **Estimation:** one node turns the IMU stream the Loomo sends into the robot's state, relative to where it started; another builds a map and estimates the state from all its sensors.
 - **Prediction:** where the followed person is heading.
 - **Planning and control:** a collision-free path, followed with model predictive control.
 

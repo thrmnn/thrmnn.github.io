@@ -45,7 +45,7 @@ export const workCards: WorkCard[] = [
     title: 'How city form shapes light and air',
     hidden: 'How light and air move through a city built without plans, which measures made for street grids miss.',
     revealed: '3D models of the fabric, from the whole city down to a single alley, to study sunlight and airflow where people live.',
-    changed: 'Measures that hold on a fabric the standard ones were not built for. The findings stay with the papers until they are out.',
+    changed: 'Measures that hold on a fabric the standard ones were not built for.',
     href: '/projects/urban-morphometrics/',
     foot: 'Method page →',
   },

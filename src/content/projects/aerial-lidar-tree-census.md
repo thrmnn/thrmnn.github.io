@@ -6,7 +6,7 @@ featuredOrder: 2
 externalLink: 'https://www.ams-institute.org/'
 summary: "A city knows where its trees are, not how much leaf they carry. I recover leaf area per tree by inverting how much sky the canopy blocks in an aerial LiDAR survey the city already flies for other reasons."
 label: "Senseable City Lab, MIT and AMS Institute · since 2024"
-metric: "Manuscript in preparation"
+metric: "Method only"
 gradient: 'linear-gradient(135deg, #0d3b0d 0%, #1a472a 50%, #2d6a4f 100%)'
 tags:
   - Remote sensing
@@ -41,6 +41,4 @@ version of this work did use machine learning; the current method does not.
 
 ## What is shown here
 
-Nothing but the method. This is a multi-author manuscript in preparation, so
-there are no numbers, figures or findings on this page, and there will not be
-until it is published.
+Method only: there are no numbers, figures or findings on this page.

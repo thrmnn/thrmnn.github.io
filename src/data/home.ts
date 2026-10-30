@@ -9,7 +9,7 @@ export const homeCards: WorkCard[] = [
     title: 'Leaf area from an aerial scan',
     hidden: 'How much leaf a city’s trees carry. Registers record where each tree stands, not how much shade it gives.',
     revealed: 'Leaf area per tree, recovered by a physical inversion from the aerial LiDAR survey the city already flies.',
-    changed: 'An estimate that can be argued with on its own terms, from data that already exists. The numbers stay with the paper until it is out.',
+    changed: 'An estimate that can be argued with on its own terms, from data that already exists.',
     href: '/projects/aerial-lidar-tree-census/',
     foot: 'Case page →',
   },

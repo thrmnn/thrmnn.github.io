@@ -3,9 +3,6 @@ title: "A real-time vision pipeline"
 date: '2026-06-08T00:00:00Z'
 externalLink: 'https://github.com/thrmnn/perception-pipeline'
 github: 'https://github.com/thrmnn/perception-pipeline'
-image: '/projects/perception-pipeline/hero.webp'
-imageWidth: 1200
-imageHeight: 630
 featuredOrder: 5
 summary: "Four one-off perception prototypes from 2022 and 2023, consolidated into one modular stack: detection, multi-object tracking, re-identification and pose, each swappable, with a latency budget the whole thing is held to."
 label: "Open source · 2026"

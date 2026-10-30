@@ -257,7 +257,7 @@ const FORMATS = {
           ? `<figure class="vis"><img src="${asset(x.picture, 140)}" alt=""></figure>`
           : '',
     // Words of case text that fit beside the lead column: fewer under a picture.
-    budget: (x) => (x.page.imageAlt || x.picture ? 210 : 430),
+    budget: (x) => (x.page.imageAlt || x.picture ? 210 : 220),
     // A page with no picture yet carries its card in the wide column, set large, so the
     // page reads as designed rather than half empty (diagnostic, 30 Oct).
     project(x, kicker, asset, budget) {

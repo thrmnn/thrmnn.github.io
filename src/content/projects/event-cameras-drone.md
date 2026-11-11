@@ -3,7 +3,9 @@ title: "Event cameras for high-speed drone state estimation"
 date: '2023-07-01T00:00:00Z'
 externalLink: 'https://www.iri.upc.edu/'
 github: 'https://github.com/thrmnn/EVIO'
-image: '/projects/event-cameras-drone/hero.svg'
+image: '/projects/event-cameras-drone/card-plate.webp'
+imageWidth: 1200
+imageHeight: 1200
 cardImage: '/projects/event-cameras-drone/card-plate.webp'
 summary: "6-DOF pose estimation through flight maneuvers exceeding 5 g acceleration, where conventional frame cameras fail."
 label: "IRI (CSIC-UPC, Barcelona) · 2023–24"

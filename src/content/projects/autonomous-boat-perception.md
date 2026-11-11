@@ -3,11 +3,11 @@ title: "Camera perception for canal boats"
 date: '2024-08-01T00:00:00Z'
 featuredOrder: 4
 proprietary: true
-image: '/projects/autonomous-boat-perception/hero.svg'
 summary: "Roboat's autonomy ran on LiDAR. As its first intern I added the camera side: detection and tracking on the vessel's own edge hardware, and the MLOps to keep models and data versioned as the recordings grew."
 label: "Roboat, MIT spinoff · 2024"
 metric: "Camera perception on a LiDAR stack"
-gradient: "linear-gradient(135deg, #1a1a3e 0%, #2a2a5e 50%, #3a3a7e 100%)"
+gradient: '#0f1018'
+plateName: 'roboat'
 tags:
   - Object Detection
   - Multi-Object Tracking

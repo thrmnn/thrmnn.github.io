@@ -1,3 +1,4 @@
+import { base } from './base';
 import { author } from './author';
 
 // Home isn't in the link row — the T·A·H monogram routes to /.
@@ -12,6 +13,7 @@ export const mobileNavLinks = [
 ];
 
 export const footerLinks = [
+  { label: 'Now', href: `${base}/now/` },
   { label: 'GitHub', href: 'https://github.com/thrmnn', external: true },
   { label: 'Contact', href: `mailto:${author.email}` },
 ];

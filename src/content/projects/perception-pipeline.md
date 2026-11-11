@@ -62,3 +62,7 @@ The historical record, on their original dependency stacks. The first three sit 
 ## Why open
 
 Public, MIT-licensed, modular: designed to be useful to whoever picks it up and an honest demonstration of how I think about real-time vision systems.
+
+## Picture credit
+
+The card picture shows the people this pipeline tracked in a real run on MOT17-04 from the public [MOTChallenge benchmark](https://motchallenge.net/data/MOT17/) (400 frames, YOLOv8n and ByteTrack on CPU). Dataset and picture under [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/).

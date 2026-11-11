@@ -41,3 +41,7 @@ Event cameras eliminate motion blur but require fundamentally different processi
 ## What happened
 
 The model targets maneuvers above 5 g, the regime where conventional frame cameras and standard VIO diverge. The training framework is open source ([EVIO](https://github.com/thrmnn/EVIO)); real-time onboard inference lives in a separate repository that is not yet open.
+
+## Picture credit
+
+The card picture shows 30 ms of real events (blue positive, grey negative) from the public [UZH-FPV drone racing dataset](https://fpv.ifi.uzh.ch/) (Delmerico et al., ICRA 2019), the data EVIO trains on. Dataset and picture under [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/).

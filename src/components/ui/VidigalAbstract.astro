@@ -1,0 +1,32 @@
+---
+import { base } from '../../data/base';
+const dir = `${base}/projects/urban-morphometrics`;
+const steps = [
+  { n: '1', name: 'Scan', img: 'scan', alt: 'Oblique view of the Vidigal point cloud: a grey surface of terrain points with the buildings on the slope.', text: 'Terrain and buildings of one favela, held as points.' },
+  { n: '2', name: 'Model', img: 'model', alt: 'Plan view of the same points: terrain shaded in grey, building footprints in blue.', text: 'Terrain and building footprints, separated and seen from above.' },
+  { n: '3', name: 'Measure', img: 'measure', alt: 'The same plan with an empty grid laid over it.', text: 'A grid over the model; each cell gets the morphometric indicators named below.' },
+];
+---
+
+<figure class="vabs mb-10">
+  <ol class="vabs-row">
+    {steps.map((s) => (
+      <li>
+        <img src={`${dir}/vidigal-abstract-${s.img}.webp`} width="1200" height="800" alt={s.alt} loading="eager" decoding="async" />
+        <p class="vabs-step"><span>{s.n}</span> {s.name}</p>
+        <p class="vabs-text">{s.text}</p>
+      </li>
+    ))}
+  </ol>
+  <figcaption class="vabs-cap">Vidigal, Rio de Janeiro · drawn from the quantised points shown on the front page; the grid is empty, no indicator is shown.</figcaption>
+</figure>
+
+<style>
+  .vabs-row { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .vabs img { width: 100%; height: auto; display: block; border: 1px solid var(--color-border); border-radius: 0.5rem; background: #0e1016; }
+  .vabs-step { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-primary); margin: 0.6rem 0 0.15rem; }
+  .vabs-step span { color: var(--color-accent); margin-right: 0.35em; }
+  .vabs-text { font-size: 0.9rem; line-height: 1.45; color: var(--color-text-secondary); margin: 0; }
+  .vabs-cap { font-size: 0.75rem; color: var(--color-text-muted); margin-top: 0.9rem; }
+  @media (max-width: 640px) { .vabs-row { grid-template-columns: 1fr; gap: 1.25rem; } }
+</style>

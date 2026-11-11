@@ -2,6 +2,7 @@
 import { base } from '../../data/base';
 import PageLayout from '../../layouts/PageLayout.astro';
 import { getCollection, render } from 'astro:content';
+import VidigalAbstract from '../../components/ui/VidigalAbstract.astro';
 import { author } from '../../data/author';
 import { siteConfig } from '../../data/site';
 
@@ -84,6 +85,8 @@ const articleJsonLd = {
           />
         </div>
       )}
+
+      {project.id === 'urban-morphometrics' && <VidigalAbstract />}
 
       <!-- Body -->
       <article class="prose max-w-2xl">

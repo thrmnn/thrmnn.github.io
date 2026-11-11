@@ -40,6 +40,8 @@ const codes = [
 ].map((c) => ({ ...c, src: qr(c.url) }));
 rmSync(work, { recursive: true });
 
+const portrait = 'scripts/assets/portrait.webp';
+
 const html = `<!doctype html>
 <html lang="en">
 <head>
@@ -58,9 +60,12 @@ const html = `<!doctype html>
   .mono { font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; letter-spacing: 0.02em; color: var(--muted); }
   .kicker, .spot .label { text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); }
   .page { height: 261mm; position: relative; }
-  h1 { font-size: 30pt; line-height: 1.05; letter-spacing: -0.03em; margin-top: 4mm; }
-  .sub { font-size: 13pt; color: var(--muted); margin-top: 3mm; }
-  .role { margin-top: 5mm; }
+  .id { display: flex; gap: 7mm; align-items: center; }
+  .id img { width: 34mm; height: 34mm; flex: none; display: block; }
+  h1 { font-size: 36pt; line-height: 1.02; letter-spacing: -0.03em; }
+  .tag { font-size: 15pt; line-height: 1.2; margin-top: 9mm; letter-spacing: -0.01em; }
+  .sub { font-size: 13pt; color: var(--muted); margin-top: 1mm; }
+  .role { margin-top: 4mm; }
   .talk { margin-top: 2mm; }
   .spots { margin-top: 12mm; border-top: 1.2pt solid var(--ink); }
   .spot { display: grid; grid-template-columns: 38mm 1fr; column-gap: 6mm; padding: 5mm 0; border-bottom: 0.5pt solid var(--rule); }
@@ -80,8 +85,11 @@ const html = `<!doctype html>
 </head>
 <body>
 <div class="page">
-  <p class="mono kicker">${esc(author.name)}</p>
-  <h1>${esc(author.headline)}</h1>
+  <div class="id">
+    <img src="${portrait}" alt="${esc(author.name)}">
+    <h1>${esc(author.name)}</h1>
+  </div>
+  <p class="tag">${esc(author.headline)}</p>
   <p class="sub">${esc(author.subtitle)}</p>
   <p class="mono role">${esc(author.role)} · ${esc(author.affiliation)}</p>
   ${talk ? `<p class="mono talk">Speaking · ${esc(talk.event)}, ${esc(talk.when)}</p>` : ''}

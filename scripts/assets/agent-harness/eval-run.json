@@ -1,0 +1,121 @@
+{
+ "commit": "bdbe373",
+ "committed": [
+  {
+   "case": "lidar-query-finds-lidar-doc",
+   "tool": "kb_search",
+   "version": "1.2.0",
+   "ok": true,
+   "checks": [
+    true
+   ]
+  },
+  {
+   "case": "hit-carries-title",
+   "tool": "kb_search",
+   "version": "1.2.0",
+   "ok": true,
+   "checks": [
+    true
+   ]
+  },
+  {
+   "case": "top-k-is-respected",
+   "tool": "kb_search",
+   "version": "1.2.0",
+   "ok": true,
+   "checks": [
+    true
+   ]
+  },
+  {
+   "case": "unknown-terms-return-nothing",
+   "tool": "kb_search",
+   "version": "1.2.0",
+   "ok": true,
+   "checks": [
+    true,
+    true
+   ]
+  },
+  {
+   "case": "title-match-outranks-body-match",
+   "tool": "kb_search",
+   "version": "1.2.0",
+   "ok": true,
+   "checks": [
+    true,
+    true
+   ]
+  },
+  {
+   "case": "fetch-returns-full-document",
+   "tool": "kb_fetch",
+   "version": "1.0.0",
+   "ok": true,
+   "checks": [
+    true,
+    true
+   ]
+  }
+ ],
+ "changed": [
+  {
+   "case": "lidar-query-finds-lidar-doc",
+   "tool": "kb_search",
+   "version": "1.2.0",
+   "ok": true,
+   "checks": [
+    true
+   ]
+  },
+  {
+   "case": "hit-carries-title",
+   "tool": "kb_search",
+   "version": "1.2.0",
+   "ok": true,
+   "checks": [
+    true
+   ]
+  },
+  {
+   "case": "top-k-is-respected",
+   "tool": "kb_search",
+   "version": "1.2.0",
+   "ok": true,
+   "checks": [
+    true
+   ]
+  },
+  {
+   "case": "unknown-terms-return-nothing",
+   "tool": "kb_search",
+   "version": "1.2.0",
+   "ok": true,
+   "checks": [
+    true,
+    true
+   ]
+  },
+  {
+   "case": "title-match-outranks-body-match",
+   "tool": "kb_search",
+   "version": "1.2.0",
+   "ok": true,
+   "checks": [
+    false,
+    true
+   ]
+  },
+  {
+   "case": "fetch-returns-full-document",
+   "tool": "kb_fetch",
+   "version": "1.0.0",
+   "ok": true,
+   "checks": [
+    true,
+    true
+   ]
+  }
+ ]
+}

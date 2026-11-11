@@ -8,7 +8,7 @@ summary: "Four one-off perception prototypes from 2022 and 2023, consolidated in
 label: "Open source · 2026"
 metric: "Open source, MIT licensed"
 gradient: '#0f1018'
-plateName: 'perception-pipeline'
+cardImage: '/projects/perception-pipeline/card-plate.webp'
 tags:
   - Object Detection
   - Multi-Object Tracking

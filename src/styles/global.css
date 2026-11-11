@@ -450,6 +450,7 @@
 }
 @media (max-width: 1023px) {
   .hero-section { align-items: flex-start; }
+  .hero-strip { gap: 0.5rem; }
   .hero-strip img { aspect-ratio: 3 / 4; }
   /* the Loomo photo is landscape; a portrait crop keeps the robot, not the walker's legs */
   .hero-strip li:first-child img { object-position: 72% 50%; }

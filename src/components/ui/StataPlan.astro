@@ -1,9 +1,9 @@
 ---
 import raw from '../../data/stata-plan.json';
-import { planSvg, type Plan } from '../../data/stata-plan-svg.ts';
+import { planSvg, planSvgSmall, type Plan } from '../../data/stata-plan-svg.ts';
 ---
 
-<Fragment set:html={planSvg(raw as unknown as Plan)} />
+<Fragment set:html={planSvg(raw as unknown as Plan) + planSvgSmall(raw as unknown as Plan)} />
 
 <style is:global>
   .plan { width: 100%; max-width: 30rem; height: auto; display: block; margin: 0 auto; }
@@ -19,4 +19,14 @@ import { planSvg, type Plan } from '../../data/stata-plan-svg.ts';
   .plan .said-lab { fill: var(--accent); }
   .plan .big { font-size: 22px; font-weight: 700; }
   .plan .tick { font: 12px 'JetBrains Mono', monospace; fill: var(--text-muted); }
+  .plan .lead { stroke: var(--text-primary); stroke-width: 1; }
+  .plan .said-lead { stroke: var(--accent); }
+  .plan-sm { display: none; max-width: none; }
+  .plan-sm .walls { stroke-width: 1.4; }
+  .plan-sm .was, .plan-sm .said { stroke-width: 3; }
+  .plan-sm .big { font-size: 20px; }
+  @media (max-width: 599px) {
+    .plan:not(.plan-sm) { display: none; }
+    .plan-sm { display: block; }
+  }
 </style>

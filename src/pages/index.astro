@@ -12,6 +12,11 @@ import { homeCards, spotlights } from '../data/home';
 import { talk } from '../data/talk';
 
 const mailto = `mailto:${author.email}`;
+const heroPics = [
+  { word: 'Scan', src: '/projects/autonomous-mobile-robot/hero-poster.jpg', w: 600, h: 338, alt: 'A Segway Loomo robot following a person indoors at EPFL.' },
+  { word: 'Model', src: '/projects/urban-morphometrics/vidigal-plate.webp', w: 1200, h: 1200, alt: 'Vidigal, Rio de Janeiro: terrain and building footprints as a point cloud.' },
+  { word: 'Decipher', src: '/projects/ros2-localization-triage/stata-plate.webp', w: 1200, h: 1200, alt: 'The MIT Stata Center floor plan with the robot’s reported and true paths.' },
+];
 const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
 
 ---
@@ -51,6 +56,16 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
         <Button href={practiceUrl} variant="secondary">For robot makers</Button>
       </div>
     </div>
+    <ul class="hero-strip" data-reveal style="--reveal-d: 2;">
+      {heroPics.map((p) => (
+        <li>
+          <figure>
+            <img src={`${base}${p.src}`} width={p.w} height={p.h} alt={p.alt} decoding="async" />
+            <figcaption>{p.word}</figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
     </div>
   </section>
 

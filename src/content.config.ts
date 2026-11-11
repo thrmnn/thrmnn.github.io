@@ -18,6 +18,7 @@ const projects = defineCollection({
     imageWidth: z.number().optional(),
     imageHeight: z.number().optional(),
     gradient: z.string().optional(),
+    plateName: z.string().optional(),
     tags: z.array(z.string()).default([]),
     metric: z.string().optional(),
     label: z.string().optional(),

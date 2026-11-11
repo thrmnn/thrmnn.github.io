@@ -4,6 +4,7 @@ title: "A harness for AI agents"
 date: '2026-06-12T00:00:00Z'
 github: 'https://github.com/thrmnn/agent-harness'
 image: '/projects/agent-harness/eval-run.webp'
+cardImage: '/projects/agent-harness/card-plate.webp'
 imageWidth: 1920
 imageHeight: 834
 imageAlt: "The repository's own eval suite at commit bdbe373, run twice: as committed, all six cases pass and the run exits 0; after one change to the example search tool (TITLE_WEIGHT from 2 to 1, as the suite's comment describes), the regression case fails and the run exits 1."

@@ -8,12 +8,13 @@ interface Props {
   href: string;
   gradient?: string;
   image?: string;
+  plateName?: string;
   number?: number;
   index?: number;
   reveal?: boolean;
 }
 
-const { title, label, tags = [], href, gradient, image, number, index = 0, reveal = true } = Astro.props;
+const { title, label, tags = [], href, gradient, image, plateName, number, index = 0, reveal = true } = Astro.props;
 
 const bgStyle = image
   ? `background-image: url('${image}'); background-size: cover; background-position: center;`
@@ -45,6 +46,10 @@ const hoverTags = tags.slice(0, 4);
       <div class="absolute top-4 left-5 font-mono text-[3.5rem] font-black leading-none text-white/[0.08] group-hover:text-white/[0.14] transition-all duration-700 select-none tracking-tighter">
         {displayNumber}
       </div>
+    )}
+
+    {plateName && !image && (
+      <p class="absolute top-6 left-6 right-6 font-mono text-xl font-bold text-white/80 break-words select-none" aria-hidden="true">{plateName}</p>
     )}
 
     {/* Darkening gradient — only as much as the title actually needs */}

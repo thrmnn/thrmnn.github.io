@@ -4,6 +4,7 @@ date: '2023-07-01T00:00:00Z'
 externalLink: 'https://www.iri.upc.edu/'
 github: 'https://github.com/thrmnn/EVIO'
 image: '/projects/event-cameras-drone/hero.svg'
+cardImage: '/projects/event-cameras-drone/card-plate.webp'
 summary: "6-DOF pose estimation through flight maneuvers exceeding 5 g acceleration, where conventional frame cameras fail."
 label: "IRI (CSIC-UPC, Barcelona) · 2023–24"
 metric: "6-DOF pose estimation · flight above 5 g"

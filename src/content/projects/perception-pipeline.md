@@ -8,6 +8,9 @@ summary: "Four one-off perception prototypes from 2022 and 2023, consolidated in
 label: "Open source · 2026"
 metric: "Open source, MIT licensed"
 gradient: '#0f1018'
+image: '/projects/perception-pipeline/card-plate.webp'
+imageWidth: 1200
+imageHeight: 1200
 cardImage: '/projects/perception-pipeline/card-plate.webp'
 tags:
   - Object Detection
@@ -22,6 +25,12 @@ tags:
 Across 2022–2023 I shipped four versions of “detection + tracking + ReID”: single-person tracking on a Loomo robot, multi-person pose tracking, a ReID demo on Colab, and the perception module of a full ROS autonomy stack. Each solved a real problem in its context. None of them shared an interface; all four ran on dependency stacks that aged out.
 
 **`perception-pipeline` is the consolidated re-do** against the 2026 stack. v0.1 ships detection and tracking (modern YOLO, ByteTrack); the roadmap adds BoT-SORT / OC-SORT, OSNet-class ReID, MMPose-compatible 2D and 3D pose, and TensorRT export for Jetson-class hardware.
+
+## How to check it
+
+I wrote the repo so you can run it in two commands: `pip install -e .`, then `perception-demo --input your_video.mp4 --output annotated.mp4 --classes 0`. On exit it prints, per module, the mean and p95 latency in milliseconds and the effective frames per second. The README says these numbers depend on your hardware, so run it on yours.
+
+The unit tests need no model weights: `pip install -e ".[dev]"`, then `pytest`. The four ancestors are listed in the repo README with their years.
 
 ## What v0.1 ships (June 2026)
 
@@ -62,12 +71,6 @@ The historical record, on their original dependency stacks. The first three sit 
 ## Why open
 
 Public, MIT-licensed, modular: designed to be useful to whoever picks it up and an honest demonstration of how I think about real-time vision systems.
-
-## How to check it
-
-I wrote the repo so you can run it in two commands: `pip install -e .`, then `perception-demo --input your_video.mp4 --output annotated.mp4 --classes 0`. On exit it prints, per module, the mean and p95 latency in milliseconds and the effective frames per second. The README says these numbers depend on your hardware, so run it on yours.
-
-The unit tests need no model weights: `pip install -e ".[dev]"`, then `pytest`. The four ancestors are listed in the repo README with their years.
 
 ## Picture credit
 

@@ -78,6 +78,9 @@ const articleJsonLd = {
             {project.data.cardAnim && (
               <source srcset={base + project.data.cardAnim} media="(prefers-reduced-motion: no-preference)" />
             )}
+            {project.data.imagePhone && (
+              <source srcset={base + project.data.imagePhone} media="(max-width: 639px)" width="1200" height="1200" />
+            )}
             <img
               src={base + project.data.image}
               alt={project.data.imageAlt ?? project.data.title}

@@ -15,6 +15,7 @@ const projects = defineCollection({
     image: z.string().optional(),
     cardImage: z.string().optional(),
     cardAnim: z.string().optional(),
+    imagePhone: z.string().optional(),
     imageAlt: z.string().optional(),
     imageWidth: z.number().optional(),
     imageHeight: z.number().optional(),

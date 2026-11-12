@@ -40,11 +40,12 @@ def mark(ok):
 runs = (RUN["committed"], RUN["changed"])
 
 if VARIANT == "a":
-    CELL, GAP, PANEL_GAP, TICK = 120, 20, 230, 14
+    CELL, GAP, PANEL_GAP, TICK = 96, 16, 200, 12
     panel_w = 2 * CELL + GAP
     total_w = 2 * (TICK + GAP + panel_w) + PANEL_GAP
     total_h = 6 * CELL + 5 * GAP
-    x_start, y_start = (S - total_w) / 2, (S - total_h) / 2
+    # the card's caption covers the lower third, so the grid sits above it
+    x_start, y_start = (S - total_w) / 2, 0.1 * S
     for r, run in enumerate(runs):
         px0 = x_start + r * (TICK + GAP + panel_w + PANEL_GAP)
         for i, case in enumerate(run):

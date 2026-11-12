@@ -41,7 +41,7 @@ measurements to urban form in Maré.
 
 ## What is public
 
-The [Octopus page](https://senseable.mit.edu/octopus/) at MIT Senseable City Lab describes a modular platform for makers, with a step-by-step guide that covers 3D printing, soldering and coding. It can run as a stationary, wearable or vehicular sensor. The page shows the Dubai Future Foundation among its collaborators, and says Octopus is part of the City Scanner initiative.
+[Octopus](https://senseable.mit.edu/octopus/) is a modular platform for makers, with a step-by-step guide to the 3D printing, soldering and coding. It runs as a stationary, wearable or vehicular sensor. It is part of MIT Senseable City Lab's City Scanner initiative, with the Dubai Future Foundation among its collaborators.
 
 ## Picture credit
 

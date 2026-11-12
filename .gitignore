@@ -38,3 +38,4 @@ Thumbs.db
 
 # Python host tooling
 __pycache__/
+scripts/assets/evio/events.bin

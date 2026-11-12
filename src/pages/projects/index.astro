@@ -34,6 +34,7 @@ const ordered = [...featured, ...rest];
             gradient={project.data.gradient}
             plateName={project.data.plateName}
             image={withBase(project.data.cardImage ?? project.data.image)}
+            anim={withBase(project.data.cardAnim)}
             index={i}
           />
         ))}

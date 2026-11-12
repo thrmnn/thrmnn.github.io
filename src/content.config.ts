@@ -14,6 +14,7 @@ const projects = defineCollection({
     proprietary: z.boolean().default(false),
     image: z.string().optional(),
     cardImage: z.string().optional(),
+    cardAnim: z.string().optional(),
     imageAlt: z.string().optional(),
     imageWidth: z.number().optional(),
     imageHeight: z.number().optional(),

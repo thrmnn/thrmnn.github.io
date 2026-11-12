@@ -45,6 +45,12 @@ Event cameras eliminate motion blur but require fundamentally different processi
 
 The model targets maneuvers above 5 g, the regime where conventional frame cameras and standard VIO diverge. The training framework is open source ([EVIO](https://github.com/thrmnn/EVIO)); real-time onboard inference lives in a separate repository that is not yet open.
 
+## What I did and how to check it
+
+I built the training framework. The experiment config lets you switch the inputs between RGB only, RGB plus events, and RGB plus events plus IMU. It also sets the backbone for each input, the fusion strategy (early or late) and the loss. That lets you compare the cases side by side.
+
+The code is in [EVIO](https://github.com/thrmnn/EVIO) under an MIT licence. `python src/train.py --exp_dir experiments/model1/basic_settings` trains one configuration and `src/test.py` tests it. The repo is archived research code, last active March 2024.
+
 ## Picture credit
 
 The card picture shows 1.50 s of real events from the DAVIS 346×260 event camera on the drone, sequence indoor_forward_3_davis_with_gt of the public [UZH-FPV drone racing dataset](https://fpv.ifi.uzh.ch/) (Delmerico et al., ICRA 2019), the data EVIO trains on, cut around the fastest flight (1,095,171 events). Each pixel lights at its last event and fades in about 12 ms: blue where brightness rose, grey where it fell. The loop is played 2× slower than real time; readers with reduced motion see one still frame. Dataset and picture under [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/).

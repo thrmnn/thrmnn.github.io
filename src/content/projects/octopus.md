@@ -34,3 +34,7 @@ In the Rio lab I work on its projects and deployment, take part in the
 research meetings, and present the hardware (Casa Firjan summer school,
 October 2026). I am helping shape the new research line that links its
 measurements to urban form in Maré.
+
+## What is public
+
+The [Octopus page](https://senseable.mit.edu/octopus/) at MIT Senseable City Lab describes a modular platform for makers, with a step-by-step guide that covers 3D printing, soldering and coding. It can run as a stationary, wearable or vehicular sensor. The page lists the Dubai Future Foundation among its collaborators, and says Octopus is part of the City Scanner initiative.

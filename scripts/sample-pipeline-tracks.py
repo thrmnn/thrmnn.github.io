@@ -4,8 +4,8 @@ YOLOv8n detector + ByteTrack, persons only) on public footage and keep the
 tracked foot points. Footage: MOT17-04 (static surveillance camera, 1920x1080,
 30 fps), frames 1 to FRAMES, from the public MOTChallenge MOT17 benchmark
 (Milan et al., 2016, https://motchallenge.net/data/MOT17/). The frames are not
-kept; only scripts/assets/pipeline/tracks.json is (per track id, the bottom
-centre of the box per frame, rounded to whole pixels). CPU only.
+kept; only scripts/assets/pipeline/tracks.json is (per track id and frame: the
+bottom centre of the box and its width and height, whole pixels). CPU only.
 
     python3 scripts/sample-pipeline-tracks.py <MOT17-04-SDP/img1 dir> <perception-pipeline/src dir>
 """
@@ -30,7 +30,7 @@ for i in range(1, FRAMES + 1):
     t = trk.update(det(frame))
     for j in range(len(t)):
         x1, y1, x2, y2 = t.xyxy[j]
-        tracks.setdefault(int(t.track_id[j]), []).append([i, round(float((x1 + x2) / 2)), round(float(y2))])
+        tracks.setdefault(int(t.track_id[j]), []).append([i, round(float((x1 + x2) / 2)), round(float(y2)), round(float(x2 - x1)), round(float(y2 - y1))])
     if i % 50 == 0:
         print(i, len(tracks), flush=True)
 OUT.write_text(json.dumps({"width": 1920, "height": 1080, "frames": FRAMES, "tracks": tracks}, separators=(",", ":")))

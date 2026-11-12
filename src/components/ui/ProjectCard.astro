@@ -8,15 +8,18 @@ interface Props {
   href: string;
   gradient?: string;
   image?: string;
+  anim?: string;
   plateName?: string;
   number?: number;
   index?: number;
   reveal?: boolean;
 }
 
-const { title, label, tags = [], href, gradient, image, plateName, number, index = 0, reveal = true } = Astro.props;
+const { title, label, tags = [], href, gradient, image, anim, plateName, number, index = 0, reveal = true } = Astro.props;
 
-const bgStyle = image
+const bgStyle = image && anim
+  ? `--still: url('${image}'); --anim: url('${anim}'); background-size: cover; background-position: center;`
+  : image
   ? `background-image: url('${image}'); background-size: cover; background-position: center;`
   : `background: ${gradient || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)'};`;
 
@@ -36,7 +39,7 @@ const hoverTags = tags.slice(0, 4);
 >
   <div class="project-card relative rounded-2xl overflow-hidden min-h-[300px] border border-border cursor-pointer transition-all duration-500 hover:border-border-hover">
 
-    <div class="card-bg absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.06]" style={bgStyle}></div>
+    <div class:list={['card-bg absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.06]', anim && 'card-bg-anim']} style={bgStyle}></div>
 
     {!image && (
       <div class="absolute inset-0 noise-overlay opacity-[0.04]"></div>
@@ -116,6 +119,11 @@ const hoverTags = tags.slice(0, 4);
   .noise-overlay {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
     background-size: 128px 128px;
+  }
+
+  .card-bg-anim { background-image: var(--still); }
+  @media (prefers-reduced-motion: no-preference) {
+    .card-bg-anim { background-image: var(--anim); }
   }
 
   @media (prefers-reduced-motion: reduce) {

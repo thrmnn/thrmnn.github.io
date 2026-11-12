@@ -4,10 +4,10 @@ dataset the EVIO project trains on (Delmerico et al., ICRA 2019,
 https://fpv.ifi.uzh.ch/). Sequence: indoor_forward_3_davis_with_gt. The zip is
 read over HTTP range requests, events.txt is streamed (x y t pol per line,
 DAVIS 346x260). The window is the WINDOW seconds centred on the instant of
-peak ground-truth speed, so the cloud is a real fast-flight slice. Output is
+peak ground-truth speed, so the window is a real fast-flight slice. Output is
 scripts/assets/evio/events.bin: per event int16 x, int16 y, uint32 dt in
 microseconds from the window start, uint8 polarity (9 B). Host tooling, run by
-hand; the output is committed.
+hand; the output is not committed (about 10 MB); re-run this to make it.
 
     python3 scripts/sample-uzh-events.py
 """
@@ -20,7 +20,7 @@ from pathlib import Path
 
 URL = "https://download.ifi.uzh.ch/rpg/web/datasets/uzh-fpv-newer-versions/v3/indoor_forward_3_davis_with_gt.zip"
 OUT = Path(__file__).parent / "assets" / "evio" / "events.bin"
-WINDOW = 0.03
+WINDOW = 1.5
 
 
 class Http(io.RawIOBase):

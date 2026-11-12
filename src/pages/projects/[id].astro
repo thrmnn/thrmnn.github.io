@@ -74,15 +74,20 @@ const articleJsonLd = {
 
       {project.data.image && (
         <div class="mb-10 rounded-lg overflow-hidden border border-border">
-          <img
-            src={base + project.data.image}
-            alt={project.data.imageAlt ?? project.data.title}
-            width={project.data.imageWidth ?? 1200}
-            height={project.data.imageHeight ?? 630}
-            loading="eager"
-            fetchpriority="high"
-            class="w-full h-auto block"
-          />
+          <picture>
+            {project.data.cardAnim && (
+              <source srcset={base + project.data.cardAnim} media="(prefers-reduced-motion: no-preference)" />
+            )}
+            <img
+              src={base + project.data.image}
+              alt={project.data.imageAlt ?? project.data.title}
+              width={project.data.imageWidth ?? 1200}
+              height={project.data.imageHeight ?? 630}
+              loading="eager"
+              fetchpriority="high"
+              class="w-full h-auto block"
+            />
+          </picture>
         </div>
       )}
 

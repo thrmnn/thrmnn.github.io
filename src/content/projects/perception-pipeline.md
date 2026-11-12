@@ -63,6 +63,12 @@ The historical record, on their original dependency stacks. The first three sit 
 
 Public, MIT-licensed, modular: designed to be useful to whoever picks it up and an honest demonstration of how I think about real-time vision systems.
 
+## How to check it
+
+I wrote the repo so you can run it in two commands: `pip install -e .`, then `perception-demo --input your_video.mp4 --output annotated.mp4 --classes 0`. On exit it prints, per module, the mean and p95 latency in milliseconds and the effective frames per second. The README says these numbers depend on your hardware, so run it on yours.
+
+The unit tests need no model weights: `pytest`. The four ancestors are listed in the repo README with their years.
+
 ## Picture credit
 
 The card picture shows the people this pipeline tracked in a real run on MOT17-04 from the public [MOTChallenge benchmark](https://motchallenge.net/data/MOT17/) (400 frames, YOLOv8n and ByteTrack on CPU). Dataset and picture under [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/).

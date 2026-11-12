@@ -42,3 +42,9 @@ Real-time performance across several computationally intensive perception module
 ## What happened
 
 Validated end-to-end on physical robots (Segway Loomo, EPFL VITA Lab research platform); the code is public on GitHub (`github.com/thrmnn/ROS_Autonomous_Driving`).
+
+## How the pieces talk
+
+The Loomo runs an Android app that I also published as `Loomo_app_ADP`. It bridges the Segway Java SDK to C++ and sends the camera image, the robot's own pose and velocity, and the depth and angle of the target to the server over sockets. The server sends back the detections it found and the linear and rotation speed commands.
+
+The framework was adapted to help paraplegic patients walk, with the Loomo as an assistant, and the 3D pose of the target served that use. The README links the technical report on the original pipeline (Conejo, Liu, Bahari and Alahi, EPFL VITA Lab). The repo is archived, last active June 2023.

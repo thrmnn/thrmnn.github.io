@@ -43,4 +43,4 @@ framework.
 
 I wrote it to run with no model and no network, with one dependency (pydantic). A tool call that gets bad input comes back as an error result and does not crash the agent loop. Each call writes one JSON line: timestamp, tool, version, input hash, outcome, duration.
 
-To see the regression guard work, clone the repo and run `python -m agent_harness.evals examples/eval_cases.py`. It exits 0. Then change `TITLE_WEIGHT` from 2 to 1 in `examples/kb_search.py` and run it again. The case `title-match-outranks-body-match` fails and the run exits 1. The repo's own CI runs the same line.
+To see the regression guard work, clone the repo, run `pip install -e .`, then `python -m agent_harness.evals examples/eval_cases.py`. It exits 0. Then change `TITLE_WEIGHT` from 2 to 1 in `examples/kb_search.py` and run it again. The case `title-match-outranks-body-match` fails and the run exits 1. The repo's own CI runs the same line.

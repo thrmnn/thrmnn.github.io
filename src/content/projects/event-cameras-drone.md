@@ -47,9 +47,9 @@ The model targets maneuvers above 5 g, the regime where conventional frame camer
 
 ## What I did and how to check it
 
-I built the training framework. The experiment config lets you switch the inputs between RGB only, RGB plus events, and RGB plus events plus IMU. It also sets the backbone for each input, the fusion strategy (early or late) and the loss. That lets you compare the cases side by side.
+I built the training framework on the lab's IRI-DL scaffold. The experiment config lets you switch the inputs between RGB only, RGB plus events, and RGB plus events plus IMU. It also sets the backbone for each input, the fusion strategy (early or late) and the loss. That lets you compare the cases side by side.
 
-The code is in [EVIO](https://github.com/thrmnn/EVIO) under an MIT licence. `python src/train.py --exp_dir experiments/model1/basic_settings` trains one configuration and `src/test.py` tests it. The repo is archived research code, last active March 2024.
+The code is in [EVIO](https://github.com/thrmnn/EVIO) under an MIT licence. The setups for the UZH-FPV drone data are in `experiments/EVIO_uzh/`; `src/train.py` and `src/test.py` take one with `--exp_dir`. Its last code change was in March 2024.
 
 ## Picture credit
 

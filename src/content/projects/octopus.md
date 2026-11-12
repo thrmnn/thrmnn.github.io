@@ -20,8 +20,9 @@ Octopus is MIT Senseable City Lab's open-source sensor kit for street-level
 heat, humidity and fine particles, the step after City Scanner (2017, on
 garbage trucks in Cambridge, Massachusetts) and Flatburn (2023). An Arduino
 board, a fine-particle sensor and a GPS receiver sit in a 3D-printed case. It
-assembles in about 20 minutes and writes one line of data every 5 seconds to a
-microSD card, first on vehicles, then anywhere.
+assembles in about 20 minutes ([the public build guide](https://mit-senseable-city-lab.github.io/octopus-documentation/docs/build/assembly)),
+and its example sketch writes one line of data every 5 seconds to a microSD card,
+first on vehicles, then anywhere.
 
 ## Credits
 

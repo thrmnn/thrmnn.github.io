@@ -67,7 +67,7 @@ Public, MIT-licensed, modular: designed to be useful to whoever picks it up and 
 
 I wrote the repo so you can run it in two commands: `pip install -e .`, then `perception-demo --input your_video.mp4 --output annotated.mp4 --classes 0`. On exit it prints, per module, the mean and p95 latency in milliseconds and the effective frames per second. The README says these numbers depend on your hardware, so run it on yours.
 
-The unit tests need no model weights: `pytest`. The four ancestors are listed in the repo README with their years.
+The unit tests need no model weights: `pip install -e ".[dev]"`, then `pytest`. The four ancestors are listed in the repo README with their years.
 
 ## Picture credit
 

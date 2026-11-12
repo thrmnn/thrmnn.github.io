@@ -65,4 +65,4 @@ Public, MIT-licensed, modular: designed to be useful to whoever picks it up and 
 
 ## Picture credit
 
-The card picture shows the people this pipeline tracked in a real run on MOT17-04 from the public [MOTChallenge benchmark](https://motchallenge.net/data/MOT17/) (400 frames, YOLOv8n and ByteTrack on CPU). Dataset and picture under [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/).
+The card picture is one frame of MOT17-04 from the public [MOTChallenge benchmark](https://motchallenge.net/data/MOT17/), drawn as a halftone, with the boxes and the last two seconds of foot trail this pipeline produced on it (400 frames, YOLOv8n and ByteTrack on CPU). Dataset and picture under [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/).

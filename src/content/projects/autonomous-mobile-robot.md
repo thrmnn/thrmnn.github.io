@@ -41,7 +41,7 @@ Real-time performance across several computationally intensive perception module
 
 ## What happened
 
-Validated end-to-end on physical robots (Segway Loomo, EPFL VITA Lab research platform); the code is public on GitHub (`github.com/thrmnn/ROS_Autonomous_Driving`).
+Validated end-to-end on physical robots (Segway Loomo, EPFL VITA Lab research platform); the code is public on [GitHub](https://github.com/thrmnn/ROS_Autonomous_Driving).
 
 ## How the pieces talk
 

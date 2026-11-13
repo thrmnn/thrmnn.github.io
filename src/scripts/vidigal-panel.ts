@@ -357,7 +357,9 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
     ground = '#787c86';
     bg = '#0e1016';
   }
-  const EX = { yaw: ROT0, pitch: TILT, zoom: 1 };
+  // a portrait screen fits the wide cloud to its width; start closer so the footprints fill it
+  const openZoom = () => (canvas.clientHeight > canvas.clientWidth * 1.3 ? 1.3 : 1);
+  const EX = { yaw: ROT0, pitch: TILT, zoom: explore ? openZoom() : 1 };
   const plate = { w: 1, h: 1, cx: 0, cy: 0, offX: 0, offY: 0 };
   if (explore) {
     const xs: number[] = [];
@@ -450,7 +452,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
     const zoomT = Math.min(1, (zoom - 1) / 0.5); // look-at hand-over finishes early in the dive
 
     const base = explore
-      ? (Math.min(cssW, cssH) * FILL) / Math.max(plate.w, plate.h)
+      ? Math.min(cssW / plate.w, cssH / plate.h) * FILL
       : Math.min(cssW / (ax1 - ax0), cssH / (ay1 - ay0)) * FILL;
     const scale = base * zoom;
     // Where the camera looks: the envelope centre when out, a point sliding
@@ -721,7 +723,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
     const reset = () => {
       EX.yaw = ROT0;
       EX.pitch = TILT;
-      EX.zoom = 1;
+      EX.zoom = openZoom();
       want();
     };
     canvas.addEventListener('dblclick', reset);

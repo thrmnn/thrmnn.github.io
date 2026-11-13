@@ -68,7 +68,6 @@ const line = 'Vidigal, Rio de Janeiro · terrain and building footprints';
   const canvas = document.querySelector<HTMLCanvasElement>('.explore-canvas')!;
   initVidigalPanel(canvas).then((api) => {
     document.getElementById('reset')?.addEventListener('click', () => (api as { reset: () => void } | undefined)?.reset());
-    canvas.focus({ preventScroll: true });
   });
 
   const closeHref = (document.querySelector('a.close') as HTMLAnchorElement).href;

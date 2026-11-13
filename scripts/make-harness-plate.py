@@ -21,14 +21,14 @@ g, what is drawn: the five corpus documents (doc-lidar, doc-retrieval, doc-traci
 doc-grasping, doc-evals) as grey upright pages of dots on a ring floor, in the Roboat
 plate's oblique, depth-faded dot look; the harness as a small blue mast at the centre;
 a beam that swings from the harness to where each call is aimed (one sweep per run,
-each call gets an equal slice of the sweep, in the order the suite runs them); the
-afterglow, the page layout, the angles, the ring spacing and the two-dot marker
-(first dot = run as committed, second = run after the TITLE_WEIGHT change).
+each hit gets an equal slice of the sweep, in the order the suite runs them, except in the after sweep, see below); the
+afterglow, the page layout, the angles, the ring spacing and the beam's longer
+dwell on the failing call in the after sweep (taken from the empty-result call's slice).
 g, what comes from the run: which documents each call returned and in which rank
 (that is what lights); the score the tool returned (sets the brightness and dot size of
-the lit page; the same call after the change returns lower scores and the page is dimmer);
+the lit page; the after run returns a lower score for five of the six scored hits, the sixth, doc-retrieval in the ranking call, is 3 in both, so the pages are dimmer in the second sweep);
 the check results (one ring per check, on the call's top-ranked hit, green for a pass,
-orange for a fail; the run records checks per call, not per hit). A hit with no score
+orange for a fail, drawn outermost and thicker; the run records checks per call, not per hit). A hit with no score
 (kb_fetch returns the document) lights only the outline of the page at one fixed level,
 never as a score. A call that returns nothing sends the beam to an empty spot on the
 floor, its rings are drawn there, nothing lights.
@@ -447,10 +447,14 @@ elif VARIANT == "g":
                 ev.append(dict(call=ci, ang=EMPTY_ANG, hit=None, rank=0, checks=c["checks"]))
             for j, h in enumerate(c["hits"]):
                 ev.append(dict(call=ci, ang=ANG[h["id"]], hit=h, rank=j, checks=c["checks"]))
-        n = len(ev)
-        for k, e in enumerate(ev):
-            e["t"] = (k + 0.6) / n * HOLD
-            e["slot"] = HOLD / n
+        failing = {i for i, c in enumerate(run) if not all(c["checks"])}
+        wts = [(2.2 if e["call"] in failing else (0.2 if failing and e["hit"] is None else 1.0)) for e in ev]
+        start = 0.0
+        for e, w in zip(ev, wts):
+            d_ = w / sum(wts) * HOLD
+            e["t"] = start + min(0.6 * d_, 0.045)
+            e["leave"] = start + 0.7 * d_
+            start += d_
         radii = {}
         for e in ev:
             if e["rank"] == 0:
@@ -470,7 +474,7 @@ elif VARIANT == "g":
         for i in range(1, len(ks) - 1):
             t0, t1 = ks[i][0], ks[i + 1][0]
             if t <= t1:
-                dw = t0 + 0.35 * ev[i - 1]["slot"]
+                dw = ev[i - 1]["leave"]
                 u = min(max((t - dw) / (t1 - dw), 0), 1)
                 return ks[i][1] + (ks[i + 1][1] - ks[i][1]) * (u * u * (3 - 2 * u))
         return ks[-1][1]
@@ -499,7 +503,7 @@ elif VARIANT == "g":
             if t < e["t"] or not e["hit"]:
                 continue
             h = e["hit"]
-            peak = 0.3 + 0.7 * h["score"] / MAXS if "score" in h else 0.6
+            peak = 0.15 + 0.85 * h["score"] / MAXS if "score" in h else 0.5
             w = peak * (RES + (1 - RES) * math.exp(-(t - e["t"]) / TAU))
             if w > lvl[h["id"]]:
                 lvl[h["id"]] = w
@@ -509,21 +513,22 @@ elif VARIANT == "g":
                 continue
             bx, by = gp(e["ang"], DOC_R if e["hit"] else EMPTY_R)
             fade = min((t - e["t"] - 0.015) / 0.04, 1)
-            for k, ok in enumerate(e["checks"]):
-                rx = 76 + 19 * (e["ring0"] + k)
+            for slot_, (k, ok) in enumerate(sorted(enumerate(e["checks"]), key=lambda q: (not q[1], q[0]))):
+                rx = 76 + 19 * (e["ring0"] + slot_) + (8 if not ok else 0)
                 ry = rx * 0.42
-                n = int(2 * math.pi * rx / 15)
+                rd = 4.3 if ok else 8.0
+                n = int(2 * math.pi * rx / (15 if ok else 12.5))
                 for i in range(n):
                     a = 2 * math.pi * i / n
-                    items.append((by - 0.5, bx + rx * math.cos(a), by + ry * math.sin(a), 4.3, shade(mark(ok), fade)))
+                    items.append((by - 0.5, bx + rx * math.cos(a), by + ry * math.sin(a), rd, shade(mark(ok), fade)))
         for doc in DOCS:
             bx, by, cells = pages[doc]
             gk = 0.4 + 0.4 * (1 - far(ANG[doc]))
             w = lvl[doc]
             for x, y, edge in cells:
                 if w > 0 and (edge or not outline[doc]):
-                    m = min(1.0, w * 2.2)
-                    col = blend(shade(LIGHT, gk), shade(ACCENT, 0.7 + 0.3 * min(1, w * 1.4)), m)
+                    m = min(1.0, w * 2.5)
+                    col = blend(shade(LIGHT, gk), shade(ACCENT, 0.4 + 0.6 * min(1, w / 0.45)), m)
                     rr = 5.0 * (0.95 + 0.4 * min(1, w / 0.5))
                 else:
                     col, rr = shade(LIGHT, gk), 5.0
@@ -537,8 +542,6 @@ elif VARIANT == "g":
             a = 2 * math.pi * i / 10
             items.append((CY + 1, CX + 11 * math.cos(a), CY - 62 + 5 * math.sin(a), 4.2, ACCENT))
         items.append((CY + 1, CX, CY - 62, 5.2, (200, 220, 255)))
-        for k in range(2):
-            items.append((9999, 1090 + k * 30, 70, 6.0, ACCENT if k == ri else shade(GROUND, 0.35)))
         img = Image.new("RGB", (S * SS, S * SS), BG)
         dr = ImageDraw.Draw(img)
         for _, x, y, r, col in sorted(items, key=lambda q: q[0]):

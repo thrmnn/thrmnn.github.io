@@ -10,7 +10,7 @@ make-photo-plates.py loomo('wide') edge to edge, with
     frustum from Loomo's head to it.
 Host tooling (numpy, Pillow, opencv, ffmpeg); needs scripts/assets/loomo/inset-pose.json
 (scripts/make-loomo-inset-pose.py). Writes loomo-pose-b2.webp (1600x1000) and
-loomo-pose-b2-anim.webp (640x400) to ~/Perso/site-review/files.
+loomo-pose-b2-anim.webp (576x360) to ~/Perso/site-review/files.
 
     python3 scripts/make-loomo-pose-b2.py [--out DIR] [--q N] [--preview]
 
@@ -64,18 +64,27 @@ P = load("make-photo-plates")
 INSET = load("make-loomo-inset-pose")
 
 REF = 48
-IDX = list(range(36, 60))
-PIDX = list(range(98, 122))
+IDX = list(range(30, 66))
+PIDX = list(range(98, 134))
 KX, KY = 600 / 720 * 1000 / 338, 1000 / 406
 X0 = 175
 HEAD = (405 * 1000 / 338 - X0, 181 * 1000 / 338)
-LIMBS = [(11, 12), (11, 13), (13, 15), (12, 14), (14, 16), (7, 9), (8, 10)]
-JOINTS = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+LIMBS = [(11, 12), (11, 13), (13, 15), (12, 14), (14, 16)]
+JOINTS = [11, 12, 13, 14, 15, 16]
 FULL = [(5, 7), (7, 9), (6, 8), (8, 10), (5, 6), (11, 12), (5, 11), (6, 12), (11, 13), (13, 15), (12, 14), (14, 16), (0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (0, 6)]
 SS = 2
 BLUE, PALE = A.ACCENT, A.PALE
-PANEL = (1250, 18, 1562, 486)
-CROP = (125, 20, 225, 170)
+PANEL = (1160, 16, 1562, 596)
+CROP = (127, 25, 223, 163)
+
+
+def clean_panel(crop):
+    # stronger than the pose-side clean: also the faint green detector box
+    hsv = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
+    h, sat, v = hsv[..., 0].astype(int), hsv[..., 1], hsv[..., 2]
+    ov = (sat > 60) & (v > 80) & (((h > 35) & (h < 90)) | ((sat > 140) & (((h > 98) & (h < 130)) | ((h > 8) & (h < 22)))))
+    ov = cv2.dilate(ov.astype(np.uint8), np.ones((3, 3), np.uint8), iterations=2)
+    return cv2.inpaint(crop, ov, 4, cv2.INPAINT_TELEA)
 
 
 def panel_frames():
@@ -85,7 +94,7 @@ def panel_frames():
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(A.VIDEO), "-vf", "fps=15", "-frames:v", str(max(PIDX)), f"{tmp}/f%04d.png"], check=True)
         for i in PIDX:
             im = cv2.imread(f"{tmp}/f{i:04d}.png")[80:334, 15:354]
-            im = INSET.clean(im)
+            im = clean_panel(im)
             c = CROP
             ims.append(cv2.cvtColor(im[c[1]:c[3], c[0]:c[2]], cv2.COLOR_BGR2GRAY))
             det = max(d[f"{i:04d}"], key=lambda x: x["score"])
@@ -95,6 +104,40 @@ def panel_frames():
     kp[..., 0] -= CROP[0]
     kp[..., 1] -= CROP[1]
     return ims, kp
+
+
+def fill_planes(base):
+    """Where the halftone leaves flat ground colour (the floor under and right of the robot, the dark
+    band along the top), continue the ground and ceiling planes as depth-view dots: a perspective
+    lattice, rows spaced by depth, dots shrinking toward the horizon. Drawn only in the lower-right floor and the top band."""
+    lum = cv2.GaussianBlur(np.asarray(base.convert("L"), np.float32), (0, 0), 9)
+    empty = lum < 44
+    img = base.copy()
+    d = ImageDraw.Draw(img)
+    horizon = 205 * KY
+    vp = 640.0
+    col = (118, 134, 166)
+
+    def lattice(sign, y_from, y_to, keep):
+        k = 0
+        while True:
+            u = 55 * 1.1 ** k
+            y = y_from + sign * (u - 55)
+            if (sign > 0 and y > y_to) or (sign < 0 and y < y_to) or k > 70:
+                break
+            k += 1
+            step = max(14.0, 0.17 * u)
+            r = float(np.clip(1.3 + 0.0065 * abs(y - y_from), 1.4, 4.2))
+            j0 = int(-vp / step) - 1
+            for j in range(j0, int((1600 - vp) / step) + 2):
+                x = vp + j * step
+                if 0 <= x < 1600 and 0 <= y < 1000 and keep(int(x), int(y)):
+                    d.ellipse([x - r, y - r, x + r, y + r], fill=col)
+
+    lower_right = lambda x, y: (x > 1215 and y > 610) or (y > 880 and x > 760)
+    lattice(1, horizon + 40, 1000, lambda x, y: y > horizon and lower_right(x, y) and lum[y, x] < 60)
+    lattice(-1, 420, 0, lambda x, y: y < 90 and x < 1150 and lum[y, x] < 60)
+    return img
 
 
 def main():
@@ -115,7 +158,7 @@ def main():
     px0, py0, px1, py1 = PANEL
     pk = (px1 - px0) / (CROP[2] - CROP[0])
 
-    base = P.loomo("wide")
+    base = fill_planes(P.loomo("wide"))
     rng = np.random.default_rng(5)
     n = 230
     i, j = np.meshgrid(np.arange(-n, n), np.arange(-n, n))
@@ -188,7 +231,7 @@ def main():
                 for s_ in range(0, steps, 2):
                     a_, b_ = s_ / steps, (s_ + 1) / steps
                     od.line([(hx + (px0 - hx) * a_) * SS, (hy + (cy_ - hy) * a_) * SS, (hx + (px0 - hx) * b_) * SS, (hy + (cy_ - hy) * b_) * SS], fill=(*pale, int(110 * pa)), width=3)
-            od.rectangle([px0 * SS, py0 * SS, px1 * SS, py1 * SS], fill=(14, 16, 22, ba), outline=(*pale, int(120 * pa)), width=3)
+            od.rectangle([px0 * SS, py0 * SS, px1 * SS, py1 * SS], fill=(14, 16, 22, ba), outline=(*acc, int(102 * pa)), width=2)
 
         t_hit = {}
         for jx in conf:
@@ -237,7 +280,7 @@ def main():
     frames_out = [draw(f, f / N, f) for f in range(N)]
     still = draw(IDX.index(REF), 0.8, 19)
     still.save(out / "loomo-pose-b2.webp", "WEBP", quality=72, method=6)
-    loop = [im.resize((640, 400), Image.LANCZOS) for im in frames_out]
+    loop = [im.resize((576, 360), Image.LANCZOS) for im in frames_out]
     loop[0].save(out / "loomo-pose-b2-anim.webp", "WEBP", save_all=True, append_images=loop[1:], duration=80, loop=0, quality=q, method=6)
     for nme in ("loomo-pose-b2.webp", "loomo-pose-b2-anim.webp"):
         print(nme, (out / nme).stat().st_size)

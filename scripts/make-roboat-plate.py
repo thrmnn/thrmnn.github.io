@@ -35,6 +35,7 @@ SIMULATED: everything that is the boat and its scan.
   hit a wall; nothing here is a claim about what an on-board scanner sees.
 
     python3 scripts/make-roboat-plate.py            # plates from the asset
+    python3 scripts/make-roboat-plate.py --view high  # alternative high oblique view, written to ~/Perso/site-review/files
     python3 scripts/make-roboat-plate.py --sample   # rebuild the asset from a LAZ
 """
 import math
@@ -65,6 +66,7 @@ BEAMS = np.radians(np.linspace(-25, 15, 16))
 AZ_STEP = 0.4
 MAX_RANGE = 60.0
 RING_STEP = 2
+RING_FAR = 80
 YAW = math.radians(28)
 
 
@@ -262,7 +264,7 @@ def groups(sc, cam, lit_i=None, ring_i=None):
     ring_i = np.ones(len(sc["ring"])) if ring_i is None else ring_i
     return [
         (sc["cloud"], sc["grey"], 2.4, depth_fade(cam, sc["cloud"], 6, 130, 0.6), 1.0),
-        (sc["ring"], ACCENT, 2.2, depth_fade(cam, sc["ring"], 10, 80, 0.7) * ring_i, 1.0),
+        (sc["ring"], ACCENT, 2.2, depth_fade(cam, sc["ring"], 10, RING_FAR, 0.7) * ring_i, 1.0),
         (sc["hull"], LIGHT, 0.9, np.ones(len(sc["hull"])), 1.0),
         (sc["lit"], ACCENT, 2.4, depth_fade(cam, sc["lit"], 10, 120, 0.5) * lit_i, 1.5),
         (sc["head"], ACCENT, 1.6, np.ones(len(sc["head"])), 1.2),
@@ -277,20 +279,29 @@ def sweep(sc, head, tau=110.0, floor=0.0):
 CAM = cam_persp((-25.0, 2.0, 6.0), (14.0, 0.0, 3.0), 1650, oy=0.19)
 
 
+CAM_HIGH = cam_persp((-40.0, 0.0, 31.0), (6.0, 0.0, 0.0), 1250, oy=0.40)
+HIGH_OUT = Path.home() / "Perso/site-review/files"
+
+
 def main():
-    OUT.mkdir(parents=True, exist_ok=True)
+    high = "--view" in sys.argv and sys.argv[sys.argv.index("--view") + 1] == "high"
+    global RING_FAR
+    cam = CAM_HIGH if high else CAM
+    RING_FAR = 140 if high else RING_FAR
+    still = HIGH_OUT / "roboat-high.webp" if high else OUT / "card-plate.webp"
+    anim = HIGH_OUT / "roboat-high-anim.webp" if high else OUT / "card-anim.webp"
+    still.parent.mkdir(parents=True, exist_ok=True)
     sc = scene()
     print(len(sc["cloud"]), "cloud pts,", len(sc["lit"]), "lit,", len(sc["ring"]), "ring")
-    a = render(CAM, groups(sc, CAM))
-    a.save(OUT / "card-plate.webp", "WEBP", quality=84, method=6)
+    render(cam, groups(sc, cam)).save(still, "WEBP", quality=84, method=6)
     frames = []
     n = 36
     for i in range(n):
         li, ri = sweep(sc, i * 360 / n)
-        frames.append(render(CAM, groups(sc, CAM, li, ri)).resize((600, 600), Image.LANCZOS))
-    frames[0].save(OUT / "card-anim.webp", "WEBP", save_all=True, append_images=frames[1:], duration=80, loop=0, quality=30, method=6)
-    for nme in ("card-plate.webp", "card-anim.webp"):
-        print(nme, (OUT / nme).stat().st_size, "B")
+        frames.append(render(cam, groups(sc, cam, li, ri)).resize((600, 600), Image.LANCZOS))
+    frames[0].save(anim, "WEBP", save_all=True, append_images=frames[1:], duration=80, loop=0, quality=30, method=6)
+    for f in (still, anim):
+        print(f, f.stat().st_size, "B")
 
 
 if __name__ == "__main__":

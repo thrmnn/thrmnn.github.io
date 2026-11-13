@@ -9,7 +9,7 @@ TAU, so pixels switch on and off as the room's edges sweep past. No overlay.
 Prints the facts the project page quotes.
 
 House rules (cycle 20, readability): the picture is a dot matrix, one round dot
-per 5x5 block of sensor pixels (the block's mean brightness sets the dot's size and strength, the majority
+per BLOCKxBLOCK block (4x4 in public/; --block N --alt writes a variant to site-review/files) of sensor pixels (the block's mean brightness sets the dot's size and strength, the majority
 polarity its colour), faint grey dots where nothing fired so the sensor grid reads, dots big
 enough to stay dots at 330 px. The loop is 36 frames at 80 ms (it was 75 frames at
 40 ms, 20 ms slices): the same real event window is resampled into 36 equal slices
@@ -36,7 +36,9 @@ W, H = 346, 260
 CROP = (23, 323)
 N_FRAMES, ANIM_MS = 36, 80
 TAU = 12000
-BLOCK = 5
+import sys
+BLOCK = int(sys.argv[sys.argv.index('--block') + 1]) if '--block' in sys.argv else 4
+ALT = Path.home() / 'Perso/site-review/files'
 ANIM_SCALE, ANIM_SIZE = 2, 600
 STILL_SCALE, STILL_SIZE = 4, 1200
 
@@ -84,20 +86,23 @@ def dots(k, pol, scale, size):
     y0 = (size - gh * cell) / 2
     im = Image.new("RGB", (size, size), tuple(int(v) for v in BG))
     dr = ImageDraw.Draw(im)
-    rmax = 0.0042 * size
     for r_ in range(gh):
         for c_ in range(gw):
             v = kk[r_, c_]
             cx, cy = x0 + (c_ + 0.5) * cell, y0 + (r_ + 0.5) * cell
             if v < 0.05:
-                rad, col = rmax * 0.55, BG + (OFF - BG) * FLOOR
+                rad, col = cell * 0.2, BG + (OFF - BG) * FLOOR
             else:
-                rad = rmax * (0.7 + 0.8 * v)
+                rad = cell * (0.3 + 0.2 * v)
                 col = BG + ((ON if pp[r_, c_] == 1 else OFF) - BG) * (FLOOR + (1 - FLOOR) * v)
             dr.ellipse([cx - rad, cy - rad, cx + rad, cy + rad], fill=tuple(int(q) for q in col))
     return im, float(kk.sum())
 
 
+if '--alt' in sys.argv:
+    ANIM_PATH, STILL_PATH = ALT / f"evio-{BLOCK}x{BLOCK}-anim.webp", ALT / f"evio-{BLOCK}x{BLOCK}.webp"
+else:
+    ANIM_PATH, STILL_PATH = OUT / "card-anim.webp", OUT / "card-plate.webp"
 times = [(i + 1) * STEP for i in range(n_frames)]
 raw = [frame_k(t) for t in times]
 lit = [float((k > 0.05).mean()) for k, _ in raw]
@@ -107,9 +112,9 @@ still_i = int(np.argmax(lit))
 
 imgs = [dots(*raw[i], ANIM_SCALE, ANIM_SIZE)[0] for i in order]
 OUT.mkdir(parents=True, exist_ok=True)
-imgs[0].save(OUT / "card-anim.webp", "WEBP", save_all=True, append_images=imgs[1:], duration=ANIM_MS,
+imgs[0].save(ANIM_PATH, "WEBP", save_all=True, append_images=imgs[1:], duration=ANIM_MS,
              loop=0, quality=20, method=6)
-dots(*raw[still_i], STILL_SCALE, STILL_SIZE)[0].save(OUT / "card-plate.webp", "WEBP", quality=88, method=6)
-for n in ("card-anim.webp", "card-plate.webp"):
-    print(n, (OUT / n).stat().st_size, "B")
+dots(*raw[still_i], STILL_SCALE, STILL_SIZE)[0].save(STILL_PATH, "WEBP", quality=88, method=6)
+for f in (ANIM_PATH, STILL_PATH):
+    print(f, f.stat().st_size, "B")
 print(f"window {span / 1e6:.2f} s, {len(ev)} events, {n_frames} frames of {STEP // 1000} ms slices, tau {TAU // 1000} ms, played at {ANIM_MS} ms per frame; lit share per frame min {min(lit):.2%} max {max(lit):.2%}, loop starts at slice {start}")

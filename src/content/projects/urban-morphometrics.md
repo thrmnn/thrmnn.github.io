@@ -42,7 +42,7 @@ back.
 
 ## What is shown here
 
-The only picture of this work is the geometry of one site, Vidigal, on the
-front page of theoalessandro.com. Nothing else from this work appears: this page
-describes the method only, with no indicators, no findings and no figures from the
-study.
+The only pictures of this work show the geometry of one site, Vidigal: its
+terrain and building footprints, on the front page, on this page and in the
+Explore view. Nothing else from this work appears: this page describes the method
+only, with no indicators, no findings and no figures from the study.

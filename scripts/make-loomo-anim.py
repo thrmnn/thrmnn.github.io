@@ -66,10 +66,10 @@ ACCENT = np.array((86, 140, 246), float)
 PALE = np.array((160, 196, 255), float)
 SS = 2
 FIRST, LAST = 7, 82
-N_LOOP = 30
+N_LOOP = 24
 CONF = 2.0
 LIMBS = [(5, 7), (7, 9), (6, 8), (8, 10), (5, 6), (11, 12), (5, 11), (6, 12), (11, 13), (13, 15), (12, 14), (14, 16)]
-LEFT = {5, 7, 9, 11, 13, 15}
+LEFT = {5, 7, 9, 11, 13, 15}  # drawn blue; the right side is pale blue
 
 
 def load_frames(tmp):
@@ -100,7 +100,7 @@ def stabilise(frames, pose):
 
 def pick_window(frames):
     small = {i: cv2.resize(cv2.cvtColor(f, cv2.COLOR_BGR2GRAY), (90, 51)).astype(float) for i, f in frames.items()}
-    best = min(range(FIRST, LAST - N_LOOP + 2), key=lambda s: np.abs(small[s] - small[s + N_LOOP - 1]).mean())
+    best = min(range(FIRST, 15), key=lambda s: np.abs(small[s] - small[s + N_LOOP - 1]).mean())
     return list(range(best, best + N_LOOP))
 
 
@@ -134,11 +134,12 @@ def analyse(frames, idx, pose, shifts):
         base_x = np.median(xs[ys > np.percentile(ys, 70)])
         wide = np.abs(np.arange(g.shape[1])[None, :] - base_x) < np.where(np.arange(g.shape[0])[:, None] > ys.max() - 75, 120, 36)
         m &= wide
+        m = ndi.binary_closing(m, structure=np.ones((11, 3), bool), iterations=2)
         ys, xs = np.nonzero(m)
         top = ys < ys.min() + 25
         head = (xs[top].mean(), ys[top].mean() + 10)
         x1, y1, x2, y2 = [int(v) for v in box[n]]
-        y1 = max(y1, 0)
+        x1, y1 = max(x1, 0), max(y1, 0)
         gc = np.zeros(g.shape, np.uint8)
         cv2.grabCut(im, gc, (x1, y1, x2 - x1, y2 - y1), np.zeros((1, 65)), np.zeros((1, 65)), 4, cv2.GC_INIT_WITH_RECT)
         person = (gc == 1) | (gc == 3)
@@ -185,9 +186,9 @@ class View:
     def pt(self, x, y):
         return x * self.k - self.x0, y * self.k - self.y0
 
-    def warp(self, a):
+    def warp(self, a, const=False):
         M = np.array([[self.k, 0, -self.x0], [0, self.k, -self.y0]], np.float32)
-        return cv2.warpAffine(a.astype(np.float32), M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+        return cv2.warpAffine(a.astype(np.float32), M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT if const else cv2.BORDER_REPLICATE)
 
 
 def ease(x):
@@ -203,59 +204,60 @@ def render(fr, first, blend, t, V):
     g = V.warp(scene)
     lo, hi = np.percentile(g, [4, 98])
     g = np.clip((g - lo) / (hi - lo), 0, 1) ** 1.5
+    valid = cv2.GaussianBlur(V.warp(np.ones_like(fr["g"]), const=True), (0, 0), 3)
     robot = cv2.GaussianBlur(V.warp(fr["robot"]), (0, 0), 2) > 0.5
     person = cv2.GaussianBlur(V.warp(fr["person"]), (0, 0), 2) > 0.5
     hx, hy = V.pt(*fr["head"])
+    sc = V.W / 1600
 
     kp = fr["kp"]
     ok = kp[:, 2] > CONF
     pts = np.array([V.pt(x, y) for x, y, _ in kp])
-    low = ok & (kp[:, 1] > 120)
-    tx, ty = pts[low if low.any() else ok].mean(0)
-    axis = np.arctan2(ty - hy, tx - hx)
-    half = np.radians(27)
-    reach = np.hypot(tx - hx, ty - hy) * 1.3
-
+    hip_y = pts[[j for j in (11, 12) if ok[j]], 1].mean() if (ok[11] or ok[12]) else V.pt(0, 120)[1]
     X, Y = V.X, V.Y
-    rel = (np.arctan2(Y - hy, X - hx) - axis + np.pi) % (2 * np.pi) - np.pi
-    dist = np.hypot(X - hx, Y - hy)
-    incone = (np.abs(rel) < half) & (dist < reach) & (dist > 40)
-
-    env = 1.0 if t < 0.82 else max(0.0, (1.0 - t) / 0.18)
-    env *= ease(t / 0.03)
-    s = -half + 2 * half * ease(t / 0.74)
-    trail = np.clip(1 - (s - rel) / (1.5 * half), 0, 1) * (rel <= s) * incone
-    lit = trail * env
-    beam = np.exp(-(((rel - s) / np.radians(1.6)) ** 2)) * incone * (t < 0.8) * env
-
     on_person = person[V.iy, V.ix]
     on_robot = robot[V.iy, V.ix]
+    legs = on_person & (Y > hip_y)
+    tx, ty = X[legs].mean(), Y[legs].mean()
+    axis = np.arctan2(ty - hy, tx - hx)
+    half = np.radians(27)
+    reach = np.hypot(tx - hx, ty - hy) * 1.15
+
+    rel = (np.arctan2(Y - hy, X - hx) - axis + np.pi) % (2 * np.pi) - np.pi
+    dist = np.hypot(X - hx, Y - hy)
+    incone = (np.abs(rel) < half) & (dist < reach) & (dist > 30 * sc)
+
+    env = 1.0 if t < 0.84 else max(0.0, (1.0 - t) / 0.16)
+    env *= ease(t / 0.03)
+    p = ease(t / 0.74)
+    rho = 40 * sc + (reach - 40 * sc) * p
+    tau = 0.3 * reach
+    lit = np.exp(-np.clip(rho - dist, 0, None) / tau) * (dist <= rho) * incone * env
+    front = np.exp(-(((dist - rho) / (0.025 * reach)) ** 2)) * incone * (t < 0.78) * env
+
+    sx, sy = hx - tx, hy - ty
+    s = np.clip(((X - tx) * sx + (Y - ty) * sy) / (sx * sx + sy * sy), 0, 1)
+    d_line = np.hypot(X - (tx + s * sx), Y - (ty + s * sy))
+    calm = 0.35 + 0.65 * np.clip(1 - d_line / (0.55 * V.H), 0, 1) ** 1.2
+
     floor = (Y > V.pt(0, 205)[1]) & ~on_person & ~on_robot
-    ring_r = np.arange(1, 14) * V.k * 38
-    ring = np.min(np.abs(dist[:, None] - ring_r[None, :]), axis=1) < V.k * 1.9
-    returns = floor & ring & incone
+    ret_floor = floor & incone & (np.modf(V.jit * 997.0)[0] < 0.3)
+    ret_leg = legs & incone
 
     gv = g[V.iy, V.ix]
-    tone = gv * V.fade[V.iy, V.ix] * 0.7
+    vf = V.fade[V.iy, V.ix] * valid[V.iy, V.ix]
+    tone = gv * vf * 0.6 * calm
+    tone = np.where(on_person, np.maximum(tone, (0.2 + 0.4 * gv) * vf * 0.9), tone)
     tone = np.where(on_robot, 0.5 + 0.45 * gv, tone)
-    tone = np.where(on_person, np.maximum(tone, 0.28 + 0.5 * gv), tone)
-    tone = np.maximum(tone, 0.16 * (1 - dist / reach) * incone * ~on_robot * env)
-    tone = np.where(on_person, np.minimum(tone * (1 + 0.5 * lit), 1), tone)
-    tone = np.maximum(tone, np.where(returns, (0.35 + 0.5 * lit) * np.clip(lit * 3 + 0.35 * beam, 0, 1), 0))
-    tone = np.clip(tone + 0.5 * beam * on_person, 0, 1)
+    gate = np.clip(lit * 2.2 + front, 0, 1)
+    tone = np.maximum(tone, np.where(ret_floor, 0.4 * gate, 0))
+    tone = np.where(ret_leg, np.minimum(tone * (1 + 0.6 * gate) + 0.15 * gate, 1), tone)
+    tone = np.round(np.clip(tone, 0, 1) * 9) / 9
 
     grey = GREY[None] * (1 - tone[:, None]) + LIGHT[None] * tone[:, None]
-    mixb = np.clip(
-        on_robot * 1.0
-        + on_person * np.clip(lit * 1.2 + beam, 0, 1) * 0.6
-        + returns * np.clip(lit * 2 + beam, 0, 1) * 0.95
-        + (incone & ~on_person & ~on_robot) * 0.4 * env * (1 - dist / reach),
-        0, 1,
-    )
-    blue = ACCENT[None] * (1 - 0.25 * beam[:, None]) + PALE[None] * 0.25 * beam[:, None]
+    mixb = np.clip(on_robot * 1.0 + ret_leg * gate * 0.5 + ret_floor * gate * 0.95, 0, 1)
+    blue = ACCENT[None] * (1 - 0.3 * front[:, None]) + PALE[None] * 0.3 * front[:, None]
     col = grey * (1 - mixb[:, None]) + blue * mixb[:, None]
-    r = V.rmax * np.sqrt(tone) * V.jit
-    tone = np.round(tone * 9) / 9
     r = V.rmax * np.sqrt(tone) * V.jit
     keep = tone > 0.03
 
@@ -266,44 +268,43 @@ def render(fr, first, blend, t, V):
 
     over = Image.new("RGBA", img.size, (0, 0, 0, 0))
     od = ImageDraw.Draw(over)
-    u = V.k * SS
-    lw, jr = max(4, 3.2 * u), max(5, 3.6 * u)
+    lw = max(2, round(2.6 * sc * SS))
+    jr = max(3, 5.5 * sc * SS)
     pale, acc = tuple(int(v) for v in PALE), tuple(int(v) for v in ACCENT)
     a_env = int(255 * env)
 
-    edge = (*acc, int(70 * env))
+    edge = (*acc, int(150 * env))
     for sgn in (-1, 1):
         ex, ey = hx + reach * np.cos(axis + sgn * half), hy + reach * np.sin(axis + sgn * half)
-        od.line([hx * SS, hy * SS, ex * SS, ey * SS], fill=edge, width=max(2, int(0.9 * u)))
-    od.arc([(hx - reach) * SS, (hy - reach) * SS, (hx + reach) * SS, (hy + reach) * SS], np.degrees(axis - half), np.degrees(axis + half), fill=edge, width=max(2, int(0.9 * u)))
+        od.line([hx * SS, hy * SS, ex * SS, ey * SS], fill=edge, width=max(2, round(1.6 * sc * SS)))
 
     t_hit = {}
     for j in np.nonzero(ok)[0]:
-        a = (np.arctan2(pts[j][1] - hy, pts[j][0] - hx) - axis + np.pi) % (2 * np.pi) - np.pi
-        t_hit[j] = 0.74 * (np.clip(a, -half, half) + half) / (2 * half) + 0.04
+        pj = np.clip((np.hypot(pts[j][0] - hx, pts[j][1] - hy) - 40 * sc) / (reach - 40 * sc), 0, 0.999)
+        t_hit[j] = 0.74 * (1 - (1 - pj) ** (1 / 3)) + 0.02
     shown = {j for j, th in t_hit.items() if t >= th}
     for a, b in LIMBS:
         if a in shown and b in shown:
-            od.line([pts[a][0] * SS, pts[a][1] * SS, pts[b][0] * SS, pts[b][1] * SS], fill=(*(pale if a in LEFT else acc), a_env), width=int(lw))
+            od.line([pts[a][0] * SS, pts[a][1] * SS, pts[b][0] * SS, pts[b][1] * SS], fill=(*(acc if a in LEFT else pale), a_env), width=lw)
     for j in shown:
         x, y = pts[j][0] * SS, pts[j][1] * SS
         age = (t - t_hit[j]) / 0.09
         if 0 <= age < 1:
-            R = jr * (1.6 + 2.6 * age)
-            od.ellipse([x - R, y - R, x + R, y + R], outline=(*pale, int(a_env * (1 - age))), width=max(2, int(lw / 2)))
-        od.ellipse([x - jr, y - jr, x + jr, y + jr], fill=(255, 255, 255, a_env), outline=(*(pale if j in LEFT else acc), a_env), width=max(2, int(lw * 0.7)))
+            R = jr * (1.5 + 2.2 * age)
+            od.ellipse([x - R, y - R, x + R, y + R], outline=(*pale, int(a_env * (1 - age))), width=max(1, lw // 2))
+        od.ellipse([x - jr, y - jr, x + jr, y + jr], fill=(255, 255, 255, a_env), outline=(*(acc if j in LEFT else pale), a_env), width=max(2, lw))
 
     p1, p2 = V.pt(*fr["box"][:2]), V.pt(*fr["box"][2:])
     cx, cy = (p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2
-    sc = 1 + 0.22 * (1 - ease((t - 0.05) / 0.3))
-    hw, hh = (p2[0] - p1[0]) / 2 * sc + 10, (p2[1] - p1[1]) / 2 * sc + 10
-    ba = int(255 * env * ease((t - 0.04) / 0.08))
-    arm = min(hw, hh) * 0.28 * SS
-    for sx in (-1, 1):
-        for sy in (-1, 1):
-            px, py = (cx + sx * hw) * SS, (cy + sy * hh) * SS
-            od.line([px, py, px - sx * arm, py], fill=(*pale, ba), width=max(3, int(1.8 * u)))
-            od.line([px, py, px, py - sy * arm], fill=(*pale, ba), width=max(3, int(1.8 * u)))
+    bs = 1 + 0.22 * (1 - ease((t - 0.05) / 0.3))
+    hw, hh = (p2[0] - p1[0]) / 2 * bs + 10 * sc, (p2[1] - p1[1]) / 2 * bs + 10 * sc
+    ba = int(150 * env * ease((t - 0.04) / 0.08))
+    arm = min(hw, hh) * 0.2 * SS
+    for sx_ in (-1, 1):
+        for sy_ in (-1, 1):
+            px, py = (cx + sx_ * hw) * SS, (cy + sy_ * hh) * SS
+            od.line([px, py, px - sx_ * arm, py], fill=(*pale, ba), width=lw)
+            od.line([px, py, px, py - sy_ * arm], fill=(*pale, ba), width=lw)
     img = Image.alpha_composite(img.convert("RGBA"), over).convert("RGB")
     return img.resize((V.W, V.H), Image.LANCZOS)
 
@@ -326,26 +327,28 @@ def main():
         idx = pick_window(frames)
         fa = analyse(frames, idx, pose, shifts)
     print("window", idx[0], idx[-1])
-    wide = View(1600, 1000, 1000 / 406, 60, 0, 7, (800, 520, 960, 620))
-    card = View(1200, 1200, 1.75, 40 * 1.75 - 130, -45, 6.5, (600, 450, 640, 560))
+    wide = View(1600, 1000, 2.5, -60, -10, 7, (800, 500, 980, 640))
+    card = View(1200, 1200, 1.65, -121, -70, 6.5, (600, 430, 700, 520))
     OUT.mkdir(parents=True, exist_ok=True)
     ws, wl = build(fa, wide, wide.scaled(0.4, 3.9))
     ws.save(OUT / "loomo-wide.webp", "WEBP", quality=72, method=6)
-    save_anim(wl, OUT / "loomo-wide-anim.webp", 40)
+    save_anim(wl, OUT / "loomo-wide-anim.webp", 34)
     cs, cl = build(fa, card, card.scaled(0.4, 3.4))
     cs.save(OUT / "card-plate.webp", "WEBP", quality=72, method=6)
     save_anim(cl, OUT / "card-anim.webp", 40)
     for n in ("loomo-wide.webp", "loomo-wide-anim.webp", "card-plate.webp", "card-anim.webp"):
         print(n, (OUT / n).stat().st_size)
     if "--preview" in sys.argv:
-        p = Path.home() / "Perso/site-review/files/loomo-anim-20.png"
-        sheet = Image.new("RGB", (1600, 1400), BG)
-        for n, im in enumerate([ws] + [wl[i] for i in (6, 15, 24)]):
-            sheet.paste(im.resize((800, 500)), ((n % 2) * 800, (n // 2) * 500))
-        sheet.paste(cs.resize((400, 400)), (0, 1000))
-        sheet.paste(ws.resize((390, 244)), (450, 1000))
-        sheet.save(p)
-        print(p)
+        alt = Path.home() / "Perso/wt20-alt-a/public/projects/autonomous-mobile-robot/loomo-wide.webp"
+        sheet = Image.new("RGB", (1600, 1500), BG)
+        if alt.exists():
+            sheet.paste(Image.open(alt).convert("RGB").resize((800, 500)), (0, 0))
+        sheet.paste(ws.resize((800, 500)), (800, 0))
+        for n, i in enumerate((5, 12, 19)):
+            sheet.paste(wl[i].resize((533, 333)), (n * 533, 500))
+        sheet.paste(ws.resize((390, 244)), (0, 860))
+        sheet.paste(cs.resize((350, 350)), (450, 860))
+        sheet.save(Path.home() / "Perso/site-review/files/loomo-anim-20.png")
 
 
 if __name__ == "__main__":

@@ -49,4 +49,4 @@ To see the regression guard work, clone the repo, run `pip install -e .`, then `
 
 ## Picture credit
 
-The card is drawn from the repo's own eval run at commit bdbe373, run twice. Each pair of columns is one search result before and after the `TITLE_WEIGHT` change, in rank order; a column's height is the score the tool returned. The orange columns are the ranking that flipped, after the change. The flat marks on the right are a call that returns a document, not a score. Positions and dot placement are drawn; every score, rank and check result comes from the run.
+The picture on this project's card (and on this page on a phone) is drawn from the repo's own eval run at commit bdbe373, run twice. Each pair of columns is one search result before and after the `TITLE_WEIGHT` change, in rank order; a column's height is the score the tool returned. The orange columns are the ranking that flipped, after the change. The flat marks on the right are a call that returns a document, not a score. Positions and dot placement are drawn; every score, rank and check result comes from the run.

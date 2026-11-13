@@ -52,7 +52,7 @@ const articleJsonLd = {
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
       <!-- Header -->
       <div class="mb-10">
-        <a href={`${base}/projects/`} class="text-sm text-text-muted hover:text-text-secondary mb-4 inline-block">
+        <a href={`${base}/projects/`} data-back={project.id} data-home={`${base}/`} class="text-sm text-text-muted hover:text-text-secondary mb-4 inline-block">
           ← Back to projects
         </a>
         <h1 class="text-3xl font-bold text-text-primary mt-2">{project.data.title}</h1>
@@ -207,3 +207,16 @@ const articleJsonLd = {
     .pager-cell:hover { transform: none; }
   }
 </style>
+
+<script>
+  const back = document.querySelector('a[data-back]') as HTMLAnchorElement | null;
+  if (back) {
+    try {
+      const from = JSON.parse(sessionStorage.getItem('back-from') ?? 'null');
+      if (from && from.slug === back.dataset.back && /^[a-z]+$/.test(from.id)) {
+        back.href = `${back.dataset.home}#${from.id}`;
+        back.textContent = '← Back';
+      }
+    } catch {}
+  }
+</script>

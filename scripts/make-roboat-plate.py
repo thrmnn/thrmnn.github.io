@@ -305,7 +305,8 @@ VIEWS = {
     "low": dict(cam=cam_persp((-25.0, 2.0, 6.0), (14.0, 0.0, 3.0), 1650, oy=0.19), ring_far=80,
                 still=ALT_OUT / "roboat-low.webp", anim=ALT_OUT / "roboat-low-anim.webp"),
     "tile": dict(cam=cam_persp((-25.0, 2.0, 6.0), (14.0, 0.0, 3.0), 1650, oy=0.19), ring_far=80,
-                 still=OUT / "hero-tile.webp", anim=OUT / "hero-tile-anim.webp", still_q=80, anim_q=32),
+                 still=OUT / "hero-tile.webp", anim=OUT / "hero-tile-anim.webp", still_q=80, anim_q=32,
+                 phone=((330, 80, 870, 800), OUT / "hero-tile-phone.webp", OUT / "hero-tile-phone-anim.webp")),
     "tile-close": dict(cam=cam_persp((-19.0, 2.0, 6.0), (0.4, 0.0, 1.0), 1800, oy=0.5), ring_far=80,
                        still=ALT_OUT / "roboat-hero-close.webp", anim=ALT_OUT / "roboat-hero-close-anim.webp", still_q=80, anim_q=32),
     "high": dict(cam=cam_persp((-40.0, 0.0, 31.0), (6.0, 0.0, 0.0), 1250, oy=0.40), ring_far=140,
@@ -332,10 +333,21 @@ def run(name, sc):
     for i in range(n):
         li, ri = sweep(sc, i * 360 / n)
         li, ri = flicker(rng, li, 0.45), flicker(rng, ri, 0.2)
-        frames.append(render(cam, groups(sc, cam, li, ri)).resize((600, 600), Image.LANCZOS))
-    frames[0].save(v["anim"], "WEBP", save_all=True, append_images=frames[1:], duration=80, loop=0, quality=v.get("anim_q", 30), method=6)
-    for f in (v["still"], v["anim"]):
+        frames.append(render(cam, groups(sc, cam, li, ri)))
+    save_loop([f.resize((600, 600), Image.LANCZOS) for f in frames], v["anim"], v.get("anim_q", 30))
+    outs = [v["still"], v["anim"]]
+    if "phone" in v:
+        # phone hero tiles are 3:4 and about 110 px wide: a closer crop keeps the boat readable
+        box, still, anim = v["phone"]
+        full.crop(box).resize((450, 600), Image.LANCZOS).save(still, "WEBP", quality=v.get("still_q", 84), method=6)
+        save_loop([f.crop(box).resize((450, 600), Image.LANCZOS) for f in frames], anim, v.get("anim_q", 30))
+        outs += [still, anim]
+    for f in outs:
         print(f, f.stat().st_size, "B")
+
+
+def save_loop(frames, path, q):
+    frames[0].save(path, "WEBP", save_all=True, append_images=frames[1:], duration=80, loop=0, quality=q, method=6)
 
 
 def main():

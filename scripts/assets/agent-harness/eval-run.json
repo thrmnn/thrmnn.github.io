@@ -8,6 +8,15 @@
    "ok": true,
    "checks": [
     true
+   ],
+   "input": {
+    "query": "lidar drone scans"
+   },
+   "hits": [
+    {
+     "id": "doc-lidar",
+     "score": 7
+    }
    ]
   },
   {
@@ -17,6 +26,15 @@
    "ok": true,
    "checks": [
     true
+   ],
+   "input": {
+    "query": "retrieval quality"
+   },
+   "hits": [
+    {
+     "id": "doc-retrieval",
+     "score": 4
+    }
    ]
   },
   {
@@ -26,6 +44,20 @@
    "ok": true,
    "checks": [
     true
+   ],
+   "input": {
+    "query": "tool agents calls",
+    "top_k": 2
+   },
+   "hits": [
+    {
+     "id": "doc-evals",
+     "score": 5
+    },
+    {
+     "id": "doc-tracing",
+     "score": 5
+    }
    ]
   },
   {
@@ -36,7 +68,11 @@
    "checks": [
     true,
     true
-   ]
+   ],
+   "input": {
+    "query": "sourdough fermentation schedule"
+   },
+   "hits": []
   },
   {
    "case": "title-match-outranks-body-match",
@@ -46,6 +82,19 @@
    "checks": [
     true,
     true
+   ],
+   "input": {
+    "query": "regression evals"
+   },
+   "hits": [
+    {
+     "id": "doc-evals",
+     "score": 4
+    },
+    {
+     "id": "doc-retrieval",
+     "score": 3
+    }
    ]
   },
   {
@@ -56,6 +105,14 @@
    "checks": [
     true,
     true
+   ],
+   "input": {
+    "doc_id": "doc-tracing"
+   },
+   "hits": [
+    {
+     "id": "doc-tracing"
+    }
    ]
   }
  ],
@@ -67,6 +124,15 @@
    "ok": true,
    "checks": [
     true
+   ],
+   "input": {
+    "query": "lidar drone scans"
+   },
+   "hits": [
+    {
+     "id": "doc-lidar",
+     "score": 4
+    }
    ]
   },
   {
@@ -76,6 +142,15 @@
    "ok": true,
    "checks": [
     true
+   ],
+   "input": {
+    "query": "retrieval quality"
+   },
+   "hits": [
+    {
+     "id": "doc-retrieval",
+     "score": 2
+    }
    ]
   },
   {
@@ -85,6 +160,20 @@
    "ok": true,
    "checks": [
     true
+   ],
+   "input": {
+    "query": "tool agents calls",
+    "top_k": 2
+   },
+   "hits": [
+    {
+     "id": "doc-evals",
+     "score": 3
+    },
+    {
+     "id": "doc-tracing",
+     "score": 3
+    }
    ]
   },
   {
@@ -95,7 +184,11 @@
    "checks": [
     true,
     true
-   ]
+   ],
+   "input": {
+    "query": "sourdough fermentation schedule"
+   },
+   "hits": []
   },
   {
    "case": "title-match-outranks-body-match",
@@ -105,6 +198,19 @@
    "checks": [
     false,
     true
+   ],
+   "input": {
+    "query": "regression evals"
+   },
+   "hits": [
+    {
+     "id": "doc-retrieval",
+     "score": 3
+    },
+    {
+     "id": "doc-evals",
+     "score": 2
+    }
    ]
   },
   {
@@ -115,6 +221,14 @@
    "checks": [
     true,
     true
+   ],
+   "input": {
+    "doc_id": "doc-tracing"
+   },
+   "hits": [
+    {
+     "id": "doc-tracing"
+    }
    ]
   }
  ]

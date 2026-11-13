@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Capture the agent-harness example eval suite, per case and per check, into
+"""Capture the agent-harness example eval suite, per case and per check (and each call's input and returned hits), into
 scripts/assets/agent-harness/eval-run.json: once as committed, once with the
 change the suite's own comment describes (TITLE_WEIGHT 2 -> 1 in
 examples/kb_search.py). Each case's tool call goes through a Tracer, so the
@@ -29,8 +29,9 @@ for case in eval_cases.CASES:
     res = registry.call(case.tool, **case.input)
     checks = [_apply(c, res.value) is None for c in case.checks]
     ev = tracer.events[-1]
+    hits = [{"id": h["id"], "score": h["score"]} for h in res.value["hits"]] if "hits" in res.value else [{"id": res.value["id"]}]
     out.append({"case": case.name, "tool": ev["tool"], "version": ev["version"],
-                "ok": ev["ok"], "checks": checks})
+                "ok": ev["ok"], "checks": checks, "input": case.input, "hits": hits})
 print(json.dumps(out))
 '''
 

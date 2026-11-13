@@ -2,6 +2,7 @@
 title: "Leaf area from an aerial scan"
 date: '2024-09-01T00:00:00Z'
 cardImage: '/projects/aerial-lidar-tree-census/jordaan-plate.webp'
+cardAnim: '/projects/aerial-lidar-tree-census/jordaan-anim.webp'
 featuredOrder: 2
 externalLink: 'https://www.ams-institute.org/'
 summary: "A city knows where its trees are, not how much leaf they carry. I recover leaf area per tree by inverting how much sky the canopy blocks in an aerial LiDAR survey the city already flies for other reasons."
@@ -45,4 +46,4 @@ Method only: there are no numbers, figures or findings on this page.
 
 ## Picture credit
 
-The picture on this project's card is a few blocks of the Jordaan, Amsterdam, drawn from open aerial LiDAR: the AHN5 point cloud of the Dutch national elevation survey. Source: [AHN](https://www.ahn.nl/eerste-deel-van-ahn-5-is-beschikbaar), CC BY 4.0. Green dots are returns at least 2 m above the ground that the survey leaves unclassified, which here are mostly tree crowns; grey dots are ground and roofs.
+The picture on this project's card is a few blocks of the Jordaan, Amsterdam, drawn from open aerial LiDAR: the AHN5 point cloud of the Dutch national elevation survey. Source: [AHN](https://www.ahn.nl/eerste-deel-van-ahn-5-is-beschikbaar), CC BY 4.0. Green dots are returns at least 2 m above the ground that the survey leaves unclassified, which here are mostly tree crowns; grey dots are ground and roofs. On the card a band of light rises through the dots; it is an effect, not a measurement.

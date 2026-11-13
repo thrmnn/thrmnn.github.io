@@ -44,5 +44,7 @@ back.
 
 The only pictures of this work show the geometry of one site, Vidigal: its
 terrain and building footprints, on the front page, on this page and in the
-Explore view. Nothing else from this work appears: this page describes the method
+Explore view. On the card and in the home-page tile the terrain is drawn as contour
+lines of dots cut from those same public points, and the light that rises up the
+slope is an effect, not a measurement. Nothing else from this work appears: this page describes the method
 only, with no indicators, no findings and no figures from the study.

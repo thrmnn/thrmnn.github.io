@@ -47,4 +47,4 @@ person could do on one laptop.
 
 ## Picture credit
 
-The card picture is an Amsterdam canal drawn from open aerial LiDAR: [AHN5](https://www.ahn.nl/) point cloud, Rijkswaterstaat (CC0). The boat is a generic hull and the scan is simulated: an imagined 16-beam scanner lights the points of that aerial cloud it would reach first. It is not Roboat's boat and not Roboat's data.
+The card picture is an Amsterdam canal drawn from open aerial LiDAR: the AHN5 point cloud of the Dutch national elevation survey. Source: [AHN](https://www.ahn.nl/eerste-deel-van-ahn-5-is-beschikbaar), CC BY 4.0. The boat is a generic hull and the scan is simulated: an imagined 16-beam scanner lights the points of that aerial cloud it would reach first. It is not Roboat's boat and not Roboat's data.

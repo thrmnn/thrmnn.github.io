@@ -952,8 +952,7 @@
   .robotics-strip { grid-template-columns: repeat(4, 1fr); gap: 1rem; }
 }
 .robotics-strip a { display: block; color: inherit; }
-.robotics-strip img,
-.robotics-strip-blank {
+.robotics-strip img {
   display: block;
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -962,9 +961,7 @@
   background: #0e1016;
 }
 .robotics-strip a:hover img,
-.robotics-strip a:focus-visible img,
-.robotics-strip a:hover .robotics-strip-blank,
-.robotics-strip a:focus-visible .robotics-strip-blank { border-color: var(--color-accent); }
+.robotics-strip a:focus-visible img { border-color: var(--color-accent); }
 .robotics-strip-title {
   display: block;
   margin-top: 0.5rem;

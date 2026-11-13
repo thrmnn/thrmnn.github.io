@@ -6,7 +6,10 @@ Pillow, scipy; laspy+lazrs only for --sample), run by hand; outputs committed.
 
 REAL: the canal and its surroundings are Dutch open aerial LiDAR.
   Dataset  AHN5 (Actueel Hoogtebestand Nederland 5), point cloud, Rijkswaterstaat
-  Licence  CC0 1.0 (public domain dedication)
+  Licence  CC BY 4.0 for AHN5 (AHN1 to AHN4 were CC0): derived products must name the source,
+           "AHN" (https://www.ahn.nl/eerste-deel-van-ahn-5-is-beschikbaar, "Open data, maar
+           bronvermelding verplicht"; licence per the AHN tile index
+           https://basisdata.nl/hwh-ahn/AUX/bladwijzer/index.html)
   Tile     25GN1_01..25 sheet, sub-tile 25GN1_02.LAZ, 5.2 MB per 1000 m
            https://geotiles.citg.tudelft.nl/AHN5_T/25GN1_02.LAZ
            (index: https://www.ahn.nl/ , data portal https://www.pdok.nl/ahn)

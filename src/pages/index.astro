@@ -93,7 +93,10 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
           {roboticsTiles.map((t) => (
             <li>
               <a href={`${base}/projects/${t.slug}/`}>
-                {t.src ? <img src={`${base}${t.src}`} width="1200" height="1200" alt="" loading="lazy" decoding="async" style={`object-position: ${t.pos}`} /> : <span class="robotics-strip-blank" aria-hidden="true"></span>}
+                <picture>
+                  {t.anim && <source srcset={`${base}${t.anim}`} media="(prefers-reduced-motion: no-preference)" />}
+                  <img src={`${base}${t.src}`} width="1200" height="1200" alt="" loading="lazy" decoding="async" style={`object-position: ${t.pos}`} />
+                </picture>
                 <span class="robotics-strip-title">{t.title}</span>
                 <span class="robotics-strip-label">{t.label}</span>
               </a>

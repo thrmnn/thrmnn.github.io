@@ -245,7 +245,7 @@ def pipeline(frame_no):
 if __name__ == "__main__":
     which = sys.argv[1]
     if which == "roboat":
-        out, path = roboat(), ROOT / "public/projects/autonomous-boat-perception/card-plate.webp"
+        out, path = roboat(), Path.home() / "Perso/site-review/files/roboat-mitnews.webp"
     elif which == "loomo":
         shape = sys.argv[sys.argv.index("--shape") + 1] if "--shape" in sys.argv else "wide"
         out, path = loomo(shape), ROOT / f"public/projects/autonomous-mobile-robot/loomo-{shape}.webp"

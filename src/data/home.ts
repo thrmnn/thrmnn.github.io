@@ -50,7 +50,7 @@ export const spotlights: Spotlight[] = [
 
 // Robotics spotlight figure: 'dots' (Loomo halftone), 'strip' (four project plates), 'pipeline' (perception-pipeline plate)
 export type RoboticsFigure = 'dots' | 'strip' | 'pipeline';
-export const roboticsFigure: RoboticsFigure = 'strip';
+export const roboticsFigure: RoboticsFigure = 'dots';
 
 export const roboticsTiles = [
   { slug: 'autonomous-mobile-robot', src: '/projects/autonomous-mobile-robot/loomo-tile.webp', pos: '50% 100%', label: 'EPFL VITA Lab · 2022–23', title: 'Segway Loomo' },

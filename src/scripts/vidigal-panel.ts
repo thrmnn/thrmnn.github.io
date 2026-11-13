@@ -333,7 +333,7 @@ function buildQuads(cloud: Cloud, cell: number): Uint32Array {
   return Uint32Array.from(out);
 }
 
-export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void> {
+export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ reset: () => void } | void> {
   const ctx = canvas.getContext('2d', { alpha: true });
   const src = canvas.dataset.rooftops;
   if (!ctx || !src) return;
@@ -347,7 +347,39 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
   }
   if (cloud.n === 0) return;
 
+  // Explore mode: the reader holds the camera. It opens framed exactly like
+  // the card plate (scripts/make-cloud-plates.py: same angle, same fill, same
+  // percentile envelope), in the plate's own dark palette.
+  const explore = canvas.dataset.explore === '1';
   let { accent, ground, bg } = readColors(canvas, ctx);
+  if (explore) {
+    accent = '#568cf6';
+    ground = '#787c86';
+    bg = '#0e1016';
+  }
+  const EX = { yaw: ROT0, pitch: TILT, zoom: 1 };
+  const plate = { w: 1, h: 1, cx: 0, cy: 0, offX: 0, offY: 0 };
+  if (explore) {
+    const xs: number[] = [];
+    const ys: number[] = [];
+    for (let i = 0; i < cloud.n; i++) {
+      if (cloud.cat[i] === 15) continue;
+      const rz = cloud.x[i]! * Math.sin(ROT0) + cloud.y[i]! * Math.cos(ROT0);
+      xs.push(cloud.x[i]! * Math.cos(ROT0) - cloud.y[i]! * Math.sin(ROT0));
+      ys.push((cloud.z[i]! * COS_T - rz * SIN_T) * Y_SQUASH);
+    }
+    xs.sort((a, b) => a - b);
+    ys.sort((a, b) => a - b);
+    const lo = Math.floor(xs.length * 0.01);
+    const hi = Math.floor(xs.length * 0.99);
+    plate.w = xs[hi]! - xs[lo]!;
+    plate.h = ys[hi]! - ys[lo]!;
+    plate.cx = (xs[hi]! + xs[lo]!) / 2;
+    plate.cy = (ys[hi]! + ys[lo]!) / 2;
+    const rzc = cloud.mx * Math.sin(ROT0) + cloud.my * Math.cos(ROT0);
+    plate.offX = plate.cx - (cloud.mx * Math.cos(ROT0) - cloud.my * Math.sin(ROT0));
+    plate.offY = plate.cy - (cloud.mz * COS_T - rzc * SIN_T) * Y_SQUASH;
+  }
   // How much the subject category stands off its context: crowns among roofs
   // need more than rooftops on bare terrain.
   const emphasis = parseFloat(canvas.dataset.emphasis || '1') || 1;
@@ -405,19 +437,21 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     ctx!.clearRect(0, 0, cssW, cssH);
 
     const { x, y, z, cat, ax0, ax1, ay0, ay1, mx, my, mz, axis, reach } = cloud;
-    const flying = !reduceMotion.matches;
-    const rot = ROT0 + (flying ? (swing > 0 ? swing * Math.sin((elapsed * 2 * Math.PI) / SWING_PERIOD_S) : elapsed * SPIN_RAD_PER_S) : 0);
+    const flying = !explore && !reduceMotion.matches;
+    const rot = explore ? EX.yaw : ROT0 + (flying ? (swing > 0 ? swing * Math.sin((elapsed * 2 * Math.PI) / SWING_PERIOD_S) : elapsed * SPIN_RAD_PER_S) : 0);
     const cosR = Math.cos(rot);
     const sinR = Math.sin(rot);
     const cam = flying ? camera(elapsed) : { zoom: 1, along: 0, tiltOff: 0 };
-    cam.zoom = 1 + (cam.zoom - 1) * (zoomMax - 1) / 0.8;
-    const tilt = Math.max(TILT_FLOOR, tilt0 + cam.tiltOff);
+    if (!explore) cam.zoom = 1 + (cam.zoom - 1) * (zoomMax - 1) / 0.8;
+    const tilt = explore ? EX.pitch : Math.max(TILT_FLOOR, tilt0 + cam.tiltOff);
     const cosT = Math.cos(tilt);
     const sinT = Math.sin(tilt);
-    const zoom = cam.zoom;
+    const zoom = explore ? EX.zoom : cam.zoom;
     const zoomT = Math.min(1, (zoom - 1) / 0.5); // look-at hand-over finishes early in the dive
 
-    const base = Math.min(cssW / (ax1 - ax0), cssH / (ay1 - ay0)) * FILL;
+    const base = explore
+      ? (Math.min(cssW, cssH) * FILL) / Math.max(plate.w, plate.h)
+      : Math.min(cssW / (ax1 - ax0), cssH / (ay1 - ay0)) * FILL;
     const scale = base * zoom;
     // Where the camera looks: the envelope centre when out, a point sliding
     // along the ridge when in. Project that point with the frame's own maths.
@@ -429,8 +463,8 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
     const tgtY = (mz * cosT - prz * sinT) * Y_SQUASH;
     const envX = (ax0 + ax1) / 2;
     const envY = (ay0 + ay1) / 2;
-    const lookX = envX + (tgtX - envX) * zoomT;
-    const lookY = envY + (tgtY - envY) * zoomT;
+    const lookX = explore ? tgtX + plate.offX : envX + (tgtX - envX) * zoomT;
+    const lookY = explore ? tgtY + plate.offY : envY + (tgtY - envY) * zoomT;
     const cx = cssW / 2 - lookX * scale;
     const cy = cssH / 2 + lookY * scale;
     // dots keep their screen size while the camera zooms; only the subject
@@ -603,6 +637,108 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<void>
       const size = (c === 1 ? (quads.length ? 0.7 : 1.35) * emphasis * Math.sqrt(zoom) : c === 2 ? 2.1 : 1.05) * dot;
       ctx!.fillRect(sxArr[i]! - size / 2, syArr[i]! - size / 2, size, size);
     }
+  }
+
+  if (explore) return startExplore();
+
+  function startExplore() {
+    const dirty = { on: false };
+    const paint = () => {
+      dirty.on = false;
+      render(0);
+    };
+    const want = () => {
+      if (dirty.on) return;
+      dirty.on = true;
+      requestAnimationFrame(paint);
+    };
+    const measure2 = () => {
+      const r = canvas.getBoundingClientRect();
+      cssW = r.width || cssW;
+      cssH = r.height || cssH;
+      want();
+    };
+    reveal = 1;
+    measure2();
+    new ResizeObserver(measure2).observe(canvas);
+
+    const PITCH_MIN = 0.12;
+    const PITCH_MAX = 1.5;
+    const clampView = () => {
+      EX.pitch = Math.min(PITCH_MAX, Math.max(PITCH_MIN, EX.pitch));
+      EX.zoom = Math.min(6, Math.max(0.6, EX.zoom));
+      want();
+    };
+    const orbit = (dx: number, dy: number) => {
+      EX.yaw -= dx;
+      EX.pitch += dy;
+      clampView();
+    };
+    const zoomBy = (f: number) => {
+      EX.zoom *= f;
+      clampView();
+    };
+
+    const pts = new Map<number, { x: number; y: number }>();
+    let pinch = 0;
+    const span2 = () => {
+      const [a, b] = [...pts.values()];
+      return Math.hypot(a!.x - b!.x, a!.y - b!.y);
+    };
+    canvas.addEventListener('pointerdown', (e) => {
+      canvas.setPointerCapture(e.pointerId);
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 2) pinch = span2();
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      const p = pts.get(e.pointerId);
+      if (!p) return;
+      const dx = e.clientX - p.x;
+      const dy = e.clientY - p.y;
+      p.x = e.clientX;
+      p.y = e.clientY;
+      if (pts.size === 1) orbit(dx * 0.007, dy * 0.005);
+      else if (pts.size === 2) {
+        const s = span2();
+        if (pinch > 0) zoomBy(s / pinch);
+        pinch = s;
+      }
+    });
+    const up = (e: PointerEvent) => {
+      pts.delete(e.pointerId);
+      pinch = pts.size === 2 ? span2() : 0;
+    };
+    canvas.addEventListener('pointerup', up);
+    canvas.addEventListener('pointercancel', up);
+    canvas.addEventListener(
+      'wheel',
+      (e) => {
+        e.preventDefault();
+        zoomBy(Math.exp(-e.deltaY * 0.0015));
+      },
+      { passive: false },
+    );
+    const reset = () => {
+      EX.yaw = ROT0;
+      EX.pitch = TILT;
+      EX.zoom = 1;
+      want();
+    };
+    canvas.addEventListener('dblclick', reset);
+    canvas.addEventListener('keydown', (e) => {
+      const k = e.key;
+      const step = 0.12;
+      if (k === 'ArrowLeft') orbit(-step, 0);
+      else if (k === 'ArrowRight') orbit(step, 0);
+      else if (k === 'ArrowUp') orbit(0, -step);
+      else if (k === 'ArrowDown') orbit(0, step);
+      else if (k === '+' || k === '=') zoomBy(1.15);
+      else if (k === '-' || k === '_') zoomBy(1 / 1.15);
+      else if (k === '0') reset();
+      else return;
+      e.preventDefault();
+    });
+    return { reset };
   }
 
   function frame(now: number) {

@@ -12,6 +12,7 @@ const featured = projects
 const rest = projects
   .filter((p) => p.data.featuredOrder === undefined)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const exploreRoutes: Record<string, string> = { 'urban-morphometrics': `${base}/projects/urban-morphometrics/explore/` };
 const ordered = [...featured, ...rest];
 ---
 
@@ -36,6 +37,8 @@ const ordered = [...featured, ...rest];
             image={withBase(project.data.cardImage ?? project.data.image)}
             anim={withBase(project.data.cardAnim)}
             index={i}
+            exploreHref={exploreRoutes[project.id]}
+            exploreLabel={`Explore the ${project.data.title} point cloud`}
           />
         ))}
       </div>

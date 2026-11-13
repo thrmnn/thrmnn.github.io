@@ -3,7 +3,7 @@ title: "Autonomous mobile robot navigation on a Segway Loomo"
 date: '2023-06-01T00:00:00Z'
 externalLink: 'https://www.epfl.ch/labs/vita/'
 github: 'https://github.com/thrmnn/ROS_Autonomous_Driving'
-cardImage: '/projects/autonomous-mobile-robot/loomo-tile.webp'
+cardImage: '/projects/autonomous-mobile-robot/loomo-card.webp'
 image: '/projects/autonomous-mobile-robot/hero-poster.jpg'
 imageWidth: 600
 imageHeight: 338

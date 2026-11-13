@@ -167,6 +167,11 @@ def loomo(shape):
     if shape == "wide":
         W, H, k, x0, y0 = 1600, 1000, 1000 / 338, 175, 0
         pitch = 9
+    elif shape == "card":
+        # the robot stands at the bottom of the photo; the card's caption covers the lower third,
+        # so the photo fills the top 820 px and the rest is ground fading out under the caption
+        W, H, k, x0, y0 = 1200, 1200, 820 / 338, 255, 0
+        pitch = 8
     else:
         W, H, k, x0, y0 = 1200, 1200, 1200 / 338, 233 * 1200 / 338, 0
         pitch = 8
@@ -187,6 +192,8 @@ def loomo(shape):
     y, x = np.mgrid[0:H, 0:W]
     d = np.sqrt(((x - W / 2) / (W * 0.62)) ** 2 + ((y - H * 0.52) / (H * 0.62)) ** 2)
     fade = np.clip(1.15 - d, 0, 1) ** 0.7
+    if shape == "card":
+        fade = 0.7 * np.clip(1.15 - np.sqrt(((x - W * 0.62) / (W * 0.7)) ** 2 + ((y - H * 0.42) / (H * 0.5)) ** 2), 0, 1) ** 0.8 * np.clip((800 - y) / 260, 0, 1)
     tone = np.where(blue, 0.8, np.clip(0.04 + 0.96 * g, 0, 1) * fade)
     return halftone(tone, blue, pitch=pitch)
 

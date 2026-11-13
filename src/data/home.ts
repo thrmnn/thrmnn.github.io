@@ -53,7 +53,7 @@ export type RoboticsFigure = 'dots' | 'strip' | 'pipeline';
 export const roboticsFigure: RoboticsFigure = 'dots';
 
 export const roboticsTiles = [
-  { slug: 'autonomous-mobile-robot', src: '/projects/autonomous-mobile-robot/loomo-tile.webp', pos: '50% 100%', label: 'EPFL VITA Lab · 2022–23', title: 'Segway Loomo' },
+  { slug: 'autonomous-mobile-robot', src: '/projects/autonomous-mobile-robot/loomo-card.webp', pos: '50% 40%', label: 'EPFL VITA Lab · 2022–23', title: 'Segway Loomo' },
   { slug: 'autonomous-boat-perception', src: '/projects/autonomous-boat-perception/card-plate.webp', pos: '50% 50%', label: 'Roboat, MIT spinoff · 2024', title: 'Roboat' },
   { slug: 'event-cameras-drone', src: '/projects/event-cameras-drone/card-plate.webp', anim: '/projects/event-cameras-drone/card-anim.webp', pos: '50% 50%', label: 'IRI (CSIC-UPC, Barcelona) · 2023–24', title: 'Event cameras' },
   { slug: 'perception-pipeline', src: '/projects/perception-pipeline/card-plate.webp', pos: '50% 50%', label: 'Open source · 2026', title: 'Vision pipeline' },

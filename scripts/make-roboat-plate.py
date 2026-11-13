@@ -34,9 +34,6 @@ SIMULATED: everything that is the boat and its scan.
   and quay walls are sparse and beams can pass where a real scanner would
   hit a wall; nothing here is a claim about what an on-board scanner sees.
 
-    Variant b (low view along the canal, for comparison) goes to
-    scripts/assets/roboat/card-plate-b.webp, not into public/.
-
     python3 scripts/make-roboat-plate.py            # plates from the asset
     python3 scripts/make-roboat-plate.py --sample   # rebuild the asset from a LAZ
 """
@@ -67,6 +64,8 @@ MAST_H = 3.6
 BEAMS = np.radians(np.linspace(-25, 15, 16))
 AZ_STEP = 0.4
 MAX_RANGE = 60.0
+RING_STEP = 2
+YAW = math.radians(28)
 
 
 def sample():
@@ -107,23 +106,45 @@ def load():
 
 
 def boat(rng):
+    """Generic hull in points: rounded bow, flat deck, low cabin, mast. Returns (hull, sensor head)."""
+    L2, hw, side, deck = 2.3, 0.85, 0.55, WATER + 0.55
+
+    def half_w(x):
+        t = np.clip((x - 1.0) / 1.3, 0, 1)
+        return hw * np.sqrt(1 - t ** 2)
+
+    def top(x):
+        t = np.clip((x - 0.8) / 1.5, 0, 1)
+        return deck + 0.3 * t ** 2
+
     pts = []
-    L, Wd, deck = 4.6, 1.7, 0.55
-    n = lambda area: int(area * 260)
-    for side in (-1, 1):
-        N = n(L * 0.7)
-        pts.append(np.c_[rng.uniform(-L / 2, L / 2, N), np.full(N, side * Wd / 2), rng.uniform(WATER, WATER + deck, N)])
-    N = n(L * Wd)
-    pts.append(np.c_[rng.uniform(-L / 2, L / 2, N), rng.uniform(-Wd / 2, Wd / 2, N), np.full(N, WATER + deck)])
-    N = n(Wd * 0.7)
-    for end in (-1, 1):
-        pts.append(np.c_[np.full(N, end * L / 2), rng.uniform(-Wd / 2, Wd / 2, N), rng.uniform(WATER, WATER + deck, N)])
-    N = 400
-    pts.append(np.c_[np.full(N, 0.4), rng.normal(0, 0.02, N), rng.uniform(WATER + deck, WATER + MAST_H - 0.3, N)])
-    th = rng.uniform(0, 2 * np.pi, 500)
-    zz = rng.uniform(WATER + MAST_H - 0.3, WATER + MAST_H, 500)
-    pts.append(np.c_[0.4 + 0.12 * np.cos(th), 0.12 * np.sin(th), zz])
-    return np.vstack(pts)
+    N = 2200
+    x = rng.uniform(-L2, L2, N)
+    sgn = rng.choice([-1, 1], N)
+    pts.append(np.c_[x, sgn * half_w(x), WATER + rng.uniform(0, 1, N) * (top(x) - WATER)])
+    N = 2600
+    x, y = rng.uniform(-L2, L2, N), rng.uniform(-hw, hw, N)
+    k = abs(y) < half_w(x)
+    pts.append(np.c_[x[k], y[k], top(x[k])])
+    N = 300
+    y = rng.uniform(-hw, hw, N)
+    pts.append(np.c_[np.full(N, -L2), y, WATER + rng.uniform(0, 1, N) * (deck - WATER)])
+    cx0, cx1, cw, ch = -1.1, 0.7, 0.55, 0.75
+    N = 1000
+    x, y = rng.uniform(cx0, cx1, N), rng.uniform(-cw, cw, N)
+    pts.append(np.c_[x, y, np.full(N, deck + ch)])
+    for ys in (-cw, cw):
+        N = 400
+        pts.append(np.c_[rng.uniform(cx0, cx1, N), np.full(N, ys), deck + rng.uniform(0, ch, N)])
+    for xs in (cx0, cx1):
+        N = 700
+        pts.append(np.c_[np.full(N, xs), rng.uniform(-cw, cw, N), deck + rng.uniform(0, ch, N)])
+    N = 500
+    pts.append(np.c_[np.full(N, 0.4) + rng.normal(0, 0.015, N), rng.normal(0, 0.015, N), rng.uniform(deck + ch, WATER + MAST_H - 0.3, N)])
+    th = rng.uniform(0, 2 * np.pi, 700)
+    zz = rng.uniform(WATER + MAST_H - 0.3, WATER + MAST_H, 700)
+    head = np.c_[0.4 + 0.14 * np.cos(th), 0.14 * np.sin(th), zz]
+    return np.vstack(pts), head
 
 
 def scan(uvz, origin):
@@ -152,7 +173,7 @@ def scan(uvz, origin):
         r = (origin[2] - WATER) / -math.tan(be)
         if r > MAX_RANGE:
             continue
-        for k in range(n_az):
+        for k in range(0, n_az, RING_STEP):
             if (b, k) in best and rng_[best[(b, k)]] < r:
                 continue
             a_ = math.radians(k * AZ_STEP)
@@ -197,14 +218,14 @@ def cam_persp(cam_pos, look, f, oy=0.4):
 
 def render(cam, groups, size=S):
     """groups: (points, rgb Nx3 or 3, radius px at 1200, weight N) per layer."""
-    X, Y, D, R, C = [], [], [], [], []
-    for pts, col, rad, w in groups:
+    X, Y, D, R, C, V = [], [], [], [], [], []
+    for pts, col, rad, w, rmin in groups:
         x, y, d, sc = cam(pts)
         col = np.broadcast_to(col, (len(pts), 3))
-        X.append(x); Y.append(y); D.append(d); R.append(np.clip(rad * sc, 0.7, 6))
+        X.append(x); Y.append(y); D.append(d); R.append(np.clip(rad * sc, rmin, 6)); V.append(d > 2.5)
         C.append(BG + (col - BG) * w[:, None])
-    X, Y, D, R, C = (np.concatenate(v) for v in (X, Y, D, R, C))
-    ok = (X > -5) & (X < S + 5) & (Y > -5) & (Y < S + 5)
+    X, Y, D, R, C, V = (np.concatenate(v) for v in (X, Y, D, R, C, V))
+    ok = V & (X > -5) & (X < S + 5) & (Y > -5) & (Y < S + 5)
     o = np.argsort(-D[ok])
     k = size / S
     im = Image.new("RGB", (size, size), tuple(int(v) for v in BG))
@@ -217,32 +238,34 @@ def render(cam, groups, size=S):
 def scene():
     rng = np.random.default_rng(7)
     uvz, cls = load()
-    origin = np.array([0.0, 0.0, WATER + MAST_H])
-    mast = origin + [0.4, 0, 0]
-    pts_boat = boat(rng)
+    mast = np.array([0.4, 0.0, WATER + MAST_H])
+    hull, head = boat(rng)
+    c, sn = math.cos(YAW), math.sin(YAW)
+    hull = hull - [0.4, 0, 0]
+    hull = np.c_[hull[:, 0] * c - hull[:, 1] * sn + 0.4, hull[:, 0] * sn + hull[:, 1] * c, hull[:, 2]]
     idx, az, ring, ring_az = scan(uvz, mast)
-    dist = np.hypot(uvz[:, 0], uvz[:, 1])
-    fade = np.clip(1 - (dist / R_VIEW) ** 2, 0, 1) ** 0.8
-    keep = fade > 0.06
-    zt = np.clip((uvz[:, 2] - 0) / 18, 0, 1)
-    grey = GREY + (LIGHT - GREY) * zt[:, None]
-    lit_d = np.hypot(uvz[idx, 0], uvz[idx, 1])
+    zt = np.clip(uvz[:, 2] / 18, 0, 1)
     return dict(
-        cloud=(uvz[keep], grey[keep], fade[keep]),
-        boat=pts_boat, lit=uvz[idx], lit_az=az, ring=ring, ring_az=ring_az,
-        lit_w=np.clip(1 - 0.5 * (lit_d / MAX_RANGE) ** 2, 0.5, 1),
+        cloud=uvz, grey=GREY + (LIGHT - GREY) * zt[:, None], hull=hull, head=head,
+        lit=uvz[idx], lit_az=az, ring=ring, ring_az=ring_az,
+        mast=mast,
     )
 
 
-def groups(sc, lit_i=None, ring_i=None, boat_col=LIGHT):
-    cp, cc, cw = sc["cloud"]
+def depth_fade(cam, pts, near, far, gamma):
+    d = cam(pts)[2]
+    return np.clip(1 - (d - near) / (far - near), 0, 1) ** gamma
+
+
+def groups(sc, cam, lit_i=None, ring_i=None):
     lit_i = np.ones(len(sc["lit"])) if lit_i is None else lit_i
     ring_i = np.ones(len(sc["ring"])) if ring_i is None else ring_i
     return [
-        (cp, cc, 1.6, cw * 1.0),
-        (sc["ring"], ACCENT, 1.6, ring_i * 0.75),
-        (sc["boat"], boat_col, 1.2, np.full(len(sc["boat"]), 1.0)),
-        (sc["lit"], ACCENT, 2.2, sc["lit_w"] * lit_i),
+        (sc["cloud"], sc["grey"], 2.4, depth_fade(cam, sc["cloud"], 6, 130, 0.6), 1.0),
+        (sc["ring"], ACCENT, 2.2, depth_fade(cam, sc["ring"], 10, 80, 0.7) * ring_i, 1.0),
+        (sc["hull"], LIGHT, 0.9, np.ones(len(sc["hull"])), 1.0),
+        (sc["lit"], ACCENT, 2.4, depth_fade(cam, sc["lit"], 10, 120, 0.5) * lit_i, 1.5),
+        (sc["head"], ACCENT, 1.6, np.ones(len(sc["head"])), 1.2),
     ]
 
 
@@ -251,20 +274,20 @@ def sweep(sc, head, tau=110.0, floor=0.0):
     return f(sc["lit_az"]), f(sc["ring_az"])
 
 
+CAM = cam_persp((-25.0, 2.0, 6.0), (14.0, 0.0, 3.0), 1650, oy=0.19)
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     sc = scene()
-    print(len(sc["cloud"][0]), "cloud pts,", len(sc["lit"]), "lit,", len(sc["ring"]), "ring")
-    a = render(cam_oblique(), groups(sc))
-    a.save(OUT / "card-plate.webp", "WEBP", quality=82, method=6)
-    cam_b = cam_persp((-34, 0.0, 7.5), (20, 0.0, 2.5), 1700)
-    b = render(cam_b, groups(sc))
-    b.save(ROOT / "scripts/assets/roboat/card-plate-b.webp", "WEBP", quality=82, method=6)
+    print(len(sc["cloud"]), "cloud pts,", len(sc["lit"]), "lit,", len(sc["ring"]), "ring")
+    a = render(CAM, groups(sc, CAM))
+    a.save(OUT / "card-plate.webp", "WEBP", quality=84, method=6)
     frames = []
     n = 36
     for i in range(n):
         li, ri = sweep(sc, i * 360 / n)
-        frames.append(render(cam_oblique(), groups(sc, li, ri), 600))
+        frames.append(render(CAM, groups(sc, CAM, li, ri)).resize((600, 600), Image.LANCZOS))
     frames[0].save(OUT / "card-anim.webp", "WEBP", save_all=True, append_images=frames[1:], duration=80, loop=0, quality=30, method=6)
     for nme in ("card-plate.webp", "card-anim.webp"):
         print(nme, (OUT / nme).stat().st_size, "B")

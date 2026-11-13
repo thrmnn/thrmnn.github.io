@@ -237,21 +237,31 @@ def cam_persp(cam_pos, look, f, oy=0.4):
     return cam
 
 
+FLOOR = 0.12
+
+
 def render(cam, groups, size=S):
-    """groups: (points, rgb Nx3 or 3, radius px at 1200, weight N) per layer."""
-    X, Y, D, R, C, V = [], [], [], [], [], []
-    for pts, col, rad, w, rmin in groups:
-        x, y, d, sc = cam(pts)
+    """groups: (points, rgb Nx3 or 3, dot radius px at 1200, weight N, cell px at 1200).
+    Dots are round and one size per layer. Each layer keeps the nearest point per screen
+    cell, so the dots stay separate dots when the picture is shown small, never grain."""
+    X, Y, D, R, C = [], [], [], [], []
+    for pts, col, rad, w, cell in groups:
+        x, y, d, _ = cam(pts)
+        ok = (d > 2.5) & (x > -5) & (x < S + 5) & (y > -5) & (y < S + 5)
+        idx = np.nonzero(ok)[0]
+        key = (np.floor(x[idx] / cell).astype(np.int64) << 20) + np.floor(y[idx] / cell).astype(np.int64)
+        order = np.lexsort((d[idx], key))
+        first = np.r_[True, key[order][1:] != key[order][:-1]]
+        sel = idx[order[first]]
         col = np.broadcast_to(col, (len(pts), 3))
-        X.append(x); Y.append(y); D.append(d); R.append(np.clip(rad * sc, rmin, 6)); V.append(d > 2.5)
-        C.append(BG + (col - BG) * w[:, None])
-    X, Y, D, R, C, V = (np.concatenate(v) for v in (X, Y, D, R, C, V))
-    ok = V & (X > -5) & (X < S + 5) & (Y > -5) & (Y < S + 5)
-    o = np.argsort(-D[ok])
+        X.append(x[sel]); Y.append(y[sel]); D.append(d[sel]); R.append(np.full(len(sel), rad))
+        C.append(BG + (col[sel] - BG) * (FLOOR + (1 - FLOOR) * w[sel])[:, None])
+    X, Y, D, R, C = (np.concatenate(v) for v in (X, Y, D, R, C))
+    o = np.argsort(-D)
     k = size / S
     im = Image.new("RGB", (size, size), tuple(int(v) for v in BG))
     dr = ImageDraw.Draw(im)
-    for x, y, r, c in zip(X[ok][o] * k, Y[ok][o] * k, R[ok][o] * k, C[ok][o].astype(np.uint8)):
+    for x, y, r, c in zip(X[o] * k, Y[o] * k, R[o] * k, C[o].astype(np.uint8)):
         dr.ellipse([x - r, y - r, x + r, y + r], fill=tuple(int(v) for v in c))
     return im
 
@@ -267,7 +277,7 @@ def scene():
     idx, az, ring, ring_az = scan(uvz, mast)
     zt = np.clip(uvz[:, 2] / 18, 0, 1)
     return dict(
-        cloud=uvz, grey=GREY + (LIGHT - GREY) * zt[:, None], hull=hull, head=head,
+        cloud=uvz, grey=np.array((104, 108, 120), float) + (np.array((150, 156, 168), float) - (104, 108, 120)) * zt[:, None], hull=hull, head=head,
         lit=uvz[idx], lit_az=az, ring=ring, ring_az=ring_az,
         mast=mast,
     )
@@ -280,18 +290,19 @@ def depth_fade(cam, pts, near, far, gamma):
 
 def hull_col(h):
     t = np.clip((h[:, 2] - WATER) / 1.2, 0, 1)[:, None]
-    return np.array((118, 124, 136), float) + (LIGHT - (118, 124, 136)) * t
+    return np.array((135, 141, 153), float) + (np.array((180, 186, 198), float) - (135, 141, 153)) * t
 
 
-def groups(sc, cam, lit_i=None, ring_i=None):
+def groups(sc, cam, lit_i=None, ring_i=None, r=3.0, ring=(0.85, 2.0)):
+    """r: base dot radius in px at 1200 (0.25% of the width); the view sets it for the size it is seen at."""
     lit_i = np.ones(len(sc["lit"])) if lit_i is None else lit_i
     ring_i = np.ones(len(sc["ring"])) if ring_i is None else ring_i
     return [
-        (sc["cloud"], sc["grey"], 2.4, depth_fade(cam, sc["cloud"], 6, 130, 0.6), 1.0),
-        (sc["ring"], ACCENT, 2.2, depth_fade(cam, sc["ring"], 10, RING_FAR, 0.7) * ring_i, 1.0),
-        (sc["hull"], hull_col(sc["hull"]), 0.9, np.ones(len(sc["hull"])), 1.0),
-        (sc["lit"], ACCENT, 2.4, depth_fade(cam, sc["lit"], 10, 120, 0.5) * lit_i, 1.5),
-        (sc["head"], ACCENT, 1.6, np.ones(len(sc["head"])), 1.2),
+        (sc["cloud"], sc["grey"], r, depth_fade(cam, sc["cloud"], 6, 130, 0.6), 2.4 * r),
+        (sc["ring"], ACCENT, r * ring[0], 0.2 + 0.8 * depth_fade(cam, sc["ring"], 10, RING_FAR, 0.7) * ring_i, 2.0 * r),
+        (sc["hull"], hull_col(sc["hull"]), r * 0.8, np.ones(len(sc["hull"])), 1.7 * r),
+        (sc["lit"], ACCENT, r * 1.3, 0.02 + 0.98 * depth_fade(cam, sc["lit"], 10, 120, 0.5) * lit_i, 3.4 * r),
+        (sc["head"], ACCENT, r * 0.7, np.ones(len(sc["head"])), 1.4 * r),
     ]
 
 
@@ -305,12 +316,12 @@ VIEWS = {
     "low": dict(cam=cam_persp((-25.0, 2.0, 6.0), (14.0, 0.0, 3.0), 1650, oy=0.19), ring_far=80,
                 still=ALT_OUT / "roboat-low.webp", anim=ALT_OUT / "roboat-low-anim.webp"),
     "tile": dict(cam=cam_persp((-25.0, 2.0, 6.0), (14.0, 0.0, 3.0), 1650, oy=0.19), ring_far=80,
-                 still=OUT / "hero-tile.webp", anim=OUT / "hero-tile-anim.webp", still_q=80, anim_q=32,
+                 still=OUT / "hero-tile.webp", anim=OUT / "hero-tile-anim.webp", still_q=80, anim_q=32, r=3.6, r_phone=5.0, ring=(0.6, 1.2),
                  phone=((330, 80, 870, 800), OUT / "hero-tile-phone.webp", OUT / "hero-tile-phone-anim.webp")),
     "tile-close": dict(cam=cam_persp((-19.0, 2.0, 6.0), (0.4, 0.0, 1.0), 1800, oy=0.5), ring_far=80,
                        still=ALT_OUT / "roboat-hero-close.webp", anim=ALT_OUT / "roboat-hero-close-anim.webp", still_q=80, anim_q=32),
     "high": dict(cam=cam_persp((-40.0, 0.0, 31.0), (6.0, 0.0, 0.0), 1250, oy=0.40), ring_far=140,
-                 still=OUT / "card-plate.webp", anim=OUT / "card-anim.webp"),
+                 still=OUT / "card-plate.webp", anim=OUT / "card-anim.webp", r=3.0),
 }
 
 
@@ -324,23 +335,22 @@ def run(name, sc):
     v = VIEWS[name]
     cam, RING_FAR = v["cam"], v["ring_far"]
     v["still"].parent.mkdir(parents=True, exist_ok=True)
-    full = render(cam, groups(sc, cam))
+    r = v.get("r", 3.0)
     small = name.startswith("tile")
+    full = render(cam, groups(sc, cam, r=r, ring=v.get('ring', (0.85, 2.0))))
     (full.resize((600, 600), Image.LANCZOS) if small else full).save(v["still"], "WEBP", quality=v.get("still_q", 84), method=6)
     rng = np.random.default_rng(3)
-    frames = []
-    n = 36
-    for i in range(n):
-        li, ri = sweep(sc, i * 360 / n)
-        li, ri = flicker(rng, li, 0.45), flicker(rng, ri, 0.2)
-        frames.append(render(cam, groups(sc, cam, li, ri)))
+    heads = [(i * 360 / 36, flicker(rng, sweep(sc, i * 360 / 36)[0], 0.45), flicker(rng, sweep(sc, i * 360 / 36)[1], 0.2)) for i in range(36)]
+    frames = [render(cam, groups(sc, cam, li, ri, r=r, ring=v.get('ring', (0.85, 2.0)))) for _, li, ri in heads]
     save_loop([f.resize((600, 600), Image.LANCZOS) for f in frames], v["anim"], v.get("anim_q", 30))
     outs = [v["still"], v["anim"]]
     if "phone" in v:
-        # phone hero tiles are 3:4 and about 110 px wide: a closer crop keeps the boat readable
+        # phone hero tiles are 3:4 and about 110 px wide: a closer crop and bigger dots keep the boat readable
         box, still, anim = v["phone"]
-        full.crop(box).resize((450, 600), Image.LANCZOS).save(still, "WEBP", quality=v.get("still_q", 84), method=6)
-        save_loop([f.crop(box).resize((450, 600), Image.LANCZOS) for f in frames], anim, v.get("anim_q", 30))
+        rp = v.get("r_phone", r * 1.5)
+        crop = lambda im: im.crop(box).resize((450, 600), Image.LANCZOS)
+        crop(render(cam, groups(sc, cam, r=rp, ring=v.get('ring', (0.85, 2.0))))).save(still, "WEBP", quality=v.get("still_q", 84), method=6)
+        save_loop([crop(render(cam, groups(sc, cam, li, ri, r=rp, ring=v.get('ring', (0.85, 2.0))))) for _, li, ri in heads], anim, v.get("anim_q", 30))
         outs += [still, anim]
     for f in outs:
         print(f, f.stat().st_size, "B")

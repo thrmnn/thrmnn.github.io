@@ -304,8 +304,10 @@ ALT_OUT = Path.home() / "Perso/site-review/files"
 VIEWS = {
     "low": dict(cam=cam_persp((-25.0, 2.0, 6.0), (14.0, 0.0, 3.0), 1650, oy=0.19), ring_far=80,
                 still=ALT_OUT / "roboat-low.webp", anim=ALT_OUT / "roboat-low-anim.webp"),
-    "tile": dict(cam=cam_persp((-19.0, 2.0, 6.0), (0.4, 0.0, 1.0), 1800, oy=0.5), ring_far=80,
+    "tile": dict(cam=cam_persp((-25.0, 2.0, 6.0), (14.0, 0.0, 3.0), 1650, oy=0.19), ring_far=80,
                  still=OUT / "hero-tile.webp", anim=OUT / "hero-tile-anim.webp", still_q=80, anim_q=32),
+    "tile-close": dict(cam=cam_persp((-19.0, 2.0, 6.0), (0.4, 0.0, 1.0), 1800, oy=0.5), ring_far=80,
+                       still=ALT_OUT / "roboat-hero-close.webp", anim=ALT_OUT / "roboat-hero-close-anim.webp", still_q=80, anim_q=32),
     "high": dict(cam=cam_persp((-40.0, 0.0, 31.0), (6.0, 0.0, 0.0), 1250, oy=0.40), ring_far=140,
                  still=OUT / "card-plate.webp", anim=OUT / "card-anim.webp"),
 }

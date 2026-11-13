@@ -7,7 +7,12 @@ summary: "Roboat's autonomy ran on LiDAR. As its first intern I added the camera
 label: "Roboat, MIT spinoff · 2024"
 metric: "Camera perception on a LiDAR stack"
 gradient: '#0f1018'
-plateName: 'roboat'
+image: '/projects/autonomous-boat-perception/card-plate.webp'
+imageWidth: 1200
+imageHeight: 1200
+imageAlt: "A small generic boat on an Amsterdam canal between rows of buildings and trees, drawn as dots. Blue rings and points mark where a simulated 16-beam LiDAR on its mast would hit the water and the surroundings. The canal is open aerial LiDAR; the boat and the scan are simulated."
+cardImage: '/projects/autonomous-boat-perception/card-plate.webp'
+cardAnim: '/projects/autonomous-boat-perception/card-anim.webp'
 tags:
   - Object Detection
   - Multi-Object Tracking
@@ -39,3 +44,7 @@ The second half of the work was the part that outlives any particular model.
 Datasets and model versions went under DVC so a result could be traced back to
 the exact data that produced it, and retraining stopped being a thing one
 person could do on one laptop.
+
+## Picture credit
+
+The card picture is an Amsterdam canal drawn from open aerial LiDAR: [AHN5](https://www.ahn.nl/) point cloud, Rijkswaterstaat (CC0). The boat is a generic hull and the scan is simulated: an imagined 16-beam scanner lights the points of that aerial cloud it would reach first. It is not Roboat's boat and not Roboat's data.

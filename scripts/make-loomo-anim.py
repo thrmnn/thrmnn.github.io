@@ -77,11 +77,11 @@ def load_frames(tmp):
     return {i: cv2.imread(f"{tmp}/f{i:04d}.png") for i in range(FIRST, LAST + 1)}
 
 
-def stabilise(frames, pose):
+def stabilise(frames, pose, ref_i=FIRST):
     """The camera is hand held and pans about 25 px over the clip. Track the background
     (features outside the person's box and the robot) against the first frame and shift
     every frame, and its keypoints and box, back by the median motion."""
-    ref = cv2.cvtColor(frames[FIRST], cv2.COLOR_BGR2GRAY)
+    ref = cv2.cvtColor(frames[ref_i], cv2.COLOR_BGR2GRAY)
     out, shifts = {}, {}
     for i, f in frames.items():
         gray = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)

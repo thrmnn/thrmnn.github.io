@@ -13,9 +13,9 @@ import { talk } from '../data/talk';
 
 const mailto = `mailto:${author.email}`;
 const heroPics = [
-  { word: 'Scan', src: '/projects/autonomous-mobile-robot/loomo-tile.webp', pos: '50% 100%', w: 1200, h: 1200, alt: 'A Segway Loomo robot following a person indoors at EPFL.' },
-  { word: 'Model', src: '/projects/urban-morphometrics/vidigal-plate.webp', phone: '/projects/urban-morphometrics/vidigal-tile.webp', w: 1200, h: 1200, alt: 'Vidigal, Rio de Janeiro: terrain and building footprints as a point cloud.' },
-  { word: 'Decipher', src: '/projects/ros2-localization-triage/stata-plate.webp', w: 1200, h: 1200, alt: 'The MIT Stata Center floor plan with the robot’s reported and true paths.' },
+  { place: 'Autonomous boats', src: '/projects/autonomous-boat-perception/hero-tile.webp', anim: '/projects/autonomous-boat-perception/hero-tile-anim.webp', phone: '/projects/autonomous-boat-perception/hero-tile-phone.webp', animPhone: '/projects/autonomous-boat-perception/hero-tile-phone-anim.webp', pos: '50% 0%', w: 600, h: 600, alt: 'A small boat on an Amsterdam canal with a simulated lidar scan, drawn as dots.' },
+  { place: 'Favela morphology', src: '/projects/urban-morphometrics/vidigal-plate.webp', phone: '/projects/urban-morphometrics/vidigal-tile.webp', anim: '/projects/urban-morphometrics/vidigal-anim.webp', animPhone: '/projects/urban-morphometrics/vidigal-tile-anim.webp', w: 1200, h: 1200, alt: 'Vidigal, Rio de Janeiro: terrain and building footprints as a point cloud.' },
+  { place: 'Robot fleet verification', src: '/projects/ros2-localization-triage/decipher-tile.webp', anim: '/projects/ros2-localization-triage/decipher-tile-anim.webp', w: 600, h: 600, alt: 'A logistics robot drawn in dots inside the MIT Stata Center laser map, and a second orange robot far from it, where its localization said it was.' },
 ];
 const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
 
@@ -61,10 +61,12 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
         <li>
           <figure>
             <picture>
+              {p.animPhone && <source media="(max-width: 1023px) and (prefers-reduced-motion: no-preference)" srcset={`${base}${p.animPhone}`} />}
+              {p.anim && <source media="(prefers-reduced-motion: no-preference)" srcset={`${base}${p.anim}`} />}
               {p.phone && <source media="(max-width: 1023px)" srcset={`${base}${p.phone}`} />}
               <img src={`${base}${p.src}`} width={p.w} height={p.h} alt={p.alt} decoding="async" style={p.pos ? `object-position: ${p.pos}` : undefined} />
             </picture>
-            <figcaption>{p.word}</figcaption>
+            <figcaption>{p.place}</figcaption>
           </figure>
         </li>
       ))}
@@ -111,8 +113,8 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
       ) : (
         <figure class="spotlight-fig spotlight-fig-plate" data-reveal style="--reveal-d: 3;">
           <picture>
-            <source srcset={`${base}/projects/autonomous-mobile-robot/loomo-wide-anim.webp`} media="(prefers-reduced-motion: no-preference)" />
-            <img src={`${base}/projects/autonomous-mobile-robot/loomo-wide.webp`} width="1600" height="1000" alt="A Segway Loomo robot, in blue dots, following a person indoors at EPFL, with the person's walking legs and arms drawn as a skeleton and a drawn depth view from the robot's head." loading="lazy" decoding="async" />
+            <source srcset={`${base}/projects/autonomous-mobile-robot/loomo-pose-anim.webp`} media="(prefers-reduced-motion: no-preference)" />
+            <img src={`${base}/projects/autonomous-mobile-robot/loomo-pose.webp`} width="1600" height="1000" alt="A Segway Loomo robot, in blue dots, following a person indoors at EPFL, with the person's legs drawn as a skeleton and a drawn depth view from the robot's head." loading="lazy" decoding="async" />
           </picture>
           <figcaption>Segway Loomo, EPFL VITA Lab · 2022–23</figcaption>
         </figure>
@@ -127,7 +129,7 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
       <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">{spot.legible.title}</h3>
       <p class="research-lead-body" data-reveal style="--reveal-d: 2;">{spot.legible.lead}</p>
       <figure class="spotlight-fig" data-reveal style="--reveal-d: 3;">
-        <p class="spotlight-fig-lead">One example, on a public recording: the robot was in one corridor, and reported, sure to a few centimetres, that it was in another.</p>
+        <p class="spotlight-fig-lead">One example, on a public recording: the robot was in one corridor, and reported, sure to within centimetres, that it was in another.</p>
         <StataPlan />
         <figcaption>PR2, MIT Stata Center dataset (CC BY 3.0) · <a href="https://github.com/thrmnn/ros2-localization-triage/blob/main/docs/finding-confidently-wrong.md#what-the-ground-truth-says-amcl-did">Source</a></figcaption>
       </figure>

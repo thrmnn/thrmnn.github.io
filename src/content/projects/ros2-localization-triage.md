@@ -15,6 +15,8 @@ externalLink: 'https://github.com/thrmnn/ros2-localization-triage'
 featuredOrder: 3
 image: '/projects/ros2-localization-triage/threshold-transfer.webp'
 cardImage: '/projects/ros2-localization-triage/stata-plate.webp'
+imagePhone: '/projects/ros2-localization-triage/stata-plate.webp'
+cardAnim: '/projects/ros2-localization-triage/stata-anim.webp'
 imageAlt: 'The same yaw-uncertainty threshold on two robots: set on a simulated TurtleBot3 where injected faults cross it, then applied to a real Tiago with no faults, where the signal rides the line for much of the recording.'
 imageWidth: 1489
 imageHeight: 1025
@@ -41,3 +43,7 @@ The same frozen thresholds did not transfer. The covariance threshold, set on a 
 - Three predictions were committed before the ERL benchmark run. Two held, including that the laser-gap detector would show no elevation on the engineered failure runs: it fired zero times over 1,013 seconds. The prediction that the transform detector would not rise did not hold.
 - Two case-log rows are graded “wrong” and published as such.
 - One candidate dataset was rejected over its licence, not for a technical reason.
+
+## Picture credit
+
+The picture on this project's card (and on this page on a phone) draws the map and the two positions from a real recording: a PR2 robot in the MIT Stata Center, public dataset, CC BY 3.0. The grey walls are the recording's laser map; the two robots are where the dataset's AprilTag ground truth put it and where AMCL said it was, at one moment inside the lost window. The robot itself is a generic logistics robot drawn in dots and larger than life so it reads at card size, not the PR2, and the scan is simulated on the real walls: an imagined 2D lidar lights the wall points in line of sight of the true position, and the orange points are the same scan placed at the reported position.

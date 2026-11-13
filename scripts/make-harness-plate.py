@@ -4,10 +4,20 @@ scripts/assets/agent-harness/eval-run.json (scripts/capture-harness-run.py):
 the repo's own eval suite, run as committed and again after the one change its
 comment describes. No text. Host tooling (Pillow), run by hand.
 
-    python3 scripts/make-harness-plate.py a   # grid: one row per case, one cell per check, run before | run after
+    python3 scripts/make-harness-plate.py a   # grid: one row per case, one cell per check, run before | run after (alternative, to site-review/files)
     python3 scripts/make-harness-plate.py b   # waterfall: calls in order, bar length = its checks, two runs stacked
     python3 scripts/make-harness-plate.py c   # grid as dither dot patches on a faint grey dot ground
     python3 scripts/make-harness-plate.py d   # oblique point-cloud columns, height = checks, run before | after
+    python3 scripts/make-harness-plate.py e   # routes: each call's returned hits as a dotted path over the five corpus docs, run before | after
+    python3 scripts/make-harness-plate.py f   # terminal log in dot-matrix cells: query tokens, ranked hits (dither density = score), checks, exit code
+    python3 scripts/make-harness-plate.py g [anim]  # THE CARD: dot columns, one pair per returned hit (before | after), height = the score the tool returned
+
+e, f, g read the "input" and "hits" fields of eval-run.json (the repo's own calls and
+their returned hits, scripts/capture-harness-run.py). Every position is a drawn
+layout; every count, rank, score and check result is the repo's. In g, a hit the tool
+returns without a score (fetch returns the document) is a flat mark on the ground,
+never a column. g writes the card (card-plate.webp, card-anim.webp); a and e, f go to
+~/Perso/site-review/files/ (harness-grid.webp, harness-idea-{1,2}.webp).
 """
 import json
 import math
@@ -19,8 +29,38 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).parent.parent
 RUN = json.loads((ROOT / "scripts/assets/agent-harness/eval-run.json").read_text())
-VARIANT = sys.argv[1] if len(sys.argv) > 1 else "a"
-OUT = ROOT / ("public/projects/agent-harness/card-plate.webp" if VARIANT == "a" else f"public/projects/agent-harness/card-plate-{VARIANT}.webp")
+VARIANT = sys.argv[1] if len(sys.argv) > 1 else "g"
+IDEAS = {"e": 1, "f": 2}
+if VARIANT in IDEAS:
+    OUT = Path.home() / f"Perso/site-review/files/harness-idea-{IDEAS[VARIANT]}.webp"
+elif VARIANT == "a":
+    OUT = Path.home() / "Perso/site-review/files/harness-grid.webp"
+else:
+    OUT = ROOT / ("public/projects/agent-harness/card-plate.webp" if VARIANT == "g" else f"public/projects/agent-harness/card-plate-{VARIANT}.webp")
+DOCS = ["doc-lidar", "doc-retrieval", "doc-tracing", "doc-grasping", "doc-evals"]
+MAXS = 7
+BAYER = np.array([[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]) / 16.0
+
+
+def glow(cx, cy, rad, n=170):
+    for _ in range(n):
+        a, q = rng.uniform(0, 2 * math.pi), rng.uniform(0.15, 1.0) ** 0.6 * rad
+        dot(cx + math.cos(a) * q, cy + math.sin(a) * q, rng.uniform(1.1, 2.6), shade(FAIL, rng.uniform(0.35, 1) * (1 - 0.5 * q / rad)))
+
+
+def ground(x0, y0, x1, y1, pitch=14, k=0.3):
+    for gx in np.arange(x0, x1, pitch):
+        for gy in np.arange(y0, y1, pitch):
+            dot(gx + rng.uniform(-2, 2), gy + rng.uniform(-2, 2), rng.uniform(1.0, 1.8), shade(GROUND, k * rng.uniform(0.6, 1)))
+
+
+def path(p, q, col, k=1.0, step=7.5, r=1.9):
+    L = math.hypot(q[0] - p[0], q[1] - p[1])
+    m = max(int(L / step), 1)
+    for i in range(m + 1):
+        t = i / m
+        dot(p[0] + (q[0] - p[0]) * t + rng.uniform(-.6, .6), p[1] + (q[1] - p[1]) * t + rng.uniform(-.6, .6), r * rng.uniform(.85, 1.1), shade(col, k))
+
 S = 1200
 SS = 2
 BG = (14, 16, 22)
@@ -160,6 +200,189 @@ elif VARIANT == "d":
             dot(X, Y, 1.7, shade(col, 0.25 + 0.6 * f))
         else:
             dot(X, Y, rd * 0.6, shade(col, b))
+elif VARIANT == "e":
+    PW, ROW = 520, 122
+    xs0 = [50, 630]
+    ys0 = 90
+    for r, run in enumerate(runs):
+        x0 = xs0[r]
+        qx = x0 + 10
+        cols = [x0 + 120 + k * 98 for k in range(5)]
+        ground(x0 - 10, ys0 - 40, x0 + PW + 10, ys0 + 5 * ROW + 40, 16, 0.22)
+        for i, case in enumerate(run):
+            y = ys0 + i * ROW
+            bad = not all(case["checks"])
+            col = FAIL if bad else PASS
+            for k in range(5):
+                for _ in range(7):
+                    dot(cols[k] + rng.normal(0, 5), y + rng.normal(0, 5), rng.uniform(1, 1.9), shade(GROUND, 0.55))
+            dot(qx, y, 9, ACCENT)
+            for _ in range(10):
+                dot(qx + rng.normal(0, 8), y + rng.normal(0, 8), rng.uniform(1, 2), shade(ACCENT, 0.6))
+            prev = (qx, y)
+            hs = case["hits"]
+            if not hs:
+                for t in range(1, 9):
+                    dot(qx + 22 + t * 11, y + rng.uniform(-1.5, 1.5), 1.9 * (1 - t / 10), shade(ACCENT, 1 - t / 9))
+            for j, h in enumerate(hs):
+                k = DOCS.index(h["id"])
+                tgt = (cols[k], y)
+                # later ranks bow off the row so rank order stays readable
+                if j:
+                    mid = ((prev[0] + tgt[0]) / 2, y + (28 if bad else 22))
+                    path(prev, mid, ACCENT, 0.7); path(mid, tgt, ACCENT, 0.7)
+                else:
+                    path(prev, tgt, ACCENT, 0.8)
+                sc = h.get("score", MAXS)
+                rad = 5 + 13 * sc / MAXS if "score" in h else 11
+                hc = FAIL if (bad and j < 2) else PASS
+                for _ in range(int(40 + rad * 8)):
+                    a, q = rng.uniform(0, 2 * math.pi), rng.uniform(0, 1) ** 0.5 * rad
+                    dot(tgt[0] + math.cos(a) * q, tgt[1] + math.sin(a) * q, rng.uniform(1.3, 2.4), shade(hc, rng.uniform(0.7, 1)))
+                prev = tgt
+            if bad:
+                glow(cols[1], y + 8, 55, 120)
+elif VARIANT == "f":
+    P, CW, CH = 5.0, 3, 5
+    LH = 54
+
+    def cell(cx, cy, fill, col):
+        for a in range(CW):
+            for b in range(CH):
+                if fill >= 1 or BAYER[b % 4, a % 4 + 1 if a < 3 else 0] < fill:
+                    dot(cx + a * P, cy + b * P, 1.9, col)
+
+    def block(cx, cy, w, fill, col):
+        for a in range(w):
+            for b in range(CH):
+                if fill >= 1 or BAYER[b % 4, a % 4] < fill:
+                    dot(cx + a * P, cy + b * P, 1.9, col)
+
+    ground(40, 40, 1160, 800, 22, 0.16)
+    for r, run in enumerate(runs):
+        y0 = 70 + r * (6 * LH + 40)
+        for i, case in enumerate(run):
+            y = y0 + i * LH
+            bad = not all(case["checks"])
+            x = 70
+            for a, b in [(0, 0), (1, 1), (2, 2), (1, 3), (0, 4)]:
+                dot(x + a * P * 1.3, y + b * P, 2.4, ACCENT)
+            x += 5 * P
+            q = case["input"].get("query") or case["input"]["doc_id"]
+            for tok in q.replace("-", " ").split():
+                for c in range(len(tok)):
+                    block(x, y, CW, 0.7, shade(ACCENT, 0.8))
+                    x += (CW + 1) * P
+                x += 3 * P
+            xh = 850
+            for k in range(7):
+                dot(xh - 40 + k * 5.5, y + 2 * P, 1.4, shade(GROUND, 0.7))
+            for j, h in enumerate(case["hits"]):
+                f = h.get("score", MAXS) / MAXS
+                hc = FAIL if (bad and j == 0) else (225, 228, 236)
+                block(xh, y, 6, max(f, 0.2), hc)
+                xh += 8 * P
+            xc = 1030
+            for ok in case["checks"]:
+                block(xc, y, CW + 1, 1.0, mark(ok))
+                if not ok:
+                    for off in (1, 2):
+                        for a in range(CW + 2):
+                            dot(xc + a * P + off * 4, y - off * 4, 1.1, shade(FAIL, 0.7 / off))
+                        for b in range(CH + 1):
+                            dot(xc + CW * P + off * 4 + 4, y + b * P - off * 4, 1.1, shade(FAIL, 0.7 / off))
+                xc += (CW + 3) * P
+        okrun = all(all(c["checks"]) for c in run)
+        yb = y0 + 6 * LH - 6
+        for k in range(22):
+            dot(70 + k * 14, yb + 6, 1.2, shade(GROUND, 0.5))
+        block(1020, yb - 10, 14, 1.0, mark(okrun))
+        if not okrun:
+            glow(1070, yb + 4, 60, 70)
+elif VARIANT == "g":
+    U, W, GAP, GG = 60, 54, 12, 34
+    hits_n = sum(len(c["hits"]) for c in runs[0])
+    total = hits_n * (2 * W + GAP) + 1 * (W + GAP) + 5 * GG
+    x = (S - total) / 2
+    base = 790
+    cols_ = []
+    flat = []
+    for i, (c0, c1) in enumerate(zip(*runs)):
+        bad = not all(c1["checks"])
+        if not c0["hits"]:
+            flat.append(x)
+            x += W + GAP + GG
+            continue
+        for j, (h0, h1) in enumerate(zip(c0["hits"], c1["hits"])):
+            sc0, sc1 = h0.get("score", 0), h1.get("score", 0)
+            for side, (hh, sc) in enumerate(((h0, sc0), (h1, sc1))):
+                xx = x + side * (W + GAP)
+                height = sc * U
+                pts = [(rng.uniform(0, W), rng.uniform(0, height), rng.uniform(1.3, 2.4)) for _ in range(int(W * height / 17))]
+                ghost = []
+                if side == 1 and sc1 < sc0:
+                    ghost = [(rng.uniform(0, W), rng.uniform(sc1 * U, sc0 * U)) for _ in range(int(W * (sc0 - sc1) * U / 55))]
+                cols_.append(dict(i=i, side=side, id=hh["id"], x=xx, h=height, pts=pts, ghost=ghost, bad=bad and side == 1))
+            x += 2 * W + GAP + GAP
+        x += GG - GAP
+    swap = [(a_, b_) for a_ in cols_ if a_["side"] == 0 and not all(runs[1][a_["i"]]["checks"]) for b_ in cols_ if b_["side"] == 1 and b_["i"] == a_["i"] and b_["id"] == a_["id"]]
+    arcs = [rng.uniform(0, 1, 30) for _ in swap]
+    sparks = [(rng.uniform(0, 2 * math.pi), rng.uniform(0.15, 1) ** 0.6 * 50, rng.uniform(1.1, 2.6), rng.uniform(.35, 1)) for _ in range(70)]
+    nb = sum(1 for c in cols_ if c["side"] == 0)
+
+    def frame(p):
+        """p in [0,1]: before columns rise left to right, then the after columns, then the failing ones turn orange."""
+        global im, d
+        im = Image.new("RGB", (S * SS, S * SS), BG)
+        d = ImageDraw.Draw(im)
+        ground(40, base + 8, 1160, base + 60, 14, 0.2)
+        for fx in flat:
+            for k in range(int(W)):
+                dot(fx + k, base + 4, 1.5, shade(GROUND, 0.7))
+        b_i = a_i = 0
+        for c in cols_:
+            if c["side"] == 0:
+                g = min(max(p * 2.4 * nb - b_i * 1.0, 0) / 1.6, 1)
+                b_i += 1
+            else:
+                g = min(max((p - 0.45) * 2.0 * nb - a_i * 1.0, 0) / 1.6, 1)
+                a_i += 1
+            turn = c["bad"] and p > 0.78
+            col = FAIL if turn else PASS
+            if g <= 0:
+                continue
+            h = c["h"] * g
+            for dx, yy, r in c["pts"]:
+                if yy <= h:
+                    dot(c["x"] + dx, base - yy, r, shade(col, 0.45 + 0.55 * (yy / max(h, 1)) ** 0.8))
+            for k in range(int(W / 5)):
+                dot(c["x"] + k * 5 + 2, base - h, 2.6, col)
+            if g >= 1 and p > 0.6:
+                for dx, yy in c["ghost"]:
+                    dot(c["x"] + dx, base - yy, 1.0, shade(GROUND, 0.3))
+        if p > 0.8:
+            for (c0_, c1_), u_ in zip(swap, arcs):
+                for t in range(24):
+                    u = t / 23
+                    dot(c0_["x"] + W / 2 + (c1_["x"] - c0_["x"]) * u, base - (c0_["h"] + (c1_["h"] - c0_["h"]) * u) - 70 * math.sin(math.pi * u), 1.9, shade(FAIL, 0.9))
+                dot(c1_["x"] + W / 2, base - c1_["h"] - 20, 1, FAIL)
+        if p > 0.78:
+            for c in cols_:
+                if c["bad"]:
+                    for a_, q_, r_, k_ in sparks:
+                        dot(c["x"] + W / 2 + math.cos(a_) * q_, base - c["h"] - 20 + math.sin(a_) * q_, r_, shade(FAIL, k_ * (1 - 0.5 * q_ / 50)))
+
+    if len(sys.argv) > 2 and sys.argv[2] == "anim":
+        frames = []
+        N = 36
+        for fi in range(N):
+            frame(min(fi / (N - 6), 1.0))
+            frames.append(im.resize((600, 600), Image.LANCZOS))
+        OUTA = ROOT / "public/projects/agent-harness/card-anim.webp"
+        OUTA.parent.mkdir(parents=True, exist_ok=True)
+        frames[0].save(OUTA, "WEBP", save_all=True, append_images=frames[1:], duration=[80] * (N - 1) + [1400], loop=0, quality=70, method=6)
+        print(f"wrote {OUTA} ({OUTA.stat().st_size} B)")
+    frame(1.0)
 else:
     UNIT, BAR_H, ROW_GAP, RUN_GAP = 100, 58, 24, 90
     n = sum(len(c["checks"]) for c in runs[0])

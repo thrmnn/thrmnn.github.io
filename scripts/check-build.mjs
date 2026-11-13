@@ -512,7 +512,7 @@ for (const f of htmlFiles) {
     const words = span.split(/\s+/).filter((w) => /[A-Za-zÀ-ÿ0-9]/.test(w));
     // 205, not 200: the owner's plain project titles (30 Oct, "plain" everywhere) add four
     // words to the link lists; the goal, a homepage read in under a minute, is unchanged.
-    // 210: the three picture captions (Scan, Model, Decipher) repeat the headline words.
+    // 210: the hero lines plus the three picture captions; the homepage stays short above the work.
     must('home_words', words.length < 210, `${words.length} words above the work grid (budget < 210)`);
     console.log(`  · ${words.length} words above the work grid`);
   }

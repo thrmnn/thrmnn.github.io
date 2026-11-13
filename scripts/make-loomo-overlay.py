@@ -4,9 +4,9 @@
 it is, with the real walking legs and a drawn depth scan laid over it.
 Host tooling (numpy, Pillow, scipy, opencv, ffmpeg), run by hand.
 
-    python3 scripts/make-loomo-overlay.py [--out DIR]   # default ~/Perso/site-review/files
+    python3 scripts/make-loomo-overlay.py [--out DIR]   # default public/projects/autonomous-mobile-robot
 
-Writes loomo-pose-c.webp (1600x1000) and loomo-pose-c-anim.webp (640x400, 24 frames at 80 ms).
+Writes loomo-pose.webp (1600x1000) and loomo-pose-anim.webp (640x400, 24 frames at 80 ms).
 
 REAL
   Base: public/projects/autonomous-mobile-robot/hero-poster.jpg through the
@@ -78,7 +78,7 @@ BLUE, PALE = A.ACCENT, A.PALE
 
 
 def main():
-    out = Path(sys.argv[sys.argv.index("--out") + 1]) if "--out" in sys.argv else Path.home() / "Perso/site-review/files"
+    out = Path(sys.argv[sys.argv.index("--out") + 1]) if "--out" in sys.argv else ROOT / "public/projects/autonomous-mobile-robot"
     pose = json.loads(A.POSE.read_text())["frames"]
     with tempfile.TemporaryDirectory() as tmp:
         frames = A.load_frames(tmp)
@@ -167,10 +167,10 @@ def main():
     frames_out = [draw(f, f / N) for f in range(N)]
     still = draw(still_f, 0.8)
     out.mkdir(parents=True, exist_ok=True)
-    still.save(out / "loomo-pose-c.webp", "WEBP", quality=72, method=6)
+    still.save(out / "loomo-pose.webp", "WEBP", quality=72, method=6)
     loop = [im.resize((640, 400), Image.LANCZOS) for im in frames_out]
-    loop[0].save(out / "loomo-pose-c-anim.webp", "WEBP", save_all=True, append_images=loop[1:], duration=80, loop=0, quality=int(sys.argv[sys.argv.index("--q") + 1]) if "--q" in sys.argv else 27, method=6)
-    for nme in ("loomo-pose-c.webp", "loomo-pose-c-anim.webp"):
+    loop[0].save(out / "loomo-pose-anim.webp", "WEBP", save_all=True, append_images=loop[1:], duration=80, loop=0, quality=int(sys.argv[sys.argv.index("--q") + 1]) if "--q" in sys.argv else 27, method=6)
+    for nme in ("loomo-pose.webp", "loomo-pose-anim.webp"):
         print(nme, (out / nme).stat().st_size)
     if "--preview" in sys.argv:
         pub = ROOT / "public/projects/autonomous-mobile-robot"

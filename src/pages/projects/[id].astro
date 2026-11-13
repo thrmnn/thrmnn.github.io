@@ -7,9 +7,12 @@ import { author } from '../../data/author';
 import { siteConfig } from '../../data/site';
 
 export async function getStaticPaths() {
-  const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime()
-  );
+  const all = await getCollection('projects', ({ data }) => !data.draft);
+  // the pager walks the same order as the /projects/ grid
+  const projects = [
+    ...all.filter((p) => p.data.featuredOrder !== undefined).sort((a, b) => a.data.featuredOrder! - b.data.featuredOrder!),
+    ...all.filter((p) => p.data.featuredOrder === undefined).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()),
+  ];
   return projects.map((project, i) => ({
     params: { id: project.id },
     props: {
@@ -75,7 +78,7 @@ const articleJsonLd = {
       {project.data.image && (
         <div class="mb-10 rounded-lg overflow-hidden border border-border">
           <picture>
-            {project.data.cardAnim && (
+            {project.data.cardAnim && (!project.data.cardImage || project.data.cardImage === project.data.image) && (
               <source srcset={base + project.data.cardAnim} media="(prefers-reduced-motion: no-preference)" />
             )}
             {project.data.imagePhone && (

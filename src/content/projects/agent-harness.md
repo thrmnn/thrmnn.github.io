@@ -5,6 +5,7 @@ date: '2026-06-12T00:00:00Z'
 github: 'https://github.com/thrmnn/agent-harness'
 image: '/projects/agent-harness/eval-run.webp'
 cardImage: '/projects/agent-harness/card-plate.webp'
+cardAnim: '/projects/agent-harness/card-anim.webp'
 imagePhone: '/projects/agent-harness/card-plate.webp'
 imageWidth: 1920
 imageHeight: 834
@@ -45,3 +46,7 @@ framework.
 I wrote it to run with no model and no network, with one dependency (pydantic). A tool call that gets bad input comes back as an error result and does not crash the agent loop. Each call writes one JSON line: timestamp, tool, version, input hash, outcome, duration.
 
 To see the regression guard work, clone the repo, run `pip install -e .`, then `python -m agent_harness.evals examples/eval_cases.py`. It exits 0. Then change `TITLE_WEIGHT` from 2 to 1 in `examples/kb_search.py` and run it again. The case `title-match-outranks-body-match` fails and the run exits 1. The repo's own CI runs the same line.
+
+## Picture credit
+
+The picture on this project's card (and on this page on a phone) is drawn from the repo's own eval run at commit bdbe373, run twice. Each pair of columns is one search result before and after the `TITLE_WEIGHT` change, in rank order; a column's height is the score the tool returned. The orange columns are the ranking that flipped, after the change. The flat marks on the right are a call that returns a document, not a score. Positions and dot placement are drawn; every score, rank and check result comes from the run.

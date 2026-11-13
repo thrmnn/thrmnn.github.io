@@ -57,7 +57,7 @@ from scipy import ndimage as ndi
 ROOT = Path(__file__).parent.parent
 VIDEO = ROOT / "scripts/assets/loomo/hero.webm"
 POSE = ROOT / "scripts/assets/loomo/pose.json"
-OUT = ROOT / "public/projects/autonomous-mobile-robot"
+OUT = Path.home() / "Perso/site-review/files"  # alternative B, not shipped
 
 BG = (14, 16, 22)
 GREY = np.array((120, 124, 134), float)
@@ -331,12 +331,12 @@ def main():
     card = View(1200, 1200, 1.65, -121, -70, 6.5, (600, 430, 700, 520))
     OUT.mkdir(parents=True, exist_ok=True)
     ws, wl = build(fa, wide, wide.scaled(0.4, 3.9))
-    ws.save(OUT / "loomo-wide.webp", "WEBP", quality=72, method=6)
-    save_anim(wl, OUT / "loomo-wide-anim.webp", 34)
+    ws.save(OUT / "loomo-pose-b.webp", "WEBP", quality=72, method=6)
+    save_anim(wl, OUT / "loomo-pose-b-anim.webp", 34)
     cs, cl = build(fa, card, card.scaled(0.4, 3.4))
-    cs.save(OUT / "card-plate.webp", "WEBP", quality=72, method=6)
-    save_anim(cl, OUT / "card-anim.webp", 40)
-    for n in ("loomo-wide.webp", "loomo-wide-anim.webp", "card-plate.webp", "card-anim.webp"):
+    cs.save(OUT / "loomo-b-card.webp", "WEBP", quality=72, method=6)
+    save_anim(cl, OUT / "loomo-b-card-anim.webp", 40)
+    for n in ("loomo-pose-b.webp", "loomo-pose-b-anim.webp", "loomo-b-card.webp", "loomo-b-card-anim.webp"):
         print(n, (OUT / n).stat().st_size)
     if "--preview" in sys.argv:
         alt = Path.home() / "Perso/wt20-alt-a/public/projects/autonomous-mobile-robot/loomo-wide.webp"

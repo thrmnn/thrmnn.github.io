@@ -2,6 +2,7 @@
 title: "How city form shapes light and air"
 date: '2025-01-01T00:00:00Z'
 cardImage: '/projects/urban-morphometrics/vidigal-plate.webp'
+cardAnim: '/projects/urban-morphometrics/vidigal-anim.webp'
 featuredOrder: 1
 externalLink: 'https://senseablerio.mit.edu/'
 summary: "Favelas are built without plans, and the descriptors urban analysis relies on assume a street grid that is not there. I build the ones that hold on this fabric, from terrain models and building footprints, fine enough to resolve a single alley."
@@ -41,7 +42,7 @@ back.
 
 ## What is shown here
 
-The only picture of this work is the geometry of one site, Vidigal, on the
-front page of theoalessandro.com. Nothing else from this work appears: this page
-describes the method only, with no indicators, no findings and no figures from the
-study.
+The only pictures of this work show the geometry of one site, Vidigal: its
+terrain and building footprints, on the front page, on this page and in the
+Explore view. Nothing else from this work appears: this page describes the method
+only, with no indicators, no findings and no figures from the study.

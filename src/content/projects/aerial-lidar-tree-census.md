@@ -42,3 +42,7 @@ version of this work did use machine learning; the current method does not.
 ## What is shown here
 
 Method only: there are no numbers, figures or findings on this page.
+
+## Picture credit
+
+The picture on this project's card is a few blocks of the Jordaan, Amsterdam, drawn from open aerial LiDAR: the AHN5 point cloud of the Dutch national elevation survey. Source: [AHN](https://www.ahn.nl/eerste-deel-van-ahn-5-is-beschikbaar), CC BY 4.0. Green dots are returns at least 2 m above the ground that the survey leaves unclassified, which here are mostly tree crowns; grey dots are ground and roofs.

@@ -3,11 +3,10 @@ title: "Autonomous mobile robot navigation on a Segway Loomo"
 date: '2023-06-01T00:00:00Z'
 externalLink: 'https://www.epfl.ch/labs/vita/'
 github: 'https://github.com/thrmnn/ROS_Autonomous_Driving'
+cardImage: '/projects/autonomous-mobile-robot/loomo-card.webp'
 image: '/projects/autonomous-mobile-robot/hero-poster.jpg'
 imageWidth: 600
 imageHeight: 338
-cardImage: '/projects/autonomous-mobile-robot/card-plate.webp'
-cardAnim: '/projects/autonomous-mobile-robot/card-anim.webp'
 summary: "A modular ROS stack for a Segway Loomo at EPFL VITA Lab: person detection, tracking and 3D pose, trajectory prediction, planning and model predictive control, validated end to end on the physical robot."
 label: "EPFL VITA Lab · 2022–23"
 metric: "End-to-end on the physical robot · code on GitHub"
@@ -53,4 +52,4 @@ The framework was adapted to help paraplegic patients walk, with the Loomo as an
 
 ## Picture credit
 
-The card picture is made from frames of the project's own video of the Loomo following a person. The skeleton is real: torchvision's Keypoint R-CNN run on those frames (only the joints it is sure of are drawn; the head and shoulders are out of frame), drawn in the style of EPFL VITA Lab's OpenPifPaf, which did not produce it. The tracker box is that detector's box, not the Stark tracker's. The depth view is drawn: the Loomo senses depth with an Intel RealSense stereo camera, but we have no depth frame from the robot, so the cone, the sweep and the lit points are an illustration.
+The homepage picture is made from frames of the project's own video of the Loomo following a person. The legs are real: the hips, knees and ankles that torchvision's Keypoint R-CNN found on those frames, drawn in the style of EPFL VITA Lab's OpenPifPaf, which did not produce them. The depth view is drawn: the Loomo senses depth with an Intel RealSense stereo camera, but we have no depth frame from the robot, so the cone, the sweep and the lit points are an illustration.

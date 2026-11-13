@@ -257,5 +257,8 @@ if __name__ == "__main__":
     if "--out" in sys.argv:
         path = Path(sys.argv[sys.argv.index("--out") + 1])
     path.parent.mkdir(parents=True, exist_ok=True)
-    out.save(path, "WEBP", quality=78, method=6)
+    if which == "loomo" and shape == "tile":
+        # the hero shows this tile at about 340 css px; the dot noise compresses poorly at full size
+        out = out.resize((600, 600), Image.LANCZOS)
+    out.save(path, "WEBP", quality=70 if which == "loomo" else 78, method=6)
     print(path)

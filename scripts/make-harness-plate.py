@@ -10,14 +10,33 @@ comment describes. No text. Host tooling (Pillow), run by hand.
     python3 scripts/make-harness-plate.py d   # oblique point-cloud columns, height = checks, run before | after
     python3 scripts/make-harness-plate.py e   # routes: each call's returned hits as a dotted path over the five corpus docs, run before | after
     python3 scripts/make-harness-plate.py f   # terminal log in dot-matrix cells: query tokens, ranked hits (dither density = score), checks, exit code
-    python3 scripts/make-harness-plate.py g [anim]  # THE CARD: dot columns, one pair per returned hit (before | after), height = the score the tool returned
+    python3 scripts/make-harness-plate.py g   # THE CARD: retrieval as a scan, still and loop (before sweep, then after sweep)
+    python3 scripts/make-harness-plate.py columns [anim]  # alternative: dot columns, one pair per returned hit (before | after), height = the score the tool returned, to site-review/files
 
-e, f, g read the "input" and "hits" fields of eval-run.json (the repo's own calls and
-their returned hits, scripts/capture-harness-run.py). Every position is a drawn
-layout; every count, rank, score and check result is the repo's. In g, a hit the tool
-returns without a score (fetch returns the document) is a flat mark on the ground,
-never a column. g writes the card (card-plate.webp, card-anim.webp); a and e, f go to
-~/Perso/site-review/files/ (harness-grid.webp, harness-idea-{1,2}.webp).
+e, f, g, columns read the "input" and "hits" fields of eval-run.json (the repo's own
+calls and their returned hits, scripts/capture-harness-run.py). Every position is a
+drawn layout; every count, rank, score and check result is the repo's.
+
+g, what is drawn: the five corpus documents (doc-lidar, doc-retrieval, doc-tracing,
+doc-grasping, doc-evals) as grey upright pages of dots on a ring floor, in the Roboat
+plate's oblique, depth-faded dot look; the harness as a small blue mast at the centre;
+a beam that swings from the harness to where each call is aimed (one sweep per run,
+each hit gets an equal slice of the sweep, in the order the suite runs them, except in the after sweep, see below); the
+afterglow, the page layout, the angles, the ring spacing and the beam's longer
+dwell on the failing call in the after sweep (taken from the empty-result call's slice).
+g, what comes from the run: which documents each call returned and in which rank
+(that is what lights); the score the tool returned (sets the brightness and dot size of
+the lit page; the after run returns a lower score for five of the six scored hits, the sixth, doc-retrieval in the ranking call, is 3 in both, so the pages are dimmer in the second sweep);
+the check results (one ring per check, on the call's top-ranked hit, green for a pass,
+orange for a fail, drawn outermost and thicker; the run records checks per call, not per hit). A hit with no score
+(kb_fetch returns the document) lights only the outline of the page at one fixed level,
+never as a score. A call that returns nothing sends the beam to an empty spot on the
+floor, its rings are drawn there, nothing lights.
+
+g writes the card (card-plate.webp = last frame of the after sweep; card-anim.webp, 36
+frames at 80 ms, 18 per run). columns writes the older dot-column card to
+~/Perso/site-review/files/harness-columns.webp; a and e, f go to the same folder
+(harness-grid.webp, harness-idea-{1,2}.webp).
 """
 import json
 import math
@@ -35,6 +54,8 @@ if VARIANT in IDEAS:
     OUT = Path.home() / f"Perso/site-review/files/harness-idea-{IDEAS[VARIANT]}.webp"
 elif VARIANT == "a":
     OUT = Path.home() / "Perso/site-review/files/harness-grid.webp"
+elif VARIANT == "columns":
+    OUT = Path.home() / "Perso/site-review/files/harness-columns.webp"
 else:
     OUT = ROOT / ("public/projects/agent-harness/card-plate.webp" if VARIANT == "g" else f"public/projects/agent-harness/card-plate-{VARIANT}.webp")
 DOCS = ["doc-lidar", "doc-retrieval", "doc-tracing", "doc-grasping", "doc-evals"]
@@ -299,7 +320,7 @@ elif VARIANT == "f":
         block(1020, yb - 10, 14, 1.0, mark(okrun))
         if not okrun:
             glow(1070, yb + 4, 60, 70)
-elif VARIANT == "g":
+elif VARIANT == "columns":
     U, W, GAP, GG = 60, 54, 12, 34
     hits_n = sum(len(c["hits"]) for c in runs[0])
     total = hits_n * (2 * W + GAP) + 1 * (W + GAP) + 5 * GG
@@ -378,11 +399,164 @@ elif VARIANT == "g":
         for fi in range(N):
             frame(min(fi / (N - 6), 1.0))
             frames.append(im.resize((600, 600), Image.LANCZOS))
-        OUTA = ROOT / "public/projects/agent-harness/card-anim.webp"
+        OUTA = Path.home() / "Perso/site-review/files/harness-columns-anim.webp"
         OUTA.parent.mkdir(parents=True, exist_ok=True)
         frames[0].save(OUTA, "WEBP", save_all=True, append_images=frames[1:], duration=[80] * (N - 1) + [1400], loop=0, quality=70, method=6)
         print(f"wrote {OUTA} ({OUTA.stat().st_size} B)")
     frame(1.0)
+elif VARIANT == "g":
+    CX, CY, A_, B_ = 600, 500, 520, 230
+    ANG = {"doc-evals": 18, "doc-retrieval": 90, "doc-lidar": 162, "doc-grasping": 234, "doc-tracing": 306}
+    EMPTY_ANG, EMPTY_R, DOC_R = 270, 0.55, 0.78
+    PCOLS, PROWS, PPITCH = 8, 11, 18
+    TAU, RES, HOLD = 0.15, 0.45, 0.82
+    NF = 18
+    LIGHT = (150, 156, 168)
+
+    def gp(ang, r):
+        a = math.radians(ang)
+        return CX + r * A_ * math.cos(a), CY - r * B_ * math.sin(a)
+
+    def far(ang):
+        return (math.sin(math.radians(ang)) + 1) / 2
+
+    pages = {}
+    for k, doc in enumerate(DOCS):
+        prng = np.random.default_rng(100 + k)
+        bx, by = gp(ANG[doc], DOC_R)
+        cells = []
+        for r_ in range(PROWS):
+            for c_ in range(PCOLS):
+                edge = r_ in (0, PROWS - 1) or c_ in (0, PCOLS - 1)
+                if r_ == 0 or edge or prng.random() > 0.14:
+                    cells.append((bx + (c_ - (PCOLS - 1) / 2) * PPITCH + prng.uniform(-1.2, 1.2), by - 14 - (PROWS - 1 - r_) * PPITCH + prng.uniform(-1.2, 1.2), edge))
+        pages[doc] = (bx, by, cells)
+
+    floor_pts = []
+    for rr in (0.34, 0.67, 1.0):
+        n = int(2 * math.pi * rr * 26)
+        for i in range(n):
+            a = 360 * i / n
+            x, y = gp(a, rr)
+            floor_pts.append((x, y, 0.26 + 0.4 * (1 - far(a))))
+
+    def run_events(run):
+        ev = []
+        for ci, c in enumerate(run):
+            if not c["hits"]:
+                ev.append(dict(call=ci, ang=EMPTY_ANG, hit=None, rank=0, checks=c["checks"]))
+            for j, h in enumerate(c["hits"]):
+                ev.append(dict(call=ci, ang=ANG[h["id"]], hit=h, rank=j, checks=c["checks"]))
+        failing = {i for i, c in enumerate(run) if not all(c["checks"])}
+        wts = [(2.2 if e["call"] in failing else (0.2 if failing and e["hit"] is None else 1.0)) for e in ev]
+        start = 0.0
+        for e, w in zip(ev, wts):
+            d_ = w / sum(wts) * HOLD
+            e["t"] = start + min(0.6 * d_, 0.045)
+            e["leave"] = start + 0.7 * d_
+            start += d_
+        radii = {}
+        for e in ev:
+            if e["rank"] == 0:
+                key = e["hit"]["id"] if e["hit"] else "empty"
+                e["ring0"] = radii.get(key, 0)
+                radii[key] = e["ring0"] + len(e["checks"])
+        return ev
+
+    def head(ev, t):
+        ks = [(0.0, ev[0]["ang"] - 50)]
+        for e in ev:
+            prev = ks[-1][1]
+            ks.append((e["t"], prev + ((e["ang"] - prev + 180) % 360 - 180)))
+        if t <= ks[1][0]:
+            u = t / ks[1][0]
+            return ks[0][1] + (ks[1][1] - ks[0][1]) * (u * u * (3 - 2 * u))
+        for i in range(1, len(ks) - 1):
+            t0, t1 = ks[i][0], ks[i + 1][0]
+            if t <= t1:
+                dw = ev[i - 1]["leave"]
+                u = min(max((t - dw) / (t1 - dw), 0), 1)
+                return ks[i][1] + (ks[i + 1][1] - ks[i][1]) * (u * u * (3 - 2 * u))
+        return ks[-1][1]
+
+    def blend(c0, c1, m):
+        return tuple(c0[i] + (c1[i] - c0[i]) * m for i in range(3))
+
+    def sweep_frame(run, ri, t):
+        ev = run_events(run)
+        items = []
+        for x, y, k in floor_pts:
+            items.append((-2, x, y, 3.3, shade(GROUND, k)))
+        for j in range(12):
+            ph = head(ev, max(t - j * 0.012, 0))
+            w = math.exp(-j / 3.5)
+            n = 26
+            for i in range(1, n + 1):
+                rr = i / n
+                x, y = gp(ph, rr)
+                kk = w * (0.95 - 0.55 * rr) * (0.55 + 0.45 * (1 - far(ph)))
+                if kk > 0.07:
+                    items.append((-1, x, y, 3.4 + 1.2 * (j == 0), shade(ACCENT, kk)))
+        lvl = {d_: 0.0 for d_ in DOCS}
+        outline = {d_: False for d_ in DOCS}
+        for e in ev:
+            if t < e["t"] or not e["hit"]:
+                continue
+            h = e["hit"]
+            peak = 0.15 + 0.85 * h["score"] / MAXS if "score" in h else 0.5
+            w = peak * (RES + (1 - RES) * math.exp(-(t - e["t"]) / TAU))
+            if w > lvl[h["id"]]:
+                lvl[h["id"]] = w
+                outline[h["id"]] = "score" not in h
+        for e in ev:
+            if e["rank"] or t < e["t"] + 0.015:
+                continue
+            bx, by = gp(e["ang"], DOC_R if e["hit"] else EMPTY_R)
+            fade = min((t - e["t"] - 0.015) / 0.04, 1)
+            for slot_, (k, ok) in enumerate(sorted(enumerate(e["checks"]), key=lambda q: (not q[1], q[0]))):
+                rx = 76 + 19 * (e["ring0"] + slot_) + (8 if not ok else 0)
+                ry = rx * 0.42
+                rd = 4.3 if ok else 8.0
+                n = int(2 * math.pi * rx / (15 if ok else 12.5))
+                for i in range(n):
+                    a = 2 * math.pi * i / n
+                    items.append((by - 0.5, bx + rx * math.cos(a), by + ry * math.sin(a), rd, shade(mark(ok), fade)))
+        for doc in DOCS:
+            bx, by, cells = pages[doc]
+            gk = 0.4 + 0.4 * (1 - far(ANG[doc]))
+            w = lvl[doc]
+            for x, y, edge in cells:
+                if w > 0 and (edge or not outline[doc]):
+                    m = min(1.0, w * 2.5)
+                    col = blend(shade(LIGHT, gk), shade(ACCENT, 0.4 + 0.6 * min(1, w / 0.45)), m)
+                    rr = 5.0 * (0.95 + 0.4 * min(1, w / 0.5))
+                else:
+                    col, rr = shade(LIGHT, gk), 5.0
+                items.append((by, x, y, rr, tuple(int(v) for v in col)))
+        for i in range(36):
+            a = 2 * math.pi * i / 36
+            items.append((CY - 1, CX + 26 * math.cos(a), CY + 11 * math.sin(a), 3.6, ACCENT))
+        for z in range(1, 6):
+            items.append((CY, CX, CY - z * 10, 3.8, ACCENT))
+        for i in range(10):
+            a = 2 * math.pi * i / 10
+            items.append((CY + 1, CX + 11 * math.cos(a), CY - 62 + 5 * math.sin(a), 4.2, ACCENT))
+        items.append((CY + 1, CX, CY - 62, 5.2, (200, 220, 255)))
+        img = Image.new("RGB", (S * SS, S * SS), BG)
+        dr = ImageDraw.Draw(img)
+        for _, x, y, r, col in sorted(items, key=lambda q: q[0]):
+            dr.ellipse([(x - r) * SS, (y - r) * SS, (x + r) * SS, (y + r) * SS], fill=tuple(int(v) for v in col))
+        return img
+
+    frames = []
+    for ri, run in enumerate(runs):
+        for f in range(NF):
+            frames.append(sweep_frame(run, ri, f / (NF - 1)))
+    im = frames[-1]
+    small = [fr.resize((600, 600), Image.LANCZOS) for fr in frames]
+    OUTA = ROOT / "public/projects/agent-harness/card-anim.webp"
+    small[0].save(OUTA, "WEBP", save_all=True, append_images=small[1:], duration=80, loop=0, quality=60, method=6)
+    print(f"wrote {OUTA} ({OUTA.stat().st_size} B)")
 else:
     UNIT, BAR_H, ROW_GAP, RUN_GAP = 100, 58, 24, 90
     n = sum(len(c["checks"]) for c in runs[0])

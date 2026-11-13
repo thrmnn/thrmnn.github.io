@@ -13,9 +13,9 @@ import { talk } from '../data/talk';
 
 const mailto = `mailto:${author.email}`;
 const heroPics = [
-  { word: 'Scan', src: '/projects/autonomous-boat-perception/hero-tile.webp', anim: '/projects/autonomous-boat-perception/hero-tile-anim.webp', pos: '50% 50%', w: 600, h: 600, alt: 'A small boat on an Amsterdam canal with a simulated lidar scan, drawn as dots.' },
-  { word: 'Model', src: '/projects/urban-morphometrics/vidigal-plate.webp', phone: '/projects/urban-morphometrics/vidigal-tile.webp', anim: '/projects/urban-morphometrics/vidigal-anim.webp', animPhone: '/projects/urban-morphometrics/vidigal-tile-anim.webp', w: 1200, h: 1200, alt: 'Vidigal, Rio de Janeiro: terrain and building footprints as a point cloud.' },
-  { word: 'Decipher', src: '/projects/ros2-localization-triage/decipher-tile.webp', anim: '/projects/ros2-localization-triage/decipher-tile-anim.webp', w: 600, h: 600, alt: 'A logistics robot drawn in dots inside the MIT Stata Center laser map, and a second orange robot far from it, where its localization said it was.' },
+  { word: 'Scan', place: 'Amsterdam', src: '/projects/autonomous-boat-perception/hero-tile.webp', anim: '/projects/autonomous-boat-perception/hero-tile-anim.webp', pos: '50% 50%', w: 600, h: 600, alt: 'A small boat on an Amsterdam canal with a simulated lidar scan, drawn as dots.' },
+  { word: 'Model', place: 'Vidigal, Rio', src: '/projects/urban-morphometrics/vidigal-plate.webp', phone: '/projects/urban-morphometrics/vidigal-tile.webp', anim: '/projects/urban-morphometrics/vidigal-anim.webp', animPhone: '/projects/urban-morphometrics/vidigal-tile-anim.webp', w: 1200, h: 1200, alt: 'Vidigal, Rio de Janeiro: terrain and building footprints as a point cloud.' },
+  { word: 'Decipher', place: 'MIT Stata', src: '/projects/ros2-localization-triage/decipher-tile.webp', anim: '/projects/ros2-localization-triage/decipher-tile-anim.webp', w: 600, h: 600, alt: 'A logistics robot drawn in dots inside the MIT Stata Center laser map, and a second orange robot far from it, where its localization said it was.' },
 ];
 const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
 
@@ -66,7 +66,7 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
               {p.phone && <source media="(max-width: 1023px)" srcset={`${base}${p.phone}`} />}
               <img src={`${base}${p.src}`} width={p.w} height={p.h} alt={p.alt} decoding="async" style={p.pos ? `object-position: ${p.pos}` : undefined} />
             </picture>
-            <figcaption>{p.word}</figcaption>
+            <figcaption>{p.place}</figcaption>
           </figure>
         </li>
       ))}

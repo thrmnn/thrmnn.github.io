@@ -15,20 +15,16 @@ export function planSvg(plan: Plan): string {
   const [wx, wy] = plan.was[plan.was.length - 1];
   const [sx, sy] = plan.said[plan.said.length - 1];
   const mx = ((wx + sx) / 2 - x0) * PX, my = (y1 - (wy + sy) / 2) * PX;
-  const [s0, s1] = plan.sigma_cm;
-  const e = plan.error_end_m;
   const bar = 10 * PX;
-  return `<svg class="plan" viewBox="0 0 ${W} ${H}" role="img" aria-label="Floor plan: the robot's real path and the path it reported, ${e} metres apart">
+  return `<svg class="plan" viewBox="0 0 ${W} ${H}" role="img" aria-label="Floor plan: the robot's real path and the path it reported, far apart, at the end of the time it was lost">
   <path class="walls" d="${walls}"/>
   <path class="gap" d="M${X(wx)} ${Y(wy)}L${X(sx)} ${Y(sy)}"/>
   <path class="was" d="${line(plan.was)}"/>
   <path class="said" d="${line(plan.said)}"/>
   <circle class="was-dot" cx="${X(wx)}" cy="${Y(wy)}" r="5"/>
   <circle class="said-dot" cx="${X(sx)}" cy="${Y(sy)}" r="5"/>
-  <text class="lab big" x="${(mx + 10).toFixed(1)}" y="${(my + 6).toFixed(1)}">${e} m</text>
   <text class="lab" x="${(Number(X(wx)) + 12).toFixed(1)}" y="${(Number(Y(wy)) + 4).toFixed(1)}">where it was</text>
-  <text class="lab said-lab" x="${(Number(X(sx)) + 12).toFixed(1)}" y="${(Number(Y(sy)) - 8).toFixed(1)}">where it said it was,</text>
-  <text class="lab said-lab" x="${(Number(X(sx)) + 12).toFixed(1)}" y="${(Number(Y(sy)) + 10).toFixed(1)}">sure to ${s0}–${s1} cm</text>
+  <text class="lab said-lab" x="${(Number(X(sx)) + 12).toFixed(1)}" y="${(Number(Y(sy)) + 4).toFixed(1)}">where it said it was</text>
   <path class="bar" d="M${W - bar - 8} ${H - 10}h${bar}"/>
   <text class="tick" x="${W - 8}" y="${H - 16}" text-anchor="end">10 m</text>
 </svg>`;
@@ -38,8 +34,6 @@ export function planSvg(plan: Plan): string {
 // theohermann.ch, 4716493). A viewBox cannot change per breakpoint, hence a second drawing.
 export function planSvgSmall(plan: Plan): string {
   const [x0, , , y1] = plan.crop_m;
-  const e = plan.error_end_m;
-  const [s0, s1] = plan.sigma_cm;
   const pts = [...plan.was, ...plan.said];
   const cx0 = Math.min(...pts.map((p) => p[0])) - 2, cx1 = Math.max(...pts.map((p) => p[0])) + 2;
   const cy0 = Math.min(...pts.map((p) => p[1])) - 2, cy1 = Math.max(...pts.map((p) => p[1])) + 2;
@@ -53,7 +47,7 @@ export function planSvgSmall(plan: Plan): string {
   const [wx, wy] = plan.was[plan.was.length - 1];
   const [sx, sy] = plan.said[plan.said.length - 1];
   const [wX, wY, sX, sY] = [sx_(wx), sy_(wy), sx_(sx), sy_(sy)];
-  return `<svg class="plan plan-sm" viewBox="0 0 ${VW} ${SH}" role="img" aria-label="Floor plan: the robot's real path and the path it reported, ${e} metres apart">
+  return `<svg class="plan plan-sm" viewBox="0 0 ${VW} ${SH}" role="img" aria-label="Floor plan: the robot's real path and the path it reported, far apart, at the end of the time it was lost">
   <path class="walls" d="${swalls}"/>
   <path class="gap" d="M${wX.toFixed(1)} ${wY.toFixed(1)}L${sX.toFixed(1)} ${sY.toFixed(1)}"/>
   <path class="was" d="${sline(plan.was)}"/>
@@ -62,10 +56,8 @@ export function planSvgSmall(plan: Plan): string {
   <path class="lead said-lead" d="M${(sX + 7).toFixed(1)} ${sY.toFixed(1)}H${LX - 6}"/>
   <circle class="was-dot" cx="${wX.toFixed(1)}" cy="${wY.toFixed(1)}" r="4"/>
   <circle class="said-dot" cx="${sX.toFixed(1)}" cy="${sY.toFixed(1)}" r="4"/>
-  <text class="lab big" x="${((wX + sX) / 2 + 8).toFixed(1)}" y="${((wY + sY) / 2 + 7).toFixed(1)}">${e} m</text>
   <text class="lab" x="${LX}" y="${(wY + 5).toFixed(1)}">where it was</text>
-  <text class="lab said-lab" x="${LX}" y="${(sY - 13).toFixed(1)}">where it said it was,</text>
-  <text class="lab said-lab" x="${LX}" y="${(sY + 5).toFixed(1)}">sure to ${s0}–${s1} cm</text>
+  <text class="lab said-lab" x="${LX}" y="${(sY + 5).toFixed(1)}">where it said it was</text>
   <path class="bar" d="M${LX} ${((wY + sY) / 2).toFixed(1)}h${(10 * k).toFixed(1)}"/>
   <text class="tick" x="${LX + 10 * k + 6}" y="${((wY + sY) / 2 + 4).toFixed(1)}">10 m</text>
 </svg>`;

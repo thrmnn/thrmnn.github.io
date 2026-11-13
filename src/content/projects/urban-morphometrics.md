@@ -2,6 +2,7 @@
 title: "How city form shapes light and air"
 date: '2025-01-01T00:00:00Z'
 cardImage: '/projects/urban-morphometrics/vidigal-plate.webp'
+cardAnim: '/projects/urban-morphometrics/vidigal-anim.webp'
 featuredOrder: 1
 externalLink: 'https://senseablerio.mit.edu/'
 summary: "Favelas are built without plans, and the descriptors urban analysis relies on assume a street grid that is not there. I build the ones that hold on this fabric, from terrain models and building footprints, fine enough to resolve a single alley."

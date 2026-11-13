@@ -112,7 +112,7 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
         </figure>
       )}
     </div>
-    <ProjectLinks slugs={spot.robotics.slugs} />
+    {roboticsFigure !== 'strip' && <ProjectLinks slugs={spot.robotics.slugs} />}
   </section>
 
   <section id="legible" class="spotlight">

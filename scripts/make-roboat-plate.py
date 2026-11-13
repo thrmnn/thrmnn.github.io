@@ -35,7 +35,7 @@ SIMULATED: everything that is the boat and its scan.
   hit a wall; nothing here is a claim about what an on-board scanner sees.
 
     python3 scripts/make-roboat-plate.py            # plates from the asset
-    python3 scripts/make-roboat-plate.py --view high  # alternative high oblique view, written to ~/Perso/site-review/files
+    python3 scripts/make-roboat-plate.py --view low   # alternative low view along the water, written to ~/Perso/site-review/files
     python3 scripts/make-roboat-plate.py --sample   # rebuild the asset from a LAZ
 """
 import math
@@ -280,16 +280,16 @@ CAM = cam_persp((-25.0, 2.0, 6.0), (14.0, 0.0, 3.0), 1650, oy=0.19)
 
 
 CAM_HIGH = cam_persp((-40.0, 0.0, 31.0), (6.0, 0.0, 0.0), 1250, oy=0.40)
-HIGH_OUT = Path.home() / "Perso/site-review/files"
+ALT_OUT = Path.home() / "Perso/site-review/files"
 
 
 def main():
-    high = "--view" in sys.argv and sys.argv[sys.argv.index("--view") + 1] == "high"
+    high = not ("--view" in sys.argv and sys.argv[sys.argv.index("--view") + 1] == "low")
     global RING_FAR
     cam = CAM_HIGH if high else CAM
     RING_FAR = 140 if high else RING_FAR
-    still = HIGH_OUT / "roboat-high.webp" if high else OUT / "card-plate.webp"
-    anim = HIGH_OUT / "roboat-high-anim.webp" if high else OUT / "card-anim.webp"
+    still = OUT / "card-plate.webp" if high else ALT_OUT / "roboat-low.webp"
+    anim = OUT / "card-anim.webp" if high else ALT_OUT / "roboat-low-anim.webp"
     still.parent.mkdir(parents=True, exist_ok=True)
     sc = scene()
     print(len(sc["cloud"]), "cloud pts,", len(sc["lit"]), "lit,", len(sc["ring"]), "ring")

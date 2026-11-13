@@ -29,7 +29,7 @@ SIMULATED / DRAWN: everything that is the robot and its scan.
   18 m range, lit on the real wall points in line of sight of the true pose (the
   wall points are laser endpoints, 10 cm apart, so no claim is made about what
   the real scanner returned). The orange returns are that same scan placed at the
-  reported pose: what the robot would believe it sees. Walls are extruded to 2.6 m
+  reported pose: what the robot would believe it sees. Walls are extruded to 2.0 m
   in dot columns for the oblique view; the real map is 2D.
 
     python3 scripts/make-stata-plate.py                  # card plate + loop, hero tile (decipher-tile) + loop

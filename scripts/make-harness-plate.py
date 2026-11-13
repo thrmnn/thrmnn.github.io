@@ -4,18 +4,20 @@ scripts/assets/agent-harness/eval-run.json (scripts/capture-harness-run.py):
 the repo's own eval suite, run as committed and again after the one change its
 comment describes. No text. Host tooling (Pillow), run by hand.
 
-    python3 scripts/make-harness-plate.py a   # grid: one row per case, one cell per check, run before | run after
+    python3 scripts/make-harness-plate.py a   # grid: one row per case, one cell per check, run before | run after (alternative, to site-review/files)
     python3 scripts/make-harness-plate.py b   # waterfall: calls in order, bar length = its checks, two runs stacked
     python3 scripts/make-harness-plate.py c   # grid as dither dot patches on a faint grey dot ground
     python3 scripts/make-harness-plate.py d   # oblique point-cloud columns, height = checks, run before | after
     python3 scripts/make-harness-plate.py e   # routes: each call's returned hits as a dotted path over the five corpus docs, run before | after
     python3 scripts/make-harness-plate.py f   # terminal log in dot-matrix cells: query tokens, ranked hits (dither density = score), checks, exit code
-    python3 scripts/make-harness-plate.py g   # radar: the harness at the centre, six calls as rays to the five corpus docs, ray weight = score
+    python3 scripts/make-harness-plate.py g [anim]  # THE CARD: dot columns, one pair per returned hit (before | after), height = the score the tool returned
 
 e, f, g read the "input" and "hits" fields of eval-run.json (the repo's own calls and
 their returned hits, scripts/capture-harness-run.py). Every position is a drawn
-layout; every count, rank, score and check result is the repo's.
-Ideas e, f, g are written to ~/Perso/site-review/files/harness-idea-{1,2,3}.webp.
+layout; every count, rank, score and check result is the repo's. In g, a hit the tool
+returns without a score (fetch returns the document) is a flat mark on the ground,
+never a column. g writes the card (card-plate.webp, card-anim.webp); a and e, f go to
+~/Perso/site-review/files/ (harness-grid.webp, harness-idea-{1,2}.webp).
 """
 import json
 import math
@@ -27,12 +29,14 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).parent.parent
 RUN = json.loads((ROOT / "scripts/assets/agent-harness/eval-run.json").read_text())
-VARIANT = sys.argv[1] if len(sys.argv) > 1 else "a"
-IDEAS = {"e": 1, "f": 2, "g": 3}
+VARIANT = sys.argv[1] if len(sys.argv) > 1 else "g"
+IDEAS = {"e": 1, "f": 2}
 if VARIANT in IDEAS:
     OUT = Path.home() / f"Perso/site-review/files/harness-idea-{IDEAS[VARIANT]}.webp"
+elif VARIANT == "a":
+    OUT = Path.home() / "Perso/site-review/files/harness-grid.webp"
 else:
-    OUT = ROOT / ("public/projects/agent-harness/card-plate.webp" if VARIANT == "a" else f"public/projects/agent-harness/card-plate-{VARIANT}.webp")
+    OUT = ROOT / ("public/projects/agent-harness/card-plate.webp" if VARIANT == "g" else f"public/projects/agent-harness/card-plate-{VARIANT}.webp")
 DOCS = ["doc-lidar", "doc-retrieval", "doc-tracing", "doc-grasping", "doc-evals"]
 MAXS = 7
 BAYER = np.array([[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]) / 16.0
@@ -310,7 +314,7 @@ elif VARIANT == "g":
             x += W + GAP + GG
             continue
         for j, (h0, h1) in enumerate(zip(c0["hits"], c1["hits"])):
-            sc0, sc1 = h0.get("score", MAXS), h1.get("score", MAXS)
+            sc0, sc1 = h0.get("score", 0), h1.get("score", 0)
             for side, (hh, sc) in enumerate(((h0, sc0), (h1, sc1))):
                 xx = x + side * (W + GAP)
                 height = sc * U

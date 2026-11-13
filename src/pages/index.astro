@@ -239,6 +239,20 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
 
 
   <script>
+    // Remember which homepage section a project link was clicked in, so the
+    // project page can offer "Back" to it. sessionStorage only; no query string.
+    document.addEventListener('click', (e) => {
+      const a = (e.target as HTMLElement).closest('a[href*="/projects/"]') as HTMLAnchorElement | null;
+      const sec = a?.closest('main section[id]');
+      const m = a?.pathname.match(/\/projects\/([^/]+)\/?$/);
+      if (!a || !sec || !m || !['favela', 'robotics', 'legible', 'projects'].includes(sec.id)) return;
+      try {
+        sessionStorage.setItem('back-from', JSON.stringify({ id: sec.id, slug: m[1] }));
+      } catch {}
+    });
+  </script>
+
+  <script>
     import { initMonogramAvatar } from '../scripts/monogram-avatar.ts';
     const avatar = document.querySelector('.monogram-avatar') as HTMLCanvasElement | null;
     if (avatar) initMonogramAvatar(avatar);

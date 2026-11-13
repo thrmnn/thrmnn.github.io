@@ -18,8 +18,10 @@ const routeLabels: Record<string, string> = {
   '/cv/': 'cv',
   '/now/': 'now',
 };
-const routeLabel =
-  routeLabels[currentPath] ?? currentPath.replace(/^\/|\/$/g, '').split('/')[0] ?? 'page';
+const isHome = currentPath === '/';
+const routeLabel = currentPath.startsWith('/projects/')
+  ? 'work'
+  : (routeLabels[currentPath] ?? currentPath.replace(/^\/|\/$/g, '').split('/')[0] ?? 'page');
 ---
 
 <header class="site-header" data-header data-open="false">
@@ -38,7 +40,7 @@ const routeLabel =
         </a>
         <!-- Names the section/route in view. aria-hidden — purely a chrome
              instrument, not content; visible only in .condensed. -->
-        <span class="header-readout" aria-hidden="true" data-readout>— {routeLabel}</span>
+        <span class="header-readout" aria-hidden="true" data-readout data-home={isHome ? 'true' : undefined}>— {routeLabel}</span>
       </div>
 
       <!-- Desktop nav -->
@@ -493,7 +495,7 @@ const routeLabel =
     // whichever section is currently in view. Other routes keep the
     // server-rendered route name as-is (nothing to observe).
     const readout = document.querySelector('[data-readout]') as HTMLElement | null;
-    if (readout && window.location.pathname === '/' && 'IntersectionObserver' in window) {
+    if (readout && readout.dataset.home === 'true' && 'IntersectionObserver' in window) {
       const sectionLabels: Record<string, string> = {
         home: 'home',
         favela: 'favela research',

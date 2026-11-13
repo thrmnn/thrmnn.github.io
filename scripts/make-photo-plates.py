@@ -20,7 +20,8 @@ octopus: bottom-layer render of the case,
   repository octopus-fabrication, MIT License, (c) 2024 MIT Senseable City Lab.
 loomo: the site's own picture public/projects/autonomous-mobile-robot/hero-poster.jpg
   (600x338, a Segway Loomo following a person, EPFL VITA Lab, the owner's project).
-  wide = 1600x1000 for the homepage spotlight, tile = 1200x1200 centred on the robot
+  SUPERSEDED for wide: loomo-wide.webp now comes from scripts/make-loomo-anim.py (running
+  `loomo --shape wide` here would overwrite it with the old halftone). Old notes: wide = 1600x1000 for the homepage spotlight, tile = 1200x1200 centred on the robot
   for the hero. The robot is the blue subject, the person and room are grey.
 pipeline: MOT17-04 frame, MOTChallenge MOT17 (CC BY-NC-SA 3.0,
   https://motchallenge.net/data/MOT17/), read from the benchmark zip by byte

@@ -119,7 +119,10 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
         </figure>
       ) : (
         <figure class="spotlight-fig spotlight-fig-plate" data-reveal style="--reveal-d: 3;">
-          <img src={`${base}/projects/autonomous-mobile-robot/loomo-wide.webp`} width="1600" height="1000" alt="A Segway Loomo robot, in blue dots, following a person indoors at EPFL." loading="lazy" decoding="async" />
+          <picture>
+            <source srcset={`${base}/projects/autonomous-mobile-robot/loomo-pose-anim.webp`} media="(prefers-reduced-motion: no-preference)" />
+            <img src={`${base}/projects/autonomous-mobile-robot/loomo-pose.webp`} width="1600" height="1000" alt="A Segway Loomo robot, in blue dots, following a person indoors at EPFL, with the person's legs drawn as a skeleton and a drawn depth view from the robot's head." loading="lazy" decoding="async" />
+          </picture>
           <figcaption>Segway Loomo, EPFL VITA Lab · 2022–23</figcaption>
         </figure>
       )}

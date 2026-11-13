@@ -49,3 +49,7 @@ Validated end-to-end on physical robots (Segway Loomo, EPFL VITA Lab research pl
 The Loomo runs an Android app that bridges the Segway Java SDK to C++. Over sockets, it sends the server the camera image, the robot's pose and speed, and where the target is. The server sends back the detections it found and the linear and rotation speed commands.
 
 The framework was adapted to help paraplegic patients walk, with the Loomo as an assistant, and the 3D pose of the target served that use. The README links the technical report on the original pipeline (Conejo, Liu, Bahari and Alahi, EPFL VITA Lab). Its last code change was in June 2023.
+
+## Picture credit
+
+The homepage picture is made from frames of the project's own video of the Loomo following a person. The legs are real: the hips, knees and ankles that torchvision's Keypoint R-CNN found on those frames, drawn in the style of EPFL VITA Lab's OpenPifPaf, which did not produce them. The depth view is drawn: the Loomo senses depth with an Intel RealSense stereo camera, but we have no depth frame from the robot, so the cone, the sweep and the lit points are an illustration.

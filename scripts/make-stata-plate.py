@@ -31,6 +31,12 @@ SIMULATED / DRAWN: everything that is the robot and its scan.
   the real scanner returned). The orange returns are that same scan placed at the
   reported pose: what the robot would believe it sees. Walls are extruded to 2.0 m
   in dot columns for the oblique view; the real map is 2D.
+  The loop plays the story in 36 frames of 80 ms, no text: (a) the true robot alone, its
+  scan matching the walls; (b) the orange ghost appears at the reported pose, its scan
+  visibly not matching the walls, with a small tight ring for "sure of itself": the ring
+  radius is the AMCL reported sigma at that moment (0.069 m) times 50, scaled up so it can
+  be seen, not to scale; (c) the dotted gap between them draws in and holds while the ghost
+  stays. The ring and the sweep timing are drawn; no number appears in the picture.
 
     python3 scripts/make-stata-plate.py                  # card plate + loop, hero tile (decipher-tile) + loop
     python3 scripts/make-stata-plate.py --view top        # alternative framing, to ~/Perso/site-review/files
@@ -212,7 +218,7 @@ def fade(cam, pts, near, far, gamma):
     return np.clip(1 - (cam(pts)[2] - near) / (far - near), 0, 1) ** gamma
 
 
-MARGIN = 8.0
+MARGIN = 13.0
 
 
 def scene():
@@ -223,7 +229,7 @@ def scene():
     v = v / gl
     rel = walls - mid
     along, across = rel @ v, rel @ np.array([-v[1], v[0]])
-    keep = (np.abs(along) < gl / 2 + MARGIN) & (np.abs(across) < 0.5 * gl / 2 + MARGIN)
+    keep = (np.abs(along) < gl / 2 + MARGIN) & (np.abs(across) < 0.9 * gl / 2 + MARGIN)
     cast_idx, cast_ang, _, near = cast(walls, tp)
     walls_all = walls
     keep_idx = np.nonzero(keep)[0]
@@ -239,14 +245,21 @@ def scene():
     dt = np.hypot(*(walls - tp[:2]).T)
     da = np.hypot(*(walls - ap[:2]).T)
     near_w = np.where(np.minimum(dt, da) < 7.0, 1.3, 1.0)
-    dist_w = (0.25 + 0.75 * np.clip(1 - dt / 26.0, 0, 1) ** 0.8) * near_w
+    dist_w = (0.3 + 0.7 * np.clip(1 - dt / 26.0, 0, 1) ** 0.8) * near_w
     wall_w = dist_w[base]
     dyaw = ap[2] - tp[2]
     c, s = math.cos(dyaw), math.sin(dyaw)
     li = cast_idx[np.isin(cast_idx, keep_idx)]
     rel2 = walls_all[li] - tp[:2]
-    mis = np.c_[rel2[:, 0] * c - rel2[:, 1] * s + ap[0], rel2[:, 0] * s + rel2[:, 1] * c + ap[1], np.full(len(li), LIDAR_Z)]
-    mis_ang = ang_of[li]
+    zl = np.arange(0.1, WALL_H, 0.2)
+    zm = np.arange(0.1, 1.3, 0.2)
+    lb = np.nonzero(~np.isnan(ang_k))[0]
+    litcols = np.c_[np.repeat(walls[lb], len(zl), 0), np.tile(zl, len(lb))]
+    lit_ang = np.repeat(ang_k[lb], len(zl))
+    mx = rel2[:, 0] * c - rel2[:, 1] * s + ap[0]
+    my = rel2[:, 0] * s + rel2[:, 1] * c + ap[1]
+    mis = np.c_[np.repeat(mx, len(zm)), np.repeat(my, len(zm)), np.tile(zm, len(li))]
+    mis_ang = np.repeat(ang_of[li], len(zm))
     body_t, tote_t, puck_t = amr(tp)
     body_a, tote_a, puck_a = amr(ap)
     gap = np.linspace(0.12, 0.88, int(gl * 0.76 / 0.45))[:, None]
@@ -255,6 +268,9 @@ def scene():
     for r in (6.0, 12.0, 18.0):
         th = np.linspace(0, 2 * np.pi, int(2 * np.pi * r / 0.45), endpoint=False)
         rings.append(np.c_[tp[0] + r * np.cos(th), tp[1] + r * np.sin(th), np.zeros(len(th))])
+    sig = float(np.load(ASSET)["meta"][2]) * SIGMA_SCALE
+    th = np.linspace(0, 2 * np.pi, max(int(2 * np.pi * sig / 0.3), 24), endpoint=False)
+    sigma_ring = np.c_[ap[0] + sig * np.cos(th), ap[1] + sig * np.sin(th), np.full(len(th), 0.06)]
     i0 = int(np.hypot(*(path - tp[:2]).T).argmin())
     seg = path[: i0 + 1][::-1]
     arc = np.r_[0, np.cumsum(np.hypot(*np.diff(seg, axis=0).T))]
@@ -263,9 +279,9 @@ def scene():
     tt = np.arange(0.9 * ROBOT_K * 0.55, 9.0, 0.4)
     trail = np.c_[np.interp(tt, arc, seg[:, 0]), np.interp(tt, arc, seg[:, 1]), np.full(len(tt), 0.04)]
     return dict(
-        cols=cols, lit=lit_mask, col_ang=ang_k[base], wall_w=wall_w, mis=mis, mis_ang=mis_ang, tp=tp, ap=ap,
+        cols=cols, lit=lit_mask, litcols=litcols, lit_ang=lit_ang, col_ang=ang_k[base], wall_w=wall_w, mis=mis, mis_ang=mis_ang, tp=tp, ap=ap,
         body_t=body_t, tote_t=tote_t, puck_t=puck_t, body_a=body_a, tote_a=tote_a, puck_a=puck_a,
-        gap=gapline, trail=trail, rings=np.vstack(rings), near=near, mid=mid,
+        gap=gapline, sigma_ring=sigma_ring, trail=trail, rings=np.vstack(rings), near=near, mid=mid,
     )
 
 
@@ -280,53 +296,79 @@ def beam(sc, head):
     return out
 
 
-def groups(sc, cam, head=None, tau=110.0, floor=0.0):
+SIGMA_SCALE = 50.0
+
+
+def groups(sc, cam, head=None, tau=110.0, floor=0.35, ghost=1.0, gap_prog=1.0, dot=1.0):
     zt = np.clip(sc["cols"][:, 2] / WALL_H, 0, 1)
     grey = GREY + (LIGHT - GREY) * zt[:, None]
     lit = sc["lit"]
     if head is None:
-        wi, mi = np.ones(lit.sum()), np.ones(len(sc["mis"]))
+        wi, mi = np.ones(len(sc["litcols"])), np.ones(len(sc["mis"]))
     else:
         f = lambda a: floor + (1 - floor) * np.exp(-((head - a) % 360) / tau)
-        wi, mi = f(sc["col_ang"][lit]), f(sc["mis_ang"])
-    lc = sc["cols"][lit]
+        wi, mi = f(sc["lit_ang"]), f(sc["mis_ang"])
+    lc = sc["litcols"]
     one = lambda a: np.ones(len(a))
+    ng = int(round(len(sc["gap"]) * gap_prog))
     g = [
-        (sc["cols"], grey, 2.5, np.clip(sc["wall_w"] * 0.8, 0, 0.95), 1.0),
-        (sc["rings"], ACCENT, 1.8, fade(cam, sc["rings"], 10, 90, 0.7) * 0.5, 1.0),
-        (sc["trail"], LIGHT, 2.2, np.linspace(0.9, 0.15, len(sc["trail"])), 1.2),
-        (sc["gap"], ORANGE, 2.6, one(sc["gap"]) * 0.9, 1.5),
-        (lc, ACCENT, 3.2, np.clip(wi * 1.3, 0, 1) * (0.55 + 0.45 * sc["wall_w"][lit] / 1.3), 1.7),
-        (sc["mis"], ORANGE, 2.8, np.clip(mi * 1.2, 0, 1), 1.5),
-        (sc["body_a"], ORANGE, 1.2, one(sc["body_a"]) * 0.75, 1.0),
-        (sc["tote_a"], ORANGE, 1.2, one(sc["tote_a"]) * 0.95, 1.0),
-        (sc["puck_a"], ORANGE, 1.6, one(sc["puck_a"]), 1.2),
-        (sc["body_t"], LIGHT, 1.2, one(sc["body_t"]), 1.0),
-        (sc["tote_t"], np.array((205, 210, 220.0)), 1.2, one(sc["tote_t"]), 1.0),
-        (sc["puck_t"], ACCENT, 1.8, one(sc["puck_t"]) * 1.0, 1.4),
+        (sc["cols"], grey, 3.4 * dot, np.clip(sc["wall_w"] * 0.85, 0.12, 0.95), 2.0 * dot),
+        (sc["rings"], ACCENT, 2.4 * dot, fade(cam, sc["rings"], 10, 90, 0.7) * 0.55 + 0.12, 1.5 * dot),
+        (sc["trail"], LIGHT, 3.4 * dot, np.linspace(1.0, 0.25, len(sc["trail"])), 2.0 * dot),
+        (lc, ACCENT, 4.6 * dot, np.clip(wi * 1.2, 0, 1), 2.6 * dot),
+        (sc["body_t"], LIGHT, 1.8 * dot, one(sc["body_t"]), 1.4),
+        (sc["tote_t"], np.array((205, 210, 220.0)), 1.8 * dot, one(sc["tote_t"]), 1.4),
+        (sc["puck_t"], ACCENT, 2.4 * dot, one(sc["puck_t"]), 1.8),
     ]
+    if ng > 0:
+        g.append((sc["gap"][:ng], ORANGE, 3.6 * dot, np.full(ng, 0.95), 2.4 * dot))
+    if ghost > 0.02:
+        w = lambda a, v=1.0: np.full(len(a), v * ghost)
+        g += [
+            (sc["mis"], ORANGE, 4.0 * dot, np.clip(mi * 1.2, 0, 1) * ghost, 2.4 * dot),
+            (sc["body_a"], ORANGE, 1.8 * dot, w(sc["body_a"], 0.8), 1.4),
+            (sc["tote_a"], ORANGE, 1.8 * dot, w(sc["tote_a"]), 1.4),
+            (sc["puck_a"], ORANGE, 2.4 * dot, w(sc["puck_a"]), 1.8),
+            (sc["sigma_ring"], ORANGE, 3.0 * dot, w(sc["sigma_ring"]), 2.0 * dot),
+        ]
     if head is not None:
         bt, ba = beam(sc, head)
-        g += [(bt, ACCENT, 2.2, np.full(len(bt), 0.95), 1.3), (ba, ORANGE, 2.2, np.full(len(ba), 0.95), 1.3)]
+        g.append((bt, ACCENT, 3.2 * dot, np.full(len(bt), 0.95), 2.0 * dot))
+        if ghost > 0.02:
+            g.append((ba, ORANGE, 3.2 * dot, np.full(len(ba), 0.95 * ghost), 2.0 * dot))
     return g
 
 
 VIEWS = {
-    "card": dict(elev=40, want=33, t=(280, 640), a=(900, 300), size=1200),
-    "tile": dict(elev=40, want=38, t=(330, 790), a=(870, 410), size=600),
-    "top": dict(elev=78, want=33, t=(300, 600), a=(900, 280), size=1200),
+    "card": dict(elev=36, want=30, t=(230, 640), a=(960, 300), size=1200, dot=1.0),
+    "tile": dict(elev=40, want=38, t=(330, 790), a=(870, 410), size=600, dot=1.3),
+    "top": dict(elev=78, want=33, t=(300, 600), a=(900, 280), size=1200, dot=1.0),
 }
+N = 36
 
 
-def render_view(sc, name, still, anim, n=36):
+def story(i):
+    """Frame i of the 36-frame story: a) true robot alone, b) ghost and its scan appear with a tight ring, c) gap holds."""
+    head = (i * 20.0) % 360
+    ghost = float(np.clip((i - 11) / 4.0, 0, 1)) * float(np.clip((N - i) / 3.0, 0, 1)) if i >= 11 else 0.0
+    gap = float(np.clip((i - 19) / 8.0, 0, 1)) if i < N - 2 else 1.0 if i < N - 1 else 0.5
+    if i >= N - 3:
+        gap = [0.7, 0.4, 0.15][i - (N - 3)]
+    return head, ghost, gap
+
+
+def render_view(sc, name, still, anim):
     cfg = VIEWS[name]
     tp, ap = sc["tp"], sc["ap"]
     look = np.r_[sc["mid"], 0.5]
     al = best_alpha(look, cfg["elev"], tp, ap, cfg["want"])
     cam, dv, f = cam_fit(look, cfg["elev"], al, tp, ap, cfg["t"], cfg["a"])
-    size = cfg["size"]
-    render(cam, groups(sc, cam, head=200.0, floor=0.4), size).save(still, "WEBP", quality=84 if size == 1200 else 82, method=6)
-    frames = [render(cam, groups(sc, cam, head=i * 360 / n), 600) for i in range(n)]
+    size, dot = cfg["size"], cfg["dot"]
+    render(cam, groups(sc, cam, head=200.0, dot=dot), size).save(still, "WEBP", quality=84 if size == 1200 else 82, method=6)
+    frames = []
+    for i in range(N):
+        head, ghost, gap = story(i)
+        frames.append(render(cam, groups(sc, cam, head=head, ghost=ghost, gap_prog=gap, dot=dot), 600))
     frames[0].save(anim, "WEBP", save_all=True, append_images=frames[1:], duration=80, loop=0, quality=30, method=6)
     for f_ in (still, anim):
         print(f_, f_.stat().st_size, "B")

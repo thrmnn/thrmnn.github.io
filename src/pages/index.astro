@@ -6,12 +6,19 @@ import SocialIcon from '../components/ui/SocialIcon.astro';
 import VidigalPanel from '../components/ui/VidigalPanel.astro';
 import { author } from '../data/author';
 import StataPlan from '../components/ui/StataPlan.astro';
+import stataMeta from '../../scripts/assets/stata/stata-replay.meta.json';
 import ProjectLinks from '../components/ui/ProjectLinks.astro';
 import { practiceUrl } from '../data/cards';
 import { homeCards, spotlights, roboticsFigure, roboticsTiles } from '../data/home';
 import { talk } from '../data/talk';
 
 const mailto = `mailto:${author.email}`;
+// the Practice numbers are the same medians the .ch shows, from the demo's sidecar
+const lost = {
+  s: Math.round(stataMeta.zones_s.lost_end_s - stataMeta.zones_s.lost_start_s),
+  cm: Math.round(stataMeta.lost_window.amcl_reported_sigma_median_m * 100),
+  m: Math.round(stataMeta.lost_window.position_error_median_m),
+};
 const heroPics = [
   { place: 'Autonomous boats', src: '/projects/autonomous-boat-perception/hero-tile.webp', anim: '/projects/autonomous-boat-perception/hero-tile-anim.webp', phone: '/projects/autonomous-boat-perception/hero-tile-phone.webp', animPhone: '/projects/autonomous-boat-perception/hero-tile-phone-anim.webp', pos: '50% 0%', w: 600, h: 600, alt: 'A small boat on an Amsterdam canal with a simulated lidar scan, drawn as dots.' },
   { place: 'Favela morphology', src: '/projects/urban-morphometrics/vidigal-plate.webp', phone: '/projects/urban-morphometrics/vidigal-tile.webp', anim: '/projects/urban-morphometrics/vidigal-anim.webp', animPhone: '/projects/urban-morphometrics/vidigal-tile-anim.webp', w: 1200, h: 1200, alt: 'Vidigal, Rio de Janeiro: terrain and building footprints as a point cloud.' },
@@ -126,7 +133,7 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
       <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">{spot.legible.title}</h3>
       <p class="research-lead-body" data-reveal style="--reveal-d: 2;">{spot.legible.lead}</p>
       <figure class="spotlight-fig" data-reveal style="--reveal-d: 3;">
-        <p class="spotlight-fig-lead">One example, on a public recording: the robot was in one corridor, and reported, sure to within centimetres, that it was in another.</p>
+        <p class="spotlight-fig-lead">A robot on a public recording rode an elevator to a floor missing from its map. For {lost.s} seconds it reported its position to within {lost.cm} cm while {lost.m} m away (medians, checked against ceiling markers). In a warehouse: a robot confidently in the wrong aisle.</p>
         <StataPlan />
         <figcaption>PR2, MIT Stata Center dataset (CC BY 3.0) · <a href="https://github.com/thrmnn/ros2-localization-triage/blob/main/docs/finding-confidently-wrong.md#what-the-ground-truth-says-amcl-did">Source</a></figcaption>
       </figure>

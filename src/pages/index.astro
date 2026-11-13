@@ -8,12 +8,12 @@ import { author } from '../data/author';
 import StataPlan from '../components/ui/StataPlan.astro';
 import ProjectLinks from '../components/ui/ProjectLinks.astro';
 import { practiceUrl } from '../data/cards';
-import { homeCards, spotlights } from '../data/home';
+import { homeCards, spotlights, roboticsFigure, roboticsTiles } from '../data/home';
 import { talk } from '../data/talk';
 
 const mailto = `mailto:${author.email}`;
 const heroPics = [
-  { word: 'Scan', src: '/projects/autonomous-mobile-robot/hero-poster.jpg', w: 600, h: 338, alt: 'A Segway Loomo robot following a person indoors at EPFL.' },
+  { word: 'Scan', src: '/projects/autonomous-mobile-robot/loomo-tile.webp', pos: '50% 100%', w: 1200, h: 1200, alt: 'A Segway Loomo robot following a person indoors at EPFL.' },
   { word: 'Model', src: '/projects/urban-morphometrics/vidigal-plate.webp', phone: '/projects/urban-morphometrics/vidigal-tile.webp', w: 1200, h: 1200, alt: 'Vidigal, Rio de Janeiro: terrain and building footprints as a point cloud.' },
   { word: 'Decipher', src: '/projects/ros2-localization-triage/stata-plate.webp', w: 1200, h: 1200, alt: 'The MIT Stata Center floor plan with the robot’s reported and true paths.' },
 ];
@@ -62,7 +62,7 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
           <figure>
             <picture>
               {p.phone && <source media="(max-width: 1023px)" srcset={`${base}${p.phone}`} />}
-              <img src={`${base}${p.src}`} width={p.w} height={p.h} alt={p.alt} decoding="async" />
+              <img src={`${base}${p.src}`} width={p.w} height={p.h} alt={p.alt} decoding="async" style={p.pos ? `object-position: ${p.pos}` : undefined} />
             </picture>
             <figcaption>{p.word}</figcaption>
           </figure>
@@ -88,10 +88,29 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
       <h2 class="section-label mb-4" data-reveal>{spot.robotics.label}</h2>
       <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">{spot.robotics.title}</h3>
-      <figure class="spotlight-fig" data-reveal style="--reveal-d: 3;">
-        <img src={`${base}/projects/autonomous-mobile-robot/hero-poster.jpg`} width="600" height="338" alt="A Segway Loomo robot following a person indoors at EPFL." loading="lazy" decoding="async" />
-        <figcaption>Segway Loomo, EPFL VITA Lab · 2022–23</figcaption>
-      </figure>
+      {roboticsFigure === 'strip' ? (
+        <ul class="robotics-strip" data-reveal style="--reveal-d: 3;">
+          {roboticsTiles.map((t) => (
+            <li>
+              <a href={`${base}/projects/${t.slug}/`}>
+                {t.src ? <img src={`${base}${t.src}`} width="1200" height="1200" alt="" loading="lazy" decoding="async" style={`object-position: ${t.pos}`} /> : <span class="robotics-strip-blank" aria-hidden="true"></span>}
+                <span class="robotics-strip-title">{t.title}</span>
+                <span class="robotics-strip-label">{t.label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : roboticsFigure === 'pipeline' ? (
+        <figure class="spotlight-fig spotlight-fig-plate spotlight-fig-square" data-reveal style="--reveal-d: 3;">
+          <img src={`${base}/projects/perception-pipeline/card-plate.webp`} width="1200" height="1200" alt="A street scene as a dot drawing: each pedestrian in a blue box with a green track." loading="lazy" decoding="async" />
+          <figcaption>Open source · 2026</figcaption>
+        </figure>
+      ) : (
+        <figure class="spotlight-fig spotlight-fig-plate" data-reveal style="--reveal-d: 3;">
+          <img src={`${base}/projects/autonomous-mobile-robot/loomo-wide.webp`} width="1600" height="1000" alt="A Segway Loomo robot, in blue dots, following a person indoors at EPFL." loading="lazy" decoding="async" />
+          <figcaption>Segway Loomo, EPFL VITA Lab · 2022–23</figcaption>
+        </figure>
+      )}
     </div>
     <ProjectLinks slugs={spot.robotics.slugs} />
   </section>

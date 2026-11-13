@@ -47,3 +47,14 @@ export const spotlights: Spotlight[] = [
     slugs: ['ros2-localization-triage', 'agent-harness'],
   },
 ];
+
+// Robotics spotlight figure: 'dots' (Loomo halftone), 'strip' (four project plates), 'pipeline' (perception-pipeline plate)
+export type RoboticsFigure = 'dots' | 'strip' | 'pipeline';
+export const roboticsFigure: RoboticsFigure = 'dots';
+
+export const roboticsTiles = [
+  { slug: 'autonomous-mobile-robot', src: '/projects/autonomous-mobile-robot/loomo-tile.webp', pos: '50% 100%', label: 'EPFL VITA Lab · 2022–23', title: 'Segway Loomo' },
+  { slug: 'autonomous-boat-perception', src: null, pos: '', label: 'Roboat, MIT spinoff · 2024', title: 'Roboat' },
+  { slug: 'event-cameras-drone', src: '/projects/event-cameras-drone/card-plate.webp', pos: '50% 50%', label: 'IRI (CSIC-UPC, Barcelona) · 2023–24', title: 'Event cameras' },
+  { slug: 'perception-pipeline', src: '/projects/perception-pipeline/card-plate.webp', pos: '50% 50%', label: 'Open source · 2026', title: 'Vision pipeline' },
+];

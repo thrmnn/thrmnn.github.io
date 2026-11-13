@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Card plates, hero tile and loop for the two research clouds, drawn in the house
+"""Card plates, hero tiles and loops for the two research clouds, drawn in the house
 point-cloud look (grey dots fading with depth on a dark ground, the subject lit,
 a scan front with afterglow as in make-roboat-plate.py). No overlay, no readout.
-Host tooling (numpy, Pillow), run by hand; outputs committed.
+Host tooling (numpy, scipy, matplotlib, Pillow), run by hand; outputs committed.
 
 REAL: every point is a point of a cloud the site ships or shipped, drawn as is.
   Vidigal: public/data/vidigal-rooftops.bin (the public quantised derivative; terrain
@@ -11,9 +11,14 @@ REAL: every point is a point of a cloud the site ships or shipped, drawn as is.
   CC BY 4.0, source "AHN"); the .bin was retired from public/data with the live panel,
   so it is read from git (commit 59f80d5^) when public/data no longer has it.
   Categories: Jordaan 0 ground, 1 canopy (green), 2 roof; Vidigal 0/3 terrain, 1 building (blue).
-DRAWN: the loop's moving front is an effect, not a measurement of any kind.
+DRAWN: the Vidigal hillside is drawn as contour lines: the shipped terrain points are
+  interpolated linearly to a grid, level sets are taken at 34 fixed elevation steps, and
+  each line is drawn as grey dots at even screen spacing. The lines come from the
+  quantised public terrain, so they carry its resolution (16 m core, 32 m context) and no
+  more. The moving front (rising with elevation, afterglow) is an effect, not a
+  measurement of any kind. Frames: 36 at 80 ms.
 
-    python3 scripts/make-cloud-plates.py              # card plates, hero tile, Vidigal loops
+    python3 scripts/make-cloud-plates.py              # card plates, hero tiles, loops for both clouds
     python3 scripts/make-cloud-plates.py --alt        # alternative Vidigal still to ~/Perso/site-review/files
 """
 import json
@@ -94,75 +99,155 @@ def draw(X, Y, t, layers, size=S):
     return im
 
 
-def jordaan():
-    p, cat, _ = load("amsterdam-canopy")
-    X, Y, t, _ = frame(p, 0.5, 0.62, 0.7, 0.86, 0.5)
-    n = len(p)
-    canopy = cat == 1
-    h = np.clip(p[:, 2], 0, 1)
-    green = GREEN_DEEP + (GREEN - GREEN_DEEP) * np.clip(0.35 + 0.65 * t + 0.25 * h, 0, 1)[:, None]
-    grey = np.where((cat == 2)[:, None], GREY * 0.8, GREY)
-    rgb = np.where(canopy[:, None], green, grey)
-    w = np.where(canopy, 0.55 + 0.45 * t, np.where(cat == 2, 0.3 + 0.35 * t, 0.28 + 0.5 * t))
-    layers = [(~canopy, rgb, w, 1.5), (canopy, rgb, w, 2.3)]
-    im = draw(X, Y, t, layers)
-    im.save(JOR, "WEBP", quality=82, method=6)
-    print(JOR, JOR.stat().st_size, "B")
+N_FRAMES = 36
+FRAME_MS = 80
+SPAN = 1.0
+TAU = 0.25
+LEVELS = 34
+RADIUS = 2.5
+SPACING = 11.0
 
 
-def vidigal_scene(rot=None, tilt=0.7, ysq=0.8, fill=0.86, cy=0.36):
-    p, cat, shade = load("vidigal-rooftops")
-    b = cat == 1
-    if rot is None:
-        ev, evec = np.linalg.eigh(np.cov(p[b, :2].T))
-        major = evec[:, 1]
-        rot = math.atan2(-major[1], major[0]) + 0.35
-    X, Y, t, sx = frame(p, rot, tilt, ysq, fill, cy, on=b)
-    return dict(X=X, Y=Y, t=t, u=(sx - sx.min()) / np.ptp(sx), bld=cat == 1, shade=shade, cat=cat)
+def glow_at(zn, head):
+    lag = ((head - zn) % SPAN + SPAN) % SPAN
+    return np.clip(1 - lag / TAU, 0, 1) ** 2
 
 
-def vidigal_layers(sc, glow=None, alt=False):
-    t, bld, shade = sc["t"], sc["bld"], sc["shade"]
-    g = np.zeros(len(t)) if glow is None else glow
-    depth = 0.2 + 0.8 * t ** 0.8
-    base_t = depth * (0.55 + 0.45 * shade)
-    wt = np.clip(base_t * 0.72 + 0.95 * g * (0.4 + 0.6 * depth), 0, 1)
-    wb = np.clip(0.42 + 0.5 * depth + 0.2 * g, 0, 1)
-    terr_rgb = np.broadcast_to(GREY + (LIGHT - GREY) * g[:, None], (len(t), 3))
-    ctx = sc["cat"] == 3
-    wt = np.where(ctx, wt * 0.7, wt)
-    bld_rgb = ACCENT + (np.array((178, 208, 255)) - ACCENT) * (g * 0.8)[:, None]
-    return [(~bld, terr_rgb, wt, 1.5), (bld, bld_rgb, wb, 2.3)]
+def save_loop(frames, path):
+    frames[0].save(path, "WEBP", save_all=True, append_images=frames[1:], duration=FRAME_MS, loop=0, quality=42, method=6)
+    with Image.open(path) as a:
+        assert a.n_frames == len(frames), (path, a.n_frames)
 
 
-def front(u, head, tau=0.13):
-    return np.exp(-((head - u) % 1.35) / tau) * (((head - u) % 1.35) < 1.35)
+def contour_lines(p, cat):
+    """Level sets of the shipped terrain at fixed elevation steps: [(N,3) x, y, z] polylines."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from scipy.interpolate import griddata
+    from scipy.spatial import cKDTree
+
+    t = (cat == 0) | (cat == 3)
+    xy, z = p[t, :2], p[t, 2]
+    n = 420
+    gx = np.linspace(xy[:, 0].min(), xy[:, 0].max(), n)
+    gy = np.linspace(xy[:, 1].min(), xy[:, 1].max(), n)
+    GX, GY = np.meshgrid(gx, gy)
+    Z = griddata(xy, z, (GX, GY), method="linear")
+    far = cKDTree(xy).query(np.c_[GX.ravel(), GY.ravel()])[0].reshape(GX.shape) > 0.03
+    Z = np.ma.masked_where(far | np.isnan(Z), Z)
+    levels = np.linspace(z.min(), z.max(), LEVELS + 2)[1:-1]
+    fig, ax = plt.subplots()
+    cs = ax.contour(GX, GY, Z, levels=levels)
+    out = []
+    for lv, segs in zip(levels, cs.allsegs):
+        for sg in segs:
+            if len(sg) > 3:
+                out.append(np.c_[sg, np.full(len(sg), lv)])
+    plt.close(fig)
+    return out, (z.min(), z.max())
 
 
-def vidigal():
-    sc = vidigal_scene()
-    im = draw(sc["X"], sc["Y"], sc["t"], vidigal_layers(sc))
-    im.save(VID / "vidigal-plate.webp", "WEBP", quality=82, method=6)
+def dots_on(lines, view, spacing):
+    """Even screen spacing along each projected line. view(P)->(X, Y, depth)."""
+    X, Y, D, Z = [], [], [], []
+    for ln in lines:
+        x, y, d = view(ln)
+        seg = np.hypot(np.diff(x), np.diff(y))
+        cum = np.r_[0, np.cumsum(seg)]
+        if cum[-1] < spacing:
+            continue
+        s = np.arange(0, cum[-1], spacing)
+        X.append(np.interp(s, cum, x)); Y.append(np.interp(s, cum, y))
+        D.append(np.interp(s, cum, d)); Z.append(np.full(len(s), ln[0, 2]))
+    return np.concatenate(X), np.concatenate(Y), np.concatenate(D), np.concatenate(Z)
+
+
+class VidigalView:
+    """Oblique or plan view of the quantised cloud with the contour dots of its terrain."""
+
+    def __init__(self, rot=None, tilt=0.7, ysq=0.8, fill=0.86, cy=0.4, zex=1.0, size=S, spacing=SPACING):
+        self.p, self.cat, self.shade = load("vidigal-rooftops")
+        p, cat = self.p, self.cat
+        b = cat == 1
+        if rot is None:
+            _, evec = np.linalg.eigh(np.cov(p[b, :2].T))
+            rot = math.atan2(-evec[1, 1], evec[0, 1]) + 0.35
+        self.rot, self.tilt, self.ysq, self.zex = rot, tilt, ysq, zex
+        sx, sy, dp = self._proj(p)
+        lo, hi = lambda v: np.percentile(v[b], 1), lambda v: np.percentile(v[b], 99)
+        self.scale = size * fill / max(hi(sx) - lo(sx), hi(sy) - lo(sy))
+        self.cx, self.cy_ = (lo(sx) + hi(sx)) / 2, (lo(sy) + hi(sy)) / 2
+        self.size, self.cyf = size, cy
+        self.dmin, self.dmax = dp.min(), dp.max()
+        lines, (self.z0, self.z1) = contour_lines(p, cat)
+        self.cx_, self.cy2 = self.cx, self.cy_
+        self.T = dots_on(lines, self.view, spacing * size / S)
+        self.B = self.view(p[b])
+        self.bz = p[b, 2]
+        self.b = b
+
+    def _proj(self, P):
+        c, s = math.cos(self.rot), math.sin(self.rot)
+        ct, st = math.cos(self.tilt), math.sin(self.tilt)
+        x, y, z = P[:, 0], P[:, 1], P[:, 2] * self.zex
+        rz = x * s + y * c
+        return x * c - y * s, (z * ct - rz * st) * self.ysq, z * st + rz * ct
+
+    def view(self, P):
+        sx, sy, dp = self._proj(P)
+        X = self.size / 2 + (sx - self.cx) * self.scale
+        Y = self.size * self.cyf - (sy - self.cy_) * self.scale
+        return X, Y, (dp - self.dmin) / (self.dmax - self.dmin)
+
+    def zn(self, z):
+        """Elevation as its rank among all drawn dots: the front then meets about the same number of dots at every height."""
+        if not hasattr(self, "_rank"):
+            self._rank = np.sort(np.r_[self.T[3], self.bz])
+        return np.searchsorted(self._rank, z) / len(self._rank)
+
+    def layers(self, head=None, radius=RADIUS, floor=0.2, bld_rgb=ACCENT, pulse=1.0):
+        TX, TY, TD, TZ = self.T
+        BX, BY, BD = self.B
+        gt = np.zeros(len(TX)) if head is None else glow_at(self.zn(TZ), head)
+        gb = np.zeros(len(BX)) if head is None else glow_at(self.zn(self.bz), head)
+        wt = np.clip(floor + 0.5 * TD ** 0.9 + 0.55 * gt * (0.5 + 0.5 * TD), 0, 1)
+        wb = np.clip(0.55 + 0.35 * BD + 0.15 * gb, 0, 1)
+        wt = np.clip(wt * pulse, 0, 1)
+        grey = GREY + (LIGHT - GREY) * gt[:, None]
+        blue = bld_rgb + (np.array((178, 208, 255)) - bld_rgb) * (0.8 * gb)[:, None]
+        X = np.r_[TX, BX]; Y = np.r_[TY, BY]; D = np.r_[TD, BD]
+        isb = np.r_[np.zeros(len(TX), bool), np.ones(len(BX), bool)]
+        rgb = np.vstack([grey, blue]); w = np.r_[wt, wb]
+        layers = [(~isb, rgb, w, radius), (isb, rgb, w, radius + 0.4)]
+        return X, Y, D, layers
+
+
+def vidigal(out_dir=VID):
+    v = VidigalView()
+    im = draw(*v.layers()[:3], v.layers()[3])
+    im.save(out_dir / "vidigal-plate.webp", "WEBP", quality=84, method=6)
+    vs = v
     frames = []
-    n = 36
-    for i in range(n):
-        head = -0.2 + 1.35 * i / n
-        frames.append(draw(sc["X"], sc["Y"], sc["t"], vidigal_layers(sc, front(sc["u"], head)), 600))
-    frames[0].save(VID / "vidigal-anim.webp", "WEBP", save_all=True, append_images=frames[1:], duration=80, loop=0, quality=32, method=6)
-    tile_frames = [crop_tile(f) for f in frames]
-    crop_tile(im).save(VID / "vidigal-tile.webp", quality=88)
-    tile_frames[0].save(VID / "vidigal-tile-anim.webp", "WEBP", save_all=True, append_images=tile_frames[1:], duration=80, loop=0, quality=32, method=6)
-    for f in ("vidigal-plate.webp", "vidigal-anim.webp", "vidigal-tile.webp", "vidigal-tile-anim.webp"):
-        print(f, (VID / f).stat().st_size, "B")
+    for i in range(N_FRAMES):
+        head = SPAN * i / N_FRAMES
+        X, Y, D, L = vs.layers(head, pulse=1 + 0.1 * math.sin(2 * math.pi * i / N_FRAMES))
+        frames.append(draw(X, Y, D, L, 600))
+    save_loop(frames, out_dir / "vidigal-anim.webp")
+    crop_tile(im, v).save(out_dir / "vidigal-tile.webp", quality=88)
+    save_loop([crop_tile(f, v).resize((300, 400), Image.LANCZOS) for f in frames], out_dir / "vidigal-tile-anim.webp")
+    save_loop([f.crop((0, 75, 600, 525)).resize((520, 390), Image.LANCZOS) for f in frames], out_dir / "vidigal-hero-anim.webp")
+    for f in ("vidigal-plate.webp", "vidigal-anim.webp", "vidigal-tile.webp", "vidigal-tile-anim.webp", "vidigal-hero-anim.webp"):
+        print(f, (out_dir / f).stat().st_size, "B")
 
 
-def crop_tile(im):
-    """3:4 phone crop around the buildings (the full square reads as a dark chip at 110 px)."""
-    sc = vidigal_scene()
-    X, Y = sc["X"][sc["bld"]] * im.width / S, sc["Y"][sc["bld"]] * im.width / S
+def crop_tile(im, v):
+    """3:4 phone crop (about 110 x 145 on the page) around the densest buildings."""
+    k = im.width / S
+    BX, BY, _ = v.B
+    X, Y = BX * k, BY * k
     x0, x1, y0, y1 = np.percentile(X, 15), np.percentile(X, 85), np.percentile(Y, 15), np.percentile(Y, 85)
-    pad = 0.04 * im.width
-    w = min(im.width * 0.7, max(x1 - x0 + 2 * pad, 0.75 * (y1 - y0 + 2 * pad)))
+    w = min(im.width * 0.62, max(x1 - x0 + 0.1 * im.width, 0.75 * (y1 - y0 + 0.1 * im.width)))
     h = w * 4 / 3
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
     bx = int(max(0, min(im.width - w, cx - w / 2)))
@@ -170,11 +255,34 @@ def crop_tile(im):
     return im.crop((bx, by, bx + int(w), by + int(h))).resize((450, 600), Image.LANCZOS)
 
 
+def jordaan():
+    p, cat, _ = load("amsterdam-canopy")
+    X, Y, t, _ = frame(p, 0.5, 0.62, 0.7, 0.86, 0.4)
+    canopy = cat == 1
+    h = np.clip(p[:, 2], 0, 1)
+    green = GREEN_DEEP + (GREEN - GREEN_DEEP) * np.clip(0.35 + 0.65 * t + 0.25 * h, 0, 1)[:, None]
+    grey = np.where((cat == 2)[:, None], GREY * 0.8, GREY)
+    w = np.where(canopy, 0.55 + 0.45 * t, np.where(cat == 2, 0.3 + 0.35 * t, 0.28 + 0.5 * t))
+    w = np.maximum(w, 0.2)
+
+    def render(head, size):
+        g = np.zeros(len(p)) if head is None else glow_at(h / max(h[canopy].max(), 1e-6), head)
+        rgb = np.where(canopy[:, None], green + (np.array((190, 245, 205)) - green) * (0.7 * g)[:, None], grey + (LIGHT - grey) * g[:, None])
+        ww = np.clip(w + 0.45 * g * (0.5 + 0.5 * t), 0, 1)
+        return draw(X, Y, t, [(~canopy, rgb, ww, 1.7), (canopy, rgb, ww, 2.5)], size)
+
+    render(None, S).save(JOR, "WEBP", quality=84, method=6)
+    print(JOR, JOR.stat().st_size, "B")
+    out = JOR.parent / "jordaan-anim.webp"
+    save_loop([render(SPAN * i / N_FRAMES, 600) for i in range(N_FRAMES)], out)
+    print(out, out.stat().st_size, "B")
+
+
 def vidigal_alt():
-    sc = vidigal_scene(rot=0.9, tilt=0.95, ysq=0.9, fill=0.98, cy=0.45)
+    v = VidigalView(rot=0.9, tilt=1.1, ysq=0.9, fill=0.98, cy=0.45)
     ALT_OUT.mkdir(parents=True, exist_ok=True)
     out = ALT_OUT / "vidigal-alt-plan.webp"
-    draw(sc["X"], sc["Y"], sc["t"], vidigal_layers(sc, alt=True)).save(out, "WEBP", quality=82, method=6)
+    draw(*v.layers()[:3], v.layers()[3]).save(out, "WEBP", quality=84, method=6)
     print(out)
 
 

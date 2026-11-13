@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """The three panels of the Vidigal visual abstract (scan, model, measure), drawn
-from public/data/vidigal-rooftops.bin only, at the resolution it already ships.
+from public/data/vidigal-rooftops.bin only (the hillside as contour lines of grey dots, see make-cloud-plates.py), at the resolution it already ships.
 The third panel is an empty grid: no indicator is computed or coloured.
 Host tooling (Pillow, numpy, scipy), run by hand; outputs committed.
 
@@ -12,9 +12,7 @@ import struct
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter
-from scipy import ndimage
-from scipy.spatial import Delaunay
+from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).parent.parent
 OUT = ROOT / "public/projects/urban-morphometrics"
@@ -59,53 +57,39 @@ def plan(p):
     return (p[0], p[1], p[2])
 
 
-SS = 3
+import importlib.util
+
+_spec = importlib.util.spec_from_file_location("cloudplates", Path(__file__).parent / "make-cloud-plates.py")
+cp = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(cp)
+P = np.array([(p[0], p[1], p[2]) for p in pts])
+CAT = np.array([p[3] for p in pts])
+LINES, _ = cp.contour_lines(P, CAT)
+GREYS = np.array(GREY, float)
 
 
-def terrain_surface(view, s, cx, cy):
-    """Terrain as an opaque shaded surface: Delaunay mesh in plan, projected by `view`,
-    painted far to near, then softened; the outline dissolves into the page colour."""
-    t = [p for p in pts if p[3] in (0, 3)]
-    xy = np.array([(p[0], p[1]) for p in t])
-    tri = Delaunay(xy)
-    proj = [view(p) for p in t]
-    sh = np.array([p[4] for p in t])
-    step = np.median(np.linalg.norm(xy[tri.simplices[:, 0]] - xy[tri.simplices[:, 1]], axis=1))
-    im = Image.new("RGB", (W * SS, H * SS), BG)
-    d = ImageDraw.Draw(im)
-    mask = Image.new("L", (W * SS, H * SS), 0)
-    md = ImageDraw.Draw(mask)
-    tris = []
-    for a, b, c in tri.simplices:
-        if max(np.linalg.norm(xy[a] - xy[b]), np.linalg.norm(xy[b] - xy[c]), np.linalg.norm(xy[a] - xy[c])) > 2.2 * step * 2:
-            continue
-        tris.append((proj[a][2] + proj[b][2] + proj[c][2], (a, b, c)))
-    tris.sort(key=lambda q: q[0])
-    for _, (a, b, c) in tris:
-        poly = [((W / 2 + (proj[k][0] - cx) * s) * SS, (H / 2 - (proj[k][1] - cy) * s) * SS) for k in (a, b, c)]
-        h = (sh[a] + sh[b] + sh[c]) / 3
-        d.polygon(poly, fill=mix(BG, GREY, 0.12 + 0.62 * h))
-        md.polygon(poly, fill=255)
-    im = im.filter(ImageFilter.GaussianBlur(SS * 3.5)).resize((W, H), Image.LANCZOS)
-    m = np.array(mask.resize((W, H), Image.LANCZOS), dtype=float) / 255
-    inside = ndimage.gaussian_filter(m, 1.5) > 0.5
-    inside[[0, -1], :] = False
-    inside[:, [0, -1]] = False
-    dist = ndimage.distance_transform_edt(inside)
-    a = np.clip(dist / 90.0, 0, 1)
-    a = a * a * (3 - 2 * a)
-    base = np.array(Image.new("RGB", (W, H), BG), dtype=float)
-    out = base + (np.array(im, dtype=float) - base) * a[..., None]
-    return Image.fromarray(out.astype("uint8"))
-
-
-def draw(name, view, colour, radius, fill, grid=False, points=lambda p: True):
+def draw(name, view, colour, radius, fill, grid=False, spacing=10.0, every=1):
+    """The hillside as contour lines of grey dots (the same lines as the card), the buildings
+    as dots on top; the ground is the house ground."""
     allp = [(*view(p), p) for p in pts]
     s, cx, cy = fit([(q[0], q[1]) for q in allp], fill)
-    im = terrain_surface(view, s, cx, cy)
+
+    def to_screen(L):
+        pr = np.array([view(tuple(q)) for q in L])
+        return W / 2 + (pr[:, 0] - cx) * s, H / 2 - (pr[:, 1] - cy) * s, pr[:, 2]
+
+    lv = sorted({round(float(l[0, 2]), 6) for l in LINES})
+    keep = {v for k, v in enumerate(lv) if k % every == 0}
+    TX, TY, TD, _ = cp.dots_on([l for l in LINES if round(float(l[0, 2]), 6) in keep], to_screen, spacing)
+    t = (TD - TD.min()) / (np.ptp(TD) or 1)
+    im = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(im)
+    for i in np.argsort(t):
+        w = 0.22 + 0.5 * t[i] ** 0.9
+        r = 1.9
+        d.ellipse((TX[i] - r, TY[i] - r, TX[i] + r, TY[i] + r), fill=mix(BG, (150, 156, 168), w))
     for sx, sy, _, p in sorted(allp, key=lambda q: q[2]):
-        if p[3] != 1 or not points(p):
+        if p[3] != 1:
             continue
         px, py = W / 2 + (sx - cx) * s, H / 2 - (sy - cy) * s
         r = radius(p)
@@ -125,5 +109,5 @@ def draw(name, view, colour, radius, fill, grid=False, points=lambda p: True):
 
 
 draw("scan", oblique, lambda p: (206, 210, 220), lambda p: 1.5, 0.84)
-draw("model", plan, lambda p: ACCENT, lambda p: 2.2, 0.9)
-draw("measure", plan, lambda p: mix(BG, ACCENT, 0.7), lambda p: 2.0, 0.9, grid=True)
+draw("model", plan, lambda p: ACCENT, lambda p: 2.6, 0.9, every=3)
+draw("measure", plan, lambda p: mix(BG, ACCENT, 0.8), lambda p: 2.4, 0.9, grid=True, every=3)

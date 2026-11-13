@@ -24,8 +24,8 @@ REAL: the canal and its surroundings are Dutch open aerial LiDAR.
            6 building, 26 other). The raw LAZ is not committed.
 
 SIMULATED: everything that is the boat and its scan.
-  The boat is a plain generic hull (4.6 m x 1.7 m flat deck, a 2.4 m mast
-  with a sensor head), drawn in points. It is not Roboat's hull and its data
+  The boat is a plain generic hull (4.6 m x 1.7 m, pointed bow, sheered gunwale,
+  low cabin, a 3.2 m mast with a sensor head), drawn in points. It is not Roboat's hull and its data
   is not Roboat's data.
   The scanner is an imagined 16-beam spinning LiDAR on the mast head,
   3.6 m above the water, beams from -25 to +15 degrees in elevation, 0.4
@@ -37,8 +37,8 @@ SIMULATED: everything that is the boat and its scan.
   and quay walls are sparse and beams can pass where a real scanner would
   hit a wall; nothing here is a claim about what an on-board scanner sees.
 
-    python3 scripts/make-roboat-plate.py            # plates from the asset
-    python3 scripts/make-roboat-plate.py --view low   # alternative low view along the water, written to ~/Perso/site-review/files
+    python3 scripts/make-roboat-plate.py            # card plate and loop (high view) + hero tile and loop (low view along the water)
+    python3 scripts/make-roboat-plate.py --view low   # alternative card view along the water, written to ~/Perso/site-review/files
     python3 scripts/make-roboat-plate.py --sample   # rebuild the asset from a LAZ
 """
 import math
@@ -111,39 +111,55 @@ def load():
 
 
 def boat(rng):
-    """Generic hull in points: rounded bow, flat deck, low cabin, mast. Returns (hull, sensor head)."""
-    L2, hw, side, deck = 2.3, 0.85, 0.55, WATER + 0.55
+    """Generic small boat in points: pointed bow, sheered gunwale, V-ish hull, raked low cabin, mast.
+    Returns (hull, sensor head)."""
+    L2, hw, deck = 2.3, 0.85, WATER + 0.5
 
     def half_w(x):
-        t = np.clip((x - 1.0) / 1.3, 0, 1)
-        return hw * np.sqrt(1 - t ** 2)
+        t = np.clip((x - 0.3) / 2.0, 0, 1)
+        return hw * (1 - t ** 1.7) ** 0.85
 
-    def top(x):
-        t = np.clip((x - 0.8) / 1.5, 0, 1)
-        return deck + 0.3 * t ** 2
+    def sheer(x):
+        bow = np.clip((x - 0.4) / 1.9, 0, 1)
+        stern = np.clip((-x - 1.2) / 1.1, 0, 1)
+        return deck + 0.32 * bow ** 2 + 0.1 * stern ** 2
+
+    def chine(z):
+        return 0.72 + 0.28 * np.clip((z - WATER) / (deck - WATER), 0, 1)
 
     pts = []
-    N = 2200
+    N = 3600
     x = rng.uniform(-L2, L2, N)
     sgn = rng.choice([-1, 1], N)
-    pts.append(np.c_[x, sgn * half_w(x), WATER + rng.uniform(0, 1, N) * (top(x) - WATER)])
-    N = 2600
+    z = WATER + rng.uniform(0, 1, N) * (sheer(x) - WATER)
+    pts.append(np.c_[x, sgn * half_w(x) * chine(z), z])
+    N = 5000
     x, y = rng.uniform(-L2, L2, N), rng.uniform(-hw, hw, N)
     k = abs(y) < half_w(x)
-    pts.append(np.c_[x[k], y[k], top(x[k])])
-    N = 300
-    y = rng.uniform(-hw, hw, N)
+    pts.append(np.c_[x[k], y[k], sheer(x[k])])
+    N = 260
+    y = rng.uniform(-hw * 0.72, hw * 0.72, N)
     pts.append(np.c_[np.full(N, -L2), y, WATER + rng.uniform(0, 1, N) * (deck - WATER)])
-    cx0, cx1, cw, ch = -1.1, 0.7, 0.55, 0.75
+    cx0, cx1, cw, ch = -1.15, 0.65, 0.58, 0.72
+
+    def front(z):
+        return cx1 - 0.45 * np.clip((z - deck) / ch, 0, 1)
+
     N = 1000
-    x, y = rng.uniform(cx0, cx1, N), rng.uniform(-cw, cw, N)
+    zz = deck + rng.uniform(0, ch, N)
+    y = rng.uniform(-cw, cw, N)
+    pts.append(np.c_[front(zz), y, zz])
+    N = 800
+    x, y = rng.uniform(cx0, cx1 - 0.45, N), rng.uniform(-cw * 0.9, cw * 0.9, N)
     pts.append(np.c_[x, y, np.full(N, deck + ch)])
     for ys in (-cw, cw):
-        N = 400
-        pts.append(np.c_[rng.uniform(cx0, cx1, N), np.full(N, ys), deck + rng.uniform(0, ch, N)])
-    for xs in (cx0, cx1):
         N = 700
-        pts.append(np.c_[np.full(N, xs), rng.uniform(-cw, cw, N), deck + rng.uniform(0, ch, N)])
+        zz = deck + rng.uniform(0, ch, N)
+        x = rng.uniform(cx0, 1, N) * 0 + rng.uniform(cx0, front(zz))
+        pts.append(np.c_[x, np.full(N, ys * (1 - 0.12 * (zz - deck) / ch)), zz])
+    N = 260
+    zz = deck + rng.uniform(0, ch, N)
+    pts.append(np.c_[np.full(N, cx0), rng.uniform(-cw, cw, N), zz])
     N = 500
     pts.append(np.c_[np.full(N, 0.4) + rng.normal(0, 0.015, N), rng.normal(0, 0.015, N), rng.uniform(deck + ch, WATER + MAST_H - 0.3, N)])
     th = rng.uniform(0, 2 * np.pi, 700)
@@ -262,13 +278,18 @@ def depth_fade(cam, pts, near, far, gamma):
     return np.clip(1 - (d - near) / (far - near), 0, 1) ** gamma
 
 
+def hull_col(h):
+    t = np.clip((h[:, 2] - WATER) / 1.2, 0, 1)[:, None]
+    return np.array((118, 124, 136), float) + (LIGHT - (118, 124, 136)) * t
+
+
 def groups(sc, cam, lit_i=None, ring_i=None):
     lit_i = np.ones(len(sc["lit"])) if lit_i is None else lit_i
     ring_i = np.ones(len(sc["ring"])) if ring_i is None else ring_i
     return [
         (sc["cloud"], sc["grey"], 2.4, depth_fade(cam, sc["cloud"], 6, 130, 0.6), 1.0),
         (sc["ring"], ACCENT, 2.2, depth_fade(cam, sc["ring"], 10, RING_FAR, 0.7) * ring_i, 1.0),
-        (sc["hull"], LIGHT, 0.9, np.ones(len(sc["hull"])), 1.0),
+        (sc["hull"], hull_col(sc["hull"]), 0.9, np.ones(len(sc["hull"])), 1.0),
         (sc["lit"], ACCENT, 2.4, depth_fade(cam, sc["lit"], 10, 120, 0.5) * lit_i, 1.5),
         (sc["head"], ACCENT, 1.6, np.ones(len(sc["head"])), 1.2),
     ]
@@ -279,32 +300,50 @@ def sweep(sc, head, tau=110.0, floor=0.0):
     return f(sc["lit_az"]), f(sc["ring_az"])
 
 
-CAM = cam_persp((-25.0, 2.0, 6.0), (14.0, 0.0, 3.0), 1650, oy=0.19)
-
-
-CAM_HIGH = cam_persp((-40.0, 0.0, 31.0), (6.0, 0.0, 0.0), 1250, oy=0.40)
 ALT_OUT = Path.home() / "Perso/site-review/files"
+VIEWS = {
+    "low": dict(cam=cam_persp((-25.0, 2.0, 6.0), (14.0, 0.0, 3.0), 1650, oy=0.19), ring_far=80,
+                still=ALT_OUT / "roboat-low.webp", anim=ALT_OUT / "roboat-low-anim.webp"),
+    "tile": dict(cam=cam_persp((-25.0, 2.0, 6.0), (14.0, 0.0, 3.0), 1650, oy=0.19), ring_far=80,
+                 still=OUT / "hero-tile.webp", anim=OUT / "hero-tile-anim.webp", still_q=80, anim_q=32),
+    "tile-close": dict(cam=cam_persp((-19.0, 2.0, 6.0), (0.4, 0.0, 1.0), 1800, oy=0.5), ring_far=80,
+                       still=ALT_OUT / "roboat-hero-close.webp", anim=ALT_OUT / "roboat-hero-close-anim.webp", still_q=80, anim_q=32),
+    "high": dict(cam=cam_persp((-40.0, 0.0, 31.0), (6.0, 0.0, 0.0), 1250, oy=0.40), ring_far=140,
+                 still=OUT / "card-plate.webp", anim=OUT / "card-anim.webp"),
+}
 
 
-def main():
-    high = not ("--view" in sys.argv and sys.argv[sys.argv.index("--view") + 1] == "low")
+def flicker(rng, a, depth):
+    """A spinning lidar's returns are not all equal from one turn to the next."""
+    return a * (1 - depth * rng.random(len(a)))
+
+
+def run(name, sc):
     global RING_FAR
-    cam = CAM_HIGH if high else CAM
-    RING_FAR = 140 if high else RING_FAR
-    still = OUT / "card-plate.webp" if high else ALT_OUT / "roboat-low.webp"
-    anim = OUT / "card-anim.webp" if high else ALT_OUT / "roboat-low-anim.webp"
-    still.parent.mkdir(parents=True, exist_ok=True)
-    sc = scene()
-    print(len(sc["cloud"]), "cloud pts,", len(sc["lit"]), "lit,", len(sc["ring"]), "ring")
-    render(cam, groups(sc, cam)).save(still, "WEBP", quality=84, method=6)
+    v = VIEWS[name]
+    cam, RING_FAR = v["cam"], v["ring_far"]
+    v["still"].parent.mkdir(parents=True, exist_ok=True)
+    full = render(cam, groups(sc, cam))
+    small = name.startswith("tile")
+    (full.resize((600, 600), Image.LANCZOS) if small else full).save(v["still"], "WEBP", quality=v.get("still_q", 84), method=6)
+    rng = np.random.default_rng(3)
     frames = []
     n = 36
     for i in range(n):
         li, ri = sweep(sc, i * 360 / n)
+        li, ri = flicker(rng, li, 0.45), flicker(rng, ri, 0.2)
         frames.append(render(cam, groups(sc, cam, li, ri)).resize((600, 600), Image.LANCZOS))
-    frames[0].save(anim, "WEBP", save_all=True, append_images=frames[1:], duration=80, loop=0, quality=30, method=6)
-    for f in (still, anim):
+    frames[0].save(v["anim"], "WEBP", save_all=True, append_images=frames[1:], duration=80, loop=0, quality=v.get("anim_q", 30), method=6)
+    for f in (v["still"], v["anim"]):
         print(f, f.stat().st_size, "B")
+
+
+def main():
+    names = [sys.argv[sys.argv.index("--view") + 1]] if "--view" in sys.argv else ["high", "tile"]
+    sc = scene()
+    print(len(sc["cloud"]), "cloud pts,", len(sc["lit"]), "lit,", len(sc["ring"]), "ring")
+    for n in names:
+        run(n, sc)
 
 
 if __name__ == "__main__":

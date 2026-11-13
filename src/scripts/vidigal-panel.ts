@@ -28,6 +28,8 @@ const SHOT: [number, number, number, number][] = [
   [42, 1, 0, 0],
 ];
 const SHOT_PERIOD_S = 42;
+const SWEEP_PERIOD_S = 11; // seconds per unit of front travel
+const SWEEP_SPAN = 1.35;
 const ALONG_REACH = 0.6;
 const TILT_FLOOR = 0.45;
 const ROOF_STEP = 0.22; // of the scene's z range: about 8 m in a 35 m clip
@@ -260,19 +262,6 @@ function resolveColor(ctx: CanvasRenderingContext2D, candidates: string[], fallb
 }
 
 // opaque mix of two hex colours; the terrain surface must hide what is behind it
-function mix(hexA: string, hexB: string, t: number): string {
-  const c = (h: string) => {
-    const f = h.replace('#', '');
-    const g = f.length === 3 ? f.split('').map((x) => x + x).join('') : f.slice(0, 6);
-    return [0, 2, 4].map((i) => parseInt(g.slice(i, i + 2), 16));
-  };
-  const a = c(hexA);
-  const b = c(hexB);
-  if ([...a, ...b].some(Number.isNaN)) return hexB;
-  const m = a.map((v, i) => Math.round(v + (b[i]! - v) * t));
-  return `rgb(${m[0]},${m[1]},${m[2]})`;
-}
-
 function luminance(hex: string): number {
   const f = hex.replace('#', '');
   const g = f.length === 3 ? f.split('').map((x) => x + x).join('') : f.slice(0, 6);
@@ -422,10 +411,8 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
   const dArr = new Float32Array(n);
   const counts = new Uint32Array(BUCKETS + 1);
   const order = new Uint32Array(n);
-  let cellDepth = new Float32Array(0);
-  let cellOrder = new Uint32Array(0);
-  let tCanvas: HTMLCanvasElement | null = null;
-  let frameNo = 0;
+  const sweepU = new Float32Array(n);
+  for (let i = 0; i < n; i++) sweepU[i] = (((cloud.x[i]! - cloud.mx) * cloud.axis.x + (cloud.y[i]! - cloud.my) * cloud.axis.y) / cloud.reach + 1) / 2;
 
   function render(elapsed: number) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -530,94 +517,31 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
         ctx!.fill();
       }
     }
-    const { terrain, shade, cellFade, cellCat, nCtxCells } = cloud;
-    // The surface is the expensive pass (about 12k cells). It goes to its own
-    // canvas every other frame and is blitted every frame; a one-frame lag
-    // between the ground and the points is below what an eye can see.
-    if (terrain.length && (frameNo++ & 1) === 0) {
-      if (!tCanvas) tCanvas = document.createElement('canvas');
-      if (tCanvas.width !== w || tCanvas.height !== h) {
-        tCanvas.width = w;
-        tCanvas.height = h;
-      }
-      const tc = tCanvas.getContext('2d')!;
-      tc.setTransform(dpr, 0, 0, dpr, 0, 0);
-      tc.clearRect(0, 0, cssW, cssH);
-      // the ink tone is the shadow on a light page and the light on a dark one
-      const inkIsLight = luminance(bg) < 0.5;
-
-      const nc = terrain.length / 4;
-      const cd = cellDepth.length === nc ? cellDepth : (cellDepth = new Float32Array(nc));
-      counts.fill(0);
-      for (let q = 0; q < nc; q++) {
-        const o = q * 4;
-        cd[q] = (dArr[terrain[o]!]! + dArr[terrain[o + 2]!]!) * 0.5;
-        counts[Math.min(BUCKETS - 1, ((cd[q]! - dmin) / span * BUCKETS) | 0) + 1]!++;
-      }
-      for (let b = 1; b <= BUCKETS; b++) counts[b]! += counts[b - 1]!;
-      const cur = counts.slice();
-      const co = cellOrder.length === nc ? cellOrder : (cellOrder = new Uint32Array(nc));
-      for (let q = 0; q < nc; q++) co[cur[Math.min(BUCKETS - 1, ((cd[q]! - dmin) / span * BUCKETS) | 0)]!++] = q;
-      // Two passes, each back to front: the context ring, dissolving at its
-      // outer edge, then the core over it. Shade is a colour between the page
-      // and the ground tone, opaque, so the far slope never shows through.
-      tc.globalAlpha = reveal;
-      for (let pass = 0; pass < 2; pass++) {
-      for (let k = 0; k < nc; k++) {
-        const q = co[k]!;
-        if ((q < nCtxCells) !== (pass === 0)) continue;
-        const o = q * 4;
-        const a = terrain[o]!;
-        const sh = (shade[a]! + shade[terrain[o + 2]!]!) * 0.5;
-        const f = cellFade[q]!;
-        if (f <= 0) continue;
-        // a roof is a flat slab in the ink tone; ground takes its hillshade
-        // ground: a floor so the surface never vanishes into the page, then the
-        // hillshade; the context ring is lighter; a roof is a flat slab in the ink
-        const lit = inkIsLight ? sh : 1 - sh;
-        const kind = cellCat[q]!;
-        const tone = kind === 2 ? 0.7 : kind === 4 ? 0.88 : (inkIsLight ? 0.16 : 0.12) + 0.55 * lit * (pass === 0 ? 0.7 : 1);
-        tc.fillStyle = mix(bg, ground, tone);
-        tc.globalAlpha = reveal * f;
-        // each cell is pushed half a pixel out from its centre: the seams close
-        // without a stroke, and a stroke would draw a lattice over flat ground
-        const b = terrain[o + 1]!;
-        const c2 = terrain[o + 2]!;
-        const d = terrain[o + 3]!;
-        const mxq = (sxArr[a]! + sxArr[b]! + sxArr[c2]! + sxArr[d]!) * 0.25;
-        const myq = (syArr[a]! + syArr[b]! + syArr[c2]! + syArr[d]!) * 0.25;
-        const grow = (i: number) => {
-          const dx = sxArr[i]! - mxq;
-          const dy = syArr[i]! - myq;
-          const l = Math.hypot(dx, dy) || 1;
-          return [sxArr[i]! + (dx / l) * 0.6, syArr[i]! + (dy / l) * 0.6] as const;
-        };
-        tc.beginPath();
-        let g = grow(a);
-        tc.moveTo(g[0], g[1]);
-        g = grow(b);
-        tc.lineTo(g[0], g[1]);
-        g = grow(c2);
-        tc.lineTo(g[0], g[1]);
-        g = grow(d);
-        tc.lineTo(g[0], g[1]);
-        tc.closePath();
-        tc.fill();
-      }
-      }
-      tc.globalAlpha = 1;
-    }
-    if (tCanvas) {
-      ctx!.setTransform(1, 0, 0, 1, 0, 0);
-      ctx!.drawImage(tCanvas, 0, 0);
-      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
+    const { terrain, shade } = cloud;
+    const inkIsLight = luminance(bg) < 0.5;
+    // a slow scan front crosses the ridge with an afterglow, as on the Roboat card: only while motion is allowed
+    const sweepOn = flying && !splatR;
+    const head = (elapsed / SWEEP_PERIOD_S) % SWEEP_SPAN - 0.2;
     const shown = Math.round(reveal * n);
     for (let k = 0; k < shown; k++) {
       const i = order[k]!;
       const c = cat[i]!;
-      if (c === 15 || (terrain.length && (c === 0 || c === 2 || c === 3))) continue;
+      if (c === 15) continue;
       const d = (dArr[i]! - dmin) / span;
+      let glow = 0;
+      if (sweepOn) {
+        const lag = (((head - sweepU[i]!) % SWEEP_SPAN) + SWEEP_SPAN) % SWEEP_SPAN;
+        glow = Math.exp(-lag / 0.13);
+      }
+      if (terrain.length && c !== 1) {
+        // terrain is dots like every other cloud on the site: grey, fading with depth, hillshade as the tone
+        const sh = inkIsLight ? 1 - shade[i]! : shade[i]!;
+        const base = (0.14 + 0.5 * d * d ** 0.2) * (0.5 + 0.5 * sh) * (c === 3 ? 0.65 : 1);
+        ctx!.fillStyle = withAlpha(ground, Math.min(0.95, base * reveal + 0.5 * glow * (0.4 + 0.6 * d)));
+        const ts = 1.25 * dot;
+        ctx!.fillRect(sxArr[i]! - ts / 2, syArr[i]! - ts / 2, ts, ts);
+        continue;
+      }
       // nearer points sit slightly stronger, which gives the cloud its form;
       // category 1 is the subject (rooftops, or crowns) in the accent, 0 is
       // the ground as a surface, 2 is built context in the ground's colour
@@ -627,7 +551,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
       // built context (2) sits heavier than bare ground (0) in the same grey,
       // so roofs read as houses rather than as pavement
       const a = c === 1 ? Math.min(1, (quads.length ? 0.5 : 1) * (0.26 + 0.36 * d + 0.2 * z[i]!) * emphasis / (0.75 + 0.25 * zoom)) : c === 2 ? 0.55 + 0.35 * d : 0.2 + 0.24 * d;
-      ctx!.fillStyle = withAlpha(c === 1 ? accent : ground, a);
+      ctx!.fillStyle = withAlpha(c === 1 ? accent : ground, Math.min(1, a + 0.3 * glow));
       if (c === 1 && splatR > 0) {
         const rr = splatR * scale;
         ctx!.fillStyle = withAlpha(accent, Math.min(0.4, (0.06 + 0.08 * d + 0.1 * z[i]!) * emphasis));

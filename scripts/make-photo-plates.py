@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Square card plates drawn as halftones of published pictures, 1200x1200 webp.
+"""Card plates drawn as halftones of published pictures, 1200x1200 webp.
 Dot size follows brightness, on a rotated grid with jittered position and size,
 so it reads as a picture and a dot grid cannot beat against the screen. The
 subject is blue, its surroundings grey fading into the background. Host
@@ -7,6 +7,7 @@ tooling (Pillow, numpy), run by hand; output committed. Inputs are downloaded,
 never committed, except where noted.
 
     python3 scripts/make-photo-plates.py roboat|octopus|pipeline [--frame N]
+    python3 scripts/make-photo-plates.py loomo [--shape wide|tile]
 
 roboat: MIT News, "Autonomous boats could be your next ride", 26 Oct 2020,
   https://news.mit.edu/2020/autonomous-boats-could-be-your-next-ride-1026
@@ -17,6 +18,10 @@ roboat: MIT News, "Autonomous boats could be your next ride", 26 Oct 2020,
 octopus: bottom-layer render of the case,
   https://raw.githubusercontent.com/MIT-Senseable-City-Lab/octopus-fabrication/main/imgs/otopus_bottom-layer_perspective.png
   repository octopus-fabrication, MIT License, (c) 2024 MIT Senseable City Lab.
+loomo: the site's own picture public/projects/autonomous-mobile-robot/hero-poster.jpg
+  (600x338, a Segway Loomo following a person, EPFL VITA Lab, the owner's project).
+  wide = 1600x1000 for the homepage spotlight, tile = 1200x1200 centred on the robot
+  for the hero. The robot is the blue subject, the person and room are grey.
 pipeline: MOT17-04 frame, MOTChallenge MOT17 (CC BY-NC-SA 3.0,
   https://motchallenge.net/data/MOT17/), read from the benchmark zip by byte
   range (pip install remotezip); boxes and trails from
@@ -62,15 +67,16 @@ def halftone(tone, blue, pitch=9, rmax=None, angle=0.38, seed=3, grey=GROUND):
     rng = np.random.default_rng(seed)
     rmax = rmax or pitch * 0.62
     ca, sa = np.cos(angle), np.sin(angle)
-    n = int(S * 1.5 / pitch)
-    img = Image.new("RGB", (S * SS, S * SS), BG)
+    H, W = tone.shape
+    n = int(max(W, H) * 1.5 / pitch)
+    img = Image.new("RGB", (W * SS, H * SS), BG)
     d = ImageDraw.Draw(img)
     for i in range(-n, n):
         for j in range(-n, n):
             u, v = i * pitch, j * pitch
-            x = u * ca - v * sa + S / 2 + rng.uniform(-0.18, 0.18) * pitch
-            y = u * sa + v * ca + S / 2 + rng.uniform(-0.18, 0.18) * pitch
-            if not (0 <= x < S and 0 <= y < S):
+            x = u * ca - v * sa + W / 2 + rng.uniform(-0.18, 0.18) * pitch
+            y = u * sa + v * ca + H / 2 + rng.uniform(-0.18, 0.18) * pitch
+            if not (0 <= x < W and 0 <= y < H):
                 continue
             t = tone[int(y), int(x)]
             if t < 0.03:
@@ -78,7 +84,7 @@ def halftone(tone, blue, pitch=9, rmax=None, angle=0.38, seed=3, grey=GROUND):
             r = rmax * np.sqrt(t) * rng.uniform(0.88, 1.08)
             col = ACCENT if blue[int(y), int(x)] else grey
             d.ellipse([(x - r) * SS, (y - r) * SS, (x + r) * SS, (y + r) * SS], fill=col)
-    return img.resize((S, S), Image.LANCZOS)
+    return img.resize((W, H), Image.LANCZOS)
 
 
 def lum(im):
@@ -145,6 +151,46 @@ def octopus():
     return halftone(tone, shape, pitch=7)
 
 
+LOOMO_SRC = ROOT / "public/projects/autonomous-mobile-robot/hero-poster.jpg"
+# robot silhouette in source pixels (600x338): wheels, base, stem, camera head
+LOOMO_ROBOT = [
+    [(340, 246), (352, 240), (366, 252), (366, 300), (352, 312), (340, 300)],
+    [(440, 256), (452, 250), (464, 262), (464, 316), (452, 324), (440, 312)],
+    [(358, 270), (446, 272), (446, 298), (358, 296)],
+    [(391, 200), (413, 200), (414, 282), (391, 282)],
+    [(389, 166), (404, 160), (421, 170), (421, 198), (404, 202), (389, 196)],
+]
+
+
+def loomo(shape):
+    src = Image.open(LOOMO_SRC).convert("RGB")
+    if shape == "wide":
+        W, H, k, x0, y0 = 1600, 1000, 1000 / 338, 175, 0
+        pitch = 9
+    else:
+        W, H, k, x0, y0 = 1200, 1200, 1200 / 338, 233 * 1200 / 338, 0
+        pitch = 8
+    big = src.resize((round(600 * k), round(338 * k)), Image.LANCZOS)
+    crop = big.crop((round(x0), round(y0), round(x0) + W, round(y0) + H)).filter(ImageFilter.GaussianBlur(1.6))
+    mask = Image.new("L", (W, H), 0)
+    md = ImageDraw.Draw(mask)
+    for poly in LOOMO_ROBOT:
+        md.polygon([(x * k - x0, y * k - y0) for x, y in poly], fill=255)
+    mask = mask.filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(4))
+    rgb = np.asarray(crop, dtype=np.float32)
+    jeans = np.asarray(Image.fromarray((((rgb[..., 2] - rgb[..., 0]) > 22) * 255).astype(np.uint8)).filter(ImageFilter.MedianFilter(7)).filter(ImageFilter.GaussianBlur(2))) > 128
+    g = lum(crop)
+    blue = (np.asarray(mask) > 128) & (g < 0.3)
+    blue = np.asarray(Image.fromarray((blue * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.GaussianBlur(3))) > 128
+    g = stretch(g, np.ones_like(g, bool), 1.5, 4, 97)
+    g = np.where(jeans, np.maximum(g, 0.8), g)
+    y, x = np.mgrid[0:H, 0:W]
+    d = np.sqrt(((x - W / 2) / (W * 0.62)) ** 2 + ((y - H * 0.52) / (H * 0.62)) ** 2)
+    fade = np.clip(1.15 - d, 0, 1) ** 0.7
+    tone = np.where(blue, 0.8, np.clip(0.04 + 0.96 * g, 0, 1) * fade)
+    return halftone(tone, blue, pitch=pitch)
+
+
 def pipeline(frame_no):
     from remotezip import RemoteZip
 
@@ -200,6 +246,9 @@ if __name__ == "__main__":
     which = sys.argv[1]
     if which == "roboat":
         out, path = roboat(), ROOT / "public/projects/autonomous-boat-perception/card-plate.webp"
+    elif which == "loomo":
+        shape = sys.argv[sys.argv.index("--shape") + 1] if "--shape" in sys.argv else "wide"
+        out, path = loomo(shape), ROOT / f"public/projects/autonomous-mobile-robot/loomo-{shape}.webp"
     elif which == "octopus":
         out, path = octopus(), ROOT / "public/projects/octopus/card-plate.webp"
     else:

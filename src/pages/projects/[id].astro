@@ -75,7 +75,7 @@ const articleJsonLd = {
       {project.data.image && (
         <div class="mb-10 rounded-lg overflow-hidden border border-border">
           <picture>
-            {project.data.cardAnim && (
+            {project.data.cardAnim && (!project.data.cardImage || project.data.cardImage === project.data.image) && (
               <source srcset={base + project.data.cardAnim} media="(prefers-reduced-motion: no-preference)" />
             )}
             {project.data.imagePhone && (

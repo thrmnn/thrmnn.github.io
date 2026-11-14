@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Pose B v2, an alternative Loomo figure (not shipped; the release uses
-scripts/make-loomo-overlay.py). The full-frame halftone of
+"""Pose B v3, the homepage Robotics figure (pose C, scripts/make-loomo-overlay.py,
+is the earlier one). The full-frame halftone of
 make-photo-plates.py loomo('wide') edge to edge, with
-  - the real walking legs AND forearms (hips, knees, ankles, elbows, wrists with
-    score > 2; no shoulders, the follow clip has none in frame) drawn as limbs
-    with joint dots, and light dots along those limbs instead of a lit mask;
+  - the real walking legs (hips, knees, ankles with score > 2; the follow clip
+    has no upper body in frame) drawn as limbs with joint dots, and light dots
+    along those limbs instead of a lit mask;
   - a drawn depth cone from Loomo's head toward the legs with a near-to-far sweep;
-  - a "what Loomo sees" panel with the full 17-point skeleton, and a faint
+  - an input-view panel with the full 17-point skeleton, and a faint
     frustum from Loomo's head to it.
 Host tooling (numpy, Pillow, opencv, ffmpeg); needs scripts/assets/loomo/inset-pose.json
-(scripts/make-loomo-inset-pose.py). Writes loomo-pose-b2.webp (1600x1000) and
-loomo-pose-b2-anim.webp (576x360) to ~/Perso/site-review/files.
+(scripts/make-loomo-inset-pose.py). Writes loomo-pose.webp (1600x1000) and
+loomo-pose-anim.webp (576x360) to ~/Perso/site-review/files (--out public/projects/autonomous-mobile-robot for the site).
 
-    python3 scripts/make-loomo-pose-b2.py [--out DIR] [--q N] [--preview]
+    python3 scripts/make-loomo-pose.py [--out DIR] [--q N]
 
 REAL
   Base photo, mapping and leg and forearm keypoints: as in make-loomo-overlay.py
@@ -29,6 +29,7 @@ REAL
   (scripts/assets/loomo/inset-pose.json), smoothed over 3 frames; only keypoints
   with score > 2 are drawn. PifPaf is only the drawing style, not the model.
 DRAWN
+  The perspective lattice of dots on the empty floor and top band (fill_planes).
   The depth view (Intel RealSense ZR300 active-IR stereo camera; the Loomo has no
   lidar; we have no depth frame from the robot): the cone, the sweep, the lit
   dots on the floor and along the limbs, and the frustum to the panel. The base
@@ -279,21 +280,11 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     frames_out = [draw(f, f / N, f) for f in range(N)]
     still = draw(IDX.index(REF), 0.8, 19)
-    still.save(out / "loomo-pose-b2.webp", "WEBP", quality=72, method=6)
+    still.save(out / "loomo-pose.webp", "WEBP", quality=72, method=6)
     loop = [im.resize((576, 360), Image.LANCZOS) for im in frames_out]
-    loop[0].save(out / "loomo-pose-b2-anim.webp", "WEBP", save_all=True, append_images=loop[1:], duration=80, loop=0, quality=q, method=6)
-    for nme in ("loomo-pose-b2.webp", "loomo-pose-b2-anim.webp"):
+    loop[0].save(out / "loomo-pose-anim.webp", "WEBP", save_all=True, append_images=loop[1:], duration=80, loop=0, quality=q, method=6)
+    for nme in ("loomo-pose.webp", "loomo-pose-anim.webp"):
         print(nme, (out / nme).stat().st_size)
-    if "--preview" in sys.argv:
-        sheet = Image.new("RGB", (1600, 1100), A.BG)
-        sheet.paste(Image.open(ROOT / "public/projects/autonomous-mobile-robot/loomo-pose.webp").convert("RGB").resize((533, 333)), (0, 0))
-        sheet.paste(Image.open(out / "loomo-pose-b.webp").convert("RGB").resize((533, 333)), (533, 0))
-        sheet.paste(still.resize((533, 333)), (1066, 0))
-        for qn, fi in enumerate((5, 12, 19)):
-            sheet.paste(frames_out[fi].resize((533, 333)), (qn * 533, 340))
-        sheet.paste(still.resize((390, 244)), (0, 700))
-        sheet.save(Path.home() / "Perso/site-review/files/loomo-anim-20.png")
-
 
 if __name__ == "__main__":
     main()

@@ -279,6 +279,7 @@ def main():
 
     out.mkdir(parents=True, exist_ok=True)
     frames_out = [draw(f, f / N, f) for f in range(N)]
+    frames_out = frames_out[27:] + frames_out[:27]  # open on a frame with the panel and the legs drawn
     still = draw(IDX.index(REF), 0.8, 19)
     still.save(out / "loomo-pose.webp", "WEBP", quality=72, method=6)
     loop = [im.resize((576, 360), Image.LANCZOS) for im in frames_out]

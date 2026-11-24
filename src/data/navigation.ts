@@ -1,9 +1,14 @@
 import { base } from './base';
 import { author } from './author';
+import { getPublishedWriting } from './writing';
+
+const hasWriting = (await getPublishedWriting()).length > 0;
+const writingLink = hasWriting ? [{ label: 'Writing', href: '/writing/' }] : [];
 
 // Home isn't in the link row — the T·A·H monogram routes to /.
 export const navLinks = [
   { label: 'Work', href: '/projects/' },
+  ...writingLink,
   { label: 'Contact', href: '/#contact' },
 ];
 
@@ -13,6 +18,7 @@ export const mobileNavLinks = [
   { label: 'Robotics', href: '/#robotics' },
   { label: 'Practice', href: '/#legible' },
   { label: 'Work', href: '/projects/' },
+  ...writingLink,
   { label: 'Contact', href: '/#contact' },
 ];
 

@@ -13,12 +13,13 @@ const pieces = (await getPublishedWriting()).slice(0, 3);
       <ul class="writing-list" data-reveal style="--reveal-d: 1;">
         {pieces.map((p) => (
           <li>
-            <a href={`${base}/writing/${p.id}/`}>{p.data.title}</a>
+            <a href={`${base}/writing/${p.id}/`} class="writing-title">{p.data.title}</a>
             <span class="writing-meta">{seriesName(p.data.series)} · {formatWritingDate(p.data.date)}</span>
+            <p class="text-text-secondary mt-1 max-w-2xl">{p.data.summary}</p>
           </li>
         ))}
       </ul>
-      <a href={`${base}/writing/`} class="text-sm mt-6 inline-block text-[var(--color-link)] hover:text-[var(--color-link-hover)]">All writing →</a>
+      <a href={`${base}/writing/`} class="text-sm mt-4 py-3 inline-block text-[var(--color-link)] hover:text-[var(--color-link-hover)]">All writing →</a>
     </div>
   </section>
 )}

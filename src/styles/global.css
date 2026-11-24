@@ -1029,9 +1029,11 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
 }
-.talks-strip li { flex: 0 0 min(80vw, 20rem); scroll-snap-align: start; }
+.talks-strip li { flex: 0 0 min(72vw, 20rem); scroll-snap-align: start; }
+.talks-strip li:only-child { flex-basis: 100%; }
 @media (min-width: 1024px) {
-  .talks-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; }
+  .talks-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); overflow: visible; }
+  .talks-strip li:only-child { max-width: 36rem; }
 }
 .talks-strip figure { margin: 0; }
 .talks-strip img {
@@ -1045,6 +1047,8 @@
   -webkit-user-drag: none;
 }
 .talks-strip figcaption > * { display: block; margin-top: 0.4rem; }
+.talks-strip figcaption a { padding: 0.7rem 0; }
+#talks + #writing { padding-top: 0; }
 .spotlight-fig-lead {
   margin: 0 0 0.75rem;
   max-width: 36rem;

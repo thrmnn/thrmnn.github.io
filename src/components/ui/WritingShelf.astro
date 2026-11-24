@@ -1,0 +1,24 @@
+---
+import { base } from '../../data/base';
+import { seriesName } from '../../data/series';
+import { getPublishedWriting, formatWritingDate } from '../../data/writing';
+
+const pieces = (await getPublishedWriting()).slice(0, 3);
+---
+
+{pieces.length > 0 && (
+  <section class="py-[var(--space-section)]" aria-labelledby="writing-shelf-h">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <h2 id="writing-shelf-h" class="text-2xl font-bold text-text-primary mb-6">Writing</h2>
+      <ul class="writing-list">
+        {pieces.map((p) => (
+          <li>
+            <a href={`${base}/writing/${p.id}/`}>{p.data.title}</a>
+            <span class="writing-meta">{seriesName(p.data.series)} · {formatWritingDate(p.data.date)}</span>
+          </li>
+        ))}
+      </ul>
+      <a href={`${base}/writing/`} class="text-sm mt-6 inline-block">All writing →</a>
+    </div>
+  </section>
+)}

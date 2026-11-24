@@ -1,0 +1,48 @@
+---
+import { base } from '../../data/base';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { render } from 'astro:content';
+import { author } from '../../data/author';
+import { siteConfig } from '../../data/site';
+import { seriesName } from '../../data/series';
+import { getPublishedWriting, formatWritingDate } from '../../data/writing';
+
+export async function getStaticPaths() {
+  const pieces = await getPublishedWriting();
+  return pieces.map((piece) => ({ params: { id: piece.id }, props: { piece } }));
+}
+
+const { piece } = Astro.props;
+const { Content } = await render(piece);
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: piece.data.title,
+  description: piece.data.summary,
+  datePublished: piece.data.date.toISOString(),
+  author: { '@type': 'Person', name: author.name, url: siteConfig.url },
+  image: new URL(piece.data.image || siteConfig.ogImage, siteConfig.url).href,
+  url: new URL(`/writing/${piece.id}`, siteConfig.url).href,
+};
+---
+
+<PageLayout title={piece.data.title} description={piece.data.summary} image={piece.data.image} ogType="article" articleJsonLd={articleJsonLd}>
+  <section class="py-[var(--space-section)]">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <a href={`${base}/writing/`} class="text-sm text-text-muted hover:text-text-secondary mb-4 inline-block">← Back to writing</a>
+      <p class="writing-meta mt-2">{seriesName(piece.data.series)} · {formatWritingDate(piece.data.date)}</p>
+      <h1 class="text-3xl font-bold text-text-primary mt-2 max-w-2xl">{piece.data.title}</h1>
+      <p class="writing-lead mt-6 max-w-2xl">{piece.data.summary}</p>
+      {piece.data.image && (
+        <figure class="writing-figure mt-10 max-w-2xl">
+          <img src={base + piece.data.image} alt={piece.data.imageAlt ?? piece.data.title} class="w-full h-auto block" />
+          {piece.data.imageCaption && <figcaption>{piece.data.imageCaption}</figcaption>}
+        </figure>
+      )}
+      <article class="prose mt-10">
+        <Content />
+      </article>
+    </div>
+  </section>
+</PageLayout>

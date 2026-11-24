@@ -328,6 +328,45 @@
     margin-bottom: 0.5em;
   }
 
+  .writing-meta {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .writing-lead {
+    font-size: 1.2rem;
+    line-height: 1.55;
+    color: var(--color-text-primary);
+  }
+
+  .writing-figure {
+    margin: 1.5em 0;
+  }
+
+  .writing-figure img {
+    border-radius: 8px;
+    margin: 0;
+  }
+
+  .writing-figure figcaption {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 0.5rem;
+  }
+
+  .writing-list {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .writing-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
   /* --- Responsive spacing overrides --- */
 
   @media (min-width: 768px) {

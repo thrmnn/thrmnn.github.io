@@ -1,0 +1,9 @@
+---
+import { base } from '../../data/base';
+const { src, alt, caption } = Astro.props;
+---
+
+<figure class="writing-figure">
+  <img src={base + src} alt={alt} loading="lazy" class="w-full h-auto block" />
+  <figcaption>{caption}</figcaption>
+</figure>

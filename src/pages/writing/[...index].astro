@@ -1,0 +1,35 @@
+---
+import { base } from '../../data/base';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { series, seriesName } from '../../data/series';
+import { getPublishedWriting, formatWritingDate } from '../../data/writing';
+
+export async function getStaticPaths() {
+  return (await getPublishedWriting()).length > 0 ? [{ params: { index: undefined } }] : [];
+}
+
+const pieces = await getPublishedWriting();
+const usedSeries = series.filter((s) => s.line !== 'PLACEHOLDER' && pieces.some((p) => p.data.series === s.id));
+---
+
+<PageLayout title="Writing" description="Essays on proof, building and seeing cities and machines.">
+  <section class="py-[var(--space-section)]">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <h1 class="text-3xl font-bold text-text-primary mb-2" data-reveal>Writing</h1>
+      {usedSeries.length > 0 && (
+        <ul class="text-text-secondary mb-10 max-w-2xl" data-reveal style="--reveal-d: 1;">
+          {usedSeries.map((s) => <li><strong class="text-text-primary">{s.name}.</strong> {s.line}</li>)}
+        </ul>
+      )}
+      <ul class="writing-list mt-10">
+        {pieces.map((p) => (
+          <li>
+            <a href={`${base}/writing/${p.id}/`} class="writing-title">{p.data.title}</a>
+            <span class="writing-meta">{seriesName(p.data.series)} · {formatWritingDate(p.data.date)}</span>
+            <p class="text-text-secondary mt-1 max-w-2xl">{p.data.summary}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</PageLayout>

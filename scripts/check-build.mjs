@@ -30,6 +30,7 @@ const groups = {
   cross_link: [],
   home_words: [],
   writing_gate: [],
+  talks_fixtures: [],
 };
 const fail = (group, m) => { groups[group].push(m); };
 const must = (group, cond, m) => { if (!cond) fail(group, m); };
@@ -546,16 +547,21 @@ for (const f of htmlFiles) {
   must('cross_link', home.includes(`href="${domain}"`), 'homepage has no link to the practice site');
 }
 
-// Writing stays invisible until a real piece ships: no fixture page, no
-// stand-in copy, no PLACEHOLDER string unless this is a fixture preview build.
+// Stand-ins (the writing fixture piece, the talks grey plates) and PLACEHOLDER
+// strings never reach production; PREVIEW_FIXTURES=1 builds are previews.
 if (process.env.PREVIEW_FIXTURES !== '1') {
   for (const f of files.filter((f) => /\.(html|xml)$/.test(f))) {
     const text = readFileSync(f, 'utf8');
-    if (text.includes('Stand-in piece')) fail('writing_gate', `"Stand-in piece" found in ${f}`);
     if (text.includes('PLACEHOLDER')) fail('writing_gate', `PLACEHOLDER found in ${f}`);
+    for (const term of ['Stand-in', 'stand-in photo', '/talks/fixture-']) {
+      if (text.includes(term)) fail('talks_fixtures', `"${term}" found in ${f}`);
+    }
   }
   for (const f of files.filter((f) => /\/writing\/stand-in[^/]*\/index\.html$/.test(f))) {
     fail('writing_gate', `fixture page built: ${f}`);
+  }
+  for (const f of files.filter((f) => /\/talks\/fixture-/.test(f))) {
+    fail('talks_fixtures', `stand-in photo shipped: ${f}`);
   }
 }
 

@@ -1017,6 +1017,29 @@
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
+.talks-strip {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+.talks-strip li { flex: 0 0 min(80vw, 20rem); scroll-snap-align: start; }
+@media (min-width: 1024px) {
+  .talks-strip { flex-wrap: wrap; overflow: visible; }
+}
+.talks-strip figure { margin: 0; }
+.talks-strip img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--color-border);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.talks-strip figcaption > * { display: block; margin-top: 0.4rem; }
 .spotlight-fig-lead {
   margin: 0 0 0.75rem;
   max-width: 36rem;

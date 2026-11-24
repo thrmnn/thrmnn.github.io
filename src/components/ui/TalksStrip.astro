@@ -1,0 +1,29 @@
+---
+import { base } from '../../data/base';
+import { publishedTalks } from '../../data/talks';
+
+const fmt = (iso: string) => new Date(iso).toLocaleDateString('en', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+---
+
+{publishedTalks.length > 0 && (
+  <section id="talks" class="py-[var(--space-section)]">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+      <h2 class="section-label mb-10" data-reveal>Talks</h2>
+      <ul class="talks-strip" data-reveal style="--reveal-d: 1;">
+        {publishedTalks.map((t) => (
+          <li>
+            <figure>
+              <img src={`${base}${t.photo!.src}`} width={t.photo!.w} height={t.photo!.h} alt={t.photo!.alt} loading="lazy" decoding="async" draggable="false" />
+              <figcaption>
+                <span class="robotics-strip-label">{t.event} · {t.place} · {fmt(t.date)}</span>
+                {t.session && <span class="robotics-strip-title">{t.session}</span>}
+                <span class="robotics-strip-label">Photo: {t.photo!.credit}</span>
+                {t.href && <a href={t.href} target="_blank" rel="noopener noreferrer" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">Event page →</a>}
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

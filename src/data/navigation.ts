@@ -1,6 +1,7 @@
 import { base } from './base';
 import { author } from './author';
 import { getPublishedWriting } from './writing';
+import { publishedTalks } from './talks';
 
 const hasWriting = (await getPublishedWriting()).length > 0;
 const writingLink = hasWriting ? [{ label: 'Writing', href: '/writing/' }] : [];
@@ -18,6 +19,7 @@ export const mobileNavLinks = [
   { label: 'Robotics', href: '/#robotics' },
   { label: 'Practice', href: '/#legible' },
   { label: 'Work', href: '/projects/' },
+  ...(publishedTalks.length ? [{ label: 'Talks', href: '/#talks' }] : []),
   ...writingLink,
   { label: 'Contact', href: '/#contact' },
 ];

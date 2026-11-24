@@ -58,3 +58,10 @@ export const roboticsTiles = [
   { slug: 'event-cameras-drone', src: '/projects/event-cameras-drone/card-plate.webp', anim: '/projects/event-cameras-drone/card-anim.webp', pos: '50% 50%', label: 'IRI (CSIC-UPC, Barcelona) · 2023–24', title: 'Event cameras' },
   { slug: 'perception-pipeline', src: '/projects/perception-pipeline/card-plate.webp', pos: '50% 50%', label: 'Open source · 2026', title: 'Vision pipeline' },
 ];
+
+// Contact doors (desk defaults; the owner rewords these three strings).
+export const contactDoors = {
+  intro: 'Two ways in: write to me about research, or see how I work with robot makers.',
+  research: 'Collaborate on research',
+  practice: 'Work with me',
+};

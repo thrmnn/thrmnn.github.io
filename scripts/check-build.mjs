@@ -29,6 +29,7 @@ const groups = {
   orphans: [],
   cross_link: [],
   home_words: [],
+  writing_gate: [],
 };
 const fail = (group, m) => { groups[group].push(m); };
 const must = (group, cond, m) => { if (!cond) fail(group, m); };
@@ -543,6 +544,19 @@ for (const f of htmlFiles) {
 {
   const domain = 'https://theohermann.ch';
   must('cross_link', home.includes(`href="${domain}"`), 'homepage has no link to the practice site');
+}
+
+// Writing stays invisible until a real piece ships: no fixture page, no
+// stand-in copy, no PLACEHOLDER string unless this is a fixture preview build.
+if (process.env.PREVIEW_FIXTURES !== '1') {
+  for (const f of files.filter((f) => /\.(html|xml)$/.test(f))) {
+    const text = readFileSync(f, 'utf8');
+    if (text.includes('Stand-in piece')) fail('writing_gate', `"Stand-in piece" found in ${f}`);
+    if (text.includes('PLACEHOLDER')) fail('writing_gate', `PLACEHOLDER found in ${f}`);
+  }
+  for (const f of files.filter((f) => /\/writing\/stand-in[^/]*\/index\.html$/.test(f))) {
+    fail('writing_gate', `fixture page built: ${f}`);
+  }
 }
 
 const totalErrors = Object.values(groups).reduce((s, a) => s + a.length, 0);

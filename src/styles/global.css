@@ -328,6 +328,9 @@
     margin-bottom: 0.5em;
   }
 
+  .writing-body ul { list-style: disc; }
+  .writing-body ol { list-style: decimal; }
+
   .writing-meta {
     display: block;
     font-family: var(--font-mono);
@@ -1028,13 +1031,15 @@
 }
 .talks-strip li { flex: 0 0 min(80vw, 20rem); scroll-snap-align: start; }
 @media (min-width: 1024px) {
-  .talks-strip { flex-wrap: wrap; overflow: visible; }
+  .talks-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; }
 }
 .talks-strip figure { margin: 0; }
 .talks-strip img {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
   border: 1px solid var(--color-border);
   user-select: none;
   -webkit-user-drag: none;

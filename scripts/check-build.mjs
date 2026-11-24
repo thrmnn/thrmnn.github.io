@@ -29,6 +29,7 @@ const groups = {
   orphans: [],
   cross_link: [],
   home_words: [],
+  talks_fixtures: [],
 };
 const fail = (group, m) => { groups[group].push(m); };
 const must = (group, cond, m) => { if (!cond) fail(group, m); };
@@ -531,7 +532,7 @@ for (const f of htmlFiles) {
   const referenced = (rel) => corpus.includes(rel) || corpus.includes(rel.split('/').pop());
   for (const f of walk(PUBLIC)) {
     const rel = f.slice(PUBLIC.length).replace(/\\/g, '/');
-    if (platform.has(rel.slice(1)) || referenced(rel)) continue;
+    if (platform.has(rel.slice(1)) || referenced(rel) || rel.startsWith('/talks/fixture-')) continue;
     if (rel.endsWith('.json') && referenced(rel.replace(/\.json$/, '.bin'))) continue;
     fail('orphans', `${rel} ships in public/ but no built page references it`);
   }
@@ -543,6 +544,16 @@ for (const f of htmlFiles) {
 {
   const domain = 'https://theohermann.ch';
   must('cross_link', home.includes(`href="${domain}"`), 'homepage has no link to the practice site');
+}
+
+// Talks strip stand-ins must never reach production; PREVIEW_FIXTURES=1 builds are previews.
+if (process.env.PREVIEW_FIXTURES !== '1') {
+  for (const f of htmlFiles) {
+    const html = readFileSync(f, 'utf8');
+    for (const term of ['Stand-in', 'stand-in photo', '/talks/fixture-']) {
+      if (html.includes(term)) fail('talks_fixtures', `"${term}" found in ${f}`);
+    }
+  }
 }
 
 const totalErrors = Object.values(groups).reduce((s, a) => s + a.length, 0);

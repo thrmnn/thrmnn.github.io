@@ -1,5 +1,6 @@
 import { base } from './base';
 import { author } from './author';
+import { publishedTalks } from './talks';
 
 // Home isn't in the link row — the T·A·H monogram routes to /.
 export const navLinks = [
@@ -13,6 +14,7 @@ export const mobileNavLinks = [
   { label: 'Robotics', href: '/#robotics' },
   { label: 'Practice', href: '/#legible' },
   { label: 'Work', href: '/projects/' },
+  ...(publishedTalks.length ? [{ label: 'Talks', href: '/#talks' }] : []),
   { label: 'Contact', href: '/#contact' },
 ];
 

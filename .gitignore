@@ -39,3 +39,6 @@ Thumbs.db
 # Python host tooling
 __pycache__/
 scripts/assets/evio/events.bin
+
+# Originals for the talks strip; never committed (EXIF/GPS).
+private/

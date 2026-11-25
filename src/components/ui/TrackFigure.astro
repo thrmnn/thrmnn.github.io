@@ -1,17 +1,25 @@
 ---
 import { base } from '../../data/base';
+const preview = process.env.PREVIEW_LOOK === '1';
 ---
 
 <figure class="track-figure" data-reveal>
   <div class="track-stage">
     <canvas
       data-track-figure
+      data-mode="boxes"
       data-src={`${base}/data/track-figure.json`}
       role="img"
       aria-label="Tracked people of a street sequence, each a dot with a short trail, moving through time. Drag across to scrub."
     ></canvas>
   </div>
   <figcaption class="track-caption" data-track-caption>MOT17-04</figcaption>
+  {preview && (
+    <p class="track-modes">
+      <button type="button" data-track-mode="points">points</button>
+      <button type="button" data-track-mode="boxes">boxes</button>
+    </p>
+  )}
 </figure>
 
 <style>
@@ -37,6 +45,9 @@ import { base } from '../../data/base';
     color: var(--color-text-muted);
     font-variant-numeric: tabular-nums;
   }
+  .track-modes { margin: 0.4rem 0 0; display: flex; gap: 1rem; font-family: var(--font-mono); font-size: 0.7rem; }
+  .track-modes button { padding: 0; border: 0; background: none; color: var(--color-text-muted); font: inherit; cursor: pointer; }
+  .track-modes button:hover { color: var(--color-text-primary); }
 </style>
 
 <script>

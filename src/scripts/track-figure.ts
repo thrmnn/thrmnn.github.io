@@ -10,9 +10,9 @@ export async function initTrackFigure() {
   const ctx = canvas.getContext('2d')!;
 
   const runs = d.runs.map((r) => {
-    const pts: number[] = [r[1], r[2]];
-    for (let i = 3; i < r.length; i += 2) pts.push(pts[pts.length - 2] + r[i], pts[pts.length - 1] + r[i + 1]);
-    return { f0: r[0], pts, n: pts.length / 2 };
+    const pts: number[] = r.slice(2, 6);
+    for (let i = 6; i < r.length; i += 4) for (let k = 0; k < 4; k++) pts.push(pts[pts.length - 4] + r[i + k]);
+    return { id: r[0], f0: r[1], pts, n: pts.length / 4 };
   });
   const at = (frame: number) => runs.filter((r) => frame >= r.f0 && frame < r.f0 + r.n);
   let peak = 1, peakCount = 0;
@@ -29,24 +29,46 @@ export async function initTrackFigure() {
 
   function draw() {
     const ink = css('--color-text-primary'), accent = css('--color-accent'), faint = css('--color-border');
+    const boxes = canvas!.dataset.mode !== 'points';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = faint;
     const step = W / 48;
     for (let x = step / 2; x < W; x += step) for (let y = step / 2; y < H; y += step) ctx.fillRect(x - 0.5, y - 0.5, 1, 1);
-    const live = at(Math.round(frame));
     const f = Math.round(frame);
+    const live = at(f);
     ctx.lineWidth = 1;
     ctx.strokeStyle = ink;
+    ctx.globalAlpha = 0.09;
+    ctx.beginPath();
+    for (const r of runs) {
+      for (let k = 0; k < r.n; k++) {
+        const x = px(r.pts[4 * k]), y = py(r.pts[4 * k + 1]);
+        k === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+    }
+    ctx.stroke();
     for (const r of live) {
       const i = f - r.f0, from = Math.max(0, i - TRAIL);
-      ctx.globalAlpha = 0.55;
-      ctx.beginPath();
-      for (let k = from; k <= i; k++) {
-        const x = px(r.pts[2 * k]), y = py(r.pts[2 * k + 1]);
-        k === from ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      for (let k = from + 1; k <= i; k++) {
+        ctx.globalAlpha = 0.65 * ((k - from) / (i - from + 1));
+        ctx.beginPath();
+        ctx.moveTo(px(r.pts[4 * (k - 1)]), py(r.pts[4 * (k - 1) + 1]));
+        ctx.lineTo(px(r.pts[4 * k]), py(r.pts[4 * k + 1]));
+        ctx.stroke();
       }
-      ctx.stroke();
+    }
+    const numbers = boxes && W >= 640;
+    if (numbers) { ctx.font = `${Math.max(9, W / 120)}px 'JetBrains Mono', ui-monospace, monospace`; ctx.textBaseline = 'bottom'; }
+    for (const r of live) {
+      const i = f - r.f0, x = px(r.pts[4 * i]), y = py(r.pts[4 * i + 1]);
+      if (boxes) {
+        const bw = px(r.pts[4 * i + 2] * 2), bh = py(r.pts[4 * i + 3] * 2);
+        ctx.globalAlpha = 0.45;
+        ctx.strokeStyle = ink;
+        ctx.strokeRect(Math.round(x - bw / 2) + 0.5, Math.round(y - bh) + 0.5, Math.round(bw), Math.round(bh));
+        if (numbers) { ctx.globalAlpha = 0.7; ctx.fillStyle = ink; ctx.fillText(String(r.id), x + bw / 2 + 3, y - bh + 11); }
+      }
     }
     ctx.globalAlpha = 1;
     ctx.fillStyle = accent;
@@ -54,7 +76,7 @@ export async function initTrackFigure() {
     for (const r of live) {
       const i = f - r.f0;
       ctx.beginPath();
-      ctx.arc(px(r.pts[2 * i]), py(r.pts[2 * i + 1]), rad, 0, Math.PI * 2);
+      ctx.arc(px(r.pts[4 * i]), py(r.pts[4 * i + 1]), rad, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.fillStyle = faint;
@@ -73,6 +95,8 @@ export async function initTrackFigure() {
     draw();
   }
   new ResizeObserver(size).observe(canvas);
+  new MutationObserver(draw).observe(canvas, { attributes: true, attributeFilter: ['data-mode'] });
+  document.querySelectorAll<HTMLElement>('[data-track-mode]').forEach((b) => b.addEventListener('click', () => { canvas.dataset.mode = b.dataset.trackMode; }));
   new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
 

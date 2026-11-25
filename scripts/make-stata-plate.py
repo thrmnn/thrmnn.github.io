@@ -69,7 +69,7 @@ def use_paper():
     """Light-theme palette: dark ink on #fafafa; the brightest dark-plate dots become the darkest, orange keeps its hue, darker."""
     global BG, GREY, LIGHT, ACCENT, ORANGE, TOTE, PAPER
     PAPER = True
-    BG, GREY, LIGHT, TOTE = (np.array(c, float) for c in ((250, 250, 250), (120, 124, 136), (52, 56, 66), (30, 34, 44)))
+    BG, GREY, LIGHT, TOTE = (np.array(c, float) for c in ((250, 250, 250), (96, 100, 112), (52, 56, 66), (30, 34, 44)))
     ACCENT, ORANGE = np.array((37, 99, 235), float), np.array((234, 88, 12), float)
 
 

@@ -19,6 +19,7 @@ DRAWN: the Vidigal hillside is drawn as contour lines: the shipped terrain point
   measurement of any kind. Frames: 36 at 80 ms.
 
     python3 scripts/make-cloud-plates.py              # card plates, hero tiles, loops for both clouds
+    python3 scripts/make-cloud-plates.py --paper      # the same, dark ink on #fafafa, into plates-paper/ (-paper before the extension)
     python3 scripts/make-cloud-plates.py --alt        # alternative Vidigal still to ~/Perso/site-review/files
 """
 import json
@@ -42,6 +43,26 @@ GREY = np.array((120, 124, 134), float)
 LIGHT = np.array((150, 156, 168), float)
 GREEN = np.array((70, 200, 120), float)
 GREEN_DEEP = np.array((38, 120, 74), float)
+BLUE_HI = np.array((178, 208, 255), float)
+GREEN_HI = np.array((190, 245, 205), float)
+PAPER = False
+
+
+def use_paper():
+    """Light-theme palette: dark ink on #fafafa. Emphasis (glow, near, high) is the darker ink; the green keeps its hue."""
+    global BG, ACCENT, GREY, LIGHT, GREEN, GREEN_DEEP, BLUE_HI, GREEN_HI, PAPER
+    PAPER = True
+    BG, GREY, LIGHT = (np.array(c, float) for c in ((250, 250, 250), (96, 100, 112), (52, 56, 66)))
+    ACCENT, BLUE_HI = np.array((37, 99, 235), float), np.array((29, 78, 216), float)
+    GREEN, GREEN_DEEP, GREEN_HI = (np.array(c, float) for c in ((21, 128, 61), (74, 170, 108), (20, 83, 45)))
+
+
+def target(path):
+    if not PAPER:
+        return path
+    path = ROOT / "plates-paper" / path.relative_to(ROOT / "public")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return path.with_name(path.stem + "-paper" + path.suffix)
 
 
 def load(stem):
@@ -206,7 +227,8 @@ class VidigalView:
             self._rank = np.sort(np.r_[self.T[3], self.bz])
         return np.searchsorted(self._rank, z) / len(self._rank)
 
-    def layers(self, head=None, radius=RADIUS, floor=0.2, bld_rgb=ACCENT, pulse=1.0):
+    def layers(self, head=None, radius=RADIUS, floor=0.2, bld_rgb=None, pulse=1.0):
+        bld_rgb = ACCENT if bld_rgb is None else bld_rgb
         TX, TY, TD, TZ = self.T
         BX, BY, BD = self.B
         gt = np.zeros(len(TX)) if head is None else glow_at(self.zn(TZ), head)
@@ -215,7 +237,7 @@ class VidigalView:
         wb = np.clip(0.55 + 0.35 * BD + 0.15 * gb, 0, 1)
         wt = np.clip(wt * pulse, 0, 1)
         grey = GREY + (LIGHT - GREY) * gt[:, None]
-        blue = bld_rgb + (np.array((178, 208, 255)) - bld_rgb) * (0.8 * gb)[:, None]
+        blue = bld_rgb + (BLUE_HI - bld_rgb) * (0.8 * gb)[:, None]
         X = np.r_[TX, BX]; Y = np.r_[TY, BY]; D = np.r_[TD, BD]
         isb = np.r_[np.zeros(len(TX), bool), np.ones(len(BX), bool)]
         rgb = np.vstack([grey, blue]); w = np.r_[wt, wb]
@@ -226,19 +248,19 @@ class VidigalView:
 def vidigal(out_dir=VID):
     v = VidigalView()
     im = draw(*v.layers()[:3], v.layers()[3])
-    im.save(out_dir / "vidigal-plate.webp", "WEBP", quality=84, method=6)
+    im.save(target(out_dir / "vidigal-plate.webp"), "WEBP", quality=84, method=6)
     vs = v
     frames = []
     for i in range(N_FRAMES):
         head = SPAN * i / N_FRAMES
         X, Y, D, L = vs.layers(head, pulse=1 + 0.1 * math.sin(2 * math.pi * i / N_FRAMES))
         frames.append(draw(X, Y, D, L, 600))
-    save_loop(frames, out_dir / "vidigal-anim.webp")
-    crop_tile(im, v).save(out_dir / "vidigal-tile.webp", quality=88)
-    save_loop([crop_tile(f, v).resize((300, 400), Image.LANCZOS) for f in frames], out_dir / "vidigal-tile-anim.webp")
-    save_loop([f.crop((0, 75, 600, 525)).resize((520, 390), Image.LANCZOS) for f in frames], out_dir / "vidigal-hero-anim.webp")
+    save_loop(frames, target(out_dir / "vidigal-anim.webp"))
+    crop_tile(im, v).save(target(out_dir / "vidigal-tile.webp"), quality=88)
+    save_loop([crop_tile(f, v).resize((300, 400), Image.LANCZOS) for f in frames], target(out_dir / "vidigal-tile-anim.webp"))
+    save_loop([f.crop((0, 75, 600, 525)).resize((520, 390), Image.LANCZOS) for f in frames], target(out_dir / "vidigal-hero-anim.webp"))
     for f in ("vidigal-plate.webp", "vidigal-anim.webp", "vidigal-tile.webp", "vidigal-tile-anim.webp", "vidigal-hero-anim.webp"):
-        print(f, (out_dir / f).stat().st_size, "B")
+        print(f, target(out_dir / f).stat().st_size, "B")
 
 
 def crop_tile(im, v):
@@ -261,21 +283,21 @@ def jordaan():
     canopy = cat == 1
     h = np.clip(p[:, 2], 0, 1)
     green = GREEN_DEEP + (GREEN - GREEN_DEEP) * np.clip(0.35 + 0.65 * t + 0.25 * h, 0, 1)[:, None]
-    grey = np.where((cat == 2)[:, None], GREY * 0.8, GREY)
+    grey = np.where((cat == 2)[:, None], GREY + (BG - GREY) * 0.2 if PAPER else GREY * 0.8, GREY)
     w = np.where(canopy, 0.55 + 0.45 * t, np.where(cat == 2, 0.3 + 0.35 * t, 0.28 + 0.5 * t))
     w = np.maximum(w, 0.2)
 
     def render(head, size):
         g = np.zeros(len(p)) if head is None else glow_at(h / max(h[canopy].max(), 1e-6), head)
-        rgb = np.where(canopy[:, None], green + (np.array((190, 245, 205)) - green) * (0.7 * g)[:, None], grey + (LIGHT - grey) * g[:, None])
+        rgb = np.where(canopy[:, None], green + (GREEN_HI - green) * (0.7 * g)[:, None], grey + (LIGHT - grey) * g[:, None])
         ww = np.clip(w + 0.45 * g * (0.5 + 0.5 * t), 0, 1)
         return draw(X, Y, t, [(~canopy, rgb, ww, 1.7), (canopy, rgb, ww, 2.5)], size)
 
-    render(None, S).save(JOR, "WEBP", quality=84, method=6)
-    print(JOR, JOR.stat().st_size, "B")
+    render(None, S).save(target(JOR), "WEBP", quality=84, method=6)
+    print(target(JOR), target(JOR).stat().st_size, "B")
     out = JOR.parent / "jordaan-anim.webp"
-    save_loop([render(SPAN * i / N_FRAMES, 600) for i in range(N_FRAMES)], out)
-    print(out, out.stat().st_size, "B")
+    save_loop([render(SPAN * i / N_FRAMES, 600) for i in range(N_FRAMES)], target(out))
+    print(target(out), target(out).stat().st_size, "B")
 
 
 def vidigal_alt():
@@ -287,6 +309,8 @@ def vidigal_alt():
 
 
 if __name__ == "__main__":
+    if "--paper" in sys.argv:
+        use_paper()
     if "--alt" in sys.argv:
         vidigal_alt()
     else:

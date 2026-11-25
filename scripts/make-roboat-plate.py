@@ -73,7 +73,7 @@ def use_paper():
     global BG, ACCENT, CLOUD_LO, CLOUD_HI, HULL_LO, HULL_HI, PAPER
     PAPER = True
     BG, ACCENT = np.array((250, 250, 250), float), np.array((37, 99, 235), float)
-    CLOUD_LO, CLOUD_HI = np.array((120, 124, 136), float), np.array((52, 56, 66), float)
+    CLOUD_LO, CLOUD_HI = np.array((96, 100, 112), float), np.array((52, 56, 66), float)
     HULL_LO, HULL_HI = np.array((70, 76, 88), float), np.array((30, 34, 44), float)
 
 

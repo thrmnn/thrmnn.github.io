@@ -39,6 +39,7 @@ SIMULATED / DRAWN: everything that is the robot and its scan.
   stays. The ring and the sweep timing are drawn; no number appears in the picture.
 
     python3 scripts/make-stata-plate.py                  # card plate + loop, hero tile (decipher-tile) + loop
+    python3 scripts/make-stata-plate.py --paper          # the same, dark ink on #fafafa, into plates-paper/ (-paper before the extension)
     python3 scripts/make-stata-plate.py --view top        # alternative framing, to ~/Perso/site-review/files
     python3 scripts/make-stata-plate.py --sample <clone>  # rebuild the asset
 """
@@ -60,6 +61,23 @@ GREY = np.array((120, 124, 134), float)
 LIGHT = np.array((150, 156, 168), float)
 ACCENT = np.array((86, 140, 246), float)
 ORANGE = np.array((255, 138, 61), float)
+TOTE = np.array((205, 210, 220.0))
+PAPER = False
+
+
+def use_paper():
+    """Light-theme palette: dark ink on #fafafa; the brightest dark-plate dots become the darkest, orange keeps its hue, darker."""
+    global BG, GREY, LIGHT, ACCENT, ORANGE, TOTE, PAPER
+    PAPER = True
+    BG, GREY, LIGHT, TOTE = (np.array(c, float) for c in ((250, 250, 250), (120, 124, 136), (52, 56, 66), (30, 34, 44)))
+    ACCENT, ORANGE = np.array((37, 99, 235), float), np.array((234, 88, 12), float)
+
+
+def paper_path(path):
+    if not PAPER:
+        return path
+    path = ROOT / "plates-paper" / path.relative_to(ROOT / "public")
+    return path.with_name(path.stem + "-paper" + path.suffix)
 
 WALL_H = 2.0
 COL_STEP = 0.4
@@ -317,7 +335,7 @@ def groups(sc, cam, head=None, tau=110.0, floor=0.35, ghost=1.0, gap_prog=1.0, d
         (sc["trail"], LIGHT, 3.4 * dot, np.linspace(1.0, 0.25, len(sc["trail"])), 2.0 * dot),
         (lc, ACCENT, 4.6 * dot, np.clip(wi * 1.2, 0, 1), 2.6 * dot),
         (sc["body_t"], LIGHT, 1.8 * dot, one(sc["body_t"]), 1.4),
-        (sc["tote_t"], np.array((205, 210, 220.0)), 1.8 * dot, one(sc["tote_t"]), 1.4),
+        (sc["tote_t"], TOTE, 1.8 * dot, one(sc["tote_t"]), 1.4),
         (sc["puck_t"], ACCENT, 2.4 * dot, one(sc["puck_t"]), 1.8),
     ]
     if ng > 0:
@@ -358,6 +376,8 @@ def story(i):
 
 
 def render_view(sc, name, still, anim):
+    still, anim = paper_path(still), paper_path(anim)
+    still.parent.mkdir(parents=True, exist_ok=True)
     cfg = VIEWS[name]
     tp, ap = sc["tp"], sc["ap"]
     look = np.r_[sc["mid"], 0.5]
@@ -375,6 +395,8 @@ def render_view(sc, name, still, anim):
 
 
 def main():
+    if "--paper" in sys.argv:
+        use_paper()
     sc = scene()
     print(len(sc["cols"]), "wall dots,", sc["lit"].sum(), "lit")
     ALT_OUT.mkdir(parents=True, exist_ok=True)

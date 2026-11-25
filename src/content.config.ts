@@ -25,6 +25,8 @@ const projects = defineCollection({
     tags: z.array(z.string()).default([]),
     metric: z.string().optional(),
     label: z.string().optional(),
+    figure: z.enum(['tracks']).optional(),
+    facts: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
   }),
 });
 

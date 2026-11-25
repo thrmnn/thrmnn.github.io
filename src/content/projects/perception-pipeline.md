@@ -12,6 +12,12 @@ image: '/projects/perception-pipeline/card-plate.webp'
 imageWidth: 1200
 imageHeight: 1200
 cardImage: '/projects/perception-pipeline/card-plate.webp'
+figure: tracks
+facts:
+  - { label: 'Sequence', value: '{frames} frames' }
+  - { label: 'Tracked', value: '{tracks} tracks' }
+  - { label: 'Stack', value: 'YOLOv8n + ByteTrack, CPU' }
+  - { label: 'Licence', value: 'MIT' }
 tags:
   - Object Detection
   - Multi-Object Tracking
@@ -26,12 +32,6 @@ Across 2022–2023 I shipped four versions of “detection + tracking + ReID”:
 
 **`perception-pipeline` is the consolidated re-do** against the 2026 stack. v0.1 ships detection and tracking (modern YOLO, ByteTrack); the roadmap adds BoT-SORT / OC-SORT, OSNet-class ReID, MMPose-compatible 2D and 3D pose, and TensorRT export for Jetson-class hardware.
 
-## How to check it
-
-I wrote the repo so you can run it in two commands: `pip install -e .`, then `perception-demo --input your_video.mp4 --output annotated.mp4 --classes 0`. On exit it prints, per module, the mean and p95 latency in milliseconds and the effective frames per second. The README says these numbers depend on your hardware, so run it on yours.
-
-The unit tests need no model weights: `pip install -e ".[dev]"`, then `pytest`. The four ancestors are listed in the repo README with their years.
-
 ## What v0.1 ships (June 2026)
 
 A runnable detector + tracker loop with the architecture the rest of the roadmap will plug into.
@@ -39,9 +39,14 @@ A runnable detector + tracker loop with the architecture the rest of the roadmap
 - **Narrow interfaces**: `Detector` and `Tracker` abstract base classes; every primitive lives behind one. Swap modules without touching the rest.
 - **YOLO detection**: `ultralytics` wrapper, any checkpoint (`yolov8n` by default).
 - **ByteTrack association**: via the `supervision` package; persistent track IDs across frames.
-- **CLI demo**: `perception-demo --input video.mp4 --output annotated.mp4`. Latency summary printed on exit (per-module mean / p95, effective FPS).
 - **Type contracts**: `Detections`, `Tracks`, `FrameResult` carry per-module latencies so the runtime can budget downstream stages.
 - **MIT-licensed, pip-installable**: `pip install -e .` and you're running. The detector it wraps, `ultralytics`, is AGPL-3.0, and that licence applies to anything you ship with it.
+
+## How to check it
+
+I wrote the repo so you can run it in two commands: `pip install -e .`, then `perception-demo --input your_video.mp4 --output annotated.mp4 --classes 0`. On exit it prints, per module, the mean and p95 latency in milliseconds and the effective frames per second. The README says these numbers depend on your hardware, so run it on yours.
+
+The unit tests need no model weights: `pip install -e ".[dev]"`, then `pytest`. The four ancestors are listed in the repo README with their years.
 
 ## Design principles
 

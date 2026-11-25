@@ -1,10 +1,14 @@
 ---
+import { existsSync } from 'node:fs';
 import { base } from '../../data/base';
 import PageLayout from '../../layouts/PageLayout.astro';
 import { getCollection, render } from 'astro:content';
 import VidigalAbstract from '../../components/ui/VidigalAbstract.astro';
 import { author } from '../../data/author';
 import { siteConfig } from '../../data/site';
+import TrackFigure from '../../components/ui/TrackFigure.astro';
+import FactsStrip from '../../components/ui/FactsStrip.astro';
+import { trackFigure, fillFacts } from '../../data/figures';
 
 export async function getStaticPaths() {
   const all = await getCollection('projects', ({ data }) => !data.draft);
@@ -21,7 +25,7 @@ export async function getStaticPaths() {
         ? { id: projects[i - 1].id, title: projects[i - 1].data.title }
         : null,
       next: projects[i + 1]
-        ? { id: projects[i + 1].id, title: projects[i + 1].data.title }
+        ? { id: projects[i + 1].id, title: projects[i + 1].data.title, label: projects[i + 1].data.label }
         : null,
     },
   }));
@@ -29,6 +33,10 @@ export async function getStaticPaths() {
 
 const { project, prev, next } = Astro.props;
 const { Content } = await render(project);
+const lead = !!(project.data.figure || project.data.facts);
+const facts = project.data.facts ? fillFacts(project.data.facts, trackFigure().stats) : null;
+const sameLink = project.data.github && project.data.externalLink === project.data.github;
+const nextRow = lead && next && existsSync(`${process.cwd()}/public/projects/${next.id}/row.webp`) ? `${base}/projects/${next.id}/row.webp` : null;
 
 const articleJsonLd = {
   '@context': 'https://schema.org',
@@ -59,12 +67,12 @@ const articleJsonLd = {
         {project.data.label && (
           <p class="text-sm text-accent mt-2">{project.data.label}</p>
         )}
-        {project.data.metric && (
+        {!lead && project.data.metric && (
           <p class="text-xs text-text-muted mt-2 px-3 py-1 border border-border w-fit">
             {project.data.metric}
           </p>
         )}
-        {project.data.tags.length > 0 && (
+        {!lead && project.data.tags.length > 0 && (
           <div class="flex flex-wrap gap-2 mt-4">
             {project.data.tags.map((tag: string) => (
               <span class="text-xs px-2 py-0.5 bg-bg-elevated text-text-muted border border-border">
@@ -73,9 +81,13 @@ const articleJsonLd = {
             ))}
           </div>
         )}
+        {lead && <p class="text-lg text-text-secondary mt-4 max-w-2xl">{project.data.summary}</p>}
       </div>
 
-      {project.data.image && (
+      {project.data.figure === 'tracks' && <TrackFigure />}
+      {facts && <FactsStrip facts={facts} />}
+
+      {!project.data.figure && project.data.image && (
         <div class="mb-10 overflow-hidden border border-border">
           <picture>
             {project.data.cardAnim && (!project.data.cardImage || project.data.cardImage === project.data.image) && (
@@ -104,8 +116,36 @@ const articleJsonLd = {
         <Content />
       </article>
 
+      {lead && project.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-10">
+          {project.data.tags.map((tag: string) => (
+            <span class="text-xs px-2 py-0.5 bg-bg-elevated text-text-muted border border-border">{tag}</span>
+          ))}
+        </div>
+      )}
+
       <!-- Links -->
-      {(project.data.externalLink || project.data.github || project.data.proprietary) && (
+      {lead && (project.data.externalLink || project.data.github) && (
+        <ul class="entry-rows">
+          {project.data.externalLink && !sameLink && (
+            <li><a href={project.data.externalLink} target="_blank" rel="noopener">
+              <span class="entry-plate entry-plate-out" aria-hidden="true">&nearr;</span>
+              <span class="entry-title">{new URL(project.data.externalLink).hostname.replace(/^www\./, '')}</span>
+              <span class="entry-meta">Link</span>
+              <span class="entry-arrow" aria-hidden="true">&rarr;</span>
+            </a></li>
+          )}
+          {project.data.github && (
+            <li><a href={project.data.github} target="_blank" rel="noopener">
+              <span class="entry-plate entry-plate-out" aria-hidden="true">&nearr;</span>
+              <span class="entry-title">Source code</span>
+              <span class="entry-meta">{new URL(project.data.github).hostname}</span>
+              <span class="entry-arrow" aria-hidden="true">&rarr;</span>
+            </a></li>
+          )}
+        </ul>
+      )}
+      {!lead && (project.data.externalLink || project.data.github || project.data.proprietary) && (
         <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
           {project.data.externalLink && (
             <a
@@ -138,8 +178,21 @@ const articleJsonLd = {
         </div>
       )}
 
+      {lead && next && (
+        <ul class="entry-rows mt-10">
+          <li><a href={`${base}/projects/${next.id}/`}>
+            {nextRow
+              ? <span class="entry-plate"><img src={nextRow} alt="" width="176" height="132" loading="lazy" decoding="async" /></span>
+              : <span class="entry-plate entry-plate-out" aria-hidden="true">&rarr;</span>}
+            <span class="entry-title">{next.title}</span>
+            <span class="entry-meta">{next.label ?? 'Next project'}</span>
+            <span class="entry-arrow" aria-hidden="true">&rarr;</span>
+          </a></li>
+        </ul>
+      )}
+
       <!-- Prev / next pager -->
-      {(prev || next) && (
+      {!lead && (prev || next) && (
         <nav class="pager mt-16 pt-8 border-t border-border grid grid-cols-2 gap-3 sm:gap-4" aria-label="More projects">
           {prev ? (
             <a href={`${base}/projects/${prev.id}/`} class="pager-cell group/p">

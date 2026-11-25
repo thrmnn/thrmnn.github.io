@@ -1,0 +1,45 @@
+---
+import { base } from '../../data/base';
+---
+
+<figure class="track-figure" data-reveal>
+  <div class="track-stage">
+    <canvas
+      data-track-figure
+      data-src={`${base}/data/track-figure.json`}
+      role="img"
+      aria-label="Tracked people of a street sequence, each a dot with a short trail, moving through time. Drag across to scrub."
+    ></canvas>
+  </div>
+  <figcaption class="track-caption" data-track-caption>MOT17-04</figcaption>
+</figure>
+
+<style>
+  .track-figure { margin: 0 0 1.5rem; }
+  .track-stage {
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: pan-y;
+    cursor: ew-resize;
+  }
+  .track-caption {
+    margin-top: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+<script>
+  import { initTrackFigure } from '../../scripts/track-figure.ts';
+  initTrackFigure();
+</script>

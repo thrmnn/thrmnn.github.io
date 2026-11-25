@@ -1,0 +1,53 @@
+---
+import { existsSync } from 'node:fs';
+import { base } from '../../data/base';
+
+interface Props {
+  src: string;
+  alt?: string;
+  width: number;
+  height: number;
+  anim?: string;
+  phone?: string;
+  animPhone?: string;
+  phoneMax?: number;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  scan?: boolean;
+  plain?: boolean;
+  imgClass?: string;
+  imgStyle?: string;
+  class?: string;
+}
+const { src, alt = '', width, height, anim, phone, animPhone, phoneMax = 1023, loading = 'lazy', fetchpriority, scan = false, plain = false, imgClass, imgStyle, class: cls } = Astro.props;
+const paperOf = (p?: string) => {
+  if (!p) return undefined;
+  const m = p.match(/^(.*?)(\.[a-z]+)$/);
+  if (!m) return undefined;
+  const [, stem, ext] = m;
+  const tries = [`${stem}-paper${ext}`];
+  if (stem.endsWith('-anim')) tries.push(`${stem.slice(0, -5)}-paper-anim${ext}`);
+  return tries.find((t) => existsSync(`${process.cwd()}/public${t}`));
+};
+
+const paper = plain ? undefined : paperOf(src);
+const set = { src, anim, phone, animPhone };
+const paperSet = paper
+  ? { src: paper, anim: paperOf(anim), phone: paperOf(phone), animPhone: paperOf(animPhone) }
+  : null;
+
+const variants = paperSet
+  ? [{ kind: 'pic-dark', s: set, alt }, { kind: 'pic-paper', s: paperSet, alt: '' }]
+  : [{ kind: plain ? 'pic-plain' : 'pic-flip', s: set, alt }];
+const pm = `(max-width: ${phoneMax}px)`;
+const noMotion = '(prefers-reduced-motion: no-preference)';
+---
+
+{variants.map((v) => (
+  <picture class:list={[v.kind, scan && 'scan-box', cls]} data-scan-play={scan ? '' : undefined}>
+    {v.s.animPhone && <source media={`${pm} and ${noMotion}`} srcset={base + v.s.animPhone} />}
+    {v.s.anim && <source media={noMotion} srcset={base + v.s.anim} />}
+    {v.s.phone && <source media={pm} srcset={base + v.s.phone} />}
+    <img src={base + v.s.src} width={width} height={height} alt={v.alt} loading={loading} fetchpriority={fetchpriority} decoding="async" class={imgClass} style={imgStyle} />
+  </picture>
+))}

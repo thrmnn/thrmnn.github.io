@@ -12,6 +12,7 @@ import { practiceUrl } from '../data/cards';
 import TalksStrip from '../components/ui/TalksStrip.astro';
 import WritingShelf from '../components/ui/WritingShelf.astro';
 import { homeCards, spotlights, contactDoors, roboticsFigure, roboticsTiles } from '../data/home';
+import Picture from '../components/ui/Picture.astro';
 import { talk } from '../data/talk';
 
 const mailto = `mailto:${author.email}`;
@@ -69,12 +70,7 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
       {heroPics.map((p) => (
         <li>
           <figure>
-            <picture class="scan-box" data-scan-play>
-              {p.animPhone && <source media="(max-width: 1023px) and (prefers-reduced-motion: no-preference)" srcset={`${base}${p.animPhone}`} />}
-              {p.anim && <source media="(prefers-reduced-motion: no-preference)" srcset={`${base}${p.anim}`} />}
-              {p.phone && <source media="(max-width: 1023px)" srcset={`${base}${p.phone}`} />}
-              <img src={`${base}${p.src}`} width={p.w} height={p.h} alt={p.alt} decoding="async" style={p.pos ? `object-position: ${p.pos}` : undefined} />
-            </picture>
+            <Picture src={p.src} anim={p.anim} phone={p.phone} animPhone={p.animPhone} width={p.w} height={p.h} alt={p.alt} loading="eager" scan imgStyle={p.pos ? `object-position: ${p.pos}` : undefined} />
             <figcaption>{p.place}</figcaption>
           </figure>
         </li>
@@ -104,10 +100,7 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
           {roboticsTiles.map((t) => (
             <li>
               <a href={`${base}/projects/${t.slug}/`}>
-                <picture>
-                  {t.anim && <source srcset={`${base}${t.anim}`} media="(prefers-reduced-motion: no-preference)" />}
-                  <img src={`${base}${t.src}`} width="1200" height="1200" alt="" loading="lazy" decoding="async" style={`object-position: ${t.pos}`} />
-                </picture>
+                <Picture src={t.src} anim={t.anim} width={1200} height={1200} imgStyle={`object-position: ${t.pos}`} />
                 <span class="robotics-strip-title">{t.title}</span>
                 <span class="robotics-strip-label">{t.label}</span>
               </a>
@@ -116,19 +109,12 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
         </ul>
       ) : roboticsFigure === 'pipeline' ? (
         <figure class="spotlight-fig spotlight-fig-plate spotlight-fig-square" data-reveal style="--reveal-d: 3;">
-          <img src={`${base}/projects/perception-pipeline/card-plate.webp`} width="1200" height="1200" alt="A street scene as a dot drawing: each pedestrian in a blue box with a green track." loading="lazy" decoding="async" />
+          <Picture src="/projects/perception-pipeline/card-plate.webp" width={1200} height={1200} alt="A street scene as a dot drawing: each pedestrian in a blue box with a green track." />
           <figcaption>Open source · 2026</figcaption>
         </figure>
       ) : (
         <figure class="spotlight-fig spotlight-fig-plate" data-reveal style="--reveal-d: 3;">
-          <picture class="pic-dark scan-box" data-scan-play>
-            <source srcset={`${base}/projects/autonomous-mobile-robot/loomo-pose-anim.webp`} media="(prefers-reduced-motion: no-preference)" />
-            <img src={`${base}/projects/autonomous-mobile-robot/loomo-pose.webp`} width="1600" height="1000" alt="A Segway Loomo robot, in blue dots, following a person at EPFL: the person's legs drawn as a skeleton, a drawn depth view from the robot's head, and a panel with the person's pose." loading="lazy" decoding="async" />
-          </picture>
-          <picture class="pic-paper scan-box" data-scan-play>
-            <source srcset={`${base}/projects/autonomous-mobile-robot/loomo-pose-paper-anim.webp`} media="(prefers-reduced-motion: no-preference)" />
-            <img src={`${base}/projects/autonomous-mobile-robot/loomo-pose-paper.webp`} width="1600" height="1000" alt="" loading="lazy" decoding="async" />
-          </picture>
+          <Picture src="/projects/autonomous-mobile-robot/loomo-pose.webp" anim="/projects/autonomous-mobile-robot/loomo-pose-anim.webp" width={1600} height={1000} alt="A Segway Loomo robot, in blue dots, following a person at EPFL: the person's legs drawn as a skeleton, a drawn depth view from the robot's head, and a panel with the person's pose." scan />
           <figcaption>Segway Loomo, EPFL VITA Lab · 2022–23</figcaption>
         </figure>
       )}

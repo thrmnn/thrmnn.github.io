@@ -1,6 +1,6 @@
 ---
-import { base } from '../../data/base';
-const dir = `${base}/projects/urban-morphometrics`;
+import Picture from './Picture.astro';
+const dir = '/projects/urban-morphometrics';
 const steps = [
   { n: '1', name: 'Scan', img: 'scan', alt: 'Oblique view of the Vidigal point cloud: the terrain as grey contour lines of dots, with the buildings on the slope.', text: 'Terrain and buildings of one favela, held as points.' },
   { n: '2', name: 'Model', img: 'model', alt: 'Plan view of the same points: terrain as grey contour lines of dots, building footprints in blue.', text: 'Terrain and building footprints, separated and seen from above.' },
@@ -12,7 +12,7 @@ const steps = [
   <ol class="vabs-row">
     {steps.map((s) => (
       <li>
-        <img src={`${dir}/vidigal-abstract-${s.img}.webp`} width="1200" height="800" alt={s.alt} loading="eager" decoding="async" />
+        <Picture src={`${dir}/vidigal-abstract-${s.img}.webp`} width={1200} height={800} alt={s.alt} loading="eager" />
         <p class="vabs-step"><span>{s.n}</span> {s.name}</p>
         <p class="vabs-text">{s.text}</p>
       </li>
@@ -23,7 +23,7 @@ const steps = [
 
 <style>
   .vabs-row { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-  .vabs img { width: 100%; height: auto; display: block; border: 1px solid var(--color-border); background: #0e1016; }
+  .vabs img { width: 100%; height: auto; display: block; border: 1px solid var(--color-border); }
   .vabs-step { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-primary); margin: 0.6rem 0 0.15rem; }
   .vabs-step span { color: var(--color-accent); margin-right: 0.35em; }
   .vabs-text { font-size: 0.9rem; line-height: 1.45; color: var(--color-text-secondary); margin: 0; }

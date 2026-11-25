@@ -3,6 +3,7 @@ import { base } from '../../data/base';
 import PageLayout from '../../layouts/PageLayout.astro';
 import { getCollection, render } from 'astro:content';
 import VidigalAbstract from '../../components/ui/VidigalAbstract.astro';
+import Picture from '../../components/ui/Picture.astro';
 import { author } from '../../data/author';
 import { siteConfig } from '../../data/site';
 
@@ -77,23 +78,19 @@ const articleJsonLd = {
 
       {project.data.image && (
         <div class="mb-10 overflow-hidden border border-border">
-          <picture>
-            {project.data.cardAnim && (!project.data.cardImage || project.data.cardImage === project.data.image) && (
-              <source srcset={base + project.data.cardAnim} media="(prefers-reduced-motion: no-preference)" />
-            )}
-            {project.data.imagePhone && (
-              <source srcset={base + project.data.imagePhone} media="(max-width: 639px)" width="1200" height="1200" />
-            )}
-            <img
-              src={base + project.data.image}
-              alt={project.data.imageAlt ?? project.data.title}
-              width={project.data.imageWidth ?? 1200}
-              height={project.data.imageHeight ?? 630}
-              loading="eager"
-              fetchpriority="high"
-              class="w-full h-auto block"
-            />
-          </picture>
+          <Picture
+            src={project.data.image}
+            anim={project.data.cardAnim && (!project.data.cardImage || project.data.cardImage === project.data.image) ? project.data.cardAnim : undefined}
+            phone={project.data.imagePhone}
+            phoneMax={639}
+            alt={project.data.imageAlt ?? project.data.title}
+            width={project.data.imageWidth ?? 1200}
+            height={project.data.imageHeight ?? 630}
+            plain={project.data.cardImage !== project.data.image}
+            loading="eager"
+            fetchpriority="high"
+            imgClass="w-full h-auto block"
+          />
         </div>
       )}
 

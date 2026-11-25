@@ -1,6 +1,5 @@
 ---
 import { base } from '../../data/base';
-const withBase = (p?: string) => (p ? base + p : p);
 import PageLayout from '../../layouts/PageLayout.astro';
 import ProjectCard from '../../components/ui/ProjectCard.astro';
 import { getCollection } from 'astro:content';
@@ -34,8 +33,8 @@ const ordered = [...featured, ...rest];
             href={`${base}/projects/${project.id}/`}
             gradient={project.data.gradient}
             plateName={project.data.plateName}
-            image={withBase(project.data.cardImage ?? project.data.image)}
-            anim={withBase(project.data.cardAnim)}
+            image={project.data.cardImage ?? project.data.image}
+            anim={project.data.cardAnim}
             index={i}
             exploreHref={exploreRoutes[project.id]}
             exploreLabel={`Explore the ${project.data.title} point cloud`}

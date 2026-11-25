@@ -2,6 +2,7 @@
 import { existsSync } from 'node:fs';
 import { getCollection } from 'astro:content';
 import { base } from '../../data/base';
+import Picture from './Picture.astro';
 
 interface Props {
   slugs: string[];
@@ -15,7 +16,7 @@ const items = slugs.map((slug) => {
   if (!existsSync(`${process.cwd()}/public/projects/${slug}/row.webp`)) {
     throw new Error(`ProjectLinks: no row picture for "${slug}"; run scripts/make-row-thumbs.py`);
   }
-  return { href: `${base}/projects/${slug}/`, label: p.data.title, meta: p.data.label, plate: `${base}/projects/${slug}/row.webp` };
+  return { href: `${base}/projects/${slug}/`, label: p.data.title, meta: p.data.label, plate: `/projects/${slug}/row.webp` };
 });
 ---
 
@@ -23,7 +24,7 @@ const items = slugs.map((slug) => {
   <ul class="entry-rows" data-reveal style="--reveal-d: 3;">
     {items.map((i) => (
       <li><a href={i.href}>
-        <span class="entry-plate"><img src={i.plate} alt="" width="176" height="132" loading="lazy" decoding="async" /></span>
+        <span class="entry-plate"><Picture src={i.plate} width={176} height={132} /></span>
         <span class="entry-title">{i.label}</span>
         {i.meta && <span class="entry-meta">{i.meta}</span>}
         <span class="entry-arrow" aria-hidden="true">&rarr;</span>

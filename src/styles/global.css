@@ -1075,13 +1075,12 @@
 }
 
 /* --- Dot pictures: a dark-ground drawing in dark, ink on the page in light ---
-   The one place the light-page flip lives. A picture with a true light-page drawing is a pair,
-   <picture class="pic-dark"> and <picture class="pic-paper">; the paper one takes no flip. */
-:is(.hero-strip, .spotlight-fig-plate, .robotics-strip, .entry-plate) img {
+   The one place the light-page flip lives. Picture.astro renders a pair, pic-dark and pic-paper,
+   when a "-paper" sibling exists (the paper one takes no flip), else one pic-flip picture. */
+picture.pic-flip img {
   filter: var(--pic-filter);
   mix-blend-mode: var(--pic-blend);
 }
-:is(.hero-strip, .spotlight-fig-plate, .robotics-strip, .entry-plate) .pic-paper img { filter: none; }
 picture.pic-dark { display: var(--pic-dark-display); }
 picture.pic-paper { display: var(--pic-paper-display); }
 

@@ -44,7 +44,7 @@ export const spotlights: Spotlight[] = [
     label: 'Practice',
     title: 'Making autonomous systems legible',
     lead: "Robot failures the logs don't explain: the real cause, found and proved independently. Agentic systems fail the way robots do.",
-    slugs: ['ros2-localization-triage', 'agent-harness'],
+    slugs: ['ros2-localization-triage'],
   },
 ];
 

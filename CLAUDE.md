@@ -163,7 +163,7 @@ Tailwind utility classes are the chosen convention on `main`. Don't refactor com
 | `/404`           | Not found                                                                 |
 | `/rss.xml`       | Projects feed (drafts excluded)                                           |
 
-Drafted (unpublished, `draft: true`): `hybrid-mpc-rl-racing` only. `urban-digital-twin` and `aerial-lidar-tree-census` were rewritten method-only from their repos and published in cycle 10; `agent-harness` was published in cycle 9.
+Drafted (unpublished, `draft: true`): `hybrid-mpc-rl-racing`, and `agent-harness` since 2026-11-25 (owner: the card comes off; its page also left the portfolio PDFs). `urban-digital-twin` and `aerial-lidar-tree-census` were rewritten method-only from their repos and published in cycle 10; `agent-harness` was published in cycle 9.
 
 ### Deliberately removed
 

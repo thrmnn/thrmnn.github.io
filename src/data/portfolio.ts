@@ -75,12 +75,6 @@ export const moreWork: PortfolioEntry[] = [
     revealed: 'A sensor anyone can build: an Arduino board, a fine-particle sensor and GPS in a 3D-printed case, assembled in about 20 minutes, logging a line every 5 seconds.',
     changed: 'Street-level air and heat can be mapped without a lab’s equipment; in Maré, the measurements are being linked to urban form.',
   },
-  {
-    slug: 'agent-harness',
-    hidden: 'Agent failures nobody sees: a tool call breaks, nothing traces it, and a user finds out first.',
-    revealed: 'A typed tool layer with one structured trace line per call, and a regression suite wired into CI.',
-    changed: 'A bad change to a tool fails the build instead of reaching the user.',
-  },
 ];
 
 /** Section order by audience; the default follows the homepage's spotlights. */

@@ -7,7 +7,8 @@ tooling (Pillow, numpy), run by hand; output committed. Inputs are downloaded,
 never committed, except where noted.
 
     python3 scripts/make-photo-plates.py roboat|octopus|pipeline [--frame N]
-    python3 scripts/make-photo-plates.py loomo [--shape wide|tile]
+    python3 scripts/make-photo-plates.py loomo [--shape wide|tile|card]
+    add --paper for the light-theme render: dark ink on #fafafa, written to plates-paper/<public path>-paper.webp
 
 roboat: MIT News, "Autonomous boats could be your next ride", 26 Oct 2020,
   https://news.mit.edu/2020/autonomous-boats-could-be-your-next-ride-1026
@@ -50,8 +51,8 @@ TRAIL = (70, 200, 120)
 
 def use_paper():
     """Light-theme palette: dark ink on the page colour, the light theme's blue."""
-    global BG, GROUND, WALL, ACCENT
-    BG, GROUND, WALL, ACCENT = (250, 250, 250), (52, 56, 66), (52, 56, 66), (37, 99, 235)
+    global BG, GROUND, WALL, ACCENT, TRAIL
+    BG, GROUND, WALL, ACCENT, TRAIL = (250, 250, 250), (52, 56, 66), (52, 56, 66), (37, 99, 235), (21, 128, 61)
 
 ROBOAT_URL = "https://news.mit.edu/sites/default/files/images/202010/MIT-Roboat%20II-Close.jpg"
 OCTOPUS_URL = "https://raw.githubusercontent.com/MIT-Senseable-City-Lab/octopus-fabrication/main/imgs/otopus_bottom-layer_perspective.png"
@@ -259,6 +260,8 @@ def pipeline(frame_no):
 
 if __name__ == "__main__":
     which = sys.argv[1]
+    if "--paper" in sys.argv:
+        use_paper()
     if which == "roboat":
         out, path = roboat(), Path.home() / "Perso/site-review/files/roboat-mitnews.webp"
     elif which == "loomo":
@@ -271,6 +274,9 @@ if __name__ == "__main__":
         out, path = pipeline(n), ROOT / "public/projects/perception-pipeline/card-plate.webp"
     if "--out" in sys.argv:
         path = Path(sys.argv[sys.argv.index("--out") + 1])
+    elif "--paper" in sys.argv and path.is_relative_to(ROOT / "public"):
+        path = ROOT / "plates-paper" / path.relative_to(ROOT / "public")
+        path = path.with_name(path.stem + "-paper" + path.suffix)
     path.parent.mkdir(parents=True, exist_ok=True)
     if which == "loomo" and shape == "tile":
         # the hero shows this tile at about 340 css px; the dot noise compresses poorly at full size

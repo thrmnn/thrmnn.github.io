@@ -17,7 +17,7 @@ const monogramLetters = author.monogram.replace(/[^A-Za-z]/g, '').split('');
         {footerLinks.map((link) => (
           <a
             href={link.href}
-            class="footer-link text-sm text-text-muted hover:text-text-secondary transition-colors py-1.5 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4 focus-visible:rounded-sm"
+            class="footer-link text-sm text-text-muted hover:text-text-secondary transition-colors py-1.5 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4"
             {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
           >
             {link.label}

@@ -25,7 +25,7 @@ const routeLabel = currentPath.startsWith('/projects/')
 ---
 
 <header class="site-header" data-header data-open="false">
-  <div class="header-pill">
+  <div class="header-wrap">
     <div class="header-inner">
       <!-- Left: monogram (also the Home affordance) + live readout -->
       <div class="header-brand">
@@ -101,54 +101,41 @@ const routeLabel = currentPath.startsWith('/projects/')
 </header>
 
 <style>
-  /* Route strip's sticky offset, derived from this header's own top offset
-     and pill height (never restated as a px literal anywhere else). By the
-     time the strip is in view the page is always scrolled past 32px, so the
-     header is always in its condensed state — that's the value to derive
-     from, not the resting one. */
+  /* Route strip's sticky offset: the flat bar's own height (3.1rem) plus its line. */
   :global(:root) {
-    --header-clearance: calc(0.55rem + 3.1rem + 0.6rem);
+    --header-clearance: calc(3.1rem + 1px + 0.6rem);
   }
 
-  /* ============================ Floating instrument pill ============================ */
+  /* ============================ Flat bar ============================ */
   .site-header {
     position: fixed;
-    top: 0.85rem;
+    top: 0;
     left: 0;
     right: 0;
     z-index: 50;
-    padding: 0 1rem;
-    pointer-events: none;          /* clicks pass through gutters, only pill catches */
-    transition: top var(--dur-2) var(--ease-out);
+    background-color: color-mix(in srgb, var(--color-bg-primary) 86%, transparent);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border-bottom: 1px solid var(--color-border);
   }
-  .site-header.condensed { top: 0.55rem; }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .site-header { background-color: var(--color-bg-primary); }
+  }
 
-  .header-pill {
+  .header-wrap {
     position: relative;
-    pointer-events: auto;
-    max-width: 880px;
+    max-width: var(--max-w-content);
     margin: 0 auto;
-    border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
-    border-radius: 999px;
-    background-color: color-mix(in srgb, var(--color-bg-primary) 60%, transparent);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    box-shadow: 0 14px 32px -16px rgba(0, 0, 0, 0.18);
-    transition:
-      background-color var(--dur-2) var(--ease-out),
-      border-color var(--dur-2) var(--ease-out),
-      box-shadow var(--dur-2) var(--ease-out);
   }
-  /* Scan-progress hairline: consumes --progress (set on scroll, see script
-     below) as a 1px accent line inside the pill's bottom edge. Position
-     tracking itself is ungated (it's a direct reflection of scroll, not an
-     animation); only the smoothing transition is reduced-motion gated. */
-  .header-pill::after {
+  /* Scan-progress hairline over the bar's bottom line: consumes --progress (set on scroll, see script
+     below). Position tracking is ungated (a direct reflection of scroll, not an animation); only the
+     smoothing transition is reduced-motion gated. */
+  .site-header::after {
     content: "";
     position: absolute;
-    left: 1.1rem;
-    right: 1.1rem;
-    bottom: 0;
+    left: 0;
+    right: 0;
+    bottom: -1px;
     height: 1px;
     background: var(--color-accent);
     transform-origin: left;
@@ -156,44 +143,13 @@ const routeLabel = currentPath.startsWith('/projects/')
     pointer-events: none;
   }
   @media (prefers-reduced-motion: no-preference) {
-    .header-pill::after {
+    .site-header::after {
       transition: transform 0.15s linear;
     }
   }
-  .site-header.condensed .header-pill {
-    background-color: color-mix(in srgb, var(--color-bg-primary) 82%, transparent);
-    border-color: var(--color-border-hover);
-    box-shadow: 0 8px 22px -14px rgba(0, 0, 0, 0.22);
-  }
-  /* Dark-mode tuning — deeper shadow. */
-  [data-theme="dark"] .header-pill {
-    background-color: color-mix(in srgb, var(--color-bg-primary) 42%, transparent);
-    border-color: color-mix(in srgb, var(--color-border) 65%, transparent);
-    box-shadow: 0 18px 46px -20px rgba(0, 0, 0, 0.7);
-  }
-  [data-theme="dark"] .site-header.condensed .header-pill {
-    background-color: color-mix(in srgb, var(--color-bg-primary) 75%, transparent);
-    border-color: var(--color-border);
-    box-shadow: 0 8px 22px -12px rgba(0, 0, 0, 0.6);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme]) .header-pill {
-      background-color: color-mix(in srgb, var(--color-bg-primary) 42%, transparent);
-      border-color: color-mix(in srgb, var(--color-border) 65%, transparent);
-      box-shadow: 0 18px 46px -20px rgba(0, 0, 0, 0.7);
-    }
-    :root:not([data-theme]) .site-header.condensed .header-pill {
-      background-color: color-mix(in srgb, var(--color-bg-primary) 75%, transparent);
-    }
-  }
-  /* Fallback for browsers without backdrop-filter — bump the bg up so the
-     content stays legible without the blur trick. */
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .header-pill { background-color: var(--color-bg-primary); }
-  }
 
   .header-inner {
-    padding: 0 1rem 0 1.25rem;
+    padding: 0 1.5rem;
     min-height: 3.1rem;
     display: flex;
     flex-wrap: wrap;
@@ -210,7 +166,7 @@ const routeLabel = currentPath.startsWith('/projects/')
   }
 
   /* Live readout — quiet at the top of the page, only names the section/
-     route once the pill has condensed. Instrument chrome, not content. */
+     route once the bar has condensed. Instrument chrome, not content. */
   .header-readout {
     font-family: var(--font-mono);
     font-size: 0.62rem;
@@ -281,7 +237,6 @@ const routeLabel = currentPath.startsWith('/projects/')
   .nav-link:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 4px;
-    border-radius: 2px;
     color: var(--color-text-primary);
   }
   .nav-link:focus-visible::before {
@@ -349,13 +304,11 @@ const routeLabel = currentPath.startsWith('/projects/')
   .nav-burger:hover { color: var(--color-text-primary); }
   .nav-burger:active {
     background-color: color-mix(in srgb, var(--color-accent) 14%, transparent);
-    border-radius: 6px;
   }
   .nav-burger:active svg { transform: scale(0.92); }
   .nav-burger:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
-    border-radius: 4px;
   }
   @media (prefers-reduced-motion: reduce) {
     .nav-burger svg, .nav-burger:active svg { transition: none; transform: none; }
@@ -366,21 +319,15 @@ const routeLabel = currentPath.startsWith('/projects/')
 
   /* Mobile menu */
   .mobile-menu {
-    pointer-events: auto;
     display: none;
-    max-width: 880px;
-    margin: 0.55rem auto 0;
-    padding: 0;
-    border: 1px solid var(--color-border-hover);
-    border-radius: 14px;
-    background-color: color-mix(in srgb, var(--color-bg-primary) 92%, transparent);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    box-shadow: 0 14px 40px -16px rgba(0, 0, 0, 0.55);
+    max-width: var(--max-w-content);
+    margin: 0 auto;
+    padding: 0 0.5rem;
+    border-top: 1px solid var(--color-border);
   }
   .site-header[data-open="true"] .mobile-menu { display: block; }
   .mobile-menu ul {
-    padding: 0.85rem 1.1rem 1rem;
+    padding: 0.85rem 1rem 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.55rem;
@@ -434,7 +381,6 @@ const routeLabel = currentPath.startsWith('/projects/')
     bottom: -3px;
     left: 0;
     width: 2px;
-    border-radius: 2px;
     background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
     opacity: 0;
     pointer-events: none;

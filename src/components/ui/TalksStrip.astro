@@ -13,12 +13,12 @@ const fmt = (iso: string) => new Date(iso).toLocaleDateString('en', { month: 'sh
         {publishedTalks.map((t) => (
           <li>
             <figure>
-              <img src={`${base}${t.photo!.src}`} width={t.photo!.w} height={t.photo!.h} alt={t.photo!.alt} loading="lazy" decoding="async" draggable="false" />
+              <span class="scan-box"><img src={`${base}${t.photo!.src}`} width={t.photo!.w} height={t.photo!.h} alt={t.photo!.alt} loading="lazy" decoding="async" draggable="false" /></span>
               <figcaption>
                 <span class="robotics-strip-label">{t.event} · {t.place} · {fmt(t.date)}</span>
                 {t.session && <span class="robotics-strip-title">{t.session}</span>}
                 <span class="robotics-strip-label">Photo: {t.photo!.credit}</span>
-                {t.href && <a href={t.href} target="_blank" rel="noopener noreferrer" class="text-sm text-[var(--color-link)] hover:text-[var(--color-link-hover)]">Event page →</a>}
+                {t.href && <a href={t.href} target="_blank" rel="noopener noreferrer" class="text-sm ink-link">Event page →</a>}
               </figcaption>
             </figure>
           </li>

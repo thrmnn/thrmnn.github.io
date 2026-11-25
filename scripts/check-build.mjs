@@ -516,7 +516,8 @@ for (const f of htmlFiles) {
     // words to the link lists; the goal, a homepage read in under a minute, is unchanged.
     // 235: the hero lines, the three picture captions and the Stata example told in plain words
     // (owner, 13 Nov: "more explanation on what is the STATA example"); the homepage stays short above the work.
-    must('home_words', words.length < 235, `${words.length} words above the work grid (budget < 235)`);
+    // 255: each project row names where and when (L-3, 25 Nov), about 36 words across the seven rows.
+    must('home_words', words.length < 255, `${words.length} words above the work grid (budget < 255)`);
     console.log(`  · ${words.length} words above the work grid`);
   }
 }

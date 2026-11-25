@@ -122,20 +122,22 @@ The site ships a deliberate `[data-reveal]` motion layer:
 - Gated behind `@media (prefers-reduced-motion: no-preference)` — no-JS and reduced-motion loads see the static layout
 - Reveal JS lives in `BaseLayout.astro` (small IntersectionObserver, no library)
 
+**Decision L-5 / L-6 (owner, 2026-11-25; ledger `site-review/docs/look22-ledger.md`):** text only fades in and never moves (no translate in the reveal). A picture appears once under a blue scan line (`.scan-box` in `global.css`), then stays still. Nothing moves for a reader who asked for reduced motion. **Play (new entry, L-6):** dragging across a dot picture (`.scan-box[data-scan-play]`) moves its scan line, via `src/scripts/scan-play.ts`; `touch-action: pan-y` keeps vertical scrolling on a touch screen, and the script does not attach under reduced motion.
+
 **Interaction grammar (locked 2026-08-26):** hover = attend (a border or color shift only — no glow, no shadow bloom), scan = confirm (a one-shot accent sweep, e.g. the nav-link/monogram scan animations, the header's scan-progress hairline), click = pin (a persistent state change — `aria-current`, `aria-pressed`, open/closed). This is the gate for any future interaction treatment: it should read as one of these three, not invent a fourth.
 
 ### 4.4 Instrument-console header (`src/components/layout/Header.astro`)
 
-The header is a deliberate "instrument" idiom, not a generic top bar — a floating pill, de-glassed (solid background + one border + one soft shadow; no glass highlight, no triple box-shadow stack):
+**Decision L-2 (owner, 2026-11-25; ledger `site-review/docs/look22-ledger.md`): the floating pill is gone.** The header is a flat bar across the page with one thin line under it, on every page, phone menu included; corners are square on every component and borders are one thin line. The instrument idiom stays inside the bar:
 
 - Monogram (`T·A·H` per-letter spans) + a live readout (`.header-readout`, `aria-hidden`) naming the section in view on the homepage (home / about / work / contact — "work" is `#projects`'s friendly label) or the current route on every other page. Visible only in the `.condensed` state — quiet at the top of the page; hidden below 768px.
 - Monospace nav with a square accent keypoint marker (matches the footer's) on the active route
 - The `.header-cta` consult pill is the desktop route to `/consulting/` — it is deliberately not duplicated in `navLinks`; the mobile flat nav list keeps its own separate Consulting entry
 - Condensed-on-scroll state via `.condensed` class
-- Scan-progress hairline inside the pill's bottom edge: `transform: scaleX(var(--progress))`, `transform-origin: left`, consuming a `--progress` custom property written on scroll. Position tracking is ungated (a direct reflection of scroll, not an animation); only the smoothing transition is `prefers-reduced-motion` gated.
-- Mobile: keyboard-operable burger (Enter/Space toggles aria-expanded)
+- Scan-progress hairline over the bar's bottom line: `transform: scaleX(var(--progress))`, `transform-origin: left`, consuming a `--progress` custom property written on scroll. Position tracking is ungated (a direct reflection of scroll, not an animation); only the smoothing transition is `prefers-reduced-motion` gated.
+- Mobile: keyboard-operable burger (Enter/Space toggles aria-expanded); the menu opens as a flat panel under the bar.
 
-Treat this as identity, not decoration. Don't replace with a "normal" nav without explicit user direction.
+Do not bring back the pill or any rounded corner without explicit user direction.
 
 ### 4.5 Layout
 

@@ -132,12 +132,14 @@ The site ships a deliberate `[data-reveal]` motion layer:
 
 - Monogram (`T·A·H` per-letter spans) + a live readout (`.header-readout`, `aria-hidden`) naming the section in view on the homepage (home / about / work / contact — "work" is `#projects`'s friendly label) or the current route on every other page. Visible only in the `.condensed` state — quiet at the top of the page; hidden below 768px.
 - Monospace nav with a square accent keypoint marker (matches the footer's) on the active route
-- The `.header-cta` consult pill is the desktop route to `/consulting/` — it is deliberately not duplicated in `navLinks`; the mobile flat nav list keeps its own separate Consulting entry
+- `/consulting/` is not in the header; the mobile flat nav list keeps its own Consulting entry (the `.header-cta` pill is gone with L-2)
 - Condensed-on-scroll state via `.condensed` class
 - Scan-progress hairline over the bar's bottom line: `transform: scaleX(var(--progress))`, `transform-origin: left`, consuming a `--progress` custom property written on scroll. Position tracking is ungated (a direct reflection of scroll, not an animation); only the smoothing transition is `prefers-reduced-motion` gated.
 - Mobile: keyboard-operable burger (Enter/Space toggles aria-expanded); the menu opens as a flat panel under the bar.
 
 Do not bring back the pill or any rounded corner without explicit user direction.
+
+**Dot pictures on a light page (L-1, `src/components/ui/Picture.astro`).** Every dot picture goes through the `Picture` component, given the dark picture's path (plus optional `anim`, `phone`, `animPhone`). At build time it looks in `public/` for the `-paper` sibling (`x-paper.webp`; for loops `x-anim-paper.webp` or `x-paper-anim.webp`, the Loomo order). With a sibling it renders two `<picture>` elements, `pic-dark` and `pic-paper`, switched by `--pic-dark-display` / `--pic-paper-display`. Without one it renders a single `pic-flip` picture that takes the light-page filter (`--pic-filter`, `--pic-blend`). Real photographs and chart figures pass `plain` (no filter, no blend); the talk photos do not use the component. A new dot picture needs its paper file next to it (made by the generator scripts with `--paper`), the same file name plus `-paper`.
 
 ### 4.5 Layout
 

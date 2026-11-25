@@ -12,7 +12,10 @@ Host tooling (numpy, Pillow, opencv, ffmpeg); needs scripts/assets/loomo/inset-p
 (scripts/make-loomo-inset-pose.py). Writes loomo-pose.webp (1600x1000) and
 loomo-pose-anim.webp (576x360) to ~/Perso/site-review/files (--out public/projects/autonomous-mobile-robot for the site).
 
-    python3 scripts/make-loomo-pose.py [--out DIR] [--q N]
+    python3 scripts/make-loomo-pose.py [--out DIR] [--q N] [--paper]
+
+--paper writes loomo-pose-paper.webp and loomo-pose-paper-anim.webp: dark ink on #fafafa, the
+light theme's blues, and the input-view panel drawn as a positive (ink where the camera view is dark).
 
 REAL
   Base photo, mapping and leg and forearm keypoints: as in make-loomo-overlay.py
@@ -107,17 +110,18 @@ def panel_frames():
     return ims, kp
 
 
-def fill_planes(base):
+def fill_planes(base, col):
     """Where the halftone leaves flat ground colour (the floor under and right of the robot, the dark
     band along the top), continue the ground and ceiling planes as depth-view dots: a perspective
     lattice, rows spaced by depth, dots shrinking toward the horizon. Drawn only in the lower-right floor and the top band."""
     lum = cv2.GaussianBlur(np.asarray(base.convert("L"), np.float32), (0, 0), 9)
+    if base.getpixel((0, 0))[0] > 128:
+        lum = 255 - lum
     empty = lum < 44
     img = base.copy()
     d = ImageDraw.Draw(img)
     horizon = 205 * KY
     vp = 640.0
-    col = (118, 134, 166)
 
     def lattice(sign, y_from, y_to, keep):
         k = 0
@@ -143,7 +147,12 @@ def fill_planes(base):
 
 def main():
     out = Path(sys.argv[sys.argv.index("--out") + 1]) if "--out" in sys.argv else Path.home() / "Perso/site-review/files"
+    paper = "--paper" in sys.argv
+    sfx = "-paper" if paper else ""
     q = int(sys.argv[sys.argv.index("--q") + 1]) if "--q" in sys.argv else 30
+    lattice_col = (110, 118, 138) if paper else (118, 134, 166)
+    if paper:
+        P.use_paper()
     pose = json.loads(A.POSE.read_text())["frames"]
     with tempfile.TemporaryDirectory() as tmp:
         frames = A.load_frames(tmp)
@@ -159,7 +168,7 @@ def main():
     px0, py0, px1, py1 = PANEL
     pk = (px1 - px0) / (CROP[2] - CROP[0])
 
-    base = fill_planes(P.loomo("wide"))
+    base = fill_planes(P.loomo("wide"), lattice_col)
     rng = np.random.default_rng(5)
     n = 230
     i, j = np.meshgrid(np.arange(-n, n), np.arange(-n, n))
@@ -185,6 +194,10 @@ def main():
 
     N = len(IDX)
     pale, acc = tuple(int(c) for c in PALE), tuple(int(c) for c in BLUE)
+    if paper:
+        pale, acc = (29, 78, 216), (37, 99, 235)
+    joint = (250, 250, 250) if paper else (255, 255, 255)
+    panel_fill = (250, 250, 250) if paper else (14, 16, 22)
 
     def draw(f, t, pf):
         k = kp[f]
@@ -232,7 +245,7 @@ def main():
                 for s_ in range(0, steps, 2):
                     a_, b_ = s_ / steps, (s_ + 1) / steps
                     od.line([(hx + (px0 - hx) * a_) * SS, (hy + (cy_ - hy) * a_) * SS, (hx + (px0 - hx) * b_) * SS, (hy + (cy_ - hy) * b_) * SS], fill=(*pale, int(110 * pa)), width=3)
-            od.rectangle([px0 * SS, py0 * SS, px1 * SS, py1 * SS], fill=(14, 16, 22, ba), outline=(*acc, int(102 * pa)), width=2)
+            od.rectangle([px0 * SS, py0 * SS, px1 * SS, py1 * SS], fill=(*panel_fill, ba), outline=(*acc, int(102 * pa)), width=2)
 
         t_hit = {}
         for jx in conf:
@@ -249,7 +262,7 @@ def main():
             if 0 <= age < 1:
                 R = 8 * SS * (1.5 + 2.2 * age)
                 od.ellipse([x - R, y - R, x + R, y + R], outline=(*pale, int(a_env * (1 - age))), width=3)
-            od.ellipse([x - 8 * SS, y - 8 * SS, x + 8 * SS, y + 8 * SS], fill=(255, 255, 255, a_env), outline=(*(acc if jx % 2 else pale), a_env), width=4)
+            od.ellipse([x - 8 * SS, y - 8 * SS, x + 8 * SS, y + 8 * SS], fill=(*joint, a_env), outline=(*(acc if jx % 2 else pale), a_env), width=4)
 
         if ba > 0:
             g = cv2.GaussianBlur(pims[pf].astype(np.float32) / 255, (0, 0), 0.8)
@@ -257,11 +270,13 @@ def main():
             g = np.clip((g - lo) / (hi - lo), 0, 1) ** 1.3
             gxp = np.clip(((qx - px0) / pk).astype(int), 0, g.shape[1] - 1)
             gyp = np.clip(((qy - py0) / pk).astype(int), 0, g.shape[0] - 1)
+            if paper:
+                g = 1 - g
             tone = np.round(g[gyp, gxp] * 9) / 9 * 0.9
             for x, y, tn, jt in zip(qx, qy, tone, qjit):
                 if tn > 0.05:
                     r = 5.5 * 0.62 * np.sqrt(tn) * jt * SS
-                    c = tuple(int(120 + 30 * tn) for _ in range(3))
+                    c = tuple(int(96 - 50 * tn) for _ in range(3)) if paper else tuple(int(120 + 30 * tn) for _ in range(3))
                     od.ellipse([x * SS - r, y * SS - r, x * SS + r, y * SS + r], fill=(*c, ba))
             pkk = pkp[pf]
             pts = {jx: (px0 + pkk[jx, 0] * pk, py0 + pkk[jx, 1] * pk) for jx in range(17) if pkk[jx, 2] > A.CONF}
@@ -274,17 +289,17 @@ def main():
                     od.line([pts[a][0] * SS, pts[a][1] * SS, pts[b][0] * SS, pts[b][1] * SS], fill=(*(acc if a % 2 else pale), ba), width=4 * SS)
             for jx in shownp:
                 x, y = pts[jx][0] * SS, pts[jx][1] * SS
-                od.ellipse([x - 7 * SS, y - 7 * SS, x + 7 * SS, y + 7 * SS], fill=(255, 255, 255, ba), outline=(*(acc if jx % 2 else pale), ba), width=4)
+                od.ellipse([x - 7 * SS, y - 7 * SS, x + 7 * SS, y + 7 * SS], fill=(*joint, ba), outline=(*(acc if jx % 2 else pale), ba), width=4)
         return Image.alpha_composite(img, over.resize((1600, 1000), Image.LANCZOS)).convert("RGB")
 
     out.mkdir(parents=True, exist_ok=True)
     frames_out = [draw(f, f / N, f) for f in range(N)]
     frames_out = frames_out[27:] + frames_out[:27]  # open on a frame with the panel and the legs drawn
     still = draw(IDX.index(REF), 0.8, 19)
-    still.save(out / "loomo-pose.webp", "WEBP", quality=72, method=6)
+    still.save(out / f"loomo-pose{sfx}.webp", "WEBP", quality=72, method=6)
     loop = [im.resize((576, 360), Image.LANCZOS) for im in frames_out]
-    loop[0].save(out / "loomo-pose-anim.webp", "WEBP", save_all=True, append_images=loop[1:], duration=80, loop=0, quality=q, method=6)
-    for nme in ("loomo-pose.webp", "loomo-pose-anim.webp"):
+    loop[0].save(out / f"loomo-pose{sfx}-anim.webp", "WEBP", save_all=True, append_images=loop[1:], duration=80, loop=0, quality=q, method=6)
+    for nme in (f"loomo-pose{sfx}.webp", f"loomo-pose{sfx}-anim.webp"):
         print(nme, (out / nme).stat().st_size)
 
 if __name__ == "__main__":

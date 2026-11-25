@@ -47,6 +47,12 @@ WALL = (150, 156, 168)
 ACCENT = (86, 140, 246)
 TRAIL = (70, 200, 120)
 
+
+def use_paper():
+    """Light-theme palette: dark ink on the page colour, the light theme's blue."""
+    global BG, GROUND, WALL, ACCENT
+    BG, GROUND, WALL, ACCENT = (250, 250, 250), (52, 56, 66), (52, 56, 66), (37, 99, 235)
+
 ROBOAT_URL = "https://news.mit.edu/sites/default/files/images/202010/MIT-Roboat%20II-Close.jpg"
 OCTOPUS_URL = "https://raw.githubusercontent.com/MIT-Senseable-City-Lab/octopus-fabrication/main/imgs/otopus_bottom-layer_perspective.png"
 MOT_ZIP = "https://motchallenge.net/data/MOT17.zip"
@@ -63,8 +69,9 @@ def vignette(cx, cy, rx, ry, power=2.0):
     return np.clip(1 - d, 0, 1) ** (1 / power)
 
 
-def halftone(tone, blue, pitch=9, rmax=None, angle=0.38, seed=3, grey=GROUND):
+def halftone(tone, blue, pitch=9, rmax=None, angle=0.38, seed=3, grey=None):
     """tone: SxS in [0,1], dot area. blue: SxS bool, subject dots."""
+    grey = grey or GROUND
     rng = np.random.default_rng(seed)
     rmax = rmax or pitch * 0.62
     ca, sa = np.cos(angle), np.sin(angle)

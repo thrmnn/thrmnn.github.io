@@ -2,6 +2,8 @@
 metric: "Open source, v0.1"
 title: "A harness for AI agents"
 date: '2026-06-12T00:00:00Z'
+draft: true
+# assets parked in drafts/public/projects/agent-harness/ while draft: true
 github: 'https://github.com/thrmnn/agent-harness'
 image: '/projects/agent-harness/eval-run.webp'
 cardImage: '/projects/agent-harness/card-plate.webp'

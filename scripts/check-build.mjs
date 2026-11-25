@@ -509,6 +509,9 @@ for (const f of htmlFiles) {
     span = span.replace(/<title>[\s\S]*?<\/title>/g, ' ');
     // labels inside a drawing are not reading text (the .ch's word budget does the same)
     span = span.replace(/<svg[\s\S]*?<\/svg>/g, ' ');
+    // a project row's where-and-when label is scanned like a caption, not read as a sentence (L-3, 25 Nov);
+    // counting it would push real sentences out to make room for labels
+    span = span.replace(/<span class="entry-meta"[^>]*>[\s\S]*?<\/span>/g, ' ');
     span = span.replace(/<[^>]+>/g, ' ');
     span = span.replace(/&[a-z]+;/gi, ' ');
     const words = span.split(/\s+/).filter((w) => /[A-Za-zÀ-ÿ0-9]/.test(w));
@@ -516,8 +519,7 @@ for (const f of htmlFiles) {
     // words to the link lists; the goal, a homepage read in under a minute, is unchanged.
     // 235: the hero lines, the three picture captions and the Stata example told in plain words
     // (owner, 13 Nov: "more explanation on what is the STATA example"); the homepage stays short above the work.
-    // 255: each project row names where and when (L-3, 25 Nov), about 36 words across the seven rows.
-    must('home_words', words.length < 255, `${words.length} words above the work grid (budget < 255)`);
+    must('home_words', words.length < 235, `${words.length} words above the work grid (budget < 235)`);
     console.log(`  · ${words.length} words above the work grid`);
   }
 }

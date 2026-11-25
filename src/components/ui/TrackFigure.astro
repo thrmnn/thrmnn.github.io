@@ -48,6 +48,9 @@ const preview = process.env.PREVIEW_LOOK === '1';
   .track-modes { margin: 0.4rem 0 0; display: flex; gap: 1rem; font-family: var(--font-mono); font-size: 0.7rem; }
   .track-modes button { padding: 0; border: 0; background: none; color: var(--color-text-muted); font: inherit; cursor: pointer; }
   .track-modes button:hover { color: var(--color-text-primary); }
+  .track-modes button { min-height: 44px; padding: 0 0.2rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  .track-figure:has(canvas[data-mode='points']) [data-track-mode='points'],
+  .track-figure:has(canvas[data-mode='boxes']) [data-track-mode='boxes'] { color: var(--color-text-primary); text-decoration: underline; text-underline-offset: 0.35em; }
 </style>
 
 <script>

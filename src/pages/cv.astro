@@ -7,7 +7,7 @@ import { skills } from '../data/skills';
 
 <PageLayout title="CV" description="Technical skills, work experience, education, and languages.">
   <section class="py-[var(--space-section)]">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+    <div class="mx-auto max-w-[var(--max-w-content)] px-6 ink-page">
       <div class="flex items-baseline justify-between mb-10">
         <h1 class="text-3xl font-bold text-text-primary">CV</h1>
         <span class="flex gap-6 text-sm">
@@ -18,7 +18,7 @@ import { skills } from '../data/skills';
       </div>
 
       <!-- Experience -->
-      <h2 class="text-xl font-semibold text-text-primary mb-6">Experience</h2>
+      <h2 class="section-label mb-6">Experience</h2>
       <div class="space-y-8 mb-16 max-w-2xl">
         {author.experience.map((job) => (
           <div class="border-l-2 border-border pl-4 sm:pl-6">
@@ -40,7 +40,7 @@ import { skills } from '../data/skills';
       </div>
 
       <!-- Education -->
-      <h2 class="text-xl font-semibold text-text-primary mb-6">Education</h2>
+      <h2 class="section-label mb-6">Education</h2>
       <div class="space-y-4 mb-16 max-w-2xl">
         {author.education.map((edu) => (
           <div class="flex items-baseline justify-between gap-4 py-3 border-b border-border">
@@ -55,7 +55,7 @@ import { skills } from '../data/skills';
       </div>
 
       <!-- Technical Skills -->
-      <h2 class="text-xl font-semibold text-text-primary mb-6">Technical Skills</h2>
+      <h2 class="section-label mb-6">Technical Skills</h2>
       <div class="max-w-2xl mb-16">
         {/* Stacked on mobile, table on sm+ */}
         <div class="sm:hidden space-y-4">
@@ -79,7 +79,7 @@ import { skills } from '../data/skills';
       </div>
 
       <!-- Languages -->
-      <h2 class="text-xl font-semibold text-text-primary mb-6">Languages</h2>
+      <h2 class="section-label mb-6">Languages</h2>
       <div class="flex flex-wrap gap-6 mb-16">
         {author.languages.map((lang) => (
           <div>
@@ -90,7 +90,7 @@ import { skills } from '../data/skills';
       </div>
 
       <!-- Open Source -->
-      <h2 class="text-xl font-semibold text-text-primary mb-4">Open Source</h2>
+      <h2 class="section-label mb-4">Open Source</h2>
       <p class="text-text-secondary text-sm">
         Contributions and personal projects on GitHub:
         <a href="https://github.com/thrmnn" target="_blank" rel="noopener">

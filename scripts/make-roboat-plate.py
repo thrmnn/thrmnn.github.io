@@ -39,6 +39,7 @@ SIMULATED: everything that is the boat and its scan.
 
     python3 scripts/make-roboat-plate.py            # card plate and loop (high view) + hero tile and loop (low view along the water)
     python3 scripts/make-roboat-plate.py --view low   # alternative card view along the water, written to ~/Perso/site-review/files
+    python3 scripts/make-roboat-plate.py --paper    # the same views in dark ink on #fafafa, into plates-paper/ with -paper before the extension
     python3 scripts/make-roboat-plate.py --sample   # rebuild the asset from a LAZ
 """
 import math
@@ -62,6 +63,25 @@ BG = np.array((14, 16, 22), float)
 ACCENT = np.array((86, 140, 246), float)
 GREY = np.array((120, 124, 134), float)
 LIGHT = np.array((150, 156, 168), float)
+CLOUD_LO, CLOUD_HI = np.array((104, 108, 120), float), np.array((150, 156, 168), float)
+HULL_LO, HULL_HI = np.array((135, 141, 153), float), np.array((180, 186, 198), float)
+PAPER = False
+
+
+def use_paper():
+    """Light-theme palette: dark ink on #fafafa. Higher cloud and the hull stay the emphasis, now the darkest ink."""
+    global BG, ACCENT, CLOUD_LO, CLOUD_HI, HULL_LO, HULL_HI, PAPER
+    PAPER = True
+    BG, ACCENT = np.array((250, 250, 250), float), np.array((37, 99, 235), float)
+    CLOUD_LO, CLOUD_HI = np.array((96, 100, 112), float), np.array((52, 56, 66), float)
+    HULL_LO, HULL_HI = np.array((70, 76, 88), float), np.array((30, 34, 44), float)
+
+
+def paper_path(path):
+    if not PAPER or not path.is_relative_to(ROOT / "public"):
+        return path
+    path = ROOT / "plates-paper" / path.relative_to(ROOT / "public")
+    return path.with_name(path.stem + "-paper" + path.suffix)
 
 WATER = -0.4
 MAST_H = 3.6
@@ -277,7 +297,7 @@ def scene():
     idx, az, ring, ring_az = scan(uvz, mast)
     zt = np.clip(uvz[:, 2] / 18, 0, 1)
     return dict(
-        cloud=uvz, grey=np.array((104, 108, 120), float) + (np.array((150, 156, 168), float) - (104, 108, 120)) * zt[:, None], hull=hull, head=head,
+        cloud=uvz, grey=CLOUD_LO + (CLOUD_HI - CLOUD_LO) * zt[:, None], hull=hull, head=head,
         lit=uvz[idx], lit_az=az, ring=ring, ring_az=ring_az,
         mast=mast,
     )
@@ -290,7 +310,7 @@ def depth_fade(cam, pts, near, far, gamma):
 
 def hull_col(h):
     t = np.clip((h[:, 2] - WATER) / 1.2, 0, 1)[:, None]
-    return np.array((135, 141, 153), float) + (np.array((180, 186, 198), float) - (135, 141, 153)) * t
+    return HULL_LO + (HULL_HI - HULL_LO) * t
 
 
 def groups(sc, cam, lit_i=None, ring_i=None, r=3.0, ring=(0.85, 2.0)):
@@ -332,7 +352,9 @@ def flicker(rng, a, depth):
 
 def run(name, sc):
     global RING_FAR
-    v = VIEWS[name]
+    v = {k: paper_path(x) if isinstance(x, Path) else x for k, x in VIEWS[name].items()}
+    if "phone" in v:
+        v["phone"] = (v["phone"][0], paper_path(v["phone"][1]), paper_path(v["phone"][2]))
     cam, RING_FAR = v["cam"], v["ring_far"]
     v["still"].parent.mkdir(parents=True, exist_ok=True)
     r = v.get("r", 3.0)
@@ -361,6 +383,8 @@ def save_loop(frames, path, q):
 
 
 def main():
+    if "--paper" in sys.argv:
+        use_paper()
     names = [sys.argv[sys.argv.index("--view") + 1]] if "--view" in sys.argv else ["high", "tile"]
     sc = scene()
     print(len(sc["cloud"]), "cloud pts,", len(sc["lit"]), "lit,", len(sc["ring"]), "ring")

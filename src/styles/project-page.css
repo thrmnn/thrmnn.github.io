@@ -10,6 +10,7 @@
   .pj-split { max-width: none; padding-inline: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 3rem; align-items: start; }
   .pj-split .pj-head { display: contents; }
   .pj-split > *, .pj-split .pj-head > * { grid-column: 2; margin-right: max(1.5rem, calc((100vw - 1280px) / 2)); }
+  .pj-split.pj > .facts-strip { margin-right: max(1.5rem, calc((100vw - 1280px) / 2)); }
   .pj-split .pj-head > a { margin-top: 1.5rem; }
   .pj-split .pj-head-plain > :last-child { margin-bottom: 2.5rem; }
   .pj .pj-rail { grid-column: 1; grid-row: 1 / span 99; position: sticky; top: 3.8rem; margin: 0; padding-left: 0; align-self: start; }
@@ -17,8 +18,10 @@
   .pj .pj-rail-panel .track-figure { margin: 0; }
   .pj .pj-rail-panel .track-stage { flex: none; }
   .pj .pj-rail-panel .track-caption { padding-left: 1rem; flex: none; }
-  .pj .pj-rail-picture { height: calc(100vh - 5.5rem); display: flex; align-items: center; }
   .pj .pj-rail-picture img { width: 100%; height: auto; }
+  .pj .pj-rail-replay .replay-figure { display: contents; }
+  .pj .pj-rail-replay .replay-stage { aspect-ratio: auto; height: auto; flex: 1 1 0; min-height: 17rem; }
+  .pj .pj-rail-replay .replay-credit { padding-left: 1rem; flex: none; }
   .pj-split .pj-body { max-width: none; }
   .pj .pj-rail-panel .facts-strip { flex: none; margin: 1rem 0 0; padding-left: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pj .pj-rail-panel .facts-strip div { padding: 0.55rem 0.8rem 0.55rem 0; }
@@ -32,4 +35,7 @@
 @media (min-width: 600px) and (max-width: 899px) {
   .pj-rail-panel { display: contents; }
   .pj .pj-rail-panel .track-figure { position: sticky; top: 3.2rem; z-index: 6; margin: 0 0 1rem; padding: 0.6rem 0 0.4rem; background: var(--color-bg-primary); border-bottom: 1px solid var(--color-border); }
+  .pj .pj-rail-replay .replay-figure { position: sticky; top: 3.2rem; z-index: 6; margin: 0 0 1rem; padding: 0.6rem 0 0.4rem; background: var(--color-bg-primary); border-bottom: 1px solid var(--color-border); }
+  .pj .pj-rail-replay .replay-stage { aspect-ratio: auto; height: min(36vh, 26rem); }
+  .pj .pj-rail-replay .replay-credit { display: none; }
 }

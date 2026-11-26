@@ -1,0 +1,42 @@
+---
+import { base } from '../../data/base';
+import { stataMeta } from '../../data/stataReplay';
+const credit = stataMeta();
+---
+
+<figure class="replay-figure" data-reveal>
+  <div class="replay-stage"><canvas data-replay-figure data-src={`${base}/data/stata-replay.json`} role="img" aria-label="Replay of a robot run in the MIT Stata Center: the building walls, where the robot reported being with its reported uncertainty, and inside the lost window where it truly was. Drag across to scrub."></canvas></div>
+  <p class="replay-credit">Dataset: <span>{credit.dataset}</span>, licence <span>{credit.license}</span>. Source: <a href={credit.source} target="_blank" rel="noopener">{credit.source.replace('https://', '')}</a></p>
+</figure>
+
+<style>
+  .replay-figure { margin: 0 0 2rem; }
+  .replay-stage {
+    aspect-ratio: 5 / 4;
+    max-height: min(80vh, 44rem);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: pan-y;
+    cursor: pointer;
+  }
+  canvas:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+  .replay-credit {
+    margin: 0.6rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .replay-credit a { text-decoration: underline; text-underline-offset: 0.2em; }
+</style>
+
+<script>
+  import { initReplayFigure } from '../../scripts/replay-figure.ts';
+  initReplayFigure();
+</script>

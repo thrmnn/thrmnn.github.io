@@ -9,7 +9,9 @@ import { author } from '../../data/author';
 import { siteConfig } from '../../data/site';
 import TrackFigure from '../../components/ui/TrackFigure.astro';
 import FactsStrip from '../../components/ui/FactsStrip.astro';
+import ReplayFigure from '../../components/ui/ReplayFigure.astro';
 import { trackFigure, fillFacts } from '../../data/figures';
+import { stataFacts } from '../../data/stataReplay';
 import '../../styles/project-page.css';
 
 export async function getStaticPaths() {
@@ -35,7 +37,9 @@ export async function getStaticPaths() {
 
 const { project, prev, next } = Astro.props;
 const { Content, headings } = await render(project);
-const hasRail = project.data.figure === 'tracks' || (!project.data.figure && !!project.data.image);
+const replay = project.id === 'ros2-localization-triage';
+const hasRail = replay || project.data.figure === 'tracks' || (!project.data.figure && !!project.data.image);
+const strip = replay ? stataFacts() : null;
 const sections = headings.filter((h) => h.depth === 2);
 const lead = !!(project.data.figure || project.data.facts);
 const facts = project.data.facts ? fillFacts(project.data.facts, trackFigure().stats) : null;
@@ -88,7 +92,19 @@ const articleJsonLd = {
         {lead && <p class="text-lg text-text-secondary mt-4 max-w-2xl">{project.data.summary}</p>}
       </div>
 
-      {project.data.figure === 'tracks' ? (
+      {replay ? (
+        <>
+          <div class="pj-rail pj-rail-panel pj-rail-replay">
+            <ReplayFigure />
+            {sections.length > 0 && (
+              <nav class="pj-index" aria-label="Sections">
+                {sections.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}
+              </nav>
+            )}
+          </div>
+          {strip && <FactsStrip facts={strip} />}
+        </>
+      ) : project.data.figure === 'tracks' ? (
         <div class="pj-rail pj-rail-panel">
           <TrackFigure />
           {facts && <FactsStrip facts={facts} />}

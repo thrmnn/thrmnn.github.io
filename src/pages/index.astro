@@ -1,222 +1,56 @@
 ---
-import { base } from '../data/base';
 import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/ui/Button.astro';
-import SocialIcon from '../components/ui/SocialIcon.astro';
-import VidigalPanel from '../components/ui/VidigalPanel.astro';
-import { author } from '../data/author';
-import StataPlan from '../components/ui/StataPlan.astro';
-import stataMeta from '../../scripts/assets/stata/stata-replay.meta.json';
-import ProjectLinks from '../components/ui/ProjectLinks.astro';
-import { practiceUrl } from '../data/cards';
-import TalkBand from '../components/ui/TalkBand.astro';
 import HeroFigure from '../components/ui/HeroFigure.astro';
+import HomeCards from '../components/ui/HomeCards.astro';
+import HomeProjects from '../components/ui/HomeProjects.astro';
+import AboutBlock from '../components/ui/AboutBlock.astro';
 import WritingShelf from '../components/ui/WritingShelf.astro';
-import { homeCards, spotlights, contactDoors, roboticsFigure, roboticsTiles } from '../data/home';
-import Picture from '../components/ui/Picture.astro';
+import { author } from '../data/author';
+import { practiceUrl } from '../data/cards';
+import { contactDoors } from '../data/home';
 import { talk } from '../data/talk';
 
 const mailto = `mailto:${author.email}`;
-// the Practice numbers are the same medians the .ch shows, from the demo's sidecar
-const lost = {
-  s: Math.round(stataMeta.zones_s.lost_end_s - stataMeta.zones_s.lost_start_s),
-  cm: Math.round(stataMeta.lost_window.amcl_reported_sigma_median_m * 100),
-  m: Math.round(stataMeta.lost_window.position_error_median_m),
-};
-const heroPics = [
-  { place: 'Autonomous boats', src: '/projects/autonomous-boat-perception/hero-tile.webp', anim: '/projects/autonomous-boat-perception/hero-tile-anim.webp', phone: '/projects/autonomous-boat-perception/hero-tile-phone.webp', animPhone: '/projects/autonomous-boat-perception/hero-tile-phone-anim.webp', pos: '50% 0%', w: 600, h: 600, alt: 'A small boat on an Amsterdam canal with a simulated lidar scan, drawn as dots.' },
-  { place: 'Favela morphology', src: '/projects/urban-morphometrics/vidigal-plate.webp', phone: '/projects/urban-morphometrics/vidigal-tile.webp', anim: '/projects/urban-morphometrics/vidigal-hero-anim.webp', animPhone: '/projects/urban-morphometrics/vidigal-tile-anim.webp', w: 1200, h: 1200, alt: 'Vidigal, Rio de Janeiro: the hillside as contour lines of dots, the buildings in blue.' },
-  { place: 'Robot fleet verification', src: '/projects/ros2-localization-triage/decipher-tile.webp', anim: '/projects/ros2-localization-triage/decipher-tile-anim.webp', w: 600, h: 600, alt: 'A logistics robot drawn in dots inside the MIT Stata Center laser map, and a second orange robot far from it, where its localization said it was.' },
+const cards = [
+  { slug: 'autonomous-boat-perception', src: '/projects/autonomous-boat-perception/hero-tile.webp', anim: '/projects/autonomous-boat-perception/hero-tile-anim.webp', phone: '/projects/autonomous-boat-perception/hero-tile-phone.webp', animPhone: '/projects/autonomous-boat-perception/hero-tile-phone-anim.webp', pos: '50% 0%', w: 600, h: 600, alt: 'A small boat on an Amsterdam canal with a simulated lidar scan, drawn as dots.' },
+  { slug: 'urban-morphometrics', src: '/projects/urban-morphometrics/vidigal-plate.webp', phone: '/projects/urban-morphometrics/vidigal-tile.webp', anim: '/projects/urban-morphometrics/vidigal-hero-anim.webp', animPhone: '/projects/urban-morphometrics/vidigal-tile-anim.webp', w: 1200, h: 1200, alt: 'Vidigal, Rio de Janeiro: the hillside as contour lines of dots, the buildings in blue.' },
+  { slug: 'ros2-localization-triage', src: '/projects/ros2-localization-triage/decipher-tile.webp', anim: '/projects/ros2-localization-triage/decipher-tile-anim.webp', w: 600, h: 600, alt: 'A logistics robot drawn in dots inside the MIT Stata Center laser map, and a second orange robot far from it, where its localization said it was.' },
 ];
-const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
-
 ---
 
 <PageLayout ogType="profile">
-  <!-- Hero: words only (owner, 2026-10-28); the research artifact follows below -->
   <section id="home" class="hero-section hero-section--figure">
     <HeroFigure />
+    <p class="hero-name-top">{author.name}</p>
     <div class="hero-grid">
-    <div class="hero-type">
-      <p class="hero-kicker" data-reveal style="--reveal-d: 0;">{author.name}</p>
-      <h1
-        class="hero-name"
-        data-decompose
-        data-reveal
-        style="--reveal-d: 0;"
-      >
-        {author.headline}
-      </h1>
-      <p class="hero-positioning" data-reveal style="--reveal-d: 1;">
-        {author.subtitle}
-      </p>
-      <p class="hero-lines" data-reveal style="--reveal-d: 1;">
-        {author.heroLines.map((l, i) => <span class={i === 0 ? 'hero-now' : undefined}>{l}</span>)}
-      </p>
-      {talk && (
-        <a href={talk.href} class="talk-band" data-reveal style="--reveal-d: 2;">
-          <span class="talk-band-kind">Speaking</span>
-          <span>{talk.event}, <span class="talk-band-when">{talk.when}</span></span>
-          <span class="talk-band-arrow" aria-hidden="true">&rarr;</span>
-        </a>
-      )}
-      <div class="hero-cta-row" data-reveal style="--reveal-d: 3;">
-        <Button href={mailto}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-          E-mail
-        </Button>
-        <Button href={practiceUrl} variant="secondary">For robot makers</Button>
-      </div>
-    </div>
-    <ul class="hero-strip" data-reveal style="--reveal-d: 2;">
-      {heroPics.map((p) => (
-        <li>
-          <figure>
-            <Picture src={p.src} anim={p.anim} phone={p.phone} animPhone={p.animPhone} width={p.w} height={p.h} alt={p.alt} loading="eager" scan imgStyle={p.pos ? `object-position: ${p.pos}` : undefined} />
-            <figcaption>{p.place}</figcaption>
-          </figure>
-        </li>
-      ))}
-    </ul>
-    </div>
-  </section>
-
-  <!-- Three spotlights. Method and affiliation only: the studies are
-       unpublished and multi-author, so no result or finding appears here. -->
-  <section id="favela" class="spotlight pt-6">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="section-label mb-4" data-reveal>{spot.favela.label}</h2>
-      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">{spot.favela.title}</h3>
-      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">{spot.favela.lead}</p>
-    </div>
-    <VidigalPanel revealDelay={3} />
-    <ProjectLinks slugs={spot.favela.slugs} />
-  </section>
-
-  <section id="robotics" class="spotlight">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="section-label mb-4" data-reveal>{spot.robotics.label}</h2>
-      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">{spot.robotics.title}</h3>
-      {roboticsFigure === 'strip' ? (
-        <ul class="robotics-strip" data-reveal style="--reveal-d: 3;">
-          {roboticsTiles.map((t) => (
-            <li>
-              <a href={`${base}/projects/${t.slug}/`}>
-                <Picture src={t.src} anim={t.anim} width={1200} height={1200} imgStyle={`object-position: ${t.pos}`} />
-                <span class="robotics-strip-title">{t.title}</span>
-                <span class="robotics-strip-label">{t.label}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : roboticsFigure === 'pipeline' ? (
-        <figure class="spotlight-fig spotlight-fig-plate spotlight-fig-square" data-reveal style="--reveal-d: 3;">
-          <Picture src="/projects/perception-pipeline/card-plate.webp" width={1200} height={1200} alt="A street scene as a dot drawing: each pedestrian in a blue box with a green track." />
-          <figcaption>Open source · 2026</figcaption>
-        </figure>
-      ) : (
-        <figure class="spotlight-fig spotlight-fig-plate" data-reveal style="--reveal-d: 3;">
-          <Picture src="/projects/autonomous-mobile-robot/loomo-pose.webp" anim="/projects/autonomous-mobile-robot/loomo-pose-anim.webp" width={1600} height={1000} alt="A Segway Loomo robot, in blue dots, following a person at EPFL: the person's legs drawn as a skeleton, a drawn depth view from the robot's head, and a panel with the person's pose." scan />
-          <figcaption>Segway Loomo, EPFL VITA Lab · 2022–23</figcaption>
-        </figure>
-      )}
-    </div>
-    {roboticsFigure !== 'strip' && <ProjectLinks slugs={spot.robotics.slugs} />}
-  </section>
-
-  <section id="legible" class="spotlight">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="section-label mb-4" data-reveal>{spot.legible.label}</h2>
-      <h3 class="research-lead-title" data-reveal style="--reveal-d: 1;">{spot.legible.title}</h3>
-      <p class="research-lead-body" data-reveal style="--reveal-d: 2;">{spot.legible.lead}</p>
-      <figure class="spotlight-fig" data-reveal style="--reveal-d: 3;">
-        <p class="spotlight-fig-lead">A robot on a public recording rode an elevator to a floor missing from its map. For {lost.s} seconds it reported its position to within {lost.cm} cm while {lost.m} m away (medians, checked against ceiling markers). In a warehouse: a robot confidently in the wrong aisle.</p>
-        <StataPlan />
-        <figcaption>PR2, MIT Stata Center dataset (CC BY 3.0) · <a href="https://github.com/thrmnn/ros2-localization-triage/blob/main/docs/finding-confidently-wrong.md#what-the-ground-truth-says-amcl-did">Source</a></figcaption>
-      </figure>
-    </div>
-    <ProjectLinks slugs={spot.legible.slugs} external={{ label: 'theohermann.ch', href: practiceUrl }} />
-  </section>
-
-  <TalkBand />
-
-  <!-- More work: one card; the full list lives on /projects/ -->
-  <section id="projects" class="py-[var(--space-section)]">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <h2 class="section-label mb-10" data-reveal>More work</h2>
-      <div class="grid grid-cols-1 gap-4">
-        {homeCards.map((c) => (
-          <a
-            href={`${base}${c.href}`}
-            id={c.id}
-            class="proof-plate work-card"
-            data-reveal
-            style="--reveal-d: 1;"
-          >
-            <p class="proof-plate-label">{c.label}</p>
-            <p class="proof-plate-title">{c.title}</p>
-            <dl class="work-card-hrc">
-              <dt>Hidden</dt><dd>{c.hidden}</dd>
-              <dt>Revealed</dt><dd>{c.revealed}</dd>
-              <dt>Changed</dt><dd>{c.changed}</dd>
-            </dl>
-            {c.foot && <p class="work-card-foot">{c.foot}</p>}
+      <div class="hero-type">
+        <h1 class="hero-name" data-decompose data-reveal style="--reveal-d: 0;">{author.headline}</h1>
+        <p class="hero-positioning" data-reveal style="--reveal-d: 1;">{author.subtitle}</p>
+        <p class="hero-lines" data-reveal style="--reveal-d: 1;"><span class="hero-now">{author.heroLines[0]}</span></p>
+        {talk && (
+          <a href={talk.href} class="talk-band" data-reveal style="--reveal-d: 2;">
+            <span class="talk-band-kind">Speaking</span>
+            <span>{talk.event}, <span class="talk-band-when">{talk.when}</span></span>
+            <span class="talk-band-arrow" aria-hidden="true">&rarr;</span>
           </a>
-        ))}
+        )}
+        <div class="hero-cta-row" data-reveal style="--reveal-d: 3;">
+          <Button href={mailto}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            E-mail
+          </Button>
+          <Button href={practiceUrl} variant="secondary">For robot makers</Button>
+        </div>
       </div>
-      <p class="mt-8">
-        <a href={`${base}/projects/`} class="text-sm ink-link">All work →</a>
-      </p>
     </div>
   </section>
 
+  <HomeCards cards={cards} />
+  <HomeProjects />
   <WritingShelf />
+  <AboutBlock />
 
-  <!-- Biography -->
-  <section id="about" class="py-[var(--space-section)]">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
-      <div class="flex flex-col md:flex-row gap-12 items-start">
-      <div class="shrink-0 mx-auto md:mx-0" data-reveal style="--reveal-d: 1;">
-        <div class="avatar-mark">
-          <canvas
-            class="monogram-avatar"
-            data-monogram={author.monogram.replace(/[^A-Za-z]/g, '')}
-            width="180"
-            height="180"
-            aria-hidden="true"
-          ></canvas>
-        </div>
-        <div class="mt-4 text-center md:text-left">
-          <p class="text-xl font-bold text-text-primary">{author.name}</p>
-          <p class="text-sm text-text-muted">{author.role}</p>
-        </div>
-        <div class="flex gap-3 mt-4 justify-center md:justify-start">
-          {author.social.map((s) => (
-            <a
-              href={s.href}
-              {...(s.icon !== 'email' ? { target: '_blank', rel: 'noopener' } : {})}
-              class="text-text-muted hover:text-text-secondary transition-colors"
-              aria-label={s.label}
-              title={s.label}
-            >
-              <SocialIcon type={s.icon as 'email' | 'github' | 'linkedin' | 'scholar'} />
-            </a>
-          ))}
-        </div>
-      </div>
-      <div class="flex-1 max-w-prose ink-links" data-reveal style="--reveal-d: 2;">
-        {author.bio.map((paragraph) => (
-          <p class="text-text-secondary leading-relaxed mb-4" set:html={paragraph} />
-        ))}
-        <p class="mt-2">
-          <a href={`${base}/cv/`} class="inline-block py-3 -my-3 text-sm ink-link">Full CV →</a>
-        </p>
-      </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact -->
   <section id="contact" class="contact-section relative py-[var(--space-section)] overflow-hidden">
     <div class="relative z-10 mx-auto max-w-[var(--max-w-content)] px-6">
       <h2 class="text-4xl md:text-5xl font-bold text-text-primary mb-4" data-reveal>Get in touch.</h2>
@@ -234,26 +68,17 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
     </div>
   </section>
 
-
   <script>
-    // Remember which homepage section a project link was clicked in, so the
+    // Remember which homepage block a project link was clicked in, so the
     // project page can offer "Back" to it. sessionStorage only; no query string.
     document.addEventListener('click', (e) => {
       const a = (e.target as HTMLElement).closest('a[href*="/projects/"]') as HTMLAnchorElement | null;
       const sec = a?.closest('main section[id]');
       const m = a?.pathname.match(/\/projects\/([^/]+)\/?$/);
-      if (!a || !sec || !m || !['favela', 'robotics', 'legible', 'projects'].includes(sec.id)) return;
+      if (!a || !sec || !m || !['highlights', 'projects'].includes(sec.id)) return;
       try {
         sessionStorage.setItem('back-from', JSON.stringify({ id: sec.id, slug: m[1] }));
       } catch {}
     });
-  </script>
-
-  <script>
-    import { initMonogramAvatar } from '../scripts/monogram-avatar.ts';
-    import { initScanPlay } from '../scripts/scan-play.ts';
-    initScanPlay();
-    const avatar = document.querySelector('.monogram-avatar') as HTMLCanvasElement | null;
-    if (avatar) initMonogramAvatar(avatar);
   </script>
 </PageLayout>

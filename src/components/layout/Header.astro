@@ -11,13 +11,9 @@ const isActive = (href: string) =>
   (href !== '/' && !href.startsWith('/#') && currentPath.startsWith(href));
 
 const pad = (i: number) => String(i).padStart(2, '0');
-const icons: Record<string, 'favela' | 'robotics' | 'practice' | 'talks' | 'contact' | 'work' | 'writing'> = {
-  '#favela': 'favela',
-  '#robotics': 'robotics',
-  '#legible': 'practice',
-  '#talks': 'talks',
+const icons: Record<string, 'contact' | 'work' | 'writing'> = {
+  '#projects': 'work',
   '#contact': 'contact',
-  '/projects/': 'work',
   '/writing/': 'writing',
 };
 const entries = mobileNavLinks.map((l, i) => {
@@ -42,7 +38,11 @@ const readout = here ? `${here.n} ${routeLabel}` : routeLabel;
 
 <header class="site-header" data-header data-open="false">
   <div class="bar">
-    <a href={`${base}/`} class="bar-name">{author.name}</a>
+    <a href={`${base}/`} class="bar-mono" aria-label={`${author.name} — Home`}>
+      <span class="monogram" aria-hidden="true">
+        {Array.from('T·A·H').map((ch, i) => <span class="mono-ch" style={`--i:${i}`}>{ch}</span>)}
+      </span>
+    </a>
     <div class="bar-end">
       <span class="bar-read" aria-hidden="true" data-readout data-home={isHome ? 'true' : undefined}>{readout}</span>
       <ThemeToggle />
@@ -117,17 +117,55 @@ const readout = here ? `${here.n} ${routeLabel}` : routeLabel;
     .bar { padding-left: 1rem; }
     .bar-read { display: none; }
   }
-  .bar-name {
+  .bar-mono {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 0.98rem;
-    letter-spacing: -0.015em;
     color: var(--color-text-primary);
   }
-  .bar-name:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .bar-mono:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .monogram {
+    position: relative;
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.35rem;
+    line-height: 1;
+    letter-spacing: normal;
+    white-space: nowrap;
+  }
+  .mono-ch { display: inline-block; }
+  .monogram::after {
+    content: "";
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    left: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+    opacity: 0;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .mono-ch {
+      opacity: 0;
+      animation: mono-in 0.5s ease forwards;
+      animation-delay: calc(var(--i) * 0.07s);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) and (pointer: fine) {
+    .bar-mono:hover .monogram::after { animation: mono-scan 0.55s ease; }
+  }
+  @keyframes mono-in {
+    from { opacity: 0; transform: translateY(0.22em); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes mono-scan {
+    0% { left: -2px; opacity: 0; }
+    25% { opacity: 1; }
+    75% { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+  }
   .bar-end { display: flex; align-items: center; gap: 0.25rem; }
   .bar-read {
     margin-right: 0.75rem;
@@ -272,11 +310,8 @@ const readout = here ? `${here.n} ${routeLabel}` : routeLabel;
     if (readout?.dataset.home === 'true' && 'IntersectionObserver' in window) {
       const labels: Record<string, string> = {
         home: 'home',
-        favela: 'favela research',
-        robotics: 'robotics',
-        legible: 'practice',
+        highlights: 'work',
         projects: 'work',
-        offer: 'offer',
         about: 'about',
         contact: 'contact',
       };

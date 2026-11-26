@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import { base } from '../../data/base';
+import Picture from './Picture.astro';
+import '../../styles/home-cards.css';
+
+interface Card { slug: string; src: string; anim?: string; phone?: string; animPhone?: string; w: number; h: number; alt: string; pos?: string }
+interface Props { cards: Card[] }
+const { cards } = Astro.props;
+
+const projects = await getCollection('projects');
+const items = cards.map((c) => {
+  const p = projects.find((e) => e.id.replace(/\.md$/, '') === c.slug);
+  if (!p) throw new Error(`HomeCards: no project "${c.slug}"`);
+  return { c, href: `${base}/projects/${c.slug}/`, title: p.data.title, label: p.data.label };
+});
+---
+
+<section id="highlights" class="home-cards" aria-label="Selected work">
+  <ul class="hc-grid" data-reveal>
+    {items.map(({ c, href, title, label }) => (
+      <li>
+        <a class="hc-a" href={href}>
+          <span class="hc-pic"><Picture src={c.src} anim={c.anim} phone={c.phone} animPhone={c.animPhone} width={c.w} height={c.h} alt={c.alt} imgStyle={c.pos ? `object-position: ${c.pos}` : undefined} /></span>
+          <span class="hc-t">{title}</span>
+          <span class="hc-m">{label}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>

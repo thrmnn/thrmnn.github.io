@@ -44,6 +44,18 @@ const FLOW_ZOOM = 0.3;
 const FLOW_ALONG = 0.9;
 const FLOW_TILTS = [0.9, 0.72, 0.55];
 const FLOW_YAWS = [-0.2, 0, 0.5, 1, 1.5];
+// Head (data-head): at rest the camera drifts along the ridge (period 48 s) under the flow's perspective, with a hair of yaw
+// (period 32 s); the pointer or a sideways finger adds up to 3.4 degrees of yaw and 2 of pitch. Vertical drags are never taken.
+const HEAD_PAN = 0.28;
+const HEAD_PAN_PERIOD_S = 48;
+const HEAD_YAW = 0.02;
+const HEAD_YAW_PERIOD_S = 32;
+const HEAD_PTR_YAW = 0.06;
+const HEAD_PTR_PITCH = 0.035;
+// Arrival (data-arrive): once per visit, after the intro, the glide the scroll gives plays by itself and brakes to the rest pose.
+const ARRIVE_S = 3.4;
+const ARRIVE_BRAKE_S = 3.2;
+const ARRIVE_KEY = 'home-arrival';
 const smooth = (u: number) => u * u * (3 - 2 * u);
 function camera(elapsed: number): { zoom: number; along: number; tiltOff: number } {
   const t = elapsed % SHOT_PERIOD_S;
@@ -412,6 +424,29 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
   const swing = parseFloat(canvas.dataset.swing || '0') || 0;
   const flow = canvas.dataset.flow === '1' && !explore;
   let sp = 0; // eased scroll, 0..1
+  const headOn = flow && canvas.dataset.head === 'a' && !reduceMotion.matches;
+  const ptr = { x: 0, y: 0, tx: 0, ty: 0 };
+  const arrive = { on: false, t0: null as number | null };
+  if (flow && canvas.dataset.arrive === '1' && !reduceMotion.matches) {
+    let played = false;
+    try { played = sessionStorage.getItem(ARRIVE_KEY) === '1'; } catch {}
+    if (!played) {
+      arrive.on = true;
+      try { sessionStorage.setItem(ARRIVE_KEY, '1'); } catch {}
+      reveal = 1;
+      const begin = () => { if (arrive.t0 === null) arrive.t0 = performance.now(); };
+      let introPlays = false;
+      try { introPlays = localStorage.getItem('intro-played') !== '1'; } catch {}
+      const intro = document.getElementById('intro');
+      if (introPlays && intro) {
+        const mo = new MutationObserver(() => {
+          if (intro.dataset.stage === 'hidden') { mo.disconnect(); begin(); }
+        });
+        mo.observe(intro, { attributes: true, attributeFilter: ['data-stage'] });
+        setTimeout(() => { mo.disconnect(); begin(); }, 2500);
+      } else begin();
+    }
+  }
   // the frame that holds the cloud over the whole glide: the percentile envelope across the turn and the tilts it passes through
   const fe = { x0: 0, x1: 1, y0: 0, y1: 1 };
   if (flow) {
@@ -463,10 +498,17 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
 
     const { x, y, z, cat, ax0, ax1, ay0, ay1, mx, my, mz, axis, reach } = cloud;
     const flying = !explore && !reduceMotion.matches;
-    const rot = explore ? EX.yaw : ROT0 + (flying ? (swing > 0 ? swing * Math.sin((elapsed * 2 * Math.PI) / SWING_PERIOD_S) : elapsed * SPIN_RAD_PER_S) : 0) + (flow ? FLOW_YAW * sp : 0);
+    const arriving = arrive.on ? (arrive.t0 === null ? 0 : (performance.now() - arrive.t0) / 1000) : 0;
+    if (arrive.on && arriving >= ARRIVE_S) arrive.on = false;
+    const br = arrive.on ? (1 - Math.min(1, arriving / ARRIVE_BRAKE_S)) ** 3 : 0;
+    const hPan = headOn ? HEAD_PAN * Math.sin((elapsed * 2 * Math.PI) / HEAD_PAN_PERIOD_S) : 0;
+    const hYaw = headOn ? HEAD_YAW * Math.sin((elapsed * 2 * Math.PI) / HEAD_YAW_PERIOD_S) + ptr.x * HEAD_PTR_YAW : 0;
+    const hTilt = headOn ? ptr.y * HEAD_PTR_PITCH : 0;
+    const panA = hPan + 0.6 * br;
+    const rot = explore ? EX.yaw : ROT0 + (flying && !headOn ? (swing > 0 ? swing * Math.sin((elapsed * 2 * Math.PI) / SWING_PERIOD_S) : elapsed * SPIN_RAD_PER_S) : 0) + (flow ? FLOW_YAW * sp + hYaw + 0.18 * br : 0);
     const cosR = Math.cos(rot);
     const sinR = Math.sin(rot);
-    const cam = flow ? { zoom: 1 + FLOW_ZOOM * sp, along: -FLOW_ALONG * sp, tiltOff: -FLOW_TILT * sp } : flying ? camera(elapsed) : { zoom: 1, along: 0, tiltOff: 0 };
+    const cam = flow ? { zoom: 1 + FLOW_ZOOM * sp + 0.18 * br, along: -FLOW_ALONG * sp, tiltOff: -FLOW_TILT * sp + hTilt - 0.08 * br } : flying ? camera(elapsed) : { zoom: 1, along: 0, tiltOff: 0 };
     if (!explore && !flow) cam.zoom = 1 + (cam.zoom - 1) * (zoomMax - 1) / 0.8;
     const tilt = explore ? EX.pitch : Math.max(TILT_FLOOR, tilt0 + cam.tiltOff);
     const cosT = Math.cos(tilt);
@@ -490,15 +532,25 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
     const tgtY = (mz * cosT - prz * sinT) * Y_SQUASH;
     const envX = flow ? (fe.x0 + fe.x1) / 2 : (ax0 + ax1) / 2;
     const envY = flow ? (fe.y0 + fe.y1) / 2 : (ay0 + ay1) / 2;
-    const lookX = explore ? tgtX + plate.offX : envX + (tgtX - envX) * zoomT;
-    const lookY = explore ? tgtY + plate.offY : envY + (tgtY - envY) * zoomT;
+    let lookX = explore ? tgtX + plate.offX : envX + (tgtX - envX) * zoomT;
+    let lookY = explore ? tgtY + plate.offY : envY + (tgtY - envY) * zoomT;
+    let dLookPan = 0;
+    if (flow && panA) {
+      const a2 = reach * ALONG_REACH * (cam.along + panA);
+      const qx = mx + axis.x * a2;
+      const qy = my + axis.y * a2;
+      const qrz = qx * sinR + qy * cosR;
+      lookX += qx * cosR - qy * sinR - tgtX;
+      lookY += (mz * cosT - qrz * sinT) * Y_SQUASH - tgtY;
+      dLookPan = (qrz - prz) * cosT;
+    }
     const cx = cssW / 2 - lookX * scale;
     const cy = cssH / 2 + lookY * scale;
     // dots keep their screen size while the camera zooms; only the subject
     // grows, gently, so a close view resolves rather than floods
     const dot = Math.max(0.85, Math.min(2.4, base / 260));
 
-    const dLook = mz * sinT + prz * cosT;
+    const dLook = mz * sinT + prz * cosT + dLookPan;
     let dmin = Infinity;
     let dmax = -Infinity;
     for (let i = 0; i < n; i++) {
@@ -763,6 +815,27 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
     return { reset };
   }
 
+  if (headOn) {
+    const wake = () => kick();
+    window.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'touch') return;
+      ptr.tx = (e.clientX / window.innerWidth - 0.5) * 2;
+      ptr.ty = (e.clientY / window.innerHeight - 0.5) * 2;
+      wake();
+    }, { passive: true });
+    document.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      if (!t) return;
+      ptr.tx = (t.clientX / window.innerWidth - 0.5) * 2;
+      ptr.ty = 0;
+      wake();
+    }, { passive: true });
+    const rest = () => { ptr.tx = 0; ptr.ty = 0; };
+    document.addEventListener('touchend', rest, { passive: true });
+    document.addEventListener('touchcancel', rest, { passive: true });
+    document.documentElement.addEventListener('mouseleave', rest);
+  }
+
   let lastNow = 0;
   function frame(now: number) {
     if (!t0) t0 = now;
@@ -770,11 +843,13 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
       const dt = Math.min(0.05, (now - (lastNow || now)) / 1000);
       const tg = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.9)));
       sp += (tg - sp) * (1 - Math.exp(-dt * 6));
+      ptr.x += (ptr.tx - ptr.x) * (1 - Math.exp(-dt * 3));
+      ptr.y += (ptr.ty - ptr.y) * (1 - Math.exp(-dt * 3));
     }
     lastNow = now;
     const elapsed = (now - t0) / 1000;
     const rt = Math.min((now - t0) / REVEAL_MS, 1);
-    reveal = 1 - Math.pow(1 - rt, 3);
+    reveal = arrive.on ? 1 : 1 - Math.pow(1 - rt, 3);
     render(elapsed);
     if (visible && !reduceMotion.matches) requestAnimationFrame(frame);
     else rafOn = false;

@@ -124,12 +124,8 @@
   box-sizing: border-box;
 }
 
-@media (min-width: 768px) and (orientation: portrait) {
-  .hero-figure .artifact-band { inset: -32% -42% 14% -42%; }
-}
 @media (max-width: 767px) {
   .hero-section.hero-section--figure { grid-template-rows: max(70svh, calc(100svh - 5rem)) auto; }
-  .hero-figure .artifact-band { inset: -34% -50% 17% -50%; }
   .hero-section--figure .hero-type { display: block; padding-bottom: 4rem; }
   .hero-section--figure .hero-kicker { font-size: clamp(2.3rem, 11.5cqw, 3rem); }
   .hero-section--figure .hero-name { font-size: 1.25rem; margin: 0.4rem 0 0.2rem; }

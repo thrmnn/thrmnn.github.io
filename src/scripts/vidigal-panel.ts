@@ -34,6 +34,16 @@ const ALONG_REACH = 0.6;
 const TILT_FLOOR = 0.45;
 const ROOF_STEP = 0.22; // of the scene's z range: about 8 m in a 35 m clip
 const WALL_STEP = 0.06; // a roof cell stepping more than this is drawn as a side
+// Flow (data-flow): the scroll is the camera. The page's scroll, eased, dollies a perspective camera along the
+// ridge; a point's screen shift is k = FLOW_PERSP / (FLOW_PERSP - depth), so near points move more than far ones by
+// their real depth. No layer has a speed of its own. Reduced motion keeps the frame still.
+const FLOW_PERSP = 3.2;
+const FLOW_YAW = 0.6;
+const FLOW_TILT = 0.18;
+const FLOW_ZOOM = 0.3;
+const FLOW_ALONG = 0.9;
+const FLOW_TILTS = [0.9, 0.72, 0.55];
+const FLOW_YAWS = [-0.2, 0, 0.5, 1, 1.5];
 const smooth = (u: number) => u * u * (3 - 2 * u);
 function camera(elapsed: number): { zoom: number; along: number; tiltOff: number } {
   const t = elapsed % SHOT_PERIOD_S;
@@ -400,6 +410,29 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
   // a full turn passes through the angle where a canal is seen end-on and
   // vanishes for a beat; a swing keeps a linear feature oblique at all times
   const swing = parseFloat(canvas.dataset.swing || '0') || 0;
+  const flow = canvas.dataset.flow === '1' && !explore;
+  let sp = 0; // eased scroll, 0..1
+  // the frame that holds the cloud over the whole glide: the percentile envelope across the turn and the tilts it passes through
+  const fe = { x0: 0, x1: 1, y0: 0, y1: 1 };
+  if (flow) {
+    const xs: number[] = [];
+    const ys: number[] = [];
+    for (const yw of FLOW_YAWS) {
+      for (const tl of FLOW_TILTS) {
+        const cR = Math.cos(ROT0 + yw), sR = Math.sin(ROT0 + yw), cT = Math.cos(tl), sT = Math.sin(tl);
+        for (let i = 0; i < cloud.n; i += 6) {
+          if (cloud.cat[i]! >= 3) continue;
+          const rz = cloud.x[i]! * sR + cloud.y[i]! * cR;
+          xs.push(cloud.x[i]! * cR - cloud.y[i]! * sR);
+          ys.push((cloud.z[i]! * cT - rz * sT) * Y_SQUASH);
+        }
+      }
+    }
+    xs.sort((a, b) => a - b);
+    ys.sort((a, b) => a - b);
+    fe.x0 = pct(Float64Array.from(xs), 0.01); fe.x1 = pct(Float64Array.from(xs), 0.99);
+    fe.y0 = pct(Float64Array.from(ys), 0.01); fe.y1 = pct(Float64Array.from(ys), 0.99);
+  }
   const SWING_PERIOD_S = 97;
 
   // Painter's order changes every frame while the view turns. A bucket sort is
@@ -412,6 +445,9 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
   const counts = new Uint32Array(BUCKETS + 1);
   const order = new Uint32Array(n);
   const sweepU = new Float32Array(n);
+  const lvOf = new Int8Array(n);
+  const lvList = new Uint32Array(n);
+  const lvCount = new Uint32Array(33);
   for (let i = 0; i < n; i++) sweepU[i] = (((cloud.x[i]! - cloud.mx) * cloud.axis.x + (cloud.y[i]! - cloud.my) * cloud.axis.y) / cloud.reach + 1) / 2;
 
   function render(elapsed: number) {
@@ -427,11 +463,11 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
 
     const { x, y, z, cat, ax0, ax1, ay0, ay1, mx, my, mz, axis, reach } = cloud;
     const flying = !explore && !reduceMotion.matches;
-    const rot = explore ? EX.yaw : ROT0 + (flying ? (swing > 0 ? swing * Math.sin((elapsed * 2 * Math.PI) / SWING_PERIOD_S) : elapsed * SPIN_RAD_PER_S) : 0);
+    const rot = explore ? EX.yaw : ROT0 + (flying ? (swing > 0 ? swing * Math.sin((elapsed * 2 * Math.PI) / SWING_PERIOD_S) : elapsed * SPIN_RAD_PER_S) : 0) + (flow ? FLOW_YAW * sp : 0);
     const cosR = Math.cos(rot);
     const sinR = Math.sin(rot);
-    const cam = flying ? camera(elapsed) : { zoom: 1, along: 0, tiltOff: 0 };
-    if (!explore) cam.zoom = 1 + (cam.zoom - 1) * (zoomMax - 1) / 0.8;
+    const cam = flow ? { zoom: 1 + FLOW_ZOOM * sp, along: -FLOW_ALONG * sp, tiltOff: -FLOW_TILT * sp } : flying ? camera(elapsed) : { zoom: 1, along: 0, tiltOff: 0 };
+    if (!explore && !flow) cam.zoom = 1 + (cam.zoom - 1) * (zoomMax - 1) / 0.8;
     const tilt = explore ? EX.pitch : Math.max(TILT_FLOOR, tilt0 + cam.tiltOff);
     const cosT = Math.cos(tilt);
     const sinT = Math.sin(tilt);
@@ -440,7 +476,9 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
 
     const base = explore
       ? Math.min(cssW / plate.w, cssH / plate.h) * FILL
-      : Math.min(cssW / (ax1 - ax0), cssH / (ay1 - ay0)) * FILL;
+      : flow
+        ? Math.min(cssW / (fe.x1 - fe.x0), cssH / (fe.y1 - fe.y0)) * FILL
+        : Math.min(cssW / (ax1 - ax0), cssH / (ay1 - ay0)) * FILL;
     const scale = base * zoom;
     // Where the camera looks: the envelope centre when out, a point sliding
     // along the ridge when in. Project that point with the frame's own maths.
@@ -450,8 +488,8 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
     const prz = px * sinR + py * cosR;
     const tgtX = px * cosR - py * sinR;
     const tgtY = (mz * cosT - prz * sinT) * Y_SQUASH;
-    const envX = (ax0 + ax1) / 2;
-    const envY = (ay0 + ay1) / 2;
+    const envX = flow ? (fe.x0 + fe.x1) / 2 : (ax0 + ax1) / 2;
+    const envY = flow ? (fe.y0 + fe.y1) / 2 : (ay0 + ay1) / 2;
     const lookX = explore ? tgtX + plate.offX : envX + (tgtX - envX) * zoomT;
     const lookY = explore ? tgtY + plate.offY : envY + (tgtY - envY) * zoomT;
     const cx = cssW / 2 - lookX * scale;
@@ -460,6 +498,7 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
     // grows, gently, so a close view resolves rather than floods
     const dot = Math.max(0.85, Math.min(2.4, base / 260));
 
+    const dLook = mz * sinT + prz * cosT;
     let dmin = Infinity;
     let dmax = -Infinity;
     for (let i = 0; i < n; i++) {
@@ -468,21 +507,30 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
       syArr[i] = cy - (z[i]! * cosT - rz * sinT) * Y_SQUASH * scale;
       const d = z[i]! * sinT + rz * cosT;
       dArr[i] = d;
+      if (flow) {
+        const k = FLOW_PERSP / Math.max(0.5, FLOW_PERSP - (d - dLook));
+        sxArr[i] = cssW / 2 + ((x[i]! * cosR - y[i]! * sinR) - lookX) * scale * k;
+        syArr[i] = cssH / 2 - ((z[i]! * cosT - rz * sinT) * Y_SQUASH - lookY) * scale * k;
+      }
       if (d < dmin) dmin = d;
       if (d > dmax) dmax = d;
     }
     const span = dmax - dmin || 1;
 
-    counts.fill(0);
-    for (let i = 0; i < n; i++) {
-      const b = Math.min(BUCKETS - 1, ((dArr[i]! - dmin) / span * BUCKETS) | 0);
-      counts[b + 1]!++;
-    }
-    for (let b = 1; b <= BUCKETS; b++) counts[b]! += counts[b - 1]!;
-    const cursor = counts.slice();
-    for (let i = 0; i < n; i++) {
-      const b = Math.min(BUCKETS - 1, ((dArr[i]! - dmin) / span * BUCKETS) | 0);
-      order[cursor[b]!++] = i;
+    // the flow figure draws by alpha level, so once it is fully revealed the depth order is not needed
+    const batched = flow && cloud.terrain.length > 0 && quads.length === 0 && !splatR;
+    if (!batched || reveal < 1) {
+      counts.fill(0);
+      for (let i = 0; i < n; i++) {
+        const b = Math.min(BUCKETS - 1, ((dArr[i]! - dmin) / span * BUCKETS) | 0);
+        counts[b + 1]!++;
+      }
+      for (let b = 1; b <= BUCKETS; b++) counts[b]! += counts[b - 1]!;
+      const cursor = counts.slice();
+      for (let i = 0; i < n; i++) {
+        const b = Math.min(BUCKETS - 1, ((dArr[i]! - dmin) / span * BUCKETS) | 0);
+        order[cursor[b]!++] = i;
+      }
     }
 
     // surface first, under the dots: back to front by mean depth, shaded
@@ -523,6 +571,54 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
     const sweepOn = flying && !splatR;
     const head = (elapsed / SWEEP_PERIOD_S) % SWEEP_SPAN - 0.2;
     const shown = Math.round(reveal * n);
+    if (batched) {
+      // One path per alpha level and colour: the same dots, a few dozen fills instead of one per point.
+      const LV = 16;
+      const sizeSubject = 1.35 * emphasis * Math.sqrt(zoom) * dot;
+      const sizeGround = 1.25 * dot;
+      lvCount.fill(0);
+      for (let k = 0; k < shown; k++) {
+        const i = reveal < 1 ? order[k]! : k;
+        const c = cat[i]!;
+        if (c === 15) { lvOf[i] = -1; continue; }
+        const d = (dArr[i]! - dmin) / span;
+        let glow = 0;
+        if (sweepOn) {
+          const lag = (((head - sweepU[i]!) % SWEEP_SPAN) + SWEEP_SPAN) % SWEEP_SPAN;
+          glow = Math.exp(-lag / 0.13);
+        }
+        let a: number;
+        if (c === 1) a = Math.min(1, ((0.26 + 0.36 * d + 0.2 * z[i]!) * emphasis) / (0.75 + 0.25 * zoom) + 0.3 * glow);
+        else {
+          const sh = inkIsLight ? 1 - shade[i]! : shade[i]!;
+          const b0 = (0.14 + 0.5 * d * d ** 0.2) * (0.5 + 0.5 * sh) * (c === 3 ? 0.65 : 1);
+          a = Math.min(0.95, b0 * reveal + 0.5 * glow * (0.4 + 0.6 * d));
+        }
+        const b = (c === 1 ? LV : 0) + Math.min(LV - 1, (a * LV) | 0);
+        lvOf[i] = b;
+        lvCount[b + 1]!++;
+      }
+      for (let b = 1; b <= 2 * LV; b++) lvCount[b]! += lvCount[b - 1]!;
+      const cur = lvCount.slice();
+      for (let k = 0; k < shown; k++) {
+        const i = reveal < 1 ? order[k]! : k;
+        const b = lvOf[i]!;
+        if (b >= 0) lvList[cur[b]!++] = i;
+      }
+      for (let b = 0; b < 2 * LV; b++) {
+        if (lvCount[b + 1] === lvCount[b]) continue;
+        const subject = b >= LV;
+        const sz = subject ? sizeSubject : sizeGround;
+        ctx!.fillStyle = withAlpha(subject ? accent : ground, ((b % LV) + 0.5) / LV);
+        ctx!.beginPath();
+        for (let k = lvCount[b]!; k < lvCount[b + 1]!; k++) {
+          const i = lvList[k]!;
+          ctx!.rect(sxArr[i]! - sz / 2, syArr[i]! - sz / 2, sz, sz);
+        }
+        ctx!.fill();
+      }
+      return;
+    }
     for (let k = 0; k < shown; k++) {
       const i = order[k]!;
       const c = cat[i]!;
@@ -667,8 +763,15 @@ export async function initVidigalPanel(canvas: HTMLCanvasElement): Promise<{ res
     return { reset };
   }
 
+  let lastNow = 0;
   function frame(now: number) {
     if (!t0) t0 = now;
+    if (flow) {
+      const dt = Math.min(0.05, (now - (lastNow || now)) / 1000);
+      const tg = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.9)));
+      sp += (tg - sp) * (1 - Math.exp(-dt * 6));
+    }
+    lastNow = now;
     const elapsed = (now - t0) / 1000;
     const rt = Math.min((now - t0) / REVEAL_MS, 1);
     reveal = 1 - Math.pow(1 - rt, 3);

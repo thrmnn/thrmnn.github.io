@@ -11,7 +11,7 @@ const isActive = (href: string) =>
   (href !== '/' && !href.startsWith('/#') && currentPath.startsWith(href));
 
 const pad = (i: number) => String(i).padStart(2, '0');
-const icons = {
+const icons: Record<string, 'favela' | 'robotics' | 'practice' | 'talks' | 'contact' | 'work' | 'writing'> = {
   '#favela': 'favela',
   '#robotics': 'robotics',
   '#legible': 'practice',
@@ -19,10 +19,10 @@ const icons = {
   '#contact': 'contact',
   '/projects/': 'work',
   '/writing/': 'writing',
-} as const;
+};
 const entries = mobileNavLinks.map((l, i) => {
   const key = l.href.includes('#') ? l.href.slice(l.href.indexOf('#')) : l.href;
-  return { ...l, key, n: pad(i + 1), icon: icons[key as keyof typeof icons] ?? 'about', current: isActive(l.href) };
+  return { ...l, key, n: pad(i + 1), icon: icons[key] ?? ('about' as const), current: isActive(l.href) };
 });
 
 const routeLabels: Record<string, string> = {

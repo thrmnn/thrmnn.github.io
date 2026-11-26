@@ -8,7 +8,7 @@ Built with [Astro](https://astro.build/).
 - **Astro 6** — static site generation
 - **Tailwind CSS v4** — styling (via `@tailwindcss/vite`)
 - **MDX** — project content
-- Self-hosted variable fonts (Inter, Space Grotesk)
+- Self-hosted variable fonts (Hanken Grotesk, DM Mono)
 - Plausible analytics (production only)
 
 ## Develop

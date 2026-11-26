@@ -108,8 +108,9 @@ When the user writes `/council [topic]`, walk it through these four voices and s
 
 ### 4.2 Type stack
 
-- **Display + body:** Space Grotesk (single variable woff2, latin + latin-ext via unicode-range)
-- **Mono:** JetBrains Mono (variable wght, self-hosted — added 2026-05-27)
+- **Display + body:** Hanken Grotesk (single variable woff2, `public/fonts/hanken-grotesk/`)
+- **Mono:** DM Mono (400 and 500, `public/fonts/dm-mono/`)
+- Changed by the owner on 26 Nov 2026, replacing Space Grotesk and JetBrains Mono: he tapped "A" (Hanken Grotesk with DM Mono) in the typeface exercise. Licences (OFL) and sources sit beside the font files. The pairing's tracking and heading weights are the rules after `@theme` in `global.css`. The PDF and social-image generators still name the old typefaces (follow-up, not regenerated).
 - Self-hosted only — CSP forbids third-party font fetches.
 
 ### 4.3 Motion — scroll-reveal system
@@ -330,3 +331,4 @@ Format: `YYYY-MM-DD — decision — rationale.`
 - Prettier (not adopted on `main`; the codebase formats by hand-convention)
 
 - 2026-09-14 — Cycle 10: the site is a RESEARCH PORTFOLIO. (a) Audience is peers and collaborators; the consulting funnel is gone from this domain (cal.com removed everywhere, the "How I work" triptych deleted, "Consulting" off both nav arrays, zero links to theohermann.ch from any page a peer reaches; /consulting stays live but orphaned because four of its five scopes exist nowhere else). (b) The hero unifies the three axes into one problem instead of listing them; credentials follow. (c) FACTS CORRECTED, both were live and wrong: Roboat was a first **internship** on computer vision and MLOps against an existing LiDAR stack, not an engineering hire or a perception lead (seven surfaces); the Rio role is founding member of the branch, not lab lead; and the CV's Rio summary still claimed "CFD simulations of airborne disease transmission", the claim a cycle-9 audit had rejected on the project page only. (d) The artifact is the Vidigal point cloud and nothing else: the computed sun model, the lit-fraction readout, the per-rooftop figure, the legend and the controls were all built and then removed at the owner's direction, because a derived quantity is a claim. It is pulled back, turns slowly, and is framed from the cloud's true envelope over sampled angles. (e) The photograph is replaced by the monogram rasterised into a rotating point cloud. (f) `urban-digital-twin` and `aerial-lidar-tree-census` rewritten method-only from their repos and published; all six featured cards normalised to one scheme (sentence-case title, `where · when` label, a metric line saying how the claim can be checked, two-sentence first-person summary). (g) check-build: the `stata_caption` group became `artifact_caption`; it asserts sidecar-vs-binary lengths and, instead of requiring a disclaimer sentence, now asserts the ABSENCE of result markers on the research pages, and `DIST` is overridable so the gate can be poison-tested. (h) Vision doc: `~/Perso/site-review/docs/vision-com.md`.
+- 2026-11-26 — Typeface A, site-wide (owner's tap "A" in the typeface exercise): Hanken Grotesk with DM Mono replace Space Grotesk and JetBrains Mono (see §4.2). The generated PDFs and the og image are not yet restyled.

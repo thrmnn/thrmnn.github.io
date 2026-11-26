@@ -18,7 +18,7 @@ const CLOSE = 2 * RAMP - LAG;
 const END = CLOSE + LAG + RAMP;
 // per-sheet alpha at rest such that the five coincident sheets cover 0.95
 const A0 = 1 - Math.pow(0.05, 1 / LAYERS);
-const FONT = `700 ${FONT_PX}px "Space Grotesk", system-ui, sans-serif`;
+const FONT = `700 ${FONT_PX}px "Hanken Grotesk", system-ui, sans-serif`;
 
 // Stem width in normalised units, measured from a raster of the word: the
 // sheet spacing is keyed to it, not to a literal.

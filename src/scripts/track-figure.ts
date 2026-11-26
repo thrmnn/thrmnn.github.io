@@ -111,7 +111,7 @@ export async function initTrackFigure() {
       }
     }
     const numbers = W >= 640, fs = Math.max(9, W / 120);
-    if (numbers) { ctx.font = `${fs}px 'JetBrains Mono', ui-monospace, monospace`; ctx.textBaseline = 'bottom'; }
+    if (numbers) { ctx.font = `${fs}px 'DM Mono', ui-monospace, monospace`; ctx.textBaseline = 'bottom'; }
     ctx.lineWidth = 1.5;
     for (const r of live) {
       const i = f - r.f0;

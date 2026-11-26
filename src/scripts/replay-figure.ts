@@ -18,7 +18,7 @@ export async function initReplayFigure() {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const root = document.documentElement;
   const css = (n: string) => getComputedStyle(root).getPropertyValue(n).trim();
-  const MONO = "'JetBrains Mono', ui-monospace, monospace";
+  const MONO = "'DM Mono', ui-monospace, monospace";
 
   const Z = d.zones, T = d.truth[1], keyT = d.poses[d.key][0] as number;
   const L = d.poses.filter((p) => (p[0] as number) >= Z.lost_start && (p[0] as number) <= Z.lost_end) as number[][];

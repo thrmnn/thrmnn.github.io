@@ -1,33 +1,33 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Self-hosted variable font (Space Grotesk, latin + latin-ext)
-   One woff2 covers all weights via the wght axis. Used site-wide for
-   both display and body text.
+   Self-hosted fonts: Hanken Grotesk (variable, one woff2 for every weight) and DM Mono
+   (400 and 500). Licences and sources sit beside the files in public/fonts. size-adjust
+   keeps the lines the width the page was set at.
    ========================================================================== */
 @font-face {
-  font-family: 'Space Grotesk';
+  font-family: 'Hanken Grotesk';
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('/fonts/space-grotesk-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url('/fonts/hanken-grotesk/hanken-grotesk.woff2') format('woff2');
+  size-adjust: 98.5%;
 }
 @font-face {
-  font-family: 'Space Grotesk';
+  font-family: 'DM Mono';
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 400;
   font-display: swap;
-  src: url('/fonts/space-grotesk-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src: url('/fonts/dm-mono/dm-mono-400.woff2') format('woff2');
+  size-adjust: 106%;
 }
 @font-face {
-  font-family: 'JetBrains Mono';
+  font-family: 'DM Mono';
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 500;
   font-display: swap;
-  src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url('/fonts/dm-mono/dm-mono-500.woff2') format('woff2');
+  size-adjust: 106%;
 }
 
 /* ==========================================================================
@@ -70,10 +70,11 @@
    Static design tokens — fonts, spacing, layout (not theme-dependent)
    -------------------------------------------------------------------------- */
 @theme {
-  /* --- Typography (Space Grotesk site-wide) --- */
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-sans: 'Space Grotesk', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  /* --- Typography (Hanken Grotesk site-wide, DM Mono for labels) --- */
+  --font-display: 'Hanken Grotesk', system-ui, sans-serif;
+  --font-sans: 'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, monospace;
+  --face-w: 600; --face-track: -0.035em; --face-lh: 1.04; --face-label: 0.14em;
 
   /* --- Spacing (mobile-first, overridden at md in responsive section below) --- */
   --space-section: 3.5rem;
@@ -92,6 +93,19 @@
   --dur-1: 0.2s;
   --dur-2: 0.5s;
   --dur-3: 0.85s;
+}
+
+/* Pairing adjustments for Hanken Grotesk and DM Mono: tight, medium-weight titles; quiet tracked mono labels. */
+body { letter-spacing: -0.004em; }
+:is(h1, h2, h3, .hero-kicker, .hero-name, .research-lead-title, .entry-title, .pager-title) {
+  font-weight: var(--face-w);
+  letter-spacing: var(--face-track);
+}
+:is(h2, h3, .research-lead-title, .entry-title, .pager-title) { font-weight: 500; }
+:is(h1, .hero-name) { line-height: var(--face-lh); }
+:is(.section-label, .hero-strip figcaption, .entry-meta, .pager-eyebrow, .writing-meta, .hero-positioning, .hero-now) {
+  letter-spacing: var(--face-label);
+  font-variant-numeric: tabular-nums;
 }
 
 /* ==========================================================================

@@ -9,7 +9,8 @@ import StataPlan from '../components/ui/StataPlan.astro';
 import stataMeta from '../../scripts/assets/stata/stata-replay.meta.json';
 import ProjectLinks from '../components/ui/ProjectLinks.astro';
 import { practiceUrl } from '../data/cards';
-import TalksStrip from '../components/ui/TalksStrip.astro';
+import TalkBand from '../components/ui/TalkBand.astro';
+import HeroFigure from '../components/ui/HeroFigure.astro';
 import WritingShelf from '../components/ui/WritingShelf.astro';
 import { homeCards, spotlights, contactDoors, roboticsFigure, roboticsTiles } from '../data/home';
 import Picture from '../components/ui/Picture.astro';
@@ -33,7 +34,8 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
 
 <PageLayout ogType="profile">
   <!-- Hero: words only (owner, 2026-10-28); the research artifact follows below -->
-  <section id="home" class="hero-section">
+  <section id="home" class="hero-section hero-section--figure">
+    <HeroFigure />
     <div class="hero-grid">
     <div class="hero-type">
       <p class="hero-kicker" data-reveal style="--reveal-d: 0;">{author.name}</p>
@@ -136,6 +138,8 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
     <ProjectLinks slugs={spot.legible.slugs} external={{ label: 'theohermann.ch', href: practiceUrl }} />
   </section>
 
+  <TalkBand />
+
   <!-- More work: one card; the full list lives on /projects/ -->
   <section id="projects" class="py-[var(--space-section)]">
     <div class="mx-auto max-w-[var(--max-w-content)] px-6">
@@ -166,7 +170,6 @@ const spot = Object.fromEntries(spotlights.map((s) => [s.id, s]));
     </div>
   </section>
 
-  <TalksStrip />
   <WritingShelf />
 
   <!-- Biography -->

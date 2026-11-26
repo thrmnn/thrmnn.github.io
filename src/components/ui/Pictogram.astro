@@ -1,0 +1,37 @@
+---
+interface Props { name: keyof typeof paths; class?: string }
+const { name, class: cls } = Astro.props;
+
+const paths = {
+  work: { l: ['M4 8h16v12H4z', 'M8 4h8'], n: [[8, 14], [16, 14]] },
+  writing: { l: ['M4 8h16M4 12h16M4 16h10'], n: [[4, 8], [4, 12], [4, 16]] },
+  contact: { l: ['M4 8h16v12H4z', 'M4 8l8 6 8-6'], n: [[12, 14]] },
+  theme: { f: ['M12 4a8 8 0 0 1 0 16z'], c: [[12, 12, 8]], n: [] },
+  menu: { l: [] as string[], n: [[4, 4], [12, 4], [20, 4], [4, 12], [12, 12], [20, 12], [4, 20], [12, 20], [20, 20]] },
+  close: { l: ['M6 6l12 12M18 6L6 18'], n: [[4, 4], [20, 4], [4, 20], [20, 20]] },
+  favela: { l: [] as string[], n: [[5, 18], [9, 15], [13, 17], [17, 12], [8, 9], [14, 7], [19, 18], [11, 11]] },
+  robotics: { l: ['M4 20l8-8 8-8', 'M12 12v8'], n: [[4, 20], [12, 12], [20, 4], [12, 20]] },
+  practice: { l: ['M12 2v5M12 17v5M2 12h5M17 12h5'], c: [[12, 12, 7]], n: [[12, 12]] },
+  talks: { l: ['M4 4h16v10H4z', 'M12 14v6M8 20h8'], n: [[12, 9]] },
+  about: { l: ['M5 20c0-4 3-6 7-6s7 2 7 6'], c: [[12, 8, 3]], n: [] },
+} as const;
+const p = paths[name] as { l?: readonly string[]; f?: readonly string[]; c?: readonly (readonly number[])[]; n: readonly (readonly number[])[] };
+const grid: [number, number][] = [];
+for (let x = 4; x <= 20; x += 4) for (let y = 4; y <= 20; y += 4) grid.push([x, y]);
+---
+
+<svg class:list={['pictogram', cls]} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+  {grid.map(([x, y]) => <circle cx={x} cy={y} r=".7" class="g" />)}
+  {(p.l ?? []).map((d) => <path d={d} class="l" />)}
+  {(p.c ?? []).map(([cx, cy, r]) => <circle cx={cx} cy={cy} r={r} class="l" />)}
+  {(p.f ?? []).map((d) => <path d={d} class="f" />)}
+  {p.n.map(([x, y]) => <circle cx={x} cy={y} r="1.6" class="n" />)}
+</svg>
+
+<style>
+  .pictogram { display: block; width: 1.5rem; height: 1.5rem; flex: none; overflow: visible; }
+  .g { fill: currentColor; opacity: 0.28; }
+  .n { fill: currentColor; }
+  .l { fill: none; stroke: currentColor; stroke-width: 1.25; stroke-linecap: square; stroke-linejoin: miter; }
+  .f { fill: currentColor; stroke: currentColor; stroke-width: 1.25; }
+</style>

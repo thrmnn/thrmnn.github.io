@@ -1,16 +1,30 @@
 ---
 import { base } from '../../data/base';
-import { navLinks, mobileNavLinks } from '../../data/navigation';
+import { author } from '../../data/author';
+import { mobileNavLinks } from '../../data/navigation';
 import ThemeToggle from '../ui/ThemeToggle.astro';
+import Pictogram from '../ui/Pictogram.astro';
 
 const currentPath = Astro.url.pathname.slice(base.length) || '/';
 const isActive = (href: string) =>
   href === currentPath ||
   (href !== '/' && !href.startsWith('/#') && currentPath.startsWith(href));
 
-// Live readout initial text: on the homepage this is overwritten by the
-// section IntersectionObserver as the user scrolls; on every other route
-// it's just the route name and stays static.
+const pad = (i: number) => String(i).padStart(2, '0');
+const icons = {
+  '#favela': 'favela',
+  '#robotics': 'robotics',
+  '#legible': 'practice',
+  '#talks': 'talks',
+  '#contact': 'contact',
+  '/projects/': 'work',
+  '/writing/': 'writing',
+} as const;
+const entries = mobileNavLinks.map((l, i) => {
+  const key = l.href.includes('#') ? l.href.slice(l.href.indexOf('#')) : l.href;
+  return { ...l, key, n: pad(i + 1), icon: icons[key as keyof typeof icons] ?? 'about', current: isActive(l.href) };
+});
+
 const routeLabels: Record<string, string> = {
   '/': 'home',
   '/projects/': 'projects',
@@ -22,91 +36,46 @@ const isHome = currentPath === '/';
 const routeLabel = currentPath.startsWith('/projects/')
   ? 'work'
   : (routeLabels[currentPath] ?? currentPath.replace(/^\/|\/$/g, '').split('/')[0] ?? 'page');
+const here = entries.find((e) => e.current);
+const readout = here ? `${here.n} ${routeLabel}` : routeLabel;
 ---
 
 <header class="site-header" data-header data-open="false">
-  <div class="header-wrap">
-    <div class="header-inner">
-      <!-- Left: monogram (also the Home affordance) + live readout -->
-      <div class="header-brand">
-        <a href={`${base}/`} aria-label="Théo Alessandro Hermann — Home" class="monogram-link">
-          <span class="monogram" aria-hidden="true">
-            <span class="mono-ch" style="--i:0">T</span>
-            <span class="mono-ch" style="--i:1">·</span>
-            <span class="mono-ch" style="--i:2">A</span>
-            <span class="mono-ch" style="--i:3">·</span>
-            <span class="mono-ch" style="--i:4">H</span>
-          </span>
-        </a>
-        <!-- Names the section/route in view. aria-hidden — purely a chrome
-             instrument, not content; visible only in .condensed. -->
-        <span class="header-readout" aria-hidden="true" data-readout data-home={isHome ? 'true' : undefined}>— {routeLabel}</span>
-      </div>
-
-      <!-- Desktop nav -->
-      <nav class="header-nav" aria-label="Primary">
-        <ul>
-          {navLinks.map((link) => (
-            <li class={link.label === 'Contact' ? 'nav-keep' : undefined}>
-              <a
-                href={base + link.href}
-                class="nav-link"
-                {...(isActive(link.href) ? { 'aria-current': 'page' } : {})}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <!-- Controls -->
-      <div class="header-controls">
-        <ThemeToggle />
-        <button
-          type="button"
-          id="nav-toggle-btn"
-          class="nav-burger"
-          aria-controls="mobile-menu"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <svg class="burger-open" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-          <svg class="burger-close" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
+  <div class="bar">
+    <a href={`${base}/`} class="bar-name">{author.name}</a>
+    <div class="bar-end">
+      <span class="bar-read" aria-hidden="true" data-readout data-home={isHome ? 'true' : undefined}>{readout}</span>
+      <ThemeToggle />
+      <button type="button" class="bar-mark" aria-controls="site-index" aria-expanded="false" aria-label="Toggle navigation" data-menu>
+        <Pictogram name="menu" class="mark-open" />
+        <Pictogram name="close" class="mark-close" />
+      </button>
     </div>
-  </div>
-
-  <!-- Mobile menu -->
-  <div id="mobile-menu" class="mobile-menu">
-    <ul>
-      {mobileNavLinks.map((link) => (
-        <li>
-          <a
-            href={base + link.href}
-            class="nav-link"
-            {...(isActive(link.href) ? { 'aria-current': 'page' } : {})}
-          >
-            {link.label}
-          </a>
-        </li>
-      ))}
-    </ul>
   </div>
 </header>
 
+<div id="site-index" class="index" role="dialog" aria-modal="true" aria-label="Index" data-open="false" inert>
+  <button type="button" class="index-close" aria-label="Close menu" data-close>
+    <Pictogram name="close" />
+  </button>
+  <ol>
+    {entries.map((e) => (
+      <li>
+        <a href={base + e.href} class="row" data-key={e.key} {...(e.current ? { 'aria-current': 'page' } : {})}>
+          <span class="row-n">{e.n}</span>
+          <span class="row-t">{e.label}</span>
+          <Pictogram name={e.icon} class="row-i" />
+        </a>
+      </li>
+    ))}
+  </ol>
+</div>
+
 <style>
-  /* Route strip's sticky offset: the flat bar's own height (3.1rem) plus its line. */
   :global(:root) {
     --header-clearance: calc(3.1rem + 1px + 0.6rem);
   }
 
-  /* ============================ Flat bar ============================ */
   .site-header {
     position: fixed;
     top: 0;
@@ -121,15 +90,6 @@ const routeLabel = currentPath.startsWith('/projects/')
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .site-header { background-color: var(--color-bg-primary); }
   }
-
-  .header-wrap {
-    position: relative;
-    max-width: var(--max-w-content);
-    margin: 0 auto;
-  }
-  /* Scan-progress hairline over the bar's bottom line: consumes --progress (set on scroll, see script
-     below). Position tracking is ungated (a direct reflection of scroll, not an animation); only the
-     smoothing transition is reduced-motion gated. */
   .site-header::after {
     content: "";
     position: absolute;
@@ -143,306 +103,174 @@ const routeLabel = currentPath.startsWith('/projects/')
     pointer-events: none;
   }
   @media (prefers-reduced-motion: no-preference) {
-    .site-header::after {
-      transition: transform 0.15s linear;
-    }
+    .site-header::after { transition: transform 0.15s linear; }
   }
 
-  .header-inner {
-    padding: 0 1.5rem;
-    min-height: 3.1rem;
+  .bar {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 1.25rem;
+    height: 3.1rem;
+    padding: 0 0.5rem 0 1.5rem;
   }
-
-  .header-brand {
-    display: flex;
+  @media (max-width: 599px) {
+    .bar { padding-left: 1rem; }
+    .bar-read { display: none; }
+  }
+  .bar-name {
+    display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    min-width: 0;
+    min-height: 44px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.98rem;
+    letter-spacing: -0.015em;
+    color: var(--color-text-primary);
+  }
+  .bar-name:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .bar-end { display: flex; align-items: center; gap: 0.25rem; }
+  .bar-read {
+    margin-right: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
   }
 
-  /* Live readout — quiet at the top of the page, only names the section/
-     route once the bar has condensed. Instrument chrome, not content. */
-  .header-readout {
+  .bar-mark,
+  .index-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+  }
+  .bar-mark:hover,
+  .index-close:hover { color: var(--color-text-primary); }
+  .bar-mark:focus-visible,
+  .index-close:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -4px; }
+  .bar-mark :global(.mark-close) { display: none; }
+  .site-header[data-open="true"] .bar-mark :global(.mark-open) { display: none; }
+  .site-header[data-open="true"] .bar-mark :global(.mark-close) { display: block; }
+
+  .index {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0 1.5rem 2rem;
+    background-color: var(--color-bg-primary);
+    background-image: radial-gradient(circle, var(--color-text-muted) 0.8px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: 12px 12px;
+  }
+  .index[data-open="true"] { display: block; }
+  .index::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: color-mix(in srgb, var(--color-bg-primary) 90%, transparent);
+    pointer-events: none;
+  }
+  .index-close { position: absolute; top: 0.25rem; right: 0.5rem; }
+  .index ol {
+    position: relative;
+    list-style: none;
+    margin: 0 auto;
+    padding: 4.5rem 0 0;
+    max-width: var(--max-w-content);
+  }
+  .index li { border-top: 1px solid var(--color-border); }
+  .index li:last-child { border-bottom: 1px solid var(--color-border); }
+  .row {
+    display: grid;
+    grid-template-columns: 3rem 1fr auto;
+    align-items: center;
+    min-height: 4.2rem;
+    padding: 0.35rem 0;
+    color: var(--color-text-primary);
+  }
+  .row-n {
     font-family: var(--font-mono);
     font-size: 0.62rem;
     letter-spacing: 0.1em;
     color: var(--color-text-muted);
-    white-space: nowrap;
-    opacity: 0;
+    font-variant-numeric: tabular-nums;
   }
-  .site-header.condensed .header-readout {
-    opacity: 1;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .header-readout {
-      transition: opacity var(--dur-1) var(--ease-out);
-    }
-  }
-  @media (max-width: 767px) {
-    .header-readout {
-      display: none;
-    }
-  }
-
-  /* Nav — monospace instrument list */
-  .header-nav ul {
-    display: flex;
-    align-items: center;
-    gap: 1.6rem;
-  }
-  .nav-link {
-    position: relative;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: lowercase;
-    color: var(--color-text-muted);
-    transition: color var(--dur-1) var(--ease-out);
-    padding: 0.3rem 0;
-  }
-  .nav-link::before {
-    content: "";
-    position: absolute;
-    left: -0.7rem;
-    top: 50%;
-    width: 4px;
-    height: 4px;
-    margin-top: -2px;
-    background: var(--color-accent);
-    opacity: 0;
-    transform: scale(0.4);
-    transition: opacity var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
-  }
-  .nav-link:hover {
-    color: var(--color-text-secondary);
-  }
-  .nav-link:hover::before {
-    background: transparent;
-    box-shadow: inset 0 0 0 1px var(--color-accent);
-    opacity: 0.85;
-    transform: scale(0.9);
-  }
-  .nav-link[aria-current='page'] {
-    color: var(--color-text-primary);
-  }
-  .nav-link[aria-current='page']::before {
-    opacity: 1;
-    transform: scale(1);
-  }
-  .nav-link:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 4px;
-    color: var(--color-text-primary);
-  }
-  .nav-link:focus-visible::before {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  /* LiDAR scan-beam: a soft vertical band sweeps the label on hover,
-     echoing the hero point-cloud excite effect. */
-  .nav-link::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(
-      90deg,
-      transparent 42%,
-      color-mix(in srgb, var(--color-accent) 45%, transparent) 50%,
-      transparent 58%
-    );
-    background-size: 250% 100%;
-    background-position: 130% 0;
-    opacity: 0;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .nav-link:hover::after,
-    .nav-link:focus-visible::after {
-      animation: nav-scan 0.55s var(--ease-out) 1;
-    }
-  }
-  @keyframes nav-scan {
-    from {
-      background-position: 130% 0;
-      opacity: 0.95;
-    }
-    to {
-      background-position: -30% 0;
-      opacity: 0;
-    }
-  }
-
-  .header-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  /* Burger */
-  .nav-burger {
-    display: none;
-    cursor: pointer;
-    color: var(--color-text-secondary);
-    padding: 0.65rem;
-    min-width: 44px;
-    min-height: 44px;
-    align-items: center;
-    justify-content: center;
-    margin-right: -0.35rem;
-    background: transparent;
-    border: 0;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-  .nav-burger svg { width: 1.35rem; height: 1.35rem; display: block; transition: transform var(--dur-1) var(--ease-out); }
-  .nav-burger:hover { color: var(--color-text-primary); }
-  .nav-burger:active {
-    background-color: color-mix(in srgb, var(--color-accent) 14%, transparent);
-  }
-  .nav-burger:active svg { transform: scale(0.92); }
-  .nav-burger:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .nav-burger svg, .nav-burger:active svg { transition: none; transform: none; }
-  }
-  .nav-burger .burger-close { display: none; }
-  .site-header[data-open="true"] .nav-burger .burger-open { display: none; }
-  .site-header[data-open="true"] .nav-burger .burger-close { display: block; }
-
-  /* Mobile menu */
-  .mobile-menu {
-    display: none;
-    max-width: var(--max-w-content);
-    margin: 0 auto;
-    padding: 0 0.5rem;
-    border-top: 1px solid var(--color-border);
-  }
-  .site-header[data-open="true"] .mobile-menu { display: block; }
-  .mobile-menu ul {
-    padding: 0.85rem 1rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-  }
-
-  /* Responsive */
-  @media (max-width: 767px) {
-    /* Work collapses into the burger; Contact stays visible, because the
-       one-handed reader is the one least likely to go hunting for it. */
-    .header-nav li:not(.nav-keep) {
-      display: none;
-    }
-    .header-nav ul { gap: 0; }
-    .nav-burger { display: flex; }
-    .mobile-menu .nav-link {
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-      font-size: 0.9rem;
-      padding-left: 0.95rem;
-    }
-    .mobile-menu .nav-link[aria-current='page'] {
-      color: var(--color-text-primary);
-    }
-    .mobile-menu .nav-link[aria-current='page']::before {
-      left: 0;
-      opacity: 1;
-      transform: scale(1.4);
-    }
-  }
-
-  /* --- T·A·H monogram --- */
-  .monogram-link { color: var(--color-text-primary); }
-  .monogram {
-    position: relative;
-    display: inline-block;
+  .row-t {
     font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.35rem;
-    line-height: 1;
-    letter-spacing: normal;
-    color: var(--color-text-primary);
-    white-space: nowrap;
+    font-weight: 500;
+    font-size: clamp(1.6rem, 5vw, 2.7rem);
+    letter-spacing: -0.035em;
+    line-height: 1.1;
   }
-  .mono-ch { display: inline-block; }
+  .row :global(.row-i) { color: var(--color-text-muted); }
+  .row:hover .row-t { color: var(--color-accent); }
+  .row:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .row[data-on] .row-n,
+  .row[aria-current="page"] .row-n,
+  .row[data-on] :global(.row-i),
+  .row[aria-current="page"] :global(.row-i) { color: var(--color-accent); }
 
-  .monogram::after {
-    content: "";
-    position: absolute;
-    top: -3px;
-    bottom: -3px;
-    left: 0;
-    width: 2px;
-    background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .mono-ch {
-      opacity: 0;
-      animation: mono-in 0.5s ease forwards;
-      animation-delay: calc(var(--i) * 0.07s);
-    }
-  }
-  @media (prefers-reduced-motion: no-preference) and (pointer: fine) {
-    .monogram-link:hover .monogram::after {
-      animation: mono-scan 0.55s ease;
-    }
-  }
-  @keyframes mono-in {
-    from { opacity: 0; transform: translateY(0.22em); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes mono-scan {
-    0%   { left: -2px; opacity: 0; }
-    25%  { opacity: 1; }
-    75%  { opacity: 1; }
-    100% { left: 100%; opacity: 0; }
+  @media print {
+    .index { display: none; }
   }
 </style>
 
 <script>
-  // Instrument-console header: scroll-progress scan line, condensed state,
-  // and a live readout that names the section currently in view.
-  (() => {
-    const header = document.querySelector('[data-header]') as HTMLElement | null;
-    if (!header) return;
-
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const index = document.getElementById('site-index');
+  const menu = document.querySelector<HTMLButtonElement>('[data-menu]');
+  if (header && index && menu) {
+    const root = document.documentElement;
     let ticking = false;
-    let wasCondensed = false;
-    function update() {
+    const update = () => {
       ticking = false;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
-      document.documentElement.style.setProperty('--progress', String(p));
-      const condensed = window.scrollY > 32;
-      if (condensed !== wasCondensed) {
-        header!.classList.toggle('condensed', condensed);
-        wasCondensed = condensed;
-      }
-    }
-    window.addEventListener(
-      'scroll',
-      () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } },
-      { passive: true },
-    );
+      const max = root.scrollHeight - window.innerHeight;
+      root.style.setProperty('--progress', String(max > 0 ? Math.min(1, window.scrollY / max) : 0));
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
     update();
 
-    // Live readout: on the homepage, swap the static route label for
-    // whichever section is currently in view. Other routes keep the
-    // server-rendered route name as-is (nothing to observe).
-    const readout = document.querySelector('[data-readout]') as HTMLElement | null;
-    if (readout && readout.dataset.home === 'true' && 'IntersectionObserver' in window) {
-      const sectionLabels: Record<string, string> = {
+    const isOpen = () => index.getAttribute('data-open') === 'true';
+    const setOpen = (open: boolean) => {
+      header.setAttribute('data-open', String(open));
+      index.setAttribute('data-open', String(open));
+      index.toggleAttribute('inert', !open);
+      menu.setAttribute('aria-expanded', String(open));
+      for (const el of Array.from(document.body.children)) {
+        if (el !== index && el.tagName !== 'SCRIPT') el.toggleAttribute('inert', open);
+      }
+      if (open) requestAnimationFrame(() => index.querySelector<HTMLElement>('a')?.focus());
+      else menu.focus();
+    };
+    menu.addEventListener('click', () => setOpen(!isOpen()));
+    index.querySelector('[data-close]')?.addEventListener('click', () => setOpen(false));
+    index.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a.row')) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen()) setOpen(false);
+    });
+
+    const readout = document.querySelector<HTMLElement>('[data-readout]');
+    if (readout?.dataset.home === 'true' && 'IntersectionObserver' in window) {
+      const labels: Record<string, string> = {
         home: 'home',
         favela: 'favela research',
         robotics: 'robotics',
@@ -452,51 +280,20 @@ const routeLabel = currentPath.startsWith('/projects/')
         about: 'about',
         contact: 'contact',
       };
-      const sectionIO = new IntersectionObserver(
+      const rows = Array.from(index.querySelectorAll<HTMLElement>('a.row'));
+      const io = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            if (entry.isIntersecting) {
-              const id = (entry.target as HTMLElement).id;
-              readout.textContent = `— ${sectionLabels[id] ?? id}`;
-            }
+            if (!entry.isIntersecting) continue;
+            const id = (entry.target as HTMLElement).id;
+            const hit = rows.find((r) => r.dataset.key === `#${id}`);
+            readout.textContent = `${hit ? `${hit.querySelector('.row-n')?.textContent} ` : ''}${labels[id] ?? id}`;
+            for (const r of rows) r.toggleAttribute('data-on', r === hit);
           }
         },
         { rootMargin: '-40% 0px -55% 0px' },
       );
-      document.querySelectorAll('main section[id]').forEach((s) => sectionIO.observe(s));
+      document.querySelectorAll('main section[id]').forEach((s) => io.observe(s));
     }
-
-    const burger = document.getElementById('nav-toggle-btn') as HTMLButtonElement | null;
-    const mobileMenu = document.getElementById('mobile-menu');
-    if (mobileMenu) mobileMenu.setAttribute('inert', '');
-    if (burger && mobileMenu) {
-      const backgroundEls = (): HTMLElement[] =>
-        Array.from(document.querySelectorAll('main, footer')) as HTMLElement[];
-      const setOpen = (open: boolean) => {
-        header!.setAttribute('data-open', String(open));
-        burger.setAttribute('aria-expanded', String(open));
-        mobileMenu.toggleAttribute('inert', !open);
-        for (const el of backgroundEls()) el.toggleAttribute('inert', open);
-        if (open) {
-          requestAnimationFrame(() => (mobileMenu.querySelector('a') as HTMLElement | null)?.focus());
-        }
-      };
-      const isOpen = () => header!.getAttribute('data-open') === 'true';
-      burger.addEventListener('click', () => setOpen(!isOpen()));
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && isOpen()) {
-          setOpen(false);
-          burger.focus();
-        }
-      });
-      document.addEventListener('click', (e) => {
-        if (!isOpen()) return;
-        if (!header!.contains(e.target as Node)) setOpen(false);
-      });
-      mobileMenu.addEventListener('click', (e) => {
-        const a = (e.target as HTMLElement).closest('a');
-        if (a && mobileMenu.contains(a) && isOpen()) setOpen(false);
-      });
-    }
-  })();
+  }
 </script>

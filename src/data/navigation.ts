@@ -1,7 +1,6 @@
 import { base } from './base';
 import { author } from './author';
 import { getPublishedWriting } from './writing';
-import { publishedTalks } from './talks';
 
 const hasWriting = (await getPublishedWriting()).length > 0;
 const writingLink = hasWriting ? [{ label: 'Writing', href: '/writing/' }] : [];
@@ -13,13 +12,9 @@ export const navLinks = [
   { label: 'Contact', href: '/#contact' },
 ];
 
-// The burger is a jump list: the labels are the homepage section labels.
+// The index lists the homepage blocks that exist: the project list and the contact block.
 export const mobileNavLinks = [
-  { label: 'Favela research', href: '/#favela' },
-  { label: 'Robotics', href: '/#robotics' },
-  { label: 'Practice', href: '/#legible' },
-  { label: 'Work', href: '/projects/' },
-  ...(publishedTalks.length ? [{ label: 'Talks', href: '/#talks' }] : []),
+  { label: 'Work', href: '/#projects' },
   ...writingLink,
   { label: 'Contact', href: '/#contact' },
 ];

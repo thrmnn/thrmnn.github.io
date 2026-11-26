@@ -21,6 +21,8 @@ interface Props {
   tilt?: number;
   swing?: number;
   flow?: boolean;
+  head?: boolean;
+  arrive?: boolean;
 }
 const {
   revealDelay = 1,
@@ -37,6 +39,8 @@ const {
   tilt = 0.62,
   swing = 0,
   flow = false,
+  head = false,
+  arrive = false,
 } = Astro.props;
 
 const dataDir = join(process.cwd(), 'public/data');
@@ -56,7 +60,7 @@ const grid = (meta.terrain_grid ?? []).map((g) => `${g.nx},${g.ny},${g.offset}`)
 <section class="artifact-band">
   <div class="hero-artifact vidigal-artifact" data-reveal style={`--reveal-d: ${revealDelay}; --frame-aspect: ${aspect}; --frame-aspect-mobile: ${mobileAspect};`}>
     <div class="artifact-frame vidigal-frame">
-      <canvas class="vidigal-panel" data-rooftops={`${base}/data/${data}.bin`} data-stride={stride} data-grid={grid} data-emphasis={emphasis} data-wire={wire} data-zoom={zoom} data-splat={splat} data-tilt={tilt} data-swing={swing} data-flow={flow ? '1' : undefined} aria-label={ariaLabel}></canvas>
+      <canvas class="vidigal-panel" data-rooftops={`${base}/data/${data}.bin`} data-stride={stride} data-grid={grid} data-emphasis={emphasis} data-wire={wire} data-zoom={zoom} data-splat={splat} data-tilt={tilt} data-swing={swing} data-flow={flow ? '1' : undefined} data-head={head ? 'a' : undefined} data-arrive={arrive ? '1' : undefined} aria-label={ariaLabel}></canvas>
       <div class="artifact-corners" aria-hidden="true">
         <span></span><span></span><span></span><span></span>
       </div>

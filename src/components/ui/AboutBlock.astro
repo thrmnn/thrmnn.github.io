@@ -1,0 +1,52 @@
+---
+import { base } from '../../data/base';
+import { author } from '../../data/author';
+import { publishedTalks } from '../../data/talks';
+import SocialIcon from './SocialIcon.astro';
+import '../../styles/home-about.css';
+
+const talk = [...publishedTalks].sort((a, b) => b.date.localeCompare(a.date))[0];
+const fmt = (iso: string) => new Date(iso).toLocaleDateString('en', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+---
+
+<section id="about" class="py-[var(--space-section)]">
+  <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+    <div class="about-grid">
+      <div class="about-side" data-reveal style="--reveal-d: 1;">
+        {talk && (
+          <figure class="about-photo">
+            <img src={`${base}${talk.photo!.src}`} width={talk.photo!.w} height={talk.photo!.h} alt={talk.photo!.alt} loading="lazy" decoding="async" draggable="false" />
+            <figcaption>
+              <span>{talk.event} · {talk.place} · {fmt(talk.date)}</span>
+              <span>Photo: {talk.photo!.credit}</span>
+              {talk.href && <a href={talk.href} target="_blank" rel="noopener noreferrer">Event page →</a>}
+            </figcaption>
+          </figure>
+        )}
+        <p class="text-xl font-bold text-text-primary">{author.name}</p>
+        <p class="text-sm text-text-muted">{author.role}</p>
+        <div class="flex gap-3 mt-4">
+          {author.social.map((s) => (
+            <a
+              href={s.href}
+              {...(s.icon !== 'email' ? { target: '_blank', rel: 'noopener' } : {})}
+              class="text-text-muted hover:text-text-secondary transition-colors"
+              aria-label={s.label}
+              title={s.label}
+            >
+              <SocialIcon type={s.icon as 'email' | 'github' | 'linkedin' | 'scholar'} />
+            </a>
+          ))}
+        </div>
+      </div>
+      <div class="flex-1 max-w-prose ink-links" data-reveal style="--reveal-d: 2;">
+        {author.bio.map((paragraph) => (
+          <p class="text-text-secondary leading-relaxed mb-4" set:html={paragraph} />
+        ))}
+        <p class="mt-2">
+          <a href={`${base}/cv/`} class="inline-block py-3 -my-3 text-sm ink-link">Full CV →</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

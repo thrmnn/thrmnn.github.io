@@ -1,0 +1,33 @@
+---
+import { existsSync } from 'node:fs';
+import { getCollection } from 'astro:content';
+import { base } from '../../data/base';
+import Picture from './Picture.astro';
+
+const all = (await getCollection('projects')).filter((p) => !p.data.draft);
+all.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const rows = all.map((p) => {
+  const slug = p.id.replace(/\.md$/, '');
+  const row = existsSync(`${process.cwd()}/public/projects/${slug}/row.webp`) ? `/projects/${slug}/row.webp` : null;
+  return { href: `${base}/projects/${slug}/`, title: p.data.title, label: p.data.label, plate: row ?? p.data.cardImage ?? p.data.image ?? null };
+});
+---
+
+<section id="projects" aria-label="All work" class="home-projects">
+  <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+    <ul class="entry-rows" data-reveal>
+      {rows.map((r) => (
+        <li><a href={r.href}>
+          <span class="entry-plate">{r.plate && <Picture src={r.plate} width={176} height={132} />}</span>
+          <span class="entry-title">{r.title}</span>
+          {r.label && <span class="entry-meta">{r.label}</span>}
+          <span class="entry-arrow" aria-hidden="true">&rarr;</span>
+        </a></li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .home-projects { padding-bottom: var(--space-section); scroll-margin-top: 5rem; }
+</style>

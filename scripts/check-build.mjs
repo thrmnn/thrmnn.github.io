@@ -517,9 +517,11 @@ for (const f of htmlFiles) {
     const words = span.split(/\s+/).filter((w) => /[A-Za-zÀ-ÿ0-9]/.test(w));
     // 205, not 200: the owner's plain project titles (30 Oct, "plain" everywhere) add four
     // words to the link lists; the goal, a homepage read in under a minute, is unchanged.
+    // 240: the Dubai talk band's caption line (owner, 25 Nov, "Full-width band") adds 17 words of its own; the hidden
+    //   figure caption was dropped from the hero to pay part of it.
     // 235: the hero lines, the three picture captions and the Stata example told in plain words
     // (owner, 13 Nov: "more explanation on what is the STATA example"); the homepage stays short above the work.
-    must('home_words', words.length < 235, `${words.length} words above the work grid (budget < 235)`);
+    must('home_words', words.length < 240, `${words.length} words above the work grid (budget < 240)`);
     console.log(`  · ${words.length} words above the work grid`);
   }
 }

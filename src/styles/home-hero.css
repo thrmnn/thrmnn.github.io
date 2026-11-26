@@ -28,9 +28,7 @@
 .hero-figure .artifact-band { padding: 0; position: absolute; inset: -30% -12% -2% -12%; }
 .hero-figure .hero-artifact { max-width: none; margin: 0; height: 100%; gap: 0; }
 .hero-figure .artifact-frame { aspect-ratio: auto !important; flex: 1; height: 100%; }
-.hero-figure .artifact-corners,
-.hero-figure .artifact-caption,
-.hero-figure .artifact-provenance { display: none; }
+.hero-figure .artifact-corners { display: none; }
 .hero-figure [data-reveal] { opacity: 1 !important; transition: none !important; }
 
 .hero-section--figure .hero-type {

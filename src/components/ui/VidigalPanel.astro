@@ -59,8 +59,8 @@ const grid = (meta.terrain_grid ?? []).map((g) => `${g.nx},${g.ny},${g.offset}`)
         <span></span><span></span><span></span><span></span>
       </div>
     </div>
-    <p class="artifact-caption">{caption}</p>
-    <p class="artifact-provenance">{provenance}</p>
+    {caption && <p class="artifact-caption">{caption}</p>}
+    {provenance && <p class="artifact-provenance">{provenance}</p>}
   </div>
 </section>
 

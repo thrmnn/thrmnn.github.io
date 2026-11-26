@@ -11,6 +11,8 @@ image: '/projects/autonomous-boat-perception/card-plate.webp'
 imageWidth: 1200
 imageHeight: 1200
 imageAlt: "A small generic boat on an Amsterdam canal between rows of buildings and trees, drawn as dots. Blue rings and points mark where a simulated 16-beam LiDAR on its mast would hit the water and the surroundings. The canal is open aerial LiDAR; the boat and the scan are simulated."
+railImage: '/projects/autonomous-boat-perception/card-plate-lg.webp'
+railImageSize: 2000
 cardImage: '/projects/autonomous-boat-perception/card-plate.webp'
 cardAnim: '/projects/autonomous-boat-perception/card-anim.webp'
 tags:

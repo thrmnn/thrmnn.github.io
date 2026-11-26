@@ -38,7 +38,9 @@ export async function getStaticPaths() {
 const { project, prev, next } = Astro.props;
 const { Content } = await render(project);
 const replay = project.id === 'ros2-localization-triage';
-const hasRail = replay || project.data.figure === 'tracks' || (!project.data.figure && !!project.data.image);
+const railSrc = project.data.railImage ?? project.data.image;
+const hasRail = replay || project.data.figure === 'tracks' || (!project.data.figure && !!railSrc);
+const paperTwin = railSrc ? existsSync(`${process.cwd()}/public${railSrc.replace(/(\.[a-z]+)$/, '-paper$1')}`) : false;
 const strip = replay ? stataFacts() : null;
 const lead = !!(project.data.figure || project.data.facts);
 const facts = project.data.facts ? fillFacts(project.data.facts, trackFigure().stats).filter((f) => f.label !== 'Sequence').slice(0, 3) : null;
@@ -64,7 +66,7 @@ const articleJsonLd = {
 
 <PageLayout title={project.data.title} description={project.data.summary} image={project.data.image} ogType="article" articleJsonLd={articleJsonLd}>
   <section class="pj-section py-[var(--space-section)]">
-    <div class={`pj${hasRail ? ' pj-split' : ''} mx-auto max-w-[var(--max-w-content)] px-6`}>
+    <div class={`pj${hasRail ? ' pj-split' : ''} mx-auto max-w-[var(--max-w-content)] px-6`} data-prev={prev ? `${base}/projects/${prev.id}/` : undefined} data-next={next ? `${base}/projects/${next.id}/` : undefined}>
       <!-- Header -->
       <div class={`pj-head mb-10${lead ? '' : ' pj-head-plain'}`}>
         <a href={`${base}/projects/`} data-back={project.id} data-home={`${base}/`} class="text-sm text-text-muted hover:text-text-secondary mb-4 inline-block">
@@ -106,17 +108,17 @@ const articleJsonLd = {
       ) : (
         <>
           {facts && <FactsStrip facts={facts} />}
-          {!project.data.figure && project.data.image && (
+          {!project.data.figure && railSrc && (
             <div class="pj-rail pj-rail-picture mb-10 overflow-hidden border border-border">
               <Picture
-                src={project.data.image}
-                anim={project.data.cardAnim && (!project.data.cardImage || project.data.cardImage === project.data.image) ? project.data.cardAnim : undefined}
+                src={railSrc}
+                anim={!project.data.railImage && project.data.cardAnim && (!project.data.cardImage || project.data.cardImage === project.data.image) ? project.data.cardAnim : undefined}
                 phone={project.data.imagePhone}
                 phoneMax={639}
                 alt={project.data.imageAlt ?? project.data.title}
-                width={project.data.imageWidth ?? 1200}
-                height={project.data.imageHeight ?? 630}
-                plain={project.data.cardImage !== project.data.image}
+                width={project.data.railImage ? project.data.railImageSize ?? 2000 : project.data.imageWidth ?? 1200}
+                height={project.data.railImage ? project.data.railImageSize ?? 2000 : project.data.imageHeight ?? 630}
+                plain={project.data.cardImage !== project.data.image && !paperTwin}
                 loading="eager"
                 fetchpriority="high"
                 imgClass="w-full h-auto block"
@@ -279,6 +281,7 @@ const articleJsonLd = {
 
 <script>
   import '../../scripts/project-rows.ts';
+  import '../../scripts/project-swipe.ts';
   const back = document.querySelector('a[data-back]') as HTMLAnchorElement | null;
   if (back) {
     try {

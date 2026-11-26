@@ -1,6 +1,8 @@
 ---
 title: "How city form shapes light and air"
 date: '2025-01-01T00:00:00Z'
+railImage: '/projects/urban-morphometrics/vidigal-plate-lg.webp'
+railImageSize: 2000
 cardImage: '/projects/urban-morphometrics/vidigal-plate.webp'
 cardAnim: '/projects/urban-morphometrics/vidigal-anim.webp'
 featuredOrder: 1

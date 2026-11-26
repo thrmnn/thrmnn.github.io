@@ -40,6 +40,7 @@ SIMULATED: everything that is the boat and its scan.
     python3 scripts/make-roboat-plate.py            # card plate and loop (high view) + hero tile and loop (low view along the water)
     python3 scripts/make-roboat-plate.py --view low   # alternative card view along the water, written to ~/Perso/site-review/files
     python3 scripts/make-roboat-plate.py --paper    # the same views in dark ink on #fafafa, into plates-paper/ with -paper before the extension
+    python3 scripts/make-roboat-plate.py --hires 2000  # only the card plate, redrawn at 2000 px (same dots, not a resample), as card-plate-lg.webp; add --paper for the light twin
     python3 scripts/make-roboat-plate.py --sample   # rebuild the asset from a LAZ
 """
 import math
@@ -382,9 +383,22 @@ def save_loop(frames, path, q):
     frames[0].save(path, "WEBP", save_all=True, append_images=frames[1:], duration=80, loop=0, quality=q, method=6)
 
 
+def hires(n):
+    cam, v = VIEWS["high"]["cam"], VIEWS["high"]
+    global RING_FAR
+    RING_FAR = v["ring_far"]
+    out = paper_path(OUT / "card-plate-lg.webp")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    sc = scene()
+    render(cam, groups(sc, cam, r=v.get("r", 3.0)), n).save(out, "WEBP", quality=84, method=6)
+    print(out, out.stat().st_size, "B")
+
+
 def main():
     if "--paper" in sys.argv:
         use_paper()
+    if "--hires" in sys.argv:
+        return hires(int(sys.argv[sys.argv.index("--hires") + 1]))
     names = [sys.argv[sys.argv.index("--view") + 1]] if "--view" in sys.argv else ["high", "tile"]
     sc = scene()
     print(len(sc["cloud"]), "cloud pts,", len(sc["lit"]), "lit,", len(sc["ring"]), "ring")

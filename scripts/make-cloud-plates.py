@@ -21,6 +21,7 @@ DRAWN: the Vidigal hillside is drawn as contour lines: the shipped terrain point
     python3 scripts/make-cloud-plates.py              # card plates, hero tiles, loops for both clouds
     python3 scripts/make-cloud-plates.py --paper      # the same, dark ink on #fafafa, into plates-paper/ (-paper before the extension)
     python3 scripts/make-cloud-plates.py --alt        # alternative Vidigal still to ~/Perso/site-review/files
+    python3 scripts/make-cloud-plates.py --hires 2000 # only the two plates, redrawn at 2000 px (same dots, not a resample), as *-plate-lg.webp; add --paper for the light twins
 """
 import json
 import math
@@ -245,8 +246,13 @@ class VidigalView:
         return X, Y, D, layers
 
 
-def vidigal(out_dir=VID):
+def vidigal(out_dir=VID, hires=None):
     v = VidigalView()
+    if hires:
+        lg = target(out_dir / "vidigal-plate-lg.webp")
+        draw(*v.layers()[:3], v.layers()[3], hires).save(lg, "WEBP", quality=84, method=6)
+        print(lg, lg.stat().st_size, "B")
+        return
     im = draw(*v.layers()[:3], v.layers()[3])
     im.save(target(out_dir / "vidigal-plate.webp"), "WEBP", quality=84, method=6)
     vs = v
@@ -277,7 +283,7 @@ def crop_tile(im, v):
     return im.crop((bx, by, bx + int(w), by + int(h))).resize((450, 600), Image.LANCZOS)
 
 
-def jordaan():
+def jordaan(hires=None):
     p, cat, _ = load("amsterdam-canopy")
     X, Y, t, _ = frame(p, 0.5, 0.62, 0.7, 0.86, 0.4)
     canopy = cat == 1
@@ -293,6 +299,11 @@ def jordaan():
         ww = np.clip(w + 0.45 * g * (0.5 + 0.5 * t), 0, 1)
         return draw(X, Y, t, [(~canopy, rgb, ww, 1.7), (canopy, rgb, ww, 2.5)], size)
 
+    if hires:
+        lg = JOR.with_name("jordaan-plate-lg.webp")
+        render(None, hires).save(target(lg), "WEBP", quality=84, method=6)
+        print(target(lg), target(lg).stat().st_size, "B")
+        return
     render(None, S).save(target(JOR), "WEBP", quality=84, method=6)
     print(target(JOR), target(JOR).stat().st_size, "B")
     out = JOR.parent / "jordaan-anim.webp"
@@ -313,6 +324,10 @@ if __name__ == "__main__":
         use_paper()
     if "--alt" in sys.argv:
         vidigal_alt()
+    elif "--hires" in sys.argv:
+        n = int(sys.argv[sys.argv.index("--hires") + 1])
+        jordaan(n)
+        vidigal(hires=n)
     else:
         jordaan()
         vidigal()

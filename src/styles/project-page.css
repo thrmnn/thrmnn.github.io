@@ -49,3 +49,9 @@
   .pj-intro-folded, .pj-row .pj-panel { display: block !important; }
   .pj-toggle::after { content: none; }
 }
+
+/* leaving for the neighbouring project: a short fade, none under reduced motion */
+html[data-leaving] body { opacity: 0; transition: opacity 180ms ease; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-leaving] body { transition: none; }
+}

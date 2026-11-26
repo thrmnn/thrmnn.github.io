@@ -1,6 +1,8 @@
 ---
 title: "Leaf area from an aerial scan"
 date: '2024-09-01T00:00:00Z'
+railImage: '/projects/aerial-lidar-tree-census/jordaan-plate-lg.webp'
+railImageSize: 2000
 cardImage: '/projects/aerial-lidar-tree-census/jordaan-plate.webp'
 cardAnim: '/projects/aerial-lidar-tree-census/jordaan-anim.webp'
 featuredOrder: 2

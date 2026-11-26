@@ -2,7 +2,9 @@
 .hc-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
 .hc-a { display: block; color: inherit; }
 .hc-pic { display: block; aspect-ratio: 1; overflow: hidden; margin-bottom: 0.7rem; border: 1px solid transparent; }
-.hc-pic picture, .hc-pic img { display: block; }
+/* display stays with the site's dark/paper pair rule; only the size is set here */
+.hc-pic picture { height: 100%; }
+.hc-pic img { display: block; }
 .hc-pic img { width: 100%; height: 100%; object-fit: cover; }
 .hc-a:hover .hc-pic, .hc-a:focus-visible .hc-pic { border-color: var(--color-border-hover); }
 .hc-a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; }

@@ -36,13 +36,12 @@ export async function getStaticPaths() {
 }
 
 const { project, prev, next } = Astro.props;
-const { Content, headings } = await render(project);
+const { Content } = await render(project);
 const replay = project.id === 'ros2-localization-triage';
 const hasRail = replay || project.data.figure === 'tracks' || (!project.data.figure && !!project.data.image);
 const strip = replay ? stataFacts() : null;
-const sections = headings.filter((h) => h.depth === 2);
 const lead = !!(project.data.figure || project.data.facts);
-const facts = project.data.facts ? fillFacts(project.data.facts, trackFigure().stats) : null;
+const facts = project.data.facts ? fillFacts(project.data.facts, trackFigure().stats).filter((f) => f.label !== 'Sequence').slice(0, 3) : null;
 const sameLink = project.data.github && project.data.externalLink === project.data.github;
 const nextRow = lead && next && existsSync(`${process.cwd()}/public/projects/${next.id}/row.webp`) ? `${base}/projects/${next.id}/row.webp` : null;
 
@@ -96,11 +95,6 @@ const articleJsonLd = {
         <>
           <div class="pj-rail pj-rail-panel pj-rail-replay">
             <ReplayFigure />
-            {sections.length > 0 && (
-              <nav class="pj-index" aria-label="Sections">
-                {sections.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}
-              </nav>
-            )}
           </div>
           {strip && <FactsStrip facts={strip} />}
         </>
@@ -108,11 +102,6 @@ const articleJsonLd = {
         <div class="pj-rail pj-rail-panel">
           <TrackFigure />
           {facts && <FactsStrip facts={facts} />}
-          {sections.length > 0 && (
-            <nav class="pj-index" aria-label="Sections">
-              {sections.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}
-            </nav>
-          )}
         </div>
       ) : (
         <>
@@ -289,6 +278,7 @@ const articleJsonLd = {
 </style>
 
 <script>
+  import '../../scripts/project-rows.ts';
   const back = document.querySelector('a[data-back]') as HTMLAnchorElement | null;
   if (back) {
     try {
@@ -298,17 +288,5 @@ const articleJsonLd = {
         back.textContent = '← Back';
       }
     } catch {}
-  }
-  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.pj-index a'));
-  if (links.length) {
-    const heads = links.map((a) => document.getElementById(a.hash.slice(1)));
-    const spot = () => {
-      let cur = 0;
-      heads.forEach((h, n) => { if (h && h.getBoundingClientRect().top < innerHeight * 0.4) cur = n; });
-      links.forEach((a, n) => a.setAttribute('aria-current', String(n === cur)));
-    };
-    addEventListener('scroll', spot, { passive: true });
-    addEventListener('resize', spot);
-    spot();
   }
 </script>

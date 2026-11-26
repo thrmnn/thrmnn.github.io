@@ -540,6 +540,7 @@ for (const f of htmlFiles) {
   const referenced = (rel) => corpus.includes(rel) || corpus.includes(rel.split('/').pop());
   for (const f of walk(PUBLIC)) {
     const rel = f.slice(PUBLIC.length).replace(/\\/g, '/');
+    if (/^\/fonts\/[^/]+\/(OFL|SOURCE)\.txt$/.test(rel)) continue; // the typefaces' licences ship beside the files, linked from nowhere
     if (platform.has(rel.slice(1)) || referenced(rel) || rel.startsWith('/talks/fixture-')) continue;
     if (rel.endsWith('.json') && referenced(rel.replace(/\.json$/, '.bin'))) continue;
     fail('orphans', `${rel} ships in public/ but no built page references it`);

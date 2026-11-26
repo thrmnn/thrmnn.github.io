@@ -1,12 +1,16 @@
-// A canvas drawn from the tracked people of one sequence: a dot per person, a short trail behind it.
+// The filmed street of MOT17-04 redrawn as dots, with the pipeline's boxes and paths on top.
+// The browser never receives a filmed frame, only a coarse brightness grid (scripts/make-film-grid.py).
 // Time loops; moving across the figure sets the frame (mouse hover, touch drag; pan-y keeps vertical scroll).
 const TRAIL = 45;
 
 export async function initTrackFigure() {
   const canvas = document.querySelector<HTMLCanvasElement>('canvas[data-track-figure]');
-  const cap = document.querySelector<HTMLElement>('[data-track-caption]');
-  if (!canvas || !cap) return;
-  const d = (await (await fetch(canvas.dataset.src!)).json()) as { w: number; h: number; frames: number; runs: number[][] };
+  const count = document.querySelector<HTMLElement>('[data-track-count]');
+  if (!canvas || !count) return;
+  const [d, buf] = (await Promise.all([
+    fetch(canvas.dataset.src!).then((r) => r.json()),
+    fetch(canvas.dataset.grid!).then((r) => r.arrayBuffer()),
+  ])) as [{ w: number; h: number; frames: number; runs: number[][] }, ArrayBuffer];
   const ctx = canvas.getContext('2d')!;
 
   const runs = d.runs.map((r) => {
@@ -18,73 +22,117 @@ export async function initTrackFigure() {
   let peak = 1, peakCount = 0;
   for (let f = 1; f <= d.frames; f++) { const c = at(f).length; if (c > peakCount) { peakCount = c; peak = f; } }
 
+  // Header: cols, rows, stored frames, pitch, frame step (uint16 LE); then two 4-bit cells per byte, high nibble first.
+  const [cols, rows, stored, pitch, step] = new Uint16Array(buf, 0, 5);
+  const packed = new Uint8Array(buf, 10);
+  const cells = new Uint8Array(packed.length * 2);
+  for (let i = 0; i < packed.length; i++) { cells[2 * i] = (packed[i] >> 4) * 17; cells[2 * i + 1] = (packed[i] & 15) * 17; }
+  const n = cols * rows;
+  // tone range: 2nd to 99.5th percentile of the whole sequence
+  const hist = new Uint32Array(256);
+  for (let i = 0; i < cells.length; i++) hist[cells[i]]++;
+  let lo = 255, hi = 0, acc = 0;
+  for (let i = 0; i < 256; i++) { acc += hist[i]; if (acc < cells.length * 0.02) lo = i; if (acc < cells.length * 0.995) hi = i; }
+  hi = Math.max(hi, lo + 1);
+  // the street as it is when nobody stands there: each cell's median over the sequence
+  const bg = new Uint8Array(n), cnt = new Uint16Array(256);
+  for (let c = 0; c < n; c++) {
+    cnt.fill(0);
+    for (let f = 0; f < stored; f++) cnt[cells[f * n + c]]++;
+    let v = 0;
+    for (acc = 0; v < 256; v++) { acc += cnt[v]; if (acc * 2 >= stored) break; }
+    bg[c] = v;
+  }
+
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let frame = reduced ? peak : 1;
   let held = false;
-  let dpr = 1, W = 0, H = 0;
+  let dpr = 1, W = 0, H = 0, drawn = '';
 
-  const css = (n: string) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  const px = (x: number) => (x / d.w) * W;
-  const py = (y: number) => (y / d.h) * H;
+  const css = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  // Ink is the page's text colour on both grounds. Dark page: ink size follows brightness (light on night).
+  // Light page: it follows darkness, as in a printed halftone, so lamps and the white car stay paper and the street is not a dark tile.
+  const tone = (b: number, inv: boolean) => {
+    let t = (b - lo) / (hi - lo);
+    t = t <= 0 ? 0 : t >= 1 ? 1 : t;
+    return Math.pow(inv ? 1 - t : t, 1.25);
+  };
+  // whatever differs from the cell's median over the sequence (people, whatever the clothes) is drawn heavier
+  const val = (i: number, c: number, inv: boolean) => {
+    const b = cells[i], dd = Math.abs(b - bg[c]), fg = dd <= 10 ? 0 : dd >= 50 ? 1 : (dd - 10) / 40;
+    return Math.min(1, 0.5 * tone(b, inv) + 0.9 * fg);
+  };
+  const isLight = (ground: string) => {
+    if (ground[0] !== '#') return false;
+    const v = parseInt(ground.slice(1), 16);
+    return (v >> 16) * 0.3 + ((v >> 8) & 255) * 0.59 + (v & 255) * 0.11 > 127;
+  };
 
   function draw() {
-    const ink = css('--color-text-primary'), accent = css('--color-accent'), faint = css('--color-border');
-    const boxes = canvas!.dataset.mode !== 'points';
+    if (!W) return;
+    const f = Math.round(frame);
+    const ink = css('--color-text-primary'), accent = css('--color-accent'), ground = css('--color-bg-primary');
+    const key = `${f}|${ink}|${accent}|${ground}|${W}x${H}`;
+    if (key === drawn) return;
+    drawn = key;
+
+    ctx.fillStyle = ground;
+    const inv = isLight(ctx.fillStyle);
+    const zs = Math.max(W / d.w, H / d.h), ox = (W - d.w * zs) / 2, oy = (H - d.h * zs) / 2;
+    const cw = pitch * zs, base0 = Math.floor((f - 1) / step) * n;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = faint;
-    const step = W / 48;
-    for (let x = step / 2; x < W; x += step) for (let y = step / 2; y < H; y += step) ctx.fillRect(x - 0.5, y - 0.5, 1, 1);
-    const f = Math.round(frame);
-    const live = at(f);
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = ink;
-    ctx.globalAlpha = 0.09;
+    ctx.fillStyle = ink;
+    ctx.globalAlpha = 0.9;
     ctx.beginPath();
-    for (const r of runs) {
-      for (let k = 0; k < r.n; k++) {
-        const x = px(r.pts[4 * k]), y = py(r.pts[4 * k + 1]);
-        k === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
+    const rmax = cw * 0.5;
+    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+      const r = rmax * Math.sqrt(val(base0 + y * cols + x, y * cols + x, inv));
+      if (r < 0.35) continue;
+      const cx = ox + (x + 0.5) * cw, cy = oy + (y + 0.5) * cw;
+      ctx.moveTo(cx + r, cy);
+      ctx.arc(cx, cy, r, 0, 6.2832);
     }
-    ctx.stroke();
+    ctx.fill();
+
+    const live = at(f);
+    const px = (v: number) => ox + v * zs, py = (v: number) => oy + v * zs;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1.25;
     for (const r of live) {
       const i = f - r.f0, from = Math.max(0, i - TRAIL);
       for (let k = from + 1; k <= i; k++) {
-        ctx.globalAlpha = 0.65 * ((k - from) / (i - from + 1));
+        ctx.globalAlpha = 0.95 * ((k - from) / (i - from + 1));
         ctx.beginPath();
         ctx.moveTo(px(r.pts[4 * (k - 1)]), py(r.pts[4 * (k - 1) + 1]));
         ctx.lineTo(px(r.pts[4 * k]), py(r.pts[4 * k + 1]));
         ctx.stroke();
       }
     }
-    const numbers = boxes && W >= 640;
-    if (numbers) { ctx.font = `${Math.max(9, W / 120)}px 'JetBrains Mono', ui-monospace, monospace`; ctx.textBaseline = 'bottom'; }
+    const numbers = W >= 640, fs = Math.max(9, W / 120);
+    if (numbers) { ctx.font = `${fs}px 'JetBrains Mono', ui-monospace, monospace`; ctx.textBaseline = 'bottom'; }
+    ctx.lineWidth = 1.5;
     for (const r of live) {
-      const i = f - r.f0, x = px(r.pts[4 * i]), y = py(r.pts[4 * i + 1]);
-      if (boxes) {
-        const bw = px(r.pts[4 * i + 2] * 2), bh = py(r.pts[4 * i + 3] * 2);
-        ctx.globalAlpha = 0.45;
-        ctx.strokeStyle = ink;
-        ctx.strokeRect(Math.round(x - bw / 2) + 0.5, Math.round(y - bh) + 0.5, Math.round(bw), Math.round(bh));
-        if (numbers) { ctx.globalAlpha = 0.7; ctx.fillStyle = ink; ctx.fillText(String(r.id), x + bw / 2 + 3, y - bh + 11); }
+      const i = f - r.f0;
+      const x0 = px(r.pts[4 * i]), y0 = py(r.pts[4 * i + 1]), bw = r.pts[4 * i + 2] * 2 * zs, bh = r.pts[4 * i + 3] * 2 * zs;
+      const l = Math.max(3, Math.min(10, Math.min(bw, bh) * 0.22)), L = x0 - bw / 2, R = x0 + bw / 2, T = y0 - bh, B = y0;
+      ctx.globalAlpha = 1;
+      ctx.beginPath();
+      ctx.moveTo(L, T + l); ctx.lineTo(L, T); ctx.lineTo(L + l, T);
+      ctx.moveTo(R - l, T); ctx.lineTo(R, T); ctx.lineTo(R, T + l);
+      ctx.moveTo(L, B - l); ctx.lineTo(L, B); ctx.lineTo(L + l, B);
+      ctx.moveTo(R - l, B); ctx.lineTo(R, B); ctx.lineTo(R, B - l);
+      ctx.stroke();
+      if (numbers) {
+        const s = String(r.id), tw = ctx.measureText(s).width;
+        ctx.globalAlpha = 0.85; ctx.fillStyle = ground; ctx.fillRect(R + 2, T + 1, tw + 4, fs + 2);
+        ctx.globalAlpha = 1; ctx.fillStyle = accent; ctx.fillText(s, R + 4, T + 11);
       }
     }
     ctx.globalAlpha = 1;
-    ctx.fillStyle = accent;
-    const rad = Math.max(2, W / 260);
-    for (const r of live) {
-      const i = f - r.f0;
-      ctx.beginPath();
-      ctx.arc(px(r.pts[4 * i]), py(r.pts[4 * i + 1]), rad, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.fillStyle = faint;
-    ctx.fillRect(0, H - 2, W, 1);
-    ctx.fillStyle = accent;
-    ctx.fillRect((frame / d.frames) * W - 1, H - 5, 2, 5);
-    const label = `MOT17-04 · frame ${String(f).padStart(3, '0')} / ${d.frames} · ${live.length} people tracked`;
-    if (cap!.textContent !== label) cap!.textContent = label;
+    const label = `${live.length} people tracked`;
+    if (count!.textContent !== label) count!.textContent = label;
   }
 
   function size() {
@@ -92,11 +140,10 @@ export async function initTrackFigure() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = r.width; H = r.height;
     canvas!.width = Math.round(W * dpr); canvas!.height = Math.round(H * dpr);
+    drawn = '';
     draw();
   }
   new ResizeObserver(size).observe(canvas);
-  new MutationObserver(draw).observe(canvas, { attributes: true, attributeFilter: ['data-mode'] });
-  document.querySelectorAll<HTMLElement>('[data-track-mode]').forEach((b) => b.addEventListener('click', () => { canvas.dataset.mode = b.dataset.trackMode; }));
   new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
 

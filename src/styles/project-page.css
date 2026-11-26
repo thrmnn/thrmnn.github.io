@@ -1,0 +1,35 @@
+/* Project pages: the figure and the facts hold a rail while the text scrolls beside it (wide), a band above the text (mid), stacked (phone). */
+
+.pj-section { padding-top: 0; }
+.pj-body h2 { scroll-margin-top: 4.5rem; }
+.pj-index { display: none; }
+.pj-index a { display: block; padding: 0.28rem 0; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); text-decoration: none; }
+.pj-index a[aria-current="true"] { color: var(--color-text-primary); }
+
+@media (min-width: 900px) {
+  .pj-split { max-width: none; padding-inline: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 3rem; align-items: start; }
+  .pj-split .pj-head { display: contents; }
+  .pj-split > *, .pj-split .pj-head > * { grid-column: 2; margin-right: max(1.5rem, calc((100vw - 1280px) / 2)); }
+  .pj-split .pj-head > a { margin-top: 1.5rem; }
+  .pj-split .pj-head-plain > :last-child { margin-bottom: 2.5rem; }
+  .pj .pj-rail { grid-column: 1; grid-row: 1 / span 99; position: sticky; top: 3.8rem; margin: 0; padding-left: 0; align-self: start; }
+  .pj .pj-rail-panel { height: calc(100vh - 3.8rem); box-sizing: border-box; padding-block: 1.4rem 1.2rem; display: flex; flex-direction: column; justify-content: center; }
+  .pj .pj-rail-panel .track-figure { margin: 0; }
+  .pj .pj-rail-panel .track-stage { flex: none; }
+  .pj .pj-rail-panel .track-caption { padding-left: 1rem; flex: none; }
+  .pj .pj-rail-picture { height: calc(100vh - 5.5rem); display: flex; align-items: center; }
+  .pj .pj-rail-picture img { width: 100%; height: auto; }
+  .pj-split .pj-body { max-width: none; }
+  .pj .pj-rail-panel .facts-strip { flex: none; margin: 1rem 0 0; padding-left: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pj .pj-rail-panel .facts-strip div { padding: 0.55rem 0.8rem 0.55rem 0; }
+  .pj .pj-rail-panel .facts-strip dd { font-size: 0.85rem; }
+  .pj-index { display: block; flex: none; margin: 0.9rem 0 0; padding: 0.7rem 0 0 1rem; border-top: 1px solid var(--color-border); }
+}
+@media (min-width: 900px) and (max-height: 719px) {
+  .pj-index { display: none; }
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+  .pj-rail-panel { display: contents; }
+  .pj .pj-rail-panel .track-figure { position: sticky; top: 3.2rem; z-index: 6; margin: 0 0 1rem; padding: 0.6rem 0 0.4rem; background: var(--color-bg-primary); border-bottom: 1px solid var(--color-border); }
+}

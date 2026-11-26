@@ -61,7 +61,7 @@ const readout = here ? `${here.n} ${routeLabel}` : routeLabel;
   <ol>
     {entries.map((e) => (
       <li>
-        <a href={base + e.href} class="row" data-key={e.key} {...(e.current ? { 'aria-current': 'page' } : {})}>
+        <a href={base + e.href} class="row" data-key={e.key.startsWith('#') ? e.key : undefined} {...(e.current ? { 'aria-current': 'page' } : {})}>
           <span class="row-n">{e.n}</span>
           <span class="row-t">{e.label}</span>
           <Pictogram name={e.icon} class="row-i" />

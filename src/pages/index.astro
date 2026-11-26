@@ -47,7 +47,7 @@ const cards = [
   </section>
 
   <HomeCards cards={cards} />
-  <HomeProjects />
+  <HomeProjects skip={cards.map((c) => c.slug)} />
   <WritingShelf />
   <AboutBlock />
 

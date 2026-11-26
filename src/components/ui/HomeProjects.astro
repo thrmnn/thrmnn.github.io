@@ -4,7 +4,8 @@ import { getCollection } from 'astro:content';
 import { base } from '../../data/base';
 import Picture from './Picture.astro';
 
-const all = (await getCollection('projects')).filter((p) => !p.data.draft);
+const { skip = [] } = Astro.props as { skip?: string[] };
+const all = (await getCollection('projects')).filter((p) => !p.data.draft && !skip.includes(p.id.replace(/\.md$/, '')));
 all.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const rows = all.map((p) => {
   const slug = p.id.replace(/\.md$/, '');

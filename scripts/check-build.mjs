@@ -202,10 +202,12 @@ const ASSET_BUDGETS = {
   bin:  [150 * KB, 60 * KB],  // point-cloud datasets (largest today ~50KB)
   json: [200 * KB, 60 * KB],  // replay/sidecar data (stata-replay.json etc.)
 };
+// the filmed street's coarse brightness grid (scripts/make-film-grid.py): fixed by the generator, so its own ceiling
+const FILE_BUDGETS = { 'film-grid.bin': [1.5 * MB, 1.5 * MB] };
 const assetWarnings = [];
 for (const f of files) {
   const ext = f.match(/\.([a-z0-9]+)$/i)?.[1].toLowerCase();
-  const budget = ext && ASSET_BUDGETS[ext];
+  const budget = FILE_BUDGETS[f.split('/').pop()] ?? (ext && ASSET_BUDGETS[ext]);
   if (!budget) continue;
   const [limit, warn] = budget;
   const size = statSync(f).size;

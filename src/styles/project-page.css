@@ -18,7 +18,7 @@
   .pj .pj-rail-picture img { width: 100%; height: auto; }
   .pj .pj-rail-replay .replay-figure { display: contents; }
   .pj .pj-rail-replay .replay-stage { aspect-ratio: auto; height: auto; flex: 1 1 0; min-height: 17rem; }
-  .pj .pj-rail-replay .replay-credit { padding-left: 1rem; flex: none; }
+  .pj .pj-rail-replay .replay-caption, .pj .pj-rail-replay .replay-credit { padding-left: 1rem; flex: none; }
   .pj-split .pj-body { max-width: none; }
   .pj .pj-rail-panel .facts-strip { flex: none; margin: 1rem 0 0; padding-left: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pj .pj-rail-panel .facts-strip div { padding: 0.55rem 0.8rem 0.55rem 0; }

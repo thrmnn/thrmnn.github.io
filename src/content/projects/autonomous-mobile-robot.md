@@ -7,6 +7,9 @@ cardImage: '/projects/autonomous-mobile-robot/loomo-card.webp'
 image: '/projects/autonomous-mobile-robot/hero-poster.jpg'
 imageWidth: 600
 imageHeight: 338
+railImage: '/projects/autonomous-mobile-robot/loomo-pose.webp'
+railImageSize: 1600
+railImageHeight: 1000
 summary: "A modular ROS stack for a Segway Loomo at EPFL VITA Lab: person detection, tracking and 3D pose, trajectory prediction, planning and model predictive control, validated end to end on the physical robot."
 label: "EPFL VITA Lab · 2022–23"
 metric: "End-to-end on the physical robot · code on GitHub"

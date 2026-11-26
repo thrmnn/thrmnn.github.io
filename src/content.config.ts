@@ -22,6 +22,7 @@ const projects = defineCollection({
     imageHeight: z.number().optional(),
     railImage: z.string().optional(),
     railImageSize: z.number().optional(),
+    railImageHeight: z.number().optional(),
     gradient: z.string().optional(),
     plateName: z.string().optional(),
     tags: z.array(z.string()).default([]),

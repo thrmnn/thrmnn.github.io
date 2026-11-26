@@ -117,7 +117,7 @@ const articleJsonLd = {
                 phoneMax={639}
                 alt={project.data.imageAlt ?? project.data.title}
                 width={project.data.railImage ? project.data.railImageSize ?? 2000 : project.data.imageWidth ?? 1200}
-                height={project.data.railImage ? project.data.railImageSize ?? 2000 : project.data.imageHeight ?? 630}
+                height={project.data.railImage ? project.data.railImageHeight ?? project.data.railImageSize ?? 2000 : project.data.imageHeight ?? 630}
                 plain={project.data.cardImage !== project.data.image && !paperTwin}
                 loading="eager"
                 fetchpriority="high"

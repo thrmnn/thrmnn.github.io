@@ -10,6 +10,7 @@ import { siteConfig } from '../../data/site';
 import TrackFigure from '../../components/ui/TrackFigure.astro';
 import FactsStrip from '../../components/ui/FactsStrip.astro';
 import { trackFigure, fillFacts } from '../../data/figures';
+import '../../styles/project-page.css';
 
 export async function getStaticPaths() {
   const all = await getCollection('projects', ({ data }) => !data.draft);
@@ -33,7 +34,9 @@ export async function getStaticPaths() {
 }
 
 const { project, prev, next } = Astro.props;
-const { Content } = await render(project);
+const { Content, headings } = await render(project);
+const hasRail = project.data.figure === 'tracks' || (!project.data.figure && !!project.data.image);
+const sections = headings.filter((h) => h.depth === 2);
 const lead = !!(project.data.figure || project.data.facts);
 const facts = project.data.facts ? fillFacts(project.data.facts, trackFigure().stats) : null;
 const sameLink = project.data.github && project.data.externalLink === project.data.github;
@@ -57,10 +60,10 @@ const articleJsonLd = {
 ---
 
 <PageLayout title={project.data.title} description={project.data.summary} image={project.data.image} ogType="article" articleJsonLd={articleJsonLd}>
-  <section class="py-[var(--space-section)]">
-    <div class="mx-auto max-w-[var(--max-w-content)] px-6">
+  <section class="pj-section py-[var(--space-section)]">
+    <div class={`pj${hasRail ? ' pj-split' : ''} mx-auto max-w-[var(--max-w-content)] px-6`}>
       <!-- Header -->
-      <div class="mb-10">
+      <div class={`pj-head mb-10${lead ? '' : ' pj-head-plain'}`}>
         <a href={`${base}/projects/`} data-back={project.id} data-home={`${base}/`} class="text-sm text-text-muted hover:text-text-secondary mb-4 inline-block">
           ← Back to projects
         </a>
@@ -85,31 +88,43 @@ const articleJsonLd = {
         {lead && <p class="text-lg text-text-secondary mt-4 max-w-2xl">{project.data.summary}</p>}
       </div>
 
-      {project.data.figure === 'tracks' && <TrackFigure />}
-      {facts && <FactsStrip facts={facts} />}
-
-      {!project.data.figure && project.data.image && (
-        <div class="mb-10 overflow-hidden border border-border">
-          <Picture
-            src={project.data.image}
-            anim={project.data.cardAnim && (!project.data.cardImage || project.data.cardImage === project.data.image) ? project.data.cardAnim : undefined}
-            phone={project.data.imagePhone}
-            phoneMax={639}
-            alt={project.data.imageAlt ?? project.data.title}
-            width={project.data.imageWidth ?? 1200}
-            height={project.data.imageHeight ?? 630}
-            plain={project.data.cardImage !== project.data.image}
-            loading="eager"
-            fetchpriority="high"
-            imgClass="w-full h-auto block"
-          />
+      {project.data.figure === 'tracks' ? (
+        <div class="pj-rail pj-rail-panel">
+          <TrackFigure />
+          {facts && <FactsStrip facts={facts} />}
+          {sections.length > 0 && (
+            <nav class="pj-index" aria-label="Sections">
+              {sections.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}
+            </nav>
+          )}
         </div>
+      ) : (
+        <>
+          {facts && <FactsStrip facts={facts} />}
+          {!project.data.figure && project.data.image && (
+            <div class="pj-rail pj-rail-picture mb-10 overflow-hidden border border-border">
+              <Picture
+                src={project.data.image}
+                anim={project.data.cardAnim && (!project.data.cardImage || project.data.cardImage === project.data.image) ? project.data.cardAnim : undefined}
+                phone={project.data.imagePhone}
+                phoneMax={639}
+                alt={project.data.imageAlt ?? project.data.title}
+                width={project.data.imageWidth ?? 1200}
+                height={project.data.imageHeight ?? 630}
+                plain={project.data.cardImage !== project.data.image}
+                loading="eager"
+                fetchpriority="high"
+                imgClass="w-full h-auto block"
+              />
+            </div>
+          )}
+        </>
       )}
 
       {project.id === 'urban-morphometrics' && <VidigalAbstract />}
 
       <!-- Body -->
-      <article class="prose max-w-2xl">
+      <article class="prose max-w-2xl pj-body">
         <Content />
       </article>
 
@@ -267,5 +282,17 @@ const articleJsonLd = {
         back.textContent = '← Back';
       }
     } catch {}
+  }
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.pj-index a'));
+  if (links.length) {
+    const heads = links.map((a) => document.getElementById(a.hash.slice(1)));
+    const spot = () => {
+      let cur = 0;
+      heads.forEach((h, n) => { if (h && h.getBoundingClientRect().top < innerHeight * 0.4) cur = n; });
+      links.forEach((a, n) => a.setAttribute('aria-current', String(n === cur)));
+    };
+    addEventListener('scroll', spot, { passive: true });
+    addEventListener('resize', spot);
+    spot();
   }
 </script>

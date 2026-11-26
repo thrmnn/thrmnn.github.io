@@ -1,25 +1,18 @@
 ---
 import { base } from '../../data/base';
-const preview = process.env.PREVIEW_LOOK === '1';
 ---
 
 <figure class="track-figure" data-reveal>
   <div class="track-stage">
     <canvas
       data-track-figure
-      data-mode="boxes"
       data-src={`${base}/data/track-figure.json`}
+      data-grid={`${base}/data/film-grid.bin`}
       role="img"
       aria-label="Tracked people of a street sequence, each a dot with a short trail, moving through time. Drag across to scrub."
     ></canvas>
   </div>
-  <figcaption class="track-caption" data-track-caption>MOT17-04</figcaption>
-  {preview && (
-    <p class="track-modes">
-      <button type="button" data-track-mode="points">points</button>
-      <button type="button" data-track-mode="boxes">boxes</button>
-    </p>
-  )}
+  <figcaption class="track-caption"><span data-track-count></span> footage <a href="https://motchallenge.net/data/MOT17/" rel="noopener">MOT17</a>, <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="noopener license">CC BY-NC-SA</a></figcaption>
 </figure>
 
 <style>
@@ -33,24 +26,20 @@ const preview = process.env.PREVIEW_LOOK === '1';
     display: block;
     width: 100%;
     height: 100%;
+    background: var(--color-bg-primary);
     touch-action: pan-y;
     cursor: ew-resize;
   }
   .track-caption {
-    margin-top: 0.6rem;
+    margin: 0.6rem 0 0;
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: var(--color-text-muted);
     font-variant-numeric: tabular-nums;
   }
-  .track-modes { margin: 0.4rem 0 0; display: flex; gap: 1rem; font-family: var(--font-mono); font-size: 0.7rem; }
-  .track-modes button { padding: 0; border: 0; background: none; color: var(--color-text-muted); font: inherit; cursor: pointer; }
-  .track-modes button:hover { color: var(--color-text-primary); }
-  .track-modes button { min-height: 44px; padding: 0 0.2rem; text-transform: uppercase; letter-spacing: 0.08em; }
-  .track-figure:has(canvas[data-mode='points']) [data-track-mode='points'],
-  .track-figure:has(canvas[data-mode='boxes']) [data-track-mode='boxes'] { color: var(--color-text-primary); text-decoration: underline; text-underline-offset: 0.35em; }
+  [data-track-count]:not(:empty)::after { content: ' \00b7'; }
+  .track-caption a { color: inherit; text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: 0.2em; white-space: nowrap; }
 </style>
 
 <script>
